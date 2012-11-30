@@ -16,7 +16,7 @@
         <property name="url" value="jdbc:postgresql://localhost:5432/grass"> 
         </property> 
         <property name="username" value="postgres"></property> 
-        <property name="password" value="intalio"></property> 
+        <property name="password" value="postgres"></property> 
     </bean> 
  
  	<bean id="lobHandler"
