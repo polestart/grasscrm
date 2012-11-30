@@ -4,6 +4,11 @@
 
 <struts>
      <package namespace="/jsp/crm" name="account" extends="default">
+     
+         <action name="homePage" class="homeAction" method="load">
+    	  <result name="success">/jsp/crm/home.jsp</result>
+        </action>
+        
       	<action name="listAccount" class="listAccountAction" method="list">
     	  <result name="success" type="json"></result>
         </action>

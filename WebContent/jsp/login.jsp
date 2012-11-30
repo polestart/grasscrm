@@ -8,14 +8,14 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel="shortcut icon" type="image/ico" href="/images/favicon.ico" />
 <title>Login</title>
-<link href="../css/styles.css" type="text/css" media="screen"
+<link href="<s:url value="/css/styles.css"/>" type="text/css" media="screen"
 	rel="stylesheet" />
-<link href="../css/jquery-ui-1.8.16.custom.css" rel="stylesheet" />
-<script src="../js/jquery-1.7.2.min.js"></script>
-<script src="../js/jquery-ui-1.8.16.custom.min.js"></script>
+<link href="<s:url value="/css/jquery-ui-1.8.16.custom.css"/>" type="text/css" rel="stylesheet" />
+<script src="<s:url value="/js/jquery-1.7.2.min.js"/>"></script>
+<script src="<s:url value="/js/jquery-ui-1.8.16.custom.min.js"/>"></script>
 <script type="text/javascript"
-	src="../js/jquery.keyboard.extension-typing.js"></script>
-<script type="text/javascript" src="../js/jquery.keyboard.js"></script>
+	src="<s:url value="/js/jquery.keyboard.extension-typing.js"/>"></script>
+<script type="text/javascript" src="<s:url value="/js/jquery.keyboard.js"/>"></script>
 </head>
 <body id="login" onload="document.f.j_username.focus();">
 	<div id="wrappertop"></div>
@@ -52,7 +52,7 @@
 					</p>
 					<button id="loginbtn" type="button" class="positive" name="Submit"
 						type="submit" onclick="f.submit();">
-						<img src="../images/key.png" alt="Announcement" /><s:text name='login.button.label'/>
+						<img src="<s:url value="/images/key.png"/>" alt="Announcement" /><s:text name='login.button.label'/>
 					</button>
 				</fieldset>
 			</form>

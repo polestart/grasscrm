@@ -16,7 +16,7 @@
         <property name="url" value="jdbc:postgresql://localhost:5432/grass"> 
         </property> 
         <property name="username" value="postgres"></property> 
-        <property name="password" value="postgres"></property> 
+        <property name="password" value="intalio"></property> 
     </bean> 
  
  	<bean id="lobHandler"
@@ -101,6 +101,9 @@
     </bean>    
         
     <!-- Actions -->
+    <bean id="homeAction" class="com.gcrm.action.HomeAction" scope="prototype">   
+    </bean>
+        
     <bean id="listAccountAction" class="com.gcrm.action.ListAccountAction" scope="prototype">   
         <property name="baseService" ref="baseService" />
         <property name="accountTypeService" ref="baseService" /> 

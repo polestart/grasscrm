@@ -29,10 +29,10 @@
 	}
 
 	$(document).ready(function() {
-		('#relatedDocumentID').combogrid('setValue', '${relatedDocumentID}');
-		$('#assignedToID').combogrid('setValue', '${assignedToID}');
-		$('#publishDateS').datebox('setValue', '${publishDateS}');
-		$('#expirationDateS').datebox('setValue', '${expirationDateS}');
+		('#relatedDocumentID').combogrid('setValue', '<s:property value="relatedDocumentID"/>');
+		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
+		$('#publishDateS').datebox('setValue', '<s:property value="publishDateS"/>');
+		$('#expirationDateS').datebox('setValue', '<s:property value="expirationDateS"/>');
 	})
 </script>
 

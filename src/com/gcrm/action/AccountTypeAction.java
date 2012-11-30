@@ -33,85 +33,86 @@ import com.gcrm.vo.SearchResult;
  */
 public class AccountTypeAction extends BaseListAction {
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private static final long serialVersionUID = -2404576552417042445L;
 
-	private IBaseService<AccountType> baseService;
-	private AccountType accountType;
+    private IBaseService<AccountType> baseService;
+    private AccountType accountType;
 
-	private static final String CLAZZ = AccountType.class.getSimpleName();
+    private static final String CLAZZ = AccountType.class.getSimpleName();
 
-	/**
-	 * Gets the list JSON data.
-	 * 
-	 * @return list JSON data
-	 */
-	public String list() throws Exception {
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    @Override
+    public String list() throws Exception {
 
-		SearchCondition searchCondition = getSearchCondition();
-		SearchResult<AccountType> result = baseService.getPaginationObjects(
-				CLAZZ, searchCondition);
-		List<AccountType> accountTypes = result.getResult();
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<AccountType> result = baseService.getPaginationObjects(
+                CLAZZ, searchCondition);
+        List<AccountType> accountTypes = result.getResult();
 
-		long totalRecords = result.getTotalRecords();
+        long totalRecords = result.getTotalRecords();
 
-		// Constructs the JSON data
-		String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-		int size = accountTypes.size();
-		for (int i = 0; i < size; i++) {
-			AccountType instance = (AccountType) accountTypes.get(i);
-			Integer id = instance.getId();
-			String name = instance.getName();
-			int sequence = instance.getSequence();
+        // Constructs the JSON data
+        String json = "{\"total\": " + totalRecords + ",\"rows\": [";
+        int size = accountTypes.size();
+        for (int i = 0; i < size; i++) {
+            AccountType instance = accountTypes.get(i);
+            Integer id = instance.getId();
+            String name = instance.getName();
+            int sequence = instance.getSequence();
 
-			json += "{\"id\":\"" + id + "\",\"accountType.id\":\"" + id
-					+ "\",\"accountType.name\":\"" + name
-					+ "\",\"accountType.sequence\":\"" + sequence + "\"}";
-			if (i < size - 1) {
-				json += ",";
-			}
-		}
-		json += "]}";
+            json += "{\"id\":\"" + id + "\",\"accountType.id\":\"" + id
+                    + "\",\"accountType.name\":\"" + name
+                    + "\",\"accountType.sequence\":\"" + sequence + "\"}";
+            if (i < size - 1) {
+                json += ",";
+            }
+        }
+        json += "]}";
 
-		// Returns JSON data back to page
-		HttpServletResponse response = ServletActionContext.getResponse();
-		response.getWriter().write(json);
-		return null;
-	}
+        // Returns JSON data back to page
+        HttpServletResponse response = ServletActionContext.getResponse();
+        response.getWriter().write(json);
+        return null;
+    }
 
-	/**
-	 * Saves the entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String save() throws Exception {
-		getbaseService().makePersistent(accountType);
-		return SUCCESS;
-	}
+    /**
+     * Saves the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String save() throws Exception {
+        getbaseService().makePersistent(accountType);
+        return SUCCESS;
+    }
 
-	/**
-	 * Deletes the selected entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String delete() throws ServiceException {
-		baseService.batchDeleteEntity(AccountType.class, this.getSeleteIDs());
-		return SUCCESS;
-	}
+    /**
+     * Deletes the selected entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String delete() throws ServiceException {
+        baseService.batchDeleteEntity(AccountType.class, this.getSeleteIDs());
+        return SUCCESS;
+    }
 
-	public IBaseService<AccountType> getbaseService() {
-		return baseService;
-	}
+    public IBaseService<AccountType> getbaseService() {
+        return baseService;
+    }
 
-	public void setbaseService(IBaseService<AccountType> baseService) {
-		this.baseService = baseService;
-	}
+    public void setbaseService(IBaseService<AccountType> baseService) {
+        this.baseService = baseService;
+    }
 
-	public AccountType getAccountType() {
-		return accountType;
-	}
+    public AccountType getAccountType() {
+        return accountType;
+    }
 
-	public void setAccountType(AccountType accountType) {
-		this.accountType = accountType;
-	}
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+    }
 
 }

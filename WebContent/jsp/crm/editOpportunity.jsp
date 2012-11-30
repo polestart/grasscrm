@@ -29,10 +29,10 @@
 	}
 
 	$(document).ready(function() {
-		$('#accountID').combogrid('setValue', '${accountID}');
-		$('#assignedToID').combogrid('setValue', '${assignedToID}');
-		$('#campaignID').combogrid('setValue', '${campaignID}');
-		$('#expectCloseDate').datebox('setValue', '${expectCloseDate}');
+		$('#accountID').combogrid('setValue', '<s:property value="accountID"/>');
+		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
+		$('#campaignID').combogrid('setValue', '<s:property value="campaignID"/>');
+		$('#expectCloseDate').datebox('setValue', '<s:property value="expectCloseDate"/>');
 	})
 </script>
 

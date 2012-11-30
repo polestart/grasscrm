@@ -56,16 +56,16 @@
 	}
 	
 	$(document).ready(function() {
-		$('#assignedToID').combogrid('setValue', '${assignedToID}');
-		$('#startDate').datebox('setValue', '${startDate}');
-		$('#endDate').datebox('setValue', '${endDate}');
-		$('#relatedAccountID').combogrid('setValue', '${relatedAccountID}');
-		$('#relatedCaseID').combogrid('setValue', '${relatedCaseID}');
-		$('#relatedContactID').combogrid('setValue', '${relatedContactID}');
-		$('#relatedLeadID').combogrid('setValue', '${relatedLeadID}');
-		$('#relatedOpportunityID').combogrid('setValue', '${relatedOpportunityID}');
-		$('#relatedTargetID').combogrid('setValue', '${relatedTargetID}');
-		$('#relatedTaskID').combogrid('setValue', '${relatedTaskID}');			
+		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
+		$('#startDate').datebox('setValue', '<s:property value="startDate"/>');
+		$('#endDate').datebox('setValue', '<s:property value="endDate"/>');
+		$('#relatedAccountID').combogrid('setValue', '<s:property value="relatedAccountID"/>');
+		$('#relatedCaseID').combogrid('setValue', '<s:property value="relatedCaseID"/>');
+		$('#relatedContactID').combogrid('setValue', '<s:property value="relatedContactID"/>');
+		$('#relatedLeadID').combogrid('setValue', '<s:property value="relatedLeadID"/>');
+		$('#relatedOpportunityID').combogrid('setValue', '<s:property value="relatedOpportunityID"/>');
+		$('#relatedTargetID').combogrid('setValue', '<s:property value="relatedTargetID"/>');
+		$('#relatedTaskID').combogrid('setValue', '<s:property value="relatedTaskID"/>');			
 		$('#relatedObject').change(function() {
 			checkRelatedObject();
 		});

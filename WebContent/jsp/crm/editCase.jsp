@@ -29,8 +29,8 @@
 	}
 
 	$(document).ready(function() {
-		$('#assignedToID').combogrid('setValue', '${assignedToID}');
-		$('#accountID').combogrid('setValue', '${accountID}');
+		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
+		$('#accountID').combogrid('setValue', '<s:property value="accountID"/>');
 	})
 </script>
 

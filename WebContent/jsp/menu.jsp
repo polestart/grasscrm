@@ -4,7 +4,7 @@
 <%@ page language="java" import="java.util.Map" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
   <%Map<String,String> permissions = (Map<String,String>)session.getAttribute("permissions"); %>
-	<div style="background:#fafafa;padding:5px;width:100%;border:1px solid #ccc">
+	<div style="background:#fafafa;padding:5px;width:100%;border:1px solid #ccc">	
 		<a href="javascript:void(0)" id="mb1" class="easyui-menubutton" data-options="menu:'#mm1',iconCls:'icon-sale'"><s:text name='menu.sales.title'/></a>
 		<a href="javascript:void(0)" id="mb2" class="easyui-menubutton" data-options="menu:'#mm2',iconCls:'icon-market'"><s:text name='menu.marketing.title'/></a>
 		<a href="javascript:void(0)" id="mb3" class="easyui-menubutton" data-options="menu:'#mm3',iconCls:'icon-support'"><s:text name='menu.support.title'/></a>	
@@ -14,7 +14,7 @@
 		<a href="javascript:void(0)" id="mb7" class="easyui-menubutton" data-options="menu:'#mm7',iconCls:'icon-help'"><s:text name='menu.help.title'/></a>
 	</div>
 	<div id="mm1" style="width:150px;">
-		<div><s:text name='menu.home.title'/></div>
+		<div onClick="openPage('/crm/homePage.action')"><s:text name='menu.home.title'/></div>
 		<div class="menu-sep"></div>
 		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/crm/listAccount.jsp\")%>"><div onClick="openPage('/crm/listAccountPage.action')"><s:text name='menu.accounts.title'/></div></security:authorize>	
 		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/crm/listContact.jsp\")%>"><div onClick="openPage('/crm/listContactPage.action')"><s:text name='menu.contacts.title'/></div></security:authorize>

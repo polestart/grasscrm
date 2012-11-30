@@ -57,8 +57,8 @@
 	}
 
 	$(document).ready(function() {
-		$('#assignedToID').combogrid('setValue', '${assignedToID}');
-		$('#managerID').combogrid('setValue', '${managerID}');
+		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');		
+		$('#managerID').combogrid('setValue', '<s:property value="managerID"/>');
 	})
 </script>
 </head>

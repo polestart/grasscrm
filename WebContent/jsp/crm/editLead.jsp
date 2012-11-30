@@ -55,10 +55,10 @@
 	  }
 	  
 	  $(document).ready(function(){
-		$('#accountID').datebox('setValue', '${accountID}');
-		$('#leadID').datebox('setValue', '${leadID}');	
-		$('#campaignID').datebox('setValue', '${campaignID}');
-		$('#assignedToID').combogrid('setValue', '${assignedToID}');
+		$('#accountID').datebox('setValue', '<s:property value="accountID"/>');
+		$('#leadID').datebox('setValue', '<s:property value="leadID"/>');	
+		$('#campaignID').datebox('setValue', '<s:property value="campaignID"/>');
+		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
 	  })
 	</script>
 </head>

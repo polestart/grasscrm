@@ -51,8 +51,8 @@ function copyAddress(){
   }
   
 $(document).ready(function(){
-	$('#accountID').datebox('setValue', '${accountID}');
-	$('#assignedToID').combogrid('setValue', '${assignedToID}');
+	$('#accountID').datebox('setValue', '<s:property value="accountID"/>');
+	$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
 	 })
 </script>
 

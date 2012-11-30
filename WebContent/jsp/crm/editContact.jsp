@@ -50,9 +50,9 @@
       }
 	  
 	  $(document).ready(function(){
-		$('#reportToID').combogrid('setValue', '${reportToID}');	
-		$('#campaignID').combogrid('setValue', '${campaignID}');
-		$('#assignedToID').combogrid('setValue', '${assignedToID}');
+		$('#reportToID').combogrid('setValue', '<s:property value="reportToID"/>');	
+		$('#campaignID').combogrid('setValue', '<s:property value="campaignID"/>');
+		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
 		$('#accountID').combogrid({    
 		    onChange : function(n,o){
 		      var officePhone = $('#office_phone').val();
@@ -103,7 +103,7 @@
 		     }	
 		   }  
 		});		
-		$('#accountID').combogrid('setValue', '${accountID}');		
+		$('#accountID').combogrid('setValue', '<s:property value="accountID"/>');		
 		 })
 	</script>
 </head>

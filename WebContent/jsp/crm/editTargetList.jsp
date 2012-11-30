@@ -29,7 +29,7 @@
 	}
 
 	$(document).ready(function() {
-		$('#assignedToID').combogrid('setValue', '${assignedToID}');
+		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
 	})
 </script>
 

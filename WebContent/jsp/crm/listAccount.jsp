@@ -49,7 +49,7 @@
 			{field:'bill_country',title:'<s:text name="account.bill_country.label" />',width:80,align:'right',sortable:'true'},
 			{field:'office_phone',title:'<s:text name="account.office_phone.label" />',width:80,align:'center',sortable:'true'},
 			{field:'email',title:'<s:text name="account.email.label" />',width:80,align:'center',sortable:'true'},
-			{field:'user_name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'},
+			{field:'user_name',title:'<s:text name="entity.assigned_to.label" />',width:100,align:'center',sortable:'true'},
 			{field:'website',title:'<s:text name="account.website.label" />',width:80,align:'center',sortable:'true',hidden:'true'},
 			{field:'fax',title:'<s:text name="account.fax.label" />',width:80,align:'center',sortable:'true',hidden:'true'},
 			{field:'bill_street',title:'<s:text name="account.bill_street.label" />',width:80,align:'center',sortable:'true',hidden:'true'},

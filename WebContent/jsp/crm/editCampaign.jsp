@@ -29,9 +29,9 @@
 	}
 
 	$(document).ready(function() {
-		$('#assignedToID').combogrid('setValue', '${assignedToID}');
-		$('#startDate').datebox('setValue', '${startDate}');
-		$('#endDate').datebox('setValue', '${endDate}');
+		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
+		$('#startDate').datebox('setValue', '<s:property value="startDate"/>');
+		$('#endDate').datebox('setValue', '<s:property value="endDate"/>');
 	})
 </script>
 
