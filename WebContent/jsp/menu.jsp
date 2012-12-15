@@ -45,33 +45,40 @@
 		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/crm/listTargetList.jsp\")%>"><div onClick="openPage('/crm/listTargetListPage.action')"><s:text name='menu.targetLists.title'/></div></security:authorize>
 	</div>
 	<div id="mm6" style="width:150px;">
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listAccountType.jsp\")%>"><div onClick="openPage('/system/listAccountTypePage.action')"><s:text name='menu.accountType.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCallStatus.jsp\")%>"><div onClick="openPage('/system/listCallStatusPage.action')"><s:text name='menu.callStatus.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCallDirection.jsp\")%>"><div onClick="openPage('/system/listCallDirectionPage.action')"><s:text name='menu.callDirection.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listReminderOption.jsp\")%>"><div onClick="openPage('/system/listReminderOptionPage.action')"><s:text name='menu.reminderOption.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCampaignType.jsp\")%>"><div onClick="openPage('/system/listCampaignTypePage.action')"><s:text name='menu.campaignType.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCampaignStatus.jsp\")%>"><div onClick="openPage('/system/listCampaignStatusPage.action')"><s:text name='menu.campaignStatus.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCaseOrigin.jsp\")%>"><div onClick="openPage('/system/listCaseOriginPage.action')"><s:text name='menu.caseOrigin.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCasePriority.jsp\")%>"><div onClick="openPage('/system/listCasePriorityPage.action')"><s:text name='menu.casePriority.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCaseReason.jsp\")%>"><div onClick="openPage('/system/listCaseReasonPage.action')"><s:text name='menu.caseReason.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCaseStatus.jsp\")%>"><div onClick="openPage('/system/listCaseStatusPage.action')"><s:text name='menu.caseStatus.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCaseType.jsp\")%>"><div onClick="openPage('/system/listCaseTypePage.action')"><s:text name='menu.caseType.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listDocumentCategory.jsp\")%>"><div onClick="openPage('/system/listDocumentCategoryPage.action')"><s:text name='menu.documentCategory.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listDocumentStatus.jsp\")%>"><div onClick="openPage('/system/listDocumentStatusPage.action')"><s:text name='menu.documentStatus.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listDocumentSubCategory.jsp\")%>"><div onClick="openPage('/system/listDocumentSubCategoryPage.action')"><s:text name='menu.documentSubCategory.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listDocumentType.jsp\")%>"><div onClick="openPage('/system/listDocumentTypePage.action')"><s:text name='menu.documentType.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listIndustry.jsp\")%>"><div onClick="openPage('/system/listIndustryPage.action')"><s:text name='menu.industry.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listLeadSource.jsp\")%>"><div onClick="openPage('/system/listLeadSourcePage.action')"><s:text name='menu.leadSource.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listLeadStatus.jsp\")%>"><div onClick="openPage('/system/listLeadStatusPage.action')"><s:text name='menu.leadStatus.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listUserStatus.jsp\")%>"><div onClick="openPage('/system/listUserStatusPage.action')"><s:text name='menu.userStatus.title'/></div></security:authorize>		
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listTaskStatus.jsp\")%>"><div onClick="openPage('/system/listTaskStatusPage.action')"><s:text name='menu.taskStatus.title'/></div></security:authorize>	
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listTaskPriority.jsp\")%>"><div onClick="openPage('/system/listTaskPriorityPage.action')"><s:text name='menu.taskPriority.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listTargetListType.jsp\")%>"><div onClick="openPage('/system/listTargetListTypePage.action')"><s:text name='menu.targetListType.title'/></div></security:authorize>					
+	    <div>
+	      <span><s:text name='menu.dropdown.title'/></span>
+	      <div style="width:150px;">  
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listAccountType.jsp\")%>"><div onClick="openPage('/system/listAccountTypePage.action')"><s:text name='menu.accountType.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCallStatus.jsp\")%>"><div onClick="openPage('/system/listCallStatusPage.action')"><s:text name='menu.callStatus.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCallDirection.jsp\")%>"><div onClick="openPage('/system/listCallDirectionPage.action')"><s:text name='menu.callDirection.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listReminderOption.jsp\")%>"><div onClick="openPage('/system/listReminderOptionPage.action')"><s:text name='menu.reminderOption.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCampaignType.jsp\")%>"><div onClick="openPage('/system/listCampaignTypePage.action')"><s:text name='menu.campaignType.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCampaignStatus.jsp\")%>"><div onClick="openPage('/system/listCampaignStatusPage.action')"><s:text name='menu.campaignStatus.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCaseOrigin.jsp\")%>"><div onClick="openPage('/system/listCaseOriginPage.action')"><s:text name='menu.caseOrigin.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCasePriority.jsp\")%>"><div onClick="openPage('/system/listCasePriorityPage.action')"><s:text name='menu.casePriority.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCaseReason.jsp\")%>"><div onClick="openPage('/system/listCaseReasonPage.action')"><s:text name='menu.caseReason.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCaseStatus.jsp\")%>"><div onClick="openPage('/system/listCaseStatusPage.action')"><s:text name='menu.caseStatus.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCaseType.jsp\")%>"><div onClick="openPage('/system/listCaseTypePage.action')"><s:text name='menu.caseType.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listDocumentCategory.jsp\")%>"><div onClick="openPage('/system/listDocumentCategoryPage.action')"><s:text name='menu.documentCategory.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listDocumentStatus.jsp\")%>"><div onClick="openPage('/system/listDocumentStatusPage.action')"><s:text name='menu.documentStatus.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listDocumentSubCategory.jsp\")%>"><div onClick="openPage('/system/listDocumentSubCategoryPage.action')"><s:text name='menu.documentSubCategory.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listDocumentType.jsp\")%>"><div onClick="openPage('/system/listDocumentTypePage.action')"><s:text name='menu.documentType.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listIndustry.jsp\")%>"><div onClick="openPage('/system/listIndustryPage.action')"><s:text name='menu.industry.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listLeadSource.jsp\")%>"><div onClick="openPage('/system/listLeadSourcePage.action')"><s:text name='menu.leadSource.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listLeadStatus.jsp\")%>"><div onClick="openPage('/system/listLeadStatusPage.action')"><s:text name='menu.leadStatus.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listUserStatus.jsp\")%>"><div onClick="openPage('/system/listUserStatusPage.action')"><s:text name='menu.userStatus.title'/></div></security:authorize>		
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listTaskStatus.jsp\")%>"><div onClick="openPage('/system/listTaskStatusPage.action')"><s:text name='menu.taskStatus.title'/></div></security:authorize>	
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listTaskPriority.jsp\")%>"><div onClick="openPage('/system/listTaskPriorityPage.action')"><s:text name='menu.taskPriority.title'/></div></security:authorize>
+			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listTargetListType.jsp\")%>"><div onClick="openPage('/system/listTargetListTypePage.action')"><s:text name='menu.targetListType.title'/></div></security:authorize>					
+		  </div>
+		</div>
 		<div class="menu-sep"></div>
 		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCurrency.jsp\")%>"><div onClick="openPage('/system/listCurrencyPage.action')"><s:text name='menu.currency.title'/></div></security:authorize>
 		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listUser.jsp\")%>"><div onClick="openPage('/system/listUserPage.action')"><s:text name='menu.user.title'/></div></security:authorize>
 		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listRole.jsp\")%>"><div onClick="openPage('/system/listRolePage.action')"><s:text name='menu.role.title'/></div></security:authorize>
-		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listPermission.jsp\")%>"><div onClick="openPage('/system/listPermissionPage.action')"><s:text name='menu.permission.title'/></div></security:authorize>			
+		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listPermission.jsp\")%>"><div onClick="openPage('/system/listPermissionPage.action')"><s:text name='menu.permission.title'/></div></security:authorize>
+		<div class="menu-sep"></div>
+		<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/emailSetting.jsp\")%>"><div onClick="openPage('/system/editEmailSetting.action')"><s:text name='menu.emailSetting.title'/></div></security:authorize>
 	</div>
 	<div id="mm7" style="width:100px;">
 		<div onClick="openPage('/help.pdf')"><s:text name='menu.help.title'/></div>

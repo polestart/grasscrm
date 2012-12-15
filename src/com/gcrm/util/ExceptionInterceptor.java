@@ -17,8 +17,6 @@ package com.gcrm.util;
 
 import org.apache.log4j.Logger;
 
-
-import com.gcrm.util.Constant;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
@@ -29,36 +27,37 @@ import com.opensymphony.xwork2.interceptor.Interceptor;
  */
 public class ExceptionInterceptor implements Interceptor {
 
-	private static final long serialVersionUID = -8471937545040722947L;
+    private static final long serialVersionUID = -8471937545040722947L;
 
-	private Logger logger = Logger.getLogger(this.getClass());
+    private final Logger logger = Logger.getLogger(this.getClass());
 
-	public void destroy() {
-		// no logic
-	}
+    public void destroy() {
+        // no logic
+    }
 
-	public void init() {
-		// no logic
-	}
+    public void init() {
+        // no logic
+    }
 
-	/**
-	 * Intercepts exception 
-	 * 
-	 * @param action target action
-	 * @return Action result
-	 */
-	public String intercept(ActionInvocation action) throws Exception {
-		String result = Action.SUCCESS;
+    /**
+     * Intercepts exception
+     * 
+     * @param action
+     *            target action
+     * @return Action result
+     */
+    public String intercept(ActionInvocation action) throws Exception {
+        String result = Action.SUCCESS;
 
-		try {
-			result = action.invoke();
-		} catch(Exception e) {
-			result = Action.INPUT;
-			logger.error(e.getMessage(), e);
-			ActionSupport actionSupport = (ActionSupport)action.getAction();
-			actionSupport.addActionError(actionSupport.getText(Constant.GENERAL_ERROR_KEY));
-		}
+        try {
+            result = action.invoke();
+        } catch (Exception e) {
+            result = Action.INPUT;
+            logger.error(e.getMessage(), e);
+            ActionSupport actionSupport = (ActionSupport) action.getAction();
+            actionSupport.addActionError(e.getMessage());
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

@@ -10,15 +10,15 @@ function openPopupPage(href) {
 }
 
 function openwindow(url, name) {
-	openwindow(url,name,300,500);
+	openwindow2(url,name,300,200);
 }
 
-function openwindow(url, name, iWidth,iHeight) {
+function openwindow2(url, name, iWidth,iHeight) {
 	var url;
 	var name;
-	var iTop = (window.screen.availHeight - 30 - iHeight) / 2;
-	var iLeft = (window.screen.availWidth - 10 - iWidth) / 2;
-	url = "/grass/jsp" + url
+	var iTop = (window.screen.height-iHeight)/2;
+	var iLeft = (window.screen.width-iWidth)/2;
+	url = "/grass/jsp" + url;
 	window
 			.open(
 					url,

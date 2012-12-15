@@ -68,6 +68,16 @@
     <!-- Annotation -->
     <tx:annotation-driven transaction-manager="grassTransactionManager" />
 
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+      <property name="corePoolSize" value="10"/>
+      <property name="maxPoolSize" value="30"/>
+    </bean>
+
+    <bean id="mailService" class="com.gcrm.util.mail.MailService">
+       <property name="taskExecutor" ref="taskExecutor"/>
+       <property name="baseService" ref="baseService"/>
+    </bean>
+
 	<!-- Dao Config -->    
 	<bean id="baseDao" class="com.gcrm.dao.BaseDao">
          <property name="sessionFactory" ref="sessionFactory"></property>
@@ -361,6 +371,11 @@
     <bean id="editRoleAction" class="com.gcrm.action.EditRoleAction" scope="prototype">   
         <property name="baseService" ref="baseService" />
         <property name="permissionService" ref="baseService" /> 
+    </bean>
+
+    <bean id="emailSettingAction" class="com.gcrm.action.EmailSettingAction" scope="prototype">   
+        <property name="baseService" ref="baseService" />
+        <property name="mailService" ref="mailService" />
     </bean>
                                             
     <bean id="accountTypeAction" class="com.gcrm.action.AccountTypeAction" scope="prototype">   

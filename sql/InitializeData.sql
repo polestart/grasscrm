@@ -702,6 +702,8 @@ INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_seque
 INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Task Priority', '/jsp/system/listTaskPriority.jsp,/jsp/system/deleteTaskPriority.action,/jsp/system/saveTaskPriority.action',35);
 INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'TargetList Type', '/jsp/system/listTargetListType.jsp,/jsp/system/deleteTargetListType.action,/jsp/system/saveTargetListType.action',36);
 INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Reminder Option', '/jsp/system/listReminderOption.jsp,/jsp/system/deleteReminderOption.action,/jsp/system/saveReminderOption.action',37);
+INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Email Setting', '/jsp/system/emailSetting.jsp,/jsp/system/editEmailSetting.action,/jsp/system/saveEmailSetting.action',38);
+
 
 INSERT INTO role(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Administrator', 1);
 
@@ -742,6 +744,7 @@ INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_s
 INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 35);
 INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 36);
 INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 37);
+INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 38);
 
 INSERT INTO users(id, name,password) VALUES (nextval('hibernate_sequence'),'admin','f23434d100b958477670c0c4593f69b5');
 

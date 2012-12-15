@@ -398,7 +398,28 @@
         
     	<action name="aboutPage">
     	  <result type="redirect">/jsp/system/about.jsp</result>
-        </action>                                                                              
+        </action>
+        
+        <action name="editEmailSetting" class="emailSettingAction" method="get">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepare"/>
+   			<interceptor-ref name="defaultStack"/>
+			<result>/jsp/system/emailSetting.jsp</result>
+        </action>
+                        
+        <action name="saveEmailSetting" class="emailSettingAction" method="save">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepare"/>
+   			<interceptor-ref name="defaultStack"/>
+            <result name="input">/jsp/system/emailSetting.jsp.jsp</result>          
+    	  <result type="redirect">/jsp/system/editEmailSetting.action</result>
+        </action>        
+       
+        <action name="sendEmail" class="emailSettingAction" method="sendEmail">
+            <result name="input">/jsp/system/sendTestMail.jsp</result>          
+    	  <result type="redirect">/jsp/system/sendSuccess.jsp</result>
+        </action>       
+                                                                                      
     </package>   
     
 </struts>
