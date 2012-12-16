@@ -677,7 +677,7 @@ INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_seque
 INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Target', '/jsp/crm/listTarget.jsp,/jsp/crm/editTarget.jsp,/jsp/crm/deleteTarget.action,/jsp/crm/saveTarget.action',10);
 INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'TargetList', '/jsp/crm/listTargetList.jsp,/jsp/crm/editTargetList.jsp,/jsp/crm/deleteTargetList.action,/jsp/crm/saveTargetList.action',11);
 INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Task', '/jsp/crm/listTask.jsp,/jsp/crm/editTask.jsp,/jsp/crm/deleteTask.action,/jsp/crm/saveTask.action',12);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'User', '/jsp/crm/listUser.jsp,/jsp/system/editUser.jsp,/jsp/system/deleteUser.action,/jsp/system/saveUser.action',13);
+INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'User', '/jsp/system/listUser.jsp,/jsp/system/editUser.jsp,/jsp/system/deleteUser.action,/jsp/system/saveUser.action',13);
 INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Role', '/jsp/system/listRole.jsp,/jsp/system/editRole.jsp,/jsp/system/deleteRole.action,/jsp/system/saveRole.action',14);
 INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Permission', '/jsp/system/listPermission.jsp,/jsp/system/deletePermission.action,/jsp/system/savePermission.action',15);
 INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Account Type', '/jsp/system/listAccountType.jsp,/jsp/system/deleteAccountType.action,/jsp/system/saveAccountType.action',16);
