@@ -57,460 +57,477 @@ import com.gcrm.vo.SearchResult;
  */
 public class ListCallAction extends BaseListAction {
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private static final long serialVersionUID = -2404576552417042445L;
 
-	private IBaseService<Call> baseService;
-	private IBaseService<CallDirection> callDirectionService;
-	private IBaseService<CallStatus> callStatusService;
-	private IBaseService<ReminderOption> reminderOptionService;
-	private IBaseService<User> userService;
-	private Call call;
+    private IBaseService<Call> baseService;
+    private IBaseService<CallDirection> callDirectionService;
+    private IBaseService<CallStatus> callStatusService;
+    private IBaseService<ReminderOption> reminderOptionService;
+    private IBaseService<User> userService;
+    private Call call;
 
-	private static final String CLAZZ = Call.class.getSimpleName();
+    private static final String CLAZZ = Call.class.getSimpleName();
 
-	/**
-	 * Gets the list data.
-	 * 
-	 * @return null
-	 */
-	public String list() throws Exception {
+    /**
+     * Gets the list data.
+     * 
+     * @return null
+     */
+    @Override
+    public String list() throws Exception {
 
-		SearchCondition searchCondition = getSearchCondition();
-		SearchResult<Call> result = baseService.getPaginationObjects(CLAZZ,
-				searchCondition);
-		List<Call> calls = result.getResult();
+        Map<String, String> fieldTypeMap = new HashMap<String, String>();
+        fieldTypeMap.put("start_date", Constant.DATA_TYPE_DATETIME);
+        fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
+        fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-		long totalRecords = result.getTotalRecords();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        SearchResult<Call> result = baseService.getPaginationObjects(CLAZZ,
+                searchCondition);
+        Iterator<Call> calls = result.getResult().iterator();
 
-		String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-		int size = calls.size();
+        long totalRecords = result.getTotalRecords();
 
-		String statusName = null;
-		String directionName = null;
-		String userName = null;
-		for (int i = 0; i < size; i++) {
-			Call instance = (Call) calls.get(i);
-			int id = instance.getId();
-			CallDirection direction = instance.getDirection();
-			if (direction != null) {
-				directionName = CommonUtil.fromNullToEmpty(direction.getName());
-			} else {
-				directionName = "";
-			}
-			String subject = CommonUtil.fromNullToEmpty(instance.getSubject());
-			CallStatus status = instance.getStatus();
-			if (status != null) {
-				statusName = CommonUtil.fromNullToEmpty(status.getName());
-			} else {
-				statusName = "";
-			}
-			Date start_date = instance.getStart_date();
-			User user = instance.getAssigned_to();
-			if (user != null) {
-				userName = CommonUtil.fromNullToEmpty(user.getName());
-			} else {
-				userName = "";
-			}
-			User createdBy = instance.getCreated_by();
-			String createdByName = "";
-			if (createdBy != null) {
-				createdByName = CommonUtil.fromNullToEmpty(createdBy.getName());
-			}
-			User updatedBy = instance.getUpdated_by();
-			String updatedByName = "";
-			if (updatedBy != null) {
-				updatedByName = CommonUtil.fromNullToEmpty(updatedBy.getName());
-			}
-			SimpleDateFormat dateFormat = new SimpleDateFormat(
-					Constant.DATE_TIME_FORMAT);
-			Date createdOn = instance.getCreated_on();
-			String createdOnName = "";
-			if (createdOn != null) {
-				createdOnName = dateFormat.format(createdOn);
-			}
-			Date updatedOn = instance.getUpdated_on();
-			String updatedOnName = "";
-			if (updatedOn != null) {
-				updatedOnName = dateFormat.format(updatedOn);
-			}
+        StringBuilder jsonBuilder = new StringBuilder("");
+        jsonBuilder.append(getJsonHeader(totalRecords, searchCondition, true));
 
-			json += "{\"id\":\"" + id + "\",\"direction\":\"" + directionName
-					+ "\",\"subject\":\"" + subject + "\",\"statusName\":\""
-					+ statusName + "\",\"start_date\":\"" + start_date
-					+ "\",\"user_name\":\"" + userName + "\",\"created_by\":\""
-					+ createdByName + "\",\"updated_by\":\"" + updatedByName
-					+ "\",\"created_on\":\"" + createdOnName
-					+ "\",\"updated_on\":\"" + updatedOnName + "\"}";
-			if (i < size - 1) {
-				json += ",";
-			}
-		}
-		json += "]}";
+        String statusName = null;
+        String directionName = null;
+        String assignedTo = null;
+        while (calls.hasNext()) {
+            Call instance = calls.next();
+            int id = instance.getId();
+            CallDirection direction = instance.getDirection();
+            if (direction != null) {
+                directionName = CommonUtil.fromNullToEmpty(direction.getName());
+            } else {
+                directionName = "";
+            }
+            String subject = CommonUtil.fromNullToEmpty(instance.getSubject());
+            CallStatus status = instance.getStatus();
+            if (status != null) {
+                statusName = CommonUtil.fromNullToEmpty(status.getName());
+            } else {
+                statusName = "";
+            }
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Constant.DATE_FORMAT);
+            Date startDate = instance.getStart_date();
+            String startDateString = "";
+            if (startDate != null) {
+                startDateString = dateFormat.format(startDate);
+            }
+            User user = instance.getAssigned_to();
+            if (user != null) {
+                assignedTo = CommonUtil.fromNullToEmpty(user.getName());
+            } else {
+                assignedTo = "";
+            }
+            User createdBy = instance.getCreated_by();
+            String createdByName = "";
+            if (createdBy != null) {
+                createdByName = CommonUtil.fromNullToEmpty(createdBy.getName());
+            }
+            User updatedBy = instance.getUpdated_by();
+            String updatedByName = "";
+            if (updatedBy != null) {
+                updatedByName = CommonUtil.fromNullToEmpty(updatedBy.getName());
+            }
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+                    Constant.DATE_TIME_FORMAT);
+            Date createdOn = instance.getCreated_on();
+            String createdOnString = "";
+            if (createdOn != null) {
+                createdOnString = dateTimeFormat.format(createdOn);
+            }
+            Date updatedOn = instance.getUpdated_on();
+            String updatedOnString = "";
+            if (updatedOn != null) {
+                updatedOnString = dateTimeFormat.format(updatedOn);
+            }
 
-		// Returns JSON data back to page
-		HttpServletResponse response = ServletActionContext.getResponse();
-		response.getWriter().write(json);
-		return null;
-	}
+            jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
+                    .append(directionName).append("\",\"").append(subject)
+                    .append("\",\"").append(statusName).append("\",\"")
+                    .append(startDateString).append("\",\"").append(assignedTo)
+                    .append("\",\"").append(createdByName).append("\",\"")
+                    .append(updatedByName).append("\",\"")
+                    .append(createdOnString).append("\",\"")
+                    .append(updatedOnString).append("\"]}");
+            if (calls.hasNext()) {
+                jsonBuilder.append(",");
+            }
+        }
+        jsonBuilder.append("]}");
 
-	/**
-	 * Gets the related leads.
-	 * 
-	 * @return null
-	 */
-	public String filterCallLead() throws Exception {
-		call = baseService.getEntityById(Call.class, id);
-		Set<Lead> leads = call.getLeads();
-		Iterator<Lead> leadIterator = leads.iterator();
-		long totalRecords = leads.size();
-		ListLeadAction.getListJson(leadIterator, totalRecords);
-		return null;
-	}
+        // Returns JSON data back to page
+        HttpServletResponse response = ServletActionContext.getResponse();
+        response.getWriter().write(jsonBuilder.toString());
+        return null;
+    }
 
-	/**
-	 * Gets the related contacts.
-	 * 
-	 * @return null
-	 */
-	public String filterCallContact() throws Exception {
-		call = baseService.getEntityById(Call.class, id);
-		Set<Contact> contacts = call.getContacts();
-		Iterator<Contact> contactIterator = contacts.iterator();
-		long totalRecords = contacts.size();
-		ListContactAction.getListJson(contactIterator, totalRecords);
-		return null;
-	}
+    /**
+     * Gets the related leads.
+     * 
+     * @return null
+     */
+    public String filterCallLead() throws Exception {
+        call = baseService.getEntityById(Call.class, id);
+        Set<Lead> leads = call.getLeads();
+        Iterator<Lead> leadIterator = leads.iterator();
+        long totalRecords = leads.size();
+        ListLeadAction.getListJson(leadIterator, totalRecords, null, false);
+        return null;
+    }
 
-	/**
-	 * Gets the related users.
-	 * 
-	 * @return null
-	 */
-	public String filterCallUser() throws Exception {
-		call = baseService.getEntityById(Call.class, id);
-		Set<User> users = call.getUsers();
-		Iterator<User> userIterator = users.iterator();
-		long totalRecords = users.size();
-		ListUserAction.getListJson(userIterator, totalRecords);
-		return null;
-	}
+    /**
+     * Gets the related contacts.
+     * 
+     * @return null
+     */
+    public String filterCallContact() throws Exception {
+        call = baseService.getEntityById(Call.class, id);
+        Set<Contact> contacts = call.getContacts();
+        Iterator<Contact> contactIterator = contacts.iterator();
+        long totalRecords = contacts.size();
+        ListContactAction.getListJson(contactIterator, totalRecords, null,
+                false);
+        return null;
+    }
 
-	/**
-	 * Deletes the selected entities.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String delete() throws ServiceException {
-		baseService.batchDeleteEntity(Call.class, this.getSeleteIDs());
-		return SUCCESS;
-	}
+    /**
+     * Gets the related users.
+     * 
+     * @return null
+     */
+    public String filterCallUser() throws Exception {
+        call = baseService.getEntityById(Call.class, id);
+        Set<User> users = call.getUsers();
+        Iterator<User> userIterator = users.iterator();
+        int totalRecords = users.size();
+        ListUserAction.getListJson(userIterator, totalRecords, null, false);
+        return null;
+    }
 
-	/**
-	 * Copies the selected entities
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String copy() throws ServiceException {
-		if (this.getSeleteIDs() != null) {
-			String[] ids = seleteIDs.split(",");
-			for (int i = 0; i < ids.length; i++) {
-				String copyid = ids[i];
-				Call oriRecord = baseService.getEntityById(Call.class,
-						Integer.valueOf(copyid));
-				Call targetRecord = oriRecord.clone();
-				targetRecord.setId(null);
-				this.getbaseService().makePersistent(targetRecord);
-			}
-		}
-		return SUCCESS;
-	}
+    /**
+     * Deletes the selected entities.
+     * 
+     * @return the SUCCESS result
+     */
+    public String delete() throws ServiceException {
+        baseService.batchDeleteEntity(Call.class, this.getSeleteIDs());
+        return SUCCESS;
+    }
 
-	/**
-	 * Exports the entities
-	 * 
-	 * @return the exported entities inputStream
-	 */
-	public InputStream getInputStream() throws Exception {
-		File file = new File(CLAZZ + ".csv");
-		ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
-				CsvPreference.EXCEL_PREFERENCE);
-		try {
-			final String[] header = new String[] { "ID", "Subject",
-					"Direction", "Status", "Start Date", "Reminder Way Popup",
-					"Reminder Option Popup", "Reminder Way Email",
-					"Reminder Option Email", "Description", "Assigned To" };
-			writer.writeHeader(header);
-			String[] ids = seleteIDs.split(",");
-			for (int i = 0; i < ids.length; i++) {
-				String id = ids[i];
-				Call call = baseService.getEntityById(Call.class,
-						Integer.parseInt(id));
-				final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-				data1.put(header[0], call.getId());
-				data1.put(header[1],
-						CommonUtil.fromNullToEmpty(call.getSubject()));
-				data1.put(header[2], call.getDirection());
-				if (call.getStatus() != null) {
-					data1.put(header[3], call.getStatus().getId());
-				} else {
-					data1.put(header[3], "");
-				}
-				SimpleDateFormat dateFormat = new SimpleDateFormat(
-						"M/d/yyyy HH:mm:ss");
-				Date startDate = call.getStart_date();
-				if (startDate != null) {
-					data1.put(header[4], dateFormat.format(startDate));
-				} else {
-					data1.put(header[4], "");
-				}
-				data1.put(header[5], call.isReminder_pop());
-				if (call.getReminder_option_pop() != null) {
-					data1.put(header[6], call.getReminder_option_pop().getId());
-				} else {
-					data1.put(header[6], "");
-				}
-				data1.put(header[7], call.isReminder_email());
-				if (call.getReminder_option_email() != null) {
-					data1.put(header[8], call.getReminder_option_email()
-							.getId());
-				} else {
-					data1.put(header[8], "");
-				}
-				data1.put(header[9],
-						CommonUtil.fromNullToEmpty(call.getDescription()));
-				if (call.getAssigned_to() != null) {
-					data1.put(header[10], call.getAssigned_to().getId());
-				} else {
-					data1.put(header[10], "");
-				}
-				writer.write(data1, header);
-			}
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			writer.close();
-		}
+    /**
+     * Copies the selected entities
+     * 
+     * @return the SUCCESS result
+     */
+    public String copy() throws ServiceException {
+        if (this.getSeleteIDs() != null) {
+            String[] ids = seleteIDs.split(",");
+            for (int i = 0; i < ids.length; i++) {
+                String copyid = ids[i];
+                Call oriRecord = baseService.getEntityById(Call.class,
+                        Integer.valueOf(copyid));
+                Call targetRecord = oriRecord.clone();
+                targetRecord.setId(null);
+                this.getbaseService().makePersistent(targetRecord);
+            }
+        }
+        return SUCCESS;
+    }
 
-		InputStream in = new FileInputStream(file);
-		this.setFileName(CLAZZ + ".csv");
-		return in;
-	}
+    /**
+     * Exports the entities
+     * 
+     * @return the exported entities inputStream
+     */
+    public InputStream getInputStream() throws Exception {
+        File file = new File(CLAZZ + ".csv");
+        ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
+                CsvPreference.EXCEL_PREFERENCE);
+        try {
+            final String[] header = new String[] { "ID", "Subject",
+                    "Direction", "Status", "Start Date", "Reminder Way Popup",
+                    "Reminder Option Popup", "Reminder Way Email",
+                    "Reminder Option Email", "Description", "Assigned To" };
+            writer.writeHeader(header);
+            String[] ids = seleteIDs.split(",");
+            for (int i = 0; i < ids.length; i++) {
+                String id = ids[i];
+                Call call = baseService.getEntityById(Call.class,
+                        Integer.parseInt(id));
+                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                data1.put(header[0], call.getId());
+                data1.put(header[1],
+                        CommonUtil.fromNullToEmpty(call.getSubject()));
+                data1.put(header[2], call.getDirection());
+                if (call.getStatus() != null) {
+                    data1.put(header[3], call.getStatus().getId());
+                } else {
+                    data1.put(header[3], "");
+                }
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        "M/d/yyyy HH:mm:ss");
+                Date startDate = call.getStart_date();
+                if (startDate != null) {
+                    data1.put(header[4], dateFormat.format(startDate));
+                } else {
+                    data1.put(header[4], "");
+                }
+                data1.put(header[5], call.isReminder_pop());
+                if (call.getReminder_option_pop() != null) {
+                    data1.put(header[6], call.getReminder_option_pop().getId());
+                } else {
+                    data1.put(header[6], "");
+                }
+                data1.put(header[7], call.isReminder_email());
+                if (call.getReminder_option_email() != null) {
+                    data1.put(header[8], call.getReminder_option_email()
+                            .getId());
+                } else {
+                    data1.put(header[8], "");
+                }
+                data1.put(header[9],
+                        CommonUtil.fromNullToEmpty(call.getDescription()));
+                if (call.getAssigned_to() != null) {
+                    data1.put(header[10], call.getAssigned_to().getId());
+                } else {
+                    data1.put(header[10], "");
+                }
+                writer.write(data1, header);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            writer.close();
+        }
 
-	/**
-	 * Imports the entities
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String importCSV() throws Exception {
-		File file = this.getUpload();
-		CsvListReader reader = new CsvListReader(new FileReader(file),
-				CsvPreference.EXCEL_PREFERENCE);
-		int failedNum = 0;
-		int successfulNum = 0;
-		try {
-			final String[] header = reader.getCSVHeader(true);
+        InputStream in = new FileInputStream(file);
+        this.setFileName(CLAZZ + ".csv");
+        return in;
+    }
 
-			List<String> line = new ArrayList<String>();
-			Map<String, String> failedMsg = new HashMap<String, String>();
-			while ((line = reader.read()) != null) {
+    /**
+     * Imports the entities
+     * 
+     * @return the SUCCESS result
+     */
+    public String importCSV() throws Exception {
+        File file = this.getUpload();
+        CsvListReader reader = new CsvListReader(new FileReader(file),
+                CsvPreference.EXCEL_PREFERENCE);
+        int failedNum = 0;
+        int successfulNum = 0;
+        try {
+            final String[] header = reader.getCSVHeader(true);
 
-				Map<String, String> row = new HashMap<String, String>();
-				for (int i = 0; i < line.size(); i++) {
-					row.put(header[i], line.get(i));
-				}
+            List<String> line = new ArrayList<String>();
+            Map<String, String> failedMsg = new HashMap<String, String>();
+            while ((line = reader.read()) != null) {
 
-				Call call = new Call();
-				try {
-					String id = row.get("ID");
-					if (!CommonUtil.isNullOrEmpty(id)) {
-						call.setId(Integer.parseInt(id));
-					}
-					call.setSubject(CommonUtil.fromNullToEmpty(row
-							.get("Subject")));
-					String directionID = row.get("Direction");
-					if (CommonUtil.isNullOrEmpty(directionID)) {
-						call.setDirection(null);
-					} else {
-						CallDirection callDirection = callDirectionService
-								.getEntityById(CallDirection.class,
-										Integer.parseInt(directionID));
-						call.setDirection(callDirection);
-					}
-					String statusID = row.get("Status");
-					if (CommonUtil.isNullOrEmpty(statusID)) {
-						call.setStatus(null);
-					} else {
-						CallStatus status = callStatusService.getEntityById(
-								CallStatus.class, Integer.parseInt(statusID));
-						call.setStatus(status);
-					}
-					SimpleDateFormat dateFormat = new SimpleDateFormat(
-							"M/d/yyyy HH:mm:ss");
-					String startDateS = row.get("Start Date");
-					if (startDateS != null) {
-						Date startDate = dateFormat.parse(startDateS);
-						call.setStart_date(startDate);
-					} else {
-						call.setStart_date(null);
-					}
-					String reminderWayPop = row.get("Reminder Way Popup");
-					if (CommonUtil.isNullOrEmpty(reminderWayPop)) {
-						call.setReminder_pop(false);
-					} else {
-						call.setReminder_pop(Boolean
-								.parseBoolean(reminderWayPop));
-					}
-					String reminderOptionPopID = row
-							.get("Reminder Option Popup");
-					if (CommonUtil.isNullOrEmpty(reminderOptionPopID)) {
-						call.setReminder_option_pop(null);
-					} else {
-						ReminderOption reminderOption = reminderOptionService
-								.getEntityById(ReminderOption.class,
-										Integer.parseInt(reminderOptionPopID));
-						call.setReminder_option_pop(reminderOption);
-					}
-					String reminderWayEmail = row.get("Reminder Way Email");
-					if (CommonUtil.isNullOrEmpty(reminderWayEmail)) {
-						call.setReminder_email(false);
-					} else {
-						call.setReminder_email(Boolean
-								.parseBoolean(reminderWayEmail));
-					}
-					String reminderOptionEmailID = row
-							.get("Reminder Option Email");
-					if (CommonUtil.isNullOrEmpty(reminderOptionEmailID)) {
-						call.setReminder_option_email(null);
-					} else {
-						ReminderOption reminderOption = reminderOptionService
-								.getEntityById(ReminderOption.class,
-										Integer.parseInt(reminderOptionEmailID));
-						call.setReminder_option_email(reminderOption);
-					}
-					call.setDescription(CommonUtil.fromNullToEmpty(row
-							.get("Description")));
-					String assignedToID = row.get("Assigned To");
-					if (CommonUtil.isNullOrEmpty(assignedToID)) {
-						call.setAssigned_to(null);
-					} else {
-						User assignedTo = userService.getEntityById(User.class,
-								Integer.parseInt(assignedToID));
-						call.setAssigned_to(assignedTo);
-					}
-					baseService.makePersistent(call);
-					successfulNum++;
-				} catch (Exception e) {
-					failedNum++;
-					failedMsg.put(call.getSubject(), e.getMessage());
-				}
+                Map<String, String> row = new HashMap<String, String>();
+                for (int i = 0; i < line.size(); i++) {
+                    row.put(header[i], line.get(i));
+                }
 
-			}
+                Call call = new Call();
+                try {
+                    String id = row.get("ID");
+                    if (!CommonUtil.isNullOrEmpty(id)) {
+                        call.setId(Integer.parseInt(id));
+                    }
+                    call.setSubject(CommonUtil.fromNullToEmpty(row
+                            .get("Subject")));
+                    String directionID = row.get("Direction");
+                    if (CommonUtil.isNullOrEmpty(directionID)) {
+                        call.setDirection(null);
+                    } else {
+                        CallDirection callDirection = callDirectionService
+                                .getEntityById(CallDirection.class,
+                                        Integer.parseInt(directionID));
+                        call.setDirection(callDirection);
+                    }
+                    String statusID = row.get("Status");
+                    if (CommonUtil.isNullOrEmpty(statusID)) {
+                        call.setStatus(null);
+                    } else {
+                        CallStatus status = callStatusService.getEntityById(
+                                CallStatus.class, Integer.parseInt(statusID));
+                        call.setStatus(status);
+                    }
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(
+                            "M/d/yyyy HH:mm:ss");
+                    String startDateS = row.get("Start Date");
+                    if (startDateS != null) {
+                        Date startDate = dateFormat.parse(startDateS);
+                        call.setStart_date(startDate);
+                    } else {
+                        call.setStart_date(null);
+                    }
+                    String reminderWayPop = row.get("Reminder Way Popup");
+                    if (CommonUtil.isNullOrEmpty(reminderWayPop)) {
+                        call.setReminder_pop(false);
+                    } else {
+                        call.setReminder_pop(Boolean
+                                .parseBoolean(reminderWayPop));
+                    }
+                    String reminderOptionPopID = row
+                            .get("Reminder Option Popup");
+                    if (CommonUtil.isNullOrEmpty(reminderOptionPopID)) {
+                        call.setReminder_option_pop(null);
+                    } else {
+                        ReminderOption reminderOption = reminderOptionService
+                                .getEntityById(ReminderOption.class,
+                                        Integer.parseInt(reminderOptionPopID));
+                        call.setReminder_option_pop(reminderOption);
+                    }
+                    String reminderWayEmail = row.get("Reminder Way Email");
+                    if (CommonUtil.isNullOrEmpty(reminderWayEmail)) {
+                        call.setReminder_email(false);
+                    } else {
+                        call.setReminder_email(Boolean
+                                .parseBoolean(reminderWayEmail));
+                    }
+                    String reminderOptionEmailID = row
+                            .get("Reminder Option Email");
+                    if (CommonUtil.isNullOrEmpty(reminderOptionEmailID)) {
+                        call.setReminder_option_email(null);
+                    } else {
+                        ReminderOption reminderOption = reminderOptionService
+                                .getEntityById(ReminderOption.class,
+                                        Integer.parseInt(reminderOptionEmailID));
+                        call.setReminder_option_email(reminderOption);
+                    }
+                    call.setDescription(CommonUtil.fromNullToEmpty(row
+                            .get("Description")));
+                    String assignedToID = row.get("Assigned To");
+                    if (CommonUtil.isNullOrEmpty(assignedToID)) {
+                        call.setAssigned_to(null);
+                    } else {
+                        User assignedTo = userService.getEntityById(User.class,
+                                Integer.parseInt(assignedToID));
+                        call.setAssigned_to(assignedTo);
+                    }
+                    baseService.makePersistent(call);
+                    successfulNum++;
+                } catch (Exception e) {
+                    failedNum++;
+                    failedMsg.put(call.getSubject(), e.getMessage());
+                }
 
-			this.setFailedMsg(failedMsg);
-			this.setFailedNum(failedNum);
-			this.setSuccessfulNum(successfulNum);
-			this.setTotalNum(successfulNum + failedNum);
-		} finally {
-			reader.close();
-		}
-		return SUCCESS;
-	}
+            }
 
-	public String execute() throws Exception {
-		return SUCCESS;
-	}
+            this.setFailedMsg(failedMsg);
+            this.setFailedNum(failedNum);
+            this.setSuccessfulNum(successfulNum);
+            this.setTotalNum(successfulNum + failedNum);
+        } finally {
+            reader.close();
+        }
+        return SUCCESS;
+    }
 
-	public IBaseService<Call> getbaseService() {
-		return baseService;
-	}
+    @Override
+    public String execute() throws Exception {
+        return SUCCESS;
+    }
 
-	public void setbaseService(IBaseService<Call> baseService) {
-		this.baseService = baseService;
-	}
+    public IBaseService<Call> getbaseService() {
+        return baseService;
+    }
 
-	public Call getCall() {
-		return call;
-	}
+    public void setbaseService(IBaseService<Call> baseService) {
+        this.baseService = baseService;
+    }
 
-	public void setCall(Call call) {
-		this.call = call;
-	}
+    public Call getCall() {
+        return call;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Integer getId() {
-		return id;
-	}
+    public void setCall(Call call) {
+        this.call = call;
+    }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    /**
+     * @return the id
+     */
+    @Override
+    public Integer getId() {
+        return id;
+    }
 
-	/**
-	 * @return the callStatusService
-	 */
-	public IBaseService<CallStatus> getCallStatusService() {
-		return callStatusService;
-	}
+    /**
+     * @param id
+     *            the id to set
+     */
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	/**
-	 * @param callStatusService
-	 *            the callStatusService to set
-	 */
-	public void setCallStatusService(IBaseService<CallStatus> callStatusService) {
-		this.callStatusService = callStatusService;
-	}
+    /**
+     * @return the callStatusService
+     */
+    public IBaseService<CallStatus> getCallStatusService() {
+        return callStatusService;
+    }
 
-	/**
-	 * @return the reminderOptionService
-	 */
-	public IBaseService<ReminderOption> getReminderOptionService() {
-		return reminderOptionService;
-	}
+    /**
+     * @param callStatusService
+     *            the callStatusService to set
+     */
+    public void setCallStatusService(IBaseService<CallStatus> callStatusService) {
+        this.callStatusService = callStatusService;
+    }
 
-	/**
-	 * @param reminderOptionService
-	 *            the reminderOptionService to set
-	 */
-	public void setReminderOptionService(
-			IBaseService<ReminderOption> reminderOptionService) {
-		this.reminderOptionService = reminderOptionService;
-	}
+    /**
+     * @return the reminderOptionService
+     */
+    public IBaseService<ReminderOption> getReminderOptionService() {
+        return reminderOptionService;
+    }
 
-	/**
-	 * @return the userService
-	 */
-	public IBaseService<User> getUserService() {
-		return userService;
-	}
+    /**
+     * @param reminderOptionService
+     *            the reminderOptionService to set
+     */
+    public void setReminderOptionService(
+            IBaseService<ReminderOption> reminderOptionService) {
+        this.reminderOptionService = reminderOptionService;
+    }
 
-	/**
-	 * @param userService
-	 *            the userService to set
-	 */
-	public void setUserService(IBaseService<User> userService) {
-		this.userService = userService;
-	}
+    /**
+     * @return the userService
+     */
+    public IBaseService<User> getUserService() {
+        return userService;
+    }
 
-	/**
-	 * @return the callDirectionService
-	 */
-	public IBaseService<CallDirection> getCallDirectionService() {
-		return callDirectionService;
-	}
+    /**
+     * @param userService
+     *            the userService to set
+     */
+    public void setUserService(IBaseService<User> userService) {
+        this.userService = userService;
+    }
 
-	/**
-	 * @param callDirectionService
-	 *            the callDirectionService to set
-	 */
-	public void setCallDirectionService(
-			IBaseService<CallDirection> callDirectionService) {
-		this.callDirectionService = callDirectionService;
-	}
+    /**
+     * @return the callDirectionService
+     */
+    public IBaseService<CallDirection> getCallDirectionService() {
+        return callDirectionService;
+    }
+
+    /**
+     * @param callDirectionService
+     *            the callDirectionService to set
+     */
+    public void setCallDirectionService(
+            IBaseService<CallDirection> callDirectionService) {
+        this.callDirectionService = callDirectionService;
+    }
 
 }

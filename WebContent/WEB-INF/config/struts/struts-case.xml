@@ -8,6 +8,10 @@
     	  <result name="success" type="json"></result>
         </action>
 
+      	<action name="listCaseFull" class="listCaseAction" method="listFull">
+    	  <result name="success" type="json"></result>
+        </action>
+        
     	<action name="listCasePage">
     	  <result type="redirect">/jsp/crm/listCase.jsp</result>
         </action>
@@ -83,11 +87,11 @@
     	  <result type="redirect">/jsp/crm/listCase.jsp</result>
         </action>
                 
-        <action name="deleteCase" class="ListCaseAction" method="delete">
+        <action name="deleteCase" class="listCaseAction" method="delete">
 			<result type="redirect">/jsp/crm/listCase.jsp</result>
         </action>    
         
-        <action name="removeCase" class="ListCaseAction" method="remove">
+        <action name="removeCase" class="listCaseAction" method="remove">
 			<result type="redirect">/jsp/crm/listCase.jsp</result>
         </action> 
   </package>      

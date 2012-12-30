@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../themes/icon.css" />
 <link rel="stylesheet" type="text/css" href="../../css/global.css" />
 
-<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/datagrid.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
@@ -31,17 +31,11 @@
 		url:'filterAccount.action?filter_key=<s:property value="filter_key" />&id=<s:property value="id" />',
 		columns:[[
 			{field:'ck',checkbox:true},
-			{field:'id',title:'ID',width:80,align:'center',sortable:'true'},
-			{field:'name',title:'Name',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-				   new_format_value = "<a href='editAccount.action?id=" + row.id + "' target='_blank'>" + value + "</a>";
-				   return new_format_value 
-             }  
-            },
-			{field:'bill_city',title:'City',width:80,align:'center',sortable:'true'},
-			{field:'bill_country',title:'Billing Country',width:80,align:'right',sortable:'true'},
-			{field:'office_phone',title:'Phone',width:80,align:'center',sortable:'true'},
-			{field:'email',title:'Email',width:80,align:'center',sortable:'true'},
-			{field:'user_name',title:'User Name',width:80,align:'center',sortable:'true'}
+			{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+			{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true'},
+			{field:'office_phone',title:'<s:text name="account.office_phone.label" />',width:80,align:'center',sortable:'true'},
+			{field:'email',title:'<s:text name="account.email.label" />',width:80,align:'center',sortable:'true'},
+			{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 		]],
 	  });
 		

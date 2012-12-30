@@ -55,7 +55,7 @@
   
    function many_deleterow(url){
 	   
-        rows = $('#tt').datagrid('getSelections');
+		var rows = jQuery("#grid").jqGrid('getGridParam','selarrrow');
         var num =  rows.length;
         var url = url
         
@@ -65,24 +65,12 @@
 		}
 		else {
 			$.messager.confirm('Confirm','Are you sure you want to delete?',function(r){
-				if (r){
-					var ids = null ;
-					data = rows.concat(); 
-					for (var i = 0 ;i < num; i++){
-						if (null == ids || i == 0 ) {                 
-						    ids =  data[i].id;             
-						} else  {                 
-							ids = ids + "," +  data[i].id;             
-						} 
-					}	
-					for (var i = num - 1 ;i >= 0; i--){
-						index = $('#tt').datagrid('getRowIndex',data[i]);
-						$('#tt').datagrid('deleteRow',index);
-					}						
-				    url = url + ids; 
+				if (r){						
+				    url = url + rows; 
 				    $.post( 
 				       url     
 				    ); 	
+				    window.opener.location.reload();
 				}
 			});
 		}

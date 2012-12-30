@@ -175,7 +175,8 @@
         <property name="caseReasonService" ref="baseService" />        
         <property name="accountService" ref="baseService" /> 	
         <property name="userService" ref="baseService" />  
-        <property name="documentService" ref="baseService" />           
+        <property name="documentService" ref="baseService" /> 
+        <property name="contactService" ref="baseService" />          
     </bean> 
     
     <bean id="editCaseAction" class="com.gcrm.action.EditCaseAction" scope="prototype">   
@@ -187,7 +188,8 @@
         <property name="caseReasonService" ref="baseService" />                
         <property name="accountService" ref="baseService" /> 	
         <property name="userService" ref="baseService" />  
-        <property name="documentService" ref="baseService" />          
+        <property name="documentService" ref="baseService" /> 
+        <property name="contactService" ref="baseService" />         
     </bean>
 
     <bean id="listContactAction" class="com.gcrm.action.ListContactAction" scope="prototype">   
@@ -200,7 +202,8 @@
         <property name="targetListService" ref="baseService" /> 
         <property name="callService" ref="baseService" /> 
         <property name="meetingService" ref="baseService" /> 
-        <property name="documentService" ref="baseService" />         
+        <property name="documentService" ref="baseService" />
+        <property name="caseService" ref="baseService" />         
     </bean> 
     
     <bean id="editContactAction" class="com.gcrm.action.EditContactAction" scope="prototype">   
@@ -213,7 +216,8 @@
         <property name="targetListService" ref="baseService" />
         <property name="callService" ref="baseService" />
         <property name="meetingService" ref="baseService" />
-        <property name="documentService" ref="baseService" />       	
+        <property name="documentService" ref="baseService" /> 
+        <property name="caseService" ref="baseService" />      	
     </bean>
 
     <bean id="listDocumentAction" class="com.gcrm.action.ListDocumentAction" scope="prototype">   
@@ -264,7 +268,8 @@
         <property name="opportunityService" ref="baseService" /> 
         <property name="targetListService" ref="baseService" />
         <property name="callService" ref="baseService" />  
-        <property name="meetingService" ref="baseService" />          
+        <property name="meetingService" ref="baseService" /> 
+        <property name="contactService" ref="baseService" />         
     </bean>
 
     <bean id="listMeetingAction" class="com.gcrm.action.ListMeetingAction" scope="prototype">   

@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,442 +54,508 @@ import com.gcrm.vo.SearchResult;
  */
 public class ListCampaignAction extends BaseListAction {
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private static final long serialVersionUID = -2404576552417042445L;
 
-	private IBaseService<Campaign> baseService;
-	private IBaseService<CampaignType> campaignTypeService;
-	private IBaseService<CampaignStatus> campaignStatusService;
-	private IBaseService<Currency> currencyService;
-	private IBaseService<User> userService;
-	private Campaign campaign;
+    private IBaseService<Campaign> baseService;
+    private IBaseService<CampaignType> campaignTypeService;
+    private IBaseService<CampaignStatus> campaignStatusService;
+    private IBaseService<Currency> currencyService;
+    private IBaseService<User> userService;
+    private Campaign campaign;
 
-	private static final String CLAZZ = Campaign.class.getSimpleName();
+    private static final String CLAZZ = Campaign.class.getSimpleName();
 
-	/**
-	 * Gets the list data.
-	 * 
-	 * @return null
-	 */
-	public String list() throws Exception {
+    /**
+     * Gets the list data.
+     * 
+     * @return null
+     */
+    @Override
+    public String list() throws Exception {
 
-		SearchCondition searchCondition = getSearchCondition();
-		SearchResult<Campaign> result = baseService.getPaginationObjects(CLAZZ,
-				searchCondition);
-		List<Campaign> campaigns = result.getResult();
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<Campaign> result = baseService.getPaginationObjects(CLAZZ,
+                searchCondition);
+        Iterator<Campaign> campaigns = result.getResult().iterator();
+        long totalRecords = result.getTotalRecords();
+        getListJson(campaigns, totalRecords, null, false);
+        return null;
+    }
 
-		long totalRecords = result.getTotalRecords();
+    /**
+     * Gets the list data.
+     * 
+     * @return null
+     */
+    public String listFull() throws Exception {
 
-		String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-		int size = campaigns.size();
+        Map<String, String> fieldTypeMap = new HashMap<String, String>();
+        fieldTypeMap.put("start_date", Constant.DATA_TYPE_DATETIME);
+        fieldTypeMap.put("end_date", Constant.DATA_TYPE_DATETIME);
+        fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
+        fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-		String statusName = null;
-		String typeName = null;
-		String userName = null;
-		for (int i = 0; i < size; i++) {
-			Campaign instance = (Campaign) campaigns.get(i);
-			int id = instance.getId();
-			String name = CommonUtil.fromNullToEmpty(instance.getName());
-			CampaignStatus status = instance.getStatus();
-			if (status != null) {
-				statusName = CommonUtil.fromNullToEmpty(status.getName());
-			} else {
-				statusName = "";
-			}
-			CampaignType type = instance.getType();
-			if (type != null) {
-				typeName = CommonUtil.fromNullToEmpty(type.getName());
-			} else {
-				typeName = "";
-			}
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        SearchResult<Campaign> result = baseService.getPaginationObjects(CLAZZ,
+                searchCondition);
+        Iterator<Campaign> campaigns = result.getResult().iterator();
 
-			Date end_date = instance.getEnd_date();
-			User user = instance.getAssigned_to();
-			if (user != null) {
-				userName = CommonUtil.fromNullToEmpty(user.getName());
-			} else {
-				userName = "";
-			}
-			User createdBy = instance.getCreated_by();
-			String createdByName = "";
-			if (createdBy != null) {
-				createdByName = CommonUtil.fromNullToEmpty(createdBy.getName());
-			}
-			User updatedBy = instance.getUpdated_by();
-			String updatedByName = "";
-			if (updatedBy != null) {
-				updatedByName = CommonUtil.fromNullToEmpty(updatedBy.getName());
-			}
-			SimpleDateFormat dateFormat = new SimpleDateFormat(
-					Constant.DATE_TIME_FORMAT);
-			Date createdOn = instance.getCreated_on();
-			String createdOnName = "";
-			if (createdOn != null) {
-				createdOnName = dateFormat.format(createdOn);
-			}
-			Date updatedOn = instance.getUpdated_on();
-			String updatedOnName = "";
-			if (updatedOn != null) {
-				updatedOnName = dateFormat.format(updatedOn);
-			}
+        long totalRecords = result.getTotalRecords();
+        getListJson(campaigns, totalRecords, searchCondition, true);
+        return null;
+    }
 
-			json += "{\"id\":\"" + id + "\",\"name\":\"" + name
-					+ "\",\"status\":\"" + statusName + "\",\"type\":\""
-					+ typeName + "\",\"end_date\":\"" + end_date
-					+ "\",\"user_name\":\"" + userName + "\",\"created_by\":\""
-					+ createdByName + "\",\"updated_by\":\"" + updatedByName
-					+ "\",\"created_on\":\"" + createdOnName
-					+ "\",\"updated_on\":\"" + updatedOnName + "\"}";
-			if (i < size - 1) {
-				json += ",";
-			}
-		}
-		json += "]}";
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    public static void getListJson(Iterator<Campaign> campaigns,
+            long totalRecords, SearchCondition searchCondition, boolean isList)
+            throws Exception {
 
-		// Returns JSON data back to page
-		HttpServletResponse response = ServletActionContext.getResponse();
-		response.getWriter().write(json);
-		return null;
-	}
+        StringBuilder jsonBuilder = new StringBuilder("");
+        jsonBuilder
+                .append(getJsonHeader(totalRecords, searchCondition, isList));
 
-	/**
-	 * Deletes the selected entities.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String delete() throws ServiceException {
-		baseService.batchDeleteEntity(Campaign.class, this.getSeleteIDs());
-		return SUCCESS;
-	}
+        String statusName = null;
+        String typeName = null;
+        String assignedTo = null;
+        while (campaigns.hasNext()) {
+            Campaign instance = campaigns.next();
+            int id = instance.getId();
+            String name = CommonUtil.fromNullToEmpty(instance.getName());
+            CampaignStatus status = instance.getStatus();
+            if (status != null) {
+                statusName = CommonUtil.fromNullToEmpty(status.getName());
+            } else {
+                statusName = "";
+            }
+            CampaignType type = instance.getType();
+            if (type != null) {
+                typeName = CommonUtil.fromNullToEmpty(type.getName());
+            } else {
+                typeName = "";
+            }
 
-	/**
-	 * Copies the selected entities
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String copy() throws ServiceException {
-		if (this.getSeleteIDs() != null) {
-			String[] ids = seleteIDs.split(",");
-			for (int i = 0; i < ids.length; i++) {
-				String copyid = ids[i];
-				Campaign oriRecord = baseService.getEntityById(Campaign.class,
-						Integer.valueOf(copyid));
-				Campaign targetRecord = oriRecord.clone();
-				targetRecord.setId(null);
-				this.getbaseService().makePersistent(targetRecord);
-			}
-		}
-		return SUCCESS;
-	}
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Constant.DATE_FORMAT);
+            String startDateString = "";
+            Date startDate = instance.getStart_date();
+            if (startDate != null) {
+                startDateString = dateFormat.format(startDate);
+            }
+            String endDateString = "";
+            Date endDate = instance.getEnd_date();
+            if (endDate != null) {
+                endDateString = dateFormat.format(endDate);
+            }
+            User user = instance.getAssigned_to();
+            if (user != null) {
+                assignedTo = CommonUtil.fromNullToEmpty(user.getName());
+            } else {
+                assignedTo = "";
+            }
+            if (isList) {
+                User createdBy = instance.getCreated_by();
+                String createdByName = "";
+                if (createdBy != null) {
+                    createdByName = CommonUtil.fromNullToEmpty(createdBy
+                            .getName());
+                }
+                User updatedBy = instance.getUpdated_by();
+                String updatedByName = "";
+                if (updatedBy != null) {
+                    updatedByName = CommonUtil.fromNullToEmpty(updatedBy
+                            .getName());
+                }
+                SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+                        Constant.DATE_TIME_FORMAT);
+                Date createdOn = instance.getCreated_on();
+                String createdOnString = "";
+                if (createdOn != null) {
+                    createdOnString = dateTimeFormat.format(createdOn);
+                }
+                Date updatedOn = instance.getUpdated_on();
+                String updatedOnString = "";
+                if (updatedOn != null) {
+                    updatedOnString = dateTimeFormat.format(updatedOn);
+                }
 
-	/**
-	 * Exports the entities
-	 * 
-	 * @return the exported entities inputStream
-	 */
-	public InputStream getInputStream() throws Exception {
-		File file = new File(CLAZZ + ".csv");
-		ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
-				CsvPreference.EXCEL_PREFERENCE);
-		try {
-			final String[] header = new String[] { "ID", "Name", "Status",
-					"Type", "Start Date", "End Date", "Currency",
-					"Impressions", "Budget", "Expected Cost", "Actual Cost",
-					"Expected Revenue", "Objective", "Description",
-					"Assigned To" };
-			writer.writeHeader(header);
-			String[] ids = seleteIDs.split(",");
-			for (int i = 0; i < ids.length; i++) {
-				String id = ids[i];
-				Campaign campaign = baseService.getEntityById(Campaign.class,
-						Integer.parseInt(id));
-				final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-				data1.put(header[0], campaign.getId());
-				data1.put(header[1],
-						CommonUtil.fromNullToEmpty(campaign.getName()));
-				if (campaign.getStatus() != null) {
-					data1.put(header[2], campaign.getStatus().getId());
-				} else {
-					data1.put(header[2], "");
-				}
-				if (campaign.getType() != null) {
-					data1.put(header[3], campaign.getType().getId());
-				} else {
-					data1.put(header[3], "");
-				}
-				SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
-				Date startDate = campaign.getStart_date();
-				if (startDate != null) {
-					data1.put(header[4], dateFormat.format(startDate));
-				} else {
-					data1.put(header[4], "");
-				}
-				Date endDate = campaign.getEnd_date();
-				if (endDate != null) {
-					data1.put(header[5], dateFormat.format(endDate));
-				} else {
-					data1.put(header[5], "");
-				}
-				if (campaign.getCurrency() != null) {
-					data1.put(header[6], campaign.getCurrency().getId());
-				} else {
-					data1.put(header[6], "");
-				}
-				data1.put(header[7], campaign.getImpressions());
-				data1.put(header[8], campaign.getBudget());
-				data1.put(header[9], campaign.getExpected_cost());
-				data1.put(header[10], campaign.getActual_cost());
-				data1.put(header[11], campaign.getExpected_revenue());
-				data1.put(header[12],
-						CommonUtil.fromNullToEmpty(campaign.getObjective()));
-				data1.put(header[13],
-						CommonUtil.fromNullToEmpty(campaign.getDescription()));
-				if (campaign.getAssigned_to() != null) {
-					data1.put(header[14], campaign.getAssigned_to().getId());
-				} else {
-					data1.put(header[14], "");
-				}
-				writer.write(data1, header);
-			}
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			writer.close();
-		}
+                jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
+                        .append(name).append("\",\"").append(statusName)
+                        .append("\",\"").append(typeName).append("\",\"")
+                        .append(startDateString).append("\",\"")
+                        .append(endDateString).append("\",\"")
+                        .append(assignedTo).append("\",\"")
+                        .append(createdByName).append("\",\"")
+                        .append(updatedByName).append("\",\"")
+                        .append(createdOnString).append("\",\"")
+                        .append(updatedOnString).append("\"]}");
+            } else {
+                jsonBuilder.append("{\"id\":\"").append(id)
+                        .append("\",\"name\":\"").append(name)
+                        .append("\",\"status.name\":\"").append(statusName)
+                        .append("\",\"type.name\":\"").append(typeName)
+                        .append("\",\"start_date\":\"").append(startDateString)
+                        .append("\",\"end_date\":\"").append(endDateString)
+                        .append("\",\"assigned_to.name\":\"")
+                        .append(assignedTo).append("\"}");
 
-		InputStream in = new FileInputStream(file);
-		this.setFileName(CLAZZ + ".csv");
-		return in;
-	}
+            }
+            if (campaigns.hasNext()) {
+                jsonBuilder.append(",");
+            }
+        }
+        jsonBuilder.append("]}");
 
-	/**
-	 * Imports the entities
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String importCSV() throws Exception {
-		File file = this.getUpload();
-		CsvListReader reader = new CsvListReader(new FileReader(file),
-				CsvPreference.EXCEL_PREFERENCE);
-		int failedNum = 0;
-		int successfulNum = 0;
-		try {
-			final String[] header = reader.getCSVHeader(true);
+        // Returns JSON data back to page
+        HttpServletResponse response = ServletActionContext.getResponse();
+        response.getWriter().write(jsonBuilder.toString());
+    }
 
-			List<String> line = new ArrayList<String>();
-			Map<String, String> failedMsg = new HashMap<String, String>();
-			while ((line = reader.read()) != null) {
+    /**
+     * Deletes the selected entities.
+     * 
+     * @return the SUCCESS result
+     */
+    public String delete() throws ServiceException {
+        baseService.batchDeleteEntity(Campaign.class, this.getSeleteIDs());
+        return SUCCESS;
+    }
 
-				Map<String, String> row = new HashMap<String, String>();
-				for (int i = 0; i < line.size(); i++) {
-					row.put(header[i], line.get(i));
-				}
+    /**
+     * Copies the selected entities
+     * 
+     * @return the SUCCESS result
+     */
+    public String copy() throws ServiceException {
+        if (this.getSeleteIDs() != null) {
+            String[] ids = seleteIDs.split(",");
+            for (int i = 0; i < ids.length; i++) {
+                String copyid = ids[i];
+                Campaign oriRecord = baseService.getEntityById(Campaign.class,
+                        Integer.valueOf(copyid));
+                Campaign targetRecord = oriRecord.clone();
+                targetRecord.setId(null);
+                this.getbaseService().makePersistent(targetRecord);
+            }
+        }
+        return SUCCESS;
+    }
 
-				Campaign campaign = new Campaign();
-				try {
-					String id = row.get("ID");
-					if (!CommonUtil.isNullOrEmpty(id)) {
-						campaign.setId(Integer.parseInt(id));
-					}
-					campaign.setName(CommonUtil.fromNullToEmpty(row.get("Name")));
-					String statusID = row.get("Status");
-					if (CommonUtil.isNullOrEmpty(statusID)) {
-						campaign.setStatus(null);
-					} else {
-						CampaignStatus status = campaignStatusService
-								.getEntityById(CampaignStatus.class,
-										Integer.parseInt(statusID));
-						campaign.setStatus(status);
-					}
-					String typeID = row.get("Type");
-					if (CommonUtil.isNullOrEmpty(typeID)) {
-						campaign.setType(null);
-					} else {
-						CampaignType type = campaignTypeService.getEntityById(
-								CampaignType.class, Integer.parseInt(typeID));
-						campaign.setType(type);
-					}
-					SimpleDateFormat dateFormat = new SimpleDateFormat(
-							"M/d/yyyy");
-					String startDateS = row.get("Start Date");
-					if (startDateS != null) {
-						Date startDate = dateFormat.parse(startDateS);
-						campaign.setStart_date(startDate);
-					} else {
-						campaign.setStart_date(null);
-					}
-					String endDateS = row.get("End Date");
-					if (startDateS != null) {
-						Date endDate = dateFormat.parse(endDateS);
-						campaign.setEnd_date(endDate);
-					} else {
-						campaign.setEnd_date(null);
-					}
-					String currencyID = row.get("Currency");
-					if (CommonUtil.isNullOrEmpty(currencyID)) {
-						campaign.setCurrency(null);
-					} else {
-						Currency currency = currencyService.getEntityById(
-								Currency.class, Integer.parseInt(currencyID));
-						campaign.setCurrency(currency);
-					}
-					String impressions = row.get("Impressions");
-					if (CommonUtil.isNullOrEmpty(impressions)) {
-						campaign.setImpressions(0);
-					} else {
-						campaign.setImpressions(Double.parseDouble(impressions));
-					}
-					String budget = row.get("Budget");
-					if (CommonUtil.isNullOrEmpty(budget)) {
-						campaign.setBudget(0);
-					} else {
-						campaign.setBudget(Double.parseDouble(budget));
-					}
-					String expectedCost = row.get("Expected Cost");
-					if (CommonUtil.isNullOrEmpty(expectedCost)) {
-						campaign.setExpected_cost(0);
-					} else {
-						campaign.setExpected_cost(Double
-								.parseDouble(expectedCost));
-					}
-					String actualCost = row.get("Actual Cost");
-					if (CommonUtil.isNullOrEmpty(actualCost)) {
-						campaign.setActual_cost(0);
-					} else {
-						campaign.setActual_cost(Double.parseDouble(actualCost));
-					}
-					String expectedRevenue = row.get("Expected Revenue");
-					if (CommonUtil.isNullOrEmpty(expectedRevenue)) {
-						campaign.setExpected_revenue(0);
-					} else {
-						campaign.setExpected_revenue(Double
-								.parseDouble(expectedRevenue));
-					}
-					campaign.setObjective(CommonUtil.fromNullToEmpty(row
-							.get("Objective")));
-					campaign.setDescription(CommonUtil.fromNullToEmpty(row
-							.get("Description")));
-					String assignedToID = row.get("Assigned To");
-					if (CommonUtil.isNullOrEmpty(assignedToID)) {
-						campaign.setAssigned_to(null);
-					} else {
-						User assignedTo = userService.getEntityById(User.class,
-								Integer.parseInt(assignedToID));
-						campaign.setAssigned_to(assignedTo);
-					}
-					baseService.makePersistent(campaign);
-					successfulNum++;
-				} catch (Exception e) {
-					failedNum++;
-					failedMsg.put(campaign.getName(), e.getMessage());
-				}
+    /**
+     * Exports the entities
+     * 
+     * @return the exported entities inputStream
+     */
+    public InputStream getInputStream() throws Exception {
+        File file = new File(CLAZZ + ".csv");
+        ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
+                CsvPreference.EXCEL_PREFERENCE);
+        try {
+            final String[] header = new String[] { "ID", "Name", "Status",
+                    "Type", "Start Date", "End Date", "Currency",
+                    "Impressions", "Budget", "Expected Cost", "Actual Cost",
+                    "Expected Revenue", "Objective", "Description",
+                    "Assigned To" };
+            writer.writeHeader(header);
+            String[] ids = seleteIDs.split(",");
+            for (int i = 0; i < ids.length; i++) {
+                String id = ids[i];
+                Campaign campaign = baseService.getEntityById(Campaign.class,
+                        Integer.parseInt(id));
+                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                data1.put(header[0], campaign.getId());
+                data1.put(header[1],
+                        CommonUtil.fromNullToEmpty(campaign.getName()));
+                if (campaign.getStatus() != null) {
+                    data1.put(header[2], campaign.getStatus().getId());
+                } else {
+                    data1.put(header[2], "");
+                }
+                if (campaign.getType() != null) {
+                    data1.put(header[3], campaign.getType().getId());
+                } else {
+                    data1.put(header[3], "");
+                }
+                SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
+                Date startDate = campaign.getStart_date();
+                if (startDate != null) {
+                    data1.put(header[4], dateFormat.format(startDate));
+                } else {
+                    data1.put(header[4], "");
+                }
+                Date endDate = campaign.getEnd_date();
+                if (endDate != null) {
+                    data1.put(header[5], dateFormat.format(endDate));
+                } else {
+                    data1.put(header[5], "");
+                }
+                if (campaign.getCurrency() != null) {
+                    data1.put(header[6], campaign.getCurrency().getId());
+                } else {
+                    data1.put(header[6], "");
+                }
+                data1.put(header[7], campaign.getImpressions());
+                data1.put(header[8], campaign.getBudget());
+                data1.put(header[9], campaign.getExpected_cost());
+                data1.put(header[10], campaign.getActual_cost());
+                data1.put(header[11], campaign.getExpected_revenue());
+                data1.put(header[12],
+                        CommonUtil.fromNullToEmpty(campaign.getObjective()));
+                data1.put(header[13],
+                        CommonUtil.fromNullToEmpty(campaign.getDescription()));
+                if (campaign.getAssigned_to() != null) {
+                    data1.put(header[14], campaign.getAssigned_to().getId());
+                } else {
+                    data1.put(header[14], "");
+                }
+                writer.write(data1, header);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            writer.close();
+        }
 
-			}
+        InputStream in = new FileInputStream(file);
+        this.setFileName(CLAZZ + ".csv");
+        return in;
+    }
 
-			this.setFailedMsg(failedMsg);
-			this.setFailedNum(failedNum);
-			this.setSuccessfulNum(successfulNum);
-			this.setTotalNum(successfulNum + failedNum);
-		} finally {
-			reader.close();
-		}
-		return SUCCESS;
-	}
+    /**
+     * Imports the entities
+     * 
+     * @return the SUCCESS result
+     */
+    public String importCSV() throws Exception {
+        File file = this.getUpload();
+        CsvListReader reader = new CsvListReader(new FileReader(file),
+                CsvPreference.EXCEL_PREFERENCE);
+        int failedNum = 0;
+        int successfulNum = 0;
+        try {
+            final String[] header = reader.getCSVHeader(true);
 
-	public String execute() throws Exception {
-		return SUCCESS;
-	}
+            List<String> line = new ArrayList<String>();
+            Map<String, String> failedMsg = new HashMap<String, String>();
+            while ((line = reader.read()) != null) {
 
-	public IBaseService<Campaign> getbaseService() {
-		return baseService;
-	}
+                Map<String, String> row = new HashMap<String, String>();
+                for (int i = 0; i < line.size(); i++) {
+                    row.put(header[i], line.get(i));
+                }
 
-	public void setbaseService(IBaseService<Campaign> baseService) {
-		this.baseService = baseService;
-	}
+                Campaign campaign = new Campaign();
+                try {
+                    String id = row.get("ID");
+                    if (!CommonUtil.isNullOrEmpty(id)) {
+                        campaign.setId(Integer.parseInt(id));
+                    }
+                    campaign.setName(CommonUtil.fromNullToEmpty(row.get("Name")));
+                    String statusID = row.get("Status");
+                    if (CommonUtil.isNullOrEmpty(statusID)) {
+                        campaign.setStatus(null);
+                    } else {
+                        CampaignStatus status = campaignStatusService
+                                .getEntityById(CampaignStatus.class,
+                                        Integer.parseInt(statusID));
+                        campaign.setStatus(status);
+                    }
+                    String typeID = row.get("Type");
+                    if (CommonUtil.isNullOrEmpty(typeID)) {
+                        campaign.setType(null);
+                    } else {
+                        CampaignType type = campaignTypeService.getEntityById(
+                                CampaignType.class, Integer.parseInt(typeID));
+                        campaign.setType(type);
+                    }
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(
+                            "M/d/yyyy");
+                    String startDateS = row.get("Start Date");
+                    if (startDateS != null) {
+                        Date startDate = dateFormat.parse(startDateS);
+                        campaign.setStart_date(startDate);
+                    } else {
+                        campaign.setStart_date(null);
+                    }
+                    String endDateS = row.get("End Date");
+                    if (startDateS != null) {
+                        Date endDate = dateFormat.parse(endDateS);
+                        campaign.setEnd_date(endDate);
+                    } else {
+                        campaign.setEnd_date(null);
+                    }
+                    String currencyID = row.get("Currency");
+                    if (CommonUtil.isNullOrEmpty(currencyID)) {
+                        campaign.setCurrency(null);
+                    } else {
+                        Currency currency = currencyService.getEntityById(
+                                Currency.class, Integer.parseInt(currencyID));
+                        campaign.setCurrency(currency);
+                    }
+                    String impressions = row.get("Impressions");
+                    if (CommonUtil.isNullOrEmpty(impressions)) {
+                        campaign.setImpressions(0);
+                    } else {
+                        campaign.setImpressions(Double.parseDouble(impressions));
+                    }
+                    String budget = row.get("Budget");
+                    if (CommonUtil.isNullOrEmpty(budget)) {
+                        campaign.setBudget(0);
+                    } else {
+                        campaign.setBudget(Double.parseDouble(budget));
+                    }
+                    String expectedCost = row.get("Expected Cost");
+                    if (CommonUtil.isNullOrEmpty(expectedCost)) {
+                        campaign.setExpected_cost(0);
+                    } else {
+                        campaign.setExpected_cost(Double
+                                .parseDouble(expectedCost));
+                    }
+                    String actualCost = row.get("Actual Cost");
+                    if (CommonUtil.isNullOrEmpty(actualCost)) {
+                        campaign.setActual_cost(0);
+                    } else {
+                        campaign.setActual_cost(Double.parseDouble(actualCost));
+                    }
+                    String expectedRevenue = row.get("Expected Revenue");
+                    if (CommonUtil.isNullOrEmpty(expectedRevenue)) {
+                        campaign.setExpected_revenue(0);
+                    } else {
+                        campaign.setExpected_revenue(Double
+                                .parseDouble(expectedRevenue));
+                    }
+                    campaign.setObjective(CommonUtil.fromNullToEmpty(row
+                            .get("Objective")));
+                    campaign.setDescription(CommonUtil.fromNullToEmpty(row
+                            .get("Description")));
+                    String assignedToID = row.get("Assigned To");
+                    if (CommonUtil.isNullOrEmpty(assignedToID)) {
+                        campaign.setAssigned_to(null);
+                    } else {
+                        User assignedTo = userService.getEntityById(User.class,
+                                Integer.parseInt(assignedToID));
+                        campaign.setAssigned_to(assignedTo);
+                    }
+                    baseService.makePersistent(campaign);
+                    successfulNum++;
+                } catch (Exception e) {
+                    failedNum++;
+                    failedMsg.put(campaign.getName(), e.getMessage());
+                }
 
-	public Campaign getCampaign() {
-		return campaign;
-	}
+            }
 
-	public void setCampaign(Campaign campaign) {
-		this.campaign = campaign;
-	}
+            this.setFailedMsg(failedMsg);
+            this.setFailedNum(failedNum);
+            this.setSuccessfulNum(successfulNum);
+            this.setTotalNum(successfulNum + failedNum);
+        } finally {
+            reader.close();
+        }
+        return SUCCESS;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Integer getId() {
-		return id;
-	}
+    @Override
+    public String execute() throws Exception {
+        return SUCCESS;
+    }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public IBaseService<Campaign> getbaseService() {
+        return baseService;
+    }
 
-	/**
-	 * @return the campaignTypeService
-	 */
-	public IBaseService<CampaignType> getCampaignTypeService() {
-		return campaignTypeService;
-	}
+    public void setbaseService(IBaseService<Campaign> baseService) {
+        this.baseService = baseService;
+    }
 
-	/**
-	 * @param campaignTypeService
-	 *            the campaignTypeService to set
-	 */
-	public void setCampaignTypeService(
-			IBaseService<CampaignType> campaignTypeService) {
-		this.campaignTypeService = campaignTypeService;
-	}
+    public Campaign getCampaign() {
+        return campaign;
+    }
 
-	/**
-	 * @return the campaignStatusService
-	 */
-	public IBaseService<CampaignStatus> getCampaignStatusService() {
-		return campaignStatusService;
-	}
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
 
-	/**
-	 * @param campaignStatusService
-	 *            the campaignStatusService to set
-	 */
-	public void setCampaignStatusService(
-			IBaseService<CampaignStatus> campaignStatusService) {
-		this.campaignStatusService = campaignStatusService;
-	}
+    /**
+     * @return the id
+     */
+    @Override
+    public Integer getId() {
+        return id;
+    }
 
-	/**
-	 * @return the currencyService
-	 */
-	public IBaseService<Currency> getCurrencyService() {
-		return currencyService;
-	}
+    /**
+     * @param id
+     *            the id to set
+     */
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	/**
-	 * @param currencyService
-	 *            the currencyService to set
-	 */
-	public void setCurrencyService(IBaseService<Currency> currencyService) {
-		this.currencyService = currencyService;
-	}
+    /**
+     * @return the campaignTypeService
+     */
+    public IBaseService<CampaignType> getCampaignTypeService() {
+        return campaignTypeService;
+    }
 
-	/**
-	 * @return the userService
-	 */
-	public IBaseService<User> getUserService() {
-		return userService;
-	}
+    /**
+     * @param campaignTypeService
+     *            the campaignTypeService to set
+     */
+    public void setCampaignTypeService(
+            IBaseService<CampaignType> campaignTypeService) {
+        this.campaignTypeService = campaignTypeService;
+    }
 
-	/**
-	 * @param userService
-	 *            the userService to set
-	 */
-	public void setUserService(IBaseService<User> userService) {
-		this.userService = userService;
-	}
+    /**
+     * @return the campaignStatusService
+     */
+    public IBaseService<CampaignStatus> getCampaignStatusService() {
+        return campaignStatusService;
+    }
+
+    /**
+     * @param campaignStatusService
+     *            the campaignStatusService to set
+     */
+    public void setCampaignStatusService(
+            IBaseService<CampaignStatus> campaignStatusService) {
+        this.campaignStatusService = campaignStatusService;
+    }
+
+    /**
+     * @return the currencyService
+     */
+    public IBaseService<Currency> getCurrencyService() {
+        return currencyService;
+    }
+
+    /**
+     * @param currencyService
+     *            the currencyService to set
+     */
+    public void setCurrencyService(IBaseService<Currency> currencyService) {
+        this.currencyService = currencyService;
+    }
+
+    /**
+     * @return the userService
+     */
+    public IBaseService<User> getUserService() {
+        return userService;
+    }
+
+    /**
+     * @param userService
+     *            the userService to set
+     */
+    public void setUserService(IBaseService<User> userService) {
+        this.userService = userService;
+    }
 
 }

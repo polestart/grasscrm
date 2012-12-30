@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../themes/icon.css" />
 <link rel="stylesheet" type="text/css" href="../../css/global.css" />
 
-<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/datagrid.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
@@ -57,7 +57,7 @@
         <a id="remove" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.removeRelation" /></a>  
       </span>
       <span style="white-space:nowrap;">
-        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow('/crm/selectAccountPage.action?relationKey=TargetList&relationValue=<s:property value="id" />','Select Account',750,500)"><s:text name="action.select" /></a>  
+        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow2('/crm/selectAccountPage.action?relationKey=TargetList&relationValue=<s:property value="id" />','Select Account',750,500)"><s:text name="action.select" /></a>  
       </span>	      		     		     
     </div> 		 
 	<s:form id="addObjectForm" namespace="/jsp/crm"

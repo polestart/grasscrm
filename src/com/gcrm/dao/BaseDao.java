@@ -29,162 +29,179 @@ import com.gcrm.exception.DaoException;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
-
 /**
  * Base Dao
  */
 public class BaseDao<T extends Serializable> extends HibernateDaoSupport
-		implements IBaseDao<T> {
+        implements IBaseDao<T> {
 
-	private static String INIT_HQL = "from ";
+    private static String INIT_HQL = "from ";
 
-	/* (non-Javadoc)
-	 * @see com.gcrm.dao.IBaseDao#getAllObjects(java.lang.String)
-	 */
-	@SuppressWarnings("unchecked")
-	public List<T> getAllObjects(String clazz) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.dao.IBaseDao#getAllObjects(java.lang.String)
+     */
+    @SuppressWarnings("unchecked")
+    public List<T> getAllObjects(String clazz) {
 
-		String hql = INIT_HQL + clazz;
-		List<T> objects = null;
+        String hql = INIT_HQL + clazz;
+        List<T> objects = null;
 
-		objects = getHibernateTemplate().find(hql);
+        objects = getHibernateTemplate().find(hql);
 
-		return objects;
-	}
+        return objects;
+    }
 
-	/**
-	 * Finds records by hql with parameters
-	 * 
-	 * @param hql hql with parameters
-	 * @param paramValue parameter value
-	 * @return result list
-	 * @throws Exception
-	 */
-	@SuppressWarnings("rawtypes")
-	private List findByParam(String hql, Object paramValue) throws DaoException {
+    /**
+     * Finds records by hql with parameters
+     * 
+     * @param hql
+     *            hql with parameters
+     * @param paramValue
+     *            parameter value
+     * @return result list
+     * @throws Exception
+     */
+    @SuppressWarnings("rawtypes")
+    private List findByParam(String hql, Object paramValue) throws DaoException {
 
-		List objects = null;
+        List objects = null;
 
-		try {
-			objects = getHibernateTemplate().find(hql, paramValue);
-		} catch (Exception e) {
-			throw new DaoException("Failed to find records by hql with parameters!", e);
-		}
-		return objects;
-	}
+        try {
+            objects = getHibernateTemplate().find(hql, paramValue);
+        } catch (Exception e) {
+            throw new DaoException(
+                    "Failed to find records by hql with parameters!", e);
+        }
+        return objects;
+    }
 
-	/* (non-Javadoc)
-	 * @see com.gcrm.dao.IBaseDao#findByName(java.lang.String, java.lang.String)
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public T findByName(String clazz, String name) throws DaoException {
-		String hql = INIT_HQL + clazz + " where name = ?";
-		T object = null;
-		List result = null;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.dao.IBaseDao#findByName(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public T findByName(String clazz, String name) throws DaoException {
+        String hql = INIT_HQL + clazz + " where name = ?";
+        T object = null;
+        List result = null;
 
-		try {
-			result = findByParam(hql, name);
-			if (result != null && result.size() > 0) {
-				object = (T) result.get(0);
-			}
-		} catch (Exception e) {
-			throw new DaoException("按id查找对象时失败!", e);
-		}
-		return object;
-	}
+        try {
+            result = findByParam(hql, name);
+            if (result != null && result.size() > 0) {
+                object = (T) result.get(0);
+            }
+        } catch (Exception e) {
+            throw new DaoException("按id查找对象时失败!", e);
+        }
+        return object;
+    }
 
-	/* (non-Javadoc)
-	 * @see com.gcrm.dao.IBaseDao#makePersistent(java.io.Serializable)
-	 */
-	public void makePersistent(T entity) {
-		getHibernateTemplate().merge(entity);
-		getHibernateTemplate().flush();
-	}
-	
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.dao.IBaseDao#makePersistent(java.io.Serializable)
+     */
+    public void makePersistent(T entity) {
+        getHibernateTemplate().merge(entity);
+        getHibernateTemplate().flush();
+    }
 
-	
-	/* (non-Javadoc)
-	 * @see com.gcrm.dao.IBaseDao#deleteEntity(java.lang.Class, java.lang.Integer)
-	 */
-	public void deleteEntity(Class<T> entityClass, Integer id) {
-		T entity = (T) getHibernateTemplate().get(entityClass, id);
-		getHibernateTemplate().delete(entity);
-		getHibernateTemplate().flush();
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.gcrm.dao.IBaseDao#getObjectsCount(java.lang.String)
-	 */
-	public long getObjectsCount(String clazz) {
-		String hql = "select count(*) from " + clazz;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.dao.IBaseDao#deleteEntity(java.lang.Class,
+     * java.lang.Integer)
+     */
+    public void deleteEntity(Class<T> entityClass, Integer id) {
+        T entity = getHibernateTemplate().get(entityClass, id);
+        getHibernateTemplate().delete(entity);
+        getHibernateTemplate().flush();
+    }
 
-		long count = 0;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.dao.IBaseDao#getObjectsCount(java.lang.String)
+     */
+    public long getObjectsCount(String clazz) {
+        String hql = "select count(*) from " + clazz;
 
-		count = (Long) getHibernateTemplate().find(hql).get(0);
+        long count = 0;
 
-		return count;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.gcrm.dao.IBaseDao#getEntityById(java.lang.Class, java.lang.Integer)
-	 */
-	public T getEntityById(Class<T> entityClass, Integer id) {
-		T entity = null;
-		entity = (T) getHibernateTemplate().load(entityClass, id);
-		return entity;
-	}
+        count = (Long) getHibernateTemplate().find(hql).get(0);
 
-	/* (non-Javadoc)
-	 * @see com.gcrm.dao.IBaseDao#getPaginationObjects(java.lang.String, com.gcrm.vo.SearchCondition)
-	 */
-	@SuppressWarnings("unchecked")
-	public SearchResult<T> getPaginationObjects(final String clazz,
-			final SearchCondition searchCondition) {
+        return count;
+    }
 
-		List<T> objects = null;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.dao.IBaseDao#getEntityById(java.lang.Class,
+     * java.lang.Integer)
+     */
+    public T getEntityById(Class<T> entityClass, Integer id) {
+        T entity = null;
+        entity = getHibernateTemplate().load(entityClass, id);
+        return entity;
+    }
 
-		final String condition = searchCondition.getCondition();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.dao.IBaseDao#getPaginationObjects(java.lang.String,
+     * com.gcrm.vo.SearchCondition)
+     */
+    @SuppressWarnings("unchecked")
+    public SearchResult<T> getPaginationObjects(final String clazz,
+            final SearchCondition searchCondition) {
 
-		objects = getHibernateTemplate().executeFind(
-				new HibernateCallback<List<T>>() {
+        List<T> objects = null;
 
-					public List<T> doInHibernate(Session session)
-							throws HibernateException, SQLException {
-						String hql = INIT_HQL + clazz;
-						if (condition != null && condition.length() > 0) {
-							hql += " where ";
-							hql += condition;
-						}
-						hql += " order by " + searchCondition.getSidx() + " "
+        final String condition = searchCondition.getCondition();
 
-						+ searchCondition.getSord();
-						int pageSize = searchCondition.getPageSize();
-						int pageNo = searchCondition.getPageNo();
+        objects = getHibernateTemplate().executeFind(
+                new HibernateCallback<List<T>>() {
 
-						Query query = session.createQuery(hql);
+                    public List<T> doInHibernate(Session session)
+                            throws HibernateException, SQLException {
+                        String hql = INIT_HQL + clazz;
+                        if (condition != null && condition.length() > 0) {
+                            hql += " where ";
+                            hql += condition;
+                        }
+                        hql += " order by " + searchCondition.getSidx() + " "
 
-						if (pageNo != 0 && pageSize != 0) {
-							int rowNumber = (pageNo - 1) * pageSize;
-							query.setFirstResult(rowNumber);
-							query.setMaxResults(pageSize);
-						}
-						List<T> list = query.list();
+                        + searchCondition.getSord();
+                        int pageSize = searchCondition.getPageSize();
+                        int pageNo = searchCondition.getPageNo();
 
-						return list;
-					}
-				});
+                        Query query = session.createQuery(hql);
 
-		long count = 0;
-		String countHql = "select count(*) from " + clazz;
-		if (condition != null && condition.length() > 0) {
-			countHql += " where ";
-			countHql += condition;
-		}
+                        if (pageNo != 0 && pageSize != 0) {
+                            int rowNumber = (pageNo - 1) * pageSize;
+                            query.setFirstResult(rowNumber);
+                            query.setMaxResults(pageSize);
+                        }
+                        List<T> list = query.list();
 
-		count = (Long) getHibernateTemplate().find(countHql).get(0);
-		SearchResult<T> result = new SearchResult<T>(count, objects);
+                        return list;
+                    }
+                });
 
-		return result;
-	}
+        long count = 0;
+        String countHql = "select count(*) from " + clazz;
+        if (condition != null && condition.length() > 0) {
+            countHql += " where ";
+            countHql += condition;
+        }
+
+        count = (Long) getHibernateTemplate().find(countHql).get(0);
+        SearchResult<T> result = new SearchResult<T>(count, objects);
+
+        return result;
+    }
 
 }

@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../themes/icon.css" />
 <link rel="stylesheet" type="text/css" href="../../css/global.css" />
 
-<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/datagrid.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
@@ -30,15 +30,15 @@
 		url:'filterCallUser.action?id=<s:property value="id" />',
 		columns:[[
 					{field:'ck',checkbox:true},
-					{field:'id',title:'ID',width:80,align:'center',sortable:'true'},
-					{field:'name',title:'User Name',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+					{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+					{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 						   new_format_value = "<a href='editUser.action?id=" + row.id + "' target='_blank'>" + value + "</a>";
 						   return new_format_value 
 		             }  
 		            },
-					{field:'title',title:'Title',width:80,align:'center',sortable:'true'},
-					{field:'department',title:'Department',width:80,align:'right',sortable:'true'},
-					{field:'status',title:'Status',width:80,align:'center',sortable:'true'}
+					{field:'title',title:'<s:text name="user.title.label" />',width:80,align:'center',sortable:'true'},
+					{field:'department',title:'<s:text name="user.department.label" />',width:80,align:'right',sortable:'true'},
+					{field:'status.name',title:'<s:text name="user.status.label" />',width:80,align:'center',sortable:'true'}
 				]],
 	  });
 		
@@ -52,7 +52,7 @@
         <a id="remove" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.removeRelation" /></a>  
       </span>
       <span style="white-space:nowrap;">
-        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow('/system/selectUserPage.action?relationKey=Call&relationValue=<s:property value="id" />','Select User',750,500)"><s:text name="action.select" /></a>  
+        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow2('/system/selectUserPage.action?relationKey=Call&relationValue=<s:property value="id" />','Select User',750,500)"><s:text name="action.select" /></a>  
       </span>	      		     		     
     </div> 		 
 	<s:form id="addObjectForm" namespace="/jsp/crm"

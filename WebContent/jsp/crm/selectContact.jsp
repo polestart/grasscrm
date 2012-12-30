@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../themes/icon.css" />
 <link rel="stylesheet" type="text/css" href="../../css/global.css" />
 
-<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/datagrid.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>

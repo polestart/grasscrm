@@ -8,6 +8,10 @@
     	  <result name="success" type="json"></result>
         </action>
 
+      	<action name="listUserFull" class="listUserAction" method="listFull">
+    	  <result name="success" type="json"></result>
+        </action>
+        
     	<action name="listUserPage">
     	  <result type="redirect">/jsp/system/listUser.jsp</result>
         </action>
@@ -36,7 +40,7 @@
 
          <action name="deleteUser" class="listUserAction" method="delete">
         	<result name="input">/jsp/system/listUser.jsp</result>
-			<result>/jsp/system/listUser.jsp</result>            	  
+			<result type="redirect">/jsp/system/listUser.jsp</result>
         </action>
         
          <action name="copyUser" class="listUserAction" method="copy">

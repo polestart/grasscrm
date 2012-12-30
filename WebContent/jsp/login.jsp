@@ -10,9 +10,9 @@
 <title>Login</title>
 <link href="<s:url value="/css/styles.css"/>" type="text/css" media="screen"
 	rel="stylesheet" />
-<link href="<s:url value="/css/jquery-ui-1.8.16.custom.css"/>" type="text/css" rel="stylesheet" />
-<script src="<s:url value="/js/jquery-1.7.2.min.js"/>"></script>
-<script src="<s:url value="/js/jquery-ui-1.8.16.custom.min.js"/>"></script>
+<link href="<s:url value="/css/redmond/jquery-ui-1.9.2.custom.css"/>" type="text/css" rel="stylesheet" />
+<script src="<s:url value="/js/jquery-1.8.3.min.js"/>"></script>
+<script src="<s:url value="/js/jquery-ui-1.9.2.custom.min.js"/>"></script>
 <script type="text/javascript"
 	src="<s:url value="/js/jquery.keyboard.extension-typing.js"/>"></script>
 <script type="text/javascript" src="<s:url value="/js/jquery.keyboard.js"/>"></script>
@@ -42,12 +42,12 @@
 					<p>
 						<label class="loginlabel" for="j_username"><s:text name='login.username.label'/>:</label> <input
 							class="logininput ui-keyboard-input ui-widget-content ui-corner-all"
-							id="j_username" name="j_username" type="text"
+							id="j_username" name="j_username" onkeypress="keypressTab();" type="text"
 							value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>' />
 					</p>
 					<p>
 						<label class="loginlabel" for="j_password"> <s:text name='login.password.label'/>:</label> <span>
-							<input class="logininput" name="j_password" id="j_password" type="password" onkeypress="keypress();"/>
+							<input class="logininput ui-keyboard-input ui-widget-content ui-corner-all" name="j_password" id="j_password" type="password" onkeypress="keypress();"/>
 						</span>
 					</p>
 					<button id="loginbtn" type="button" class="positive" name="Submit"
@@ -78,12 +78,19 @@
 			})
 		});
 
+		function keypressTab(){
+			var ev=window.event.keyCode;
+			if(ev == 13){
+				document.f.j_password.focus();
+			}
+		}
+
 		function keypress(){
 			var ev=window.event.keyCode;
 			if(ev == 13){
 				f.submit();
 			}
-		}
+		}		
 	</script>
 </body>
 </html>

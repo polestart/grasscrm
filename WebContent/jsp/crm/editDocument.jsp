@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../../themes/icon.css" />
 <link rel="stylesheet" type="text/css" href="../../css/global.css" />
 
-<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
 
@@ -73,6 +73,8 @@
 				<s:form id="addObjectForm" validate="true" namespace="/jsp/crm"
 					method="post" enctype="multipart/form-data">
 					<s:hidden name="document.id" value="%{document.id}" />
+					<s:hidden name="relationKey" id="relationKey" value="%{relationKey}" />	
+			        <s:hidden name="relationValue" id="relationValue" value="%{relationValue}" />	
 					<table style="" cellspacing="10" cellpadding="0" width="100%">
 						<s:actionerror />
 						<s:if test="hasFieldErrors()">
@@ -162,15 +164,14 @@
 						            idField:'id',  
 						            textField:'name',  
 						            url:'listDocument.action',
-						            pagination : true,
 						            fit: true,
 						            mode:'remote',
-						            pageSize: 10,
-						            pageList: [10],  
 						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'name',title:'Name',width:100},  
-						                {field:'revision',title:'Revision',width:120}
+				                      {field:'id',title:'<s:text name="entity.id.label" />',width:80},
+				                      {field:'name',title:'<s:text name="entity.name.label" />',width:80},
+				                      {field:'publish_date',title:'<s:text name="document.publish_date.label" />',width:80},
+				                      {field:'category.name',title:'<s:text name="document.category.label" />',width:80},
+				                      {field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80}
 						            ]]  
 						        ">
 									</select></td>
@@ -180,21 +181,19 @@
 										class="easyui-combogrid record-value" name="assignedToID"
 										style="width: 250px;"
 										data-options="  
-						            panelWidth:500,  
-						            idField:'id',  
-						            textField:'name',  
-						            url:'listUser.action',
-						            pagination : true,
-						            fit: true,
-						            mode:'remote',
-						            pageSize: 10,
-						            pageList: [10],  
-						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'name',title:'Name',width:100},  
-						                {field:'phone',title:'Phone',width:120},  
-						                {field:'age',title:'Age',width:100}  
-						            ]]  
+							            panelWidth:500,  
+							            idField:'id',  
+							            textField:'name',  
+							            url:'/grass/jsp/system/listUser.action',
+							            fit: true,
+							            mode:'remote',
+							            columns:[[  
+							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
+							                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
+							                {field:'title',title:'<s:text name="user.title.label" />',width:120},  
+							                {field:'department',title:'<s:text name="user.department.label" />',width:100},
+							                {field:'status.name',title:'<s:text name="user.status.label" />',width:100}   
+							            ]]  
 						        ">
 									</select></td>
 								</tr>
@@ -251,7 +250,7 @@
 									<td width="20%" valign="top">
 										<div class="easyui-accordion" style="width: 200px;">
 											<div title="<s:text name="menu.sales.title"/>"
-												iconCls="icon-ok" style="overflow: auto; padding: 10px;"
+												style="overflow: auto; padding: 10px;"
 												selected="true">
 												<a
 													href="filterDocumentAccountPage.action?id=<s:property value="document.id" />"
@@ -268,13 +267,13 @@
 															name="menu.opportunities.title" /></label></a>
 											</div>
 											<div title="<s:text name="menu.support.title"/>"
-												iconCls="icon-ok" style="overflow: auto; padding: 10px;">
+												style="overflow: auto; padding: 10px;">
 												<a
 													href="filterDocumentCasePage.action?id=<s:property value="document.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
-															name="menu.cases.title" /></label></a>														
-											</div>																		
+															name="menu.cases.title" /></label></a>
+											</div>
 										</div>
 									</td>
 									<td width="80%" valign="top"><Iframe name="contentFrame"

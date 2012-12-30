@@ -20,33 +20,28 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-
 import com.gcrm.domain.Document;
-
 
 /**
  * Document DAO
  */
 public class DocumentDao extends BaseDao<Document> implements IDocumentDao {
 
-	/* (non-Javadoc)
-	 * @see com.gcrm.dao.IDocumentDao#save(com.gcrm.domain.Document, java.io.File)
-	 */
-	@SuppressWarnings("resource")
-	public void save(Document document, File f) throws Exception {
-		SessionFactory sessionFactory = this.getHibernateTemplate()
-				.getSessionFactory();
-		Session session = sessionFactory.openSession();
-		session.getTransaction().begin();
-		InputStream stream = new BufferedInputStream(new FileInputStream(f));
-		byte[] input = new byte[stream.available()];
-		stream.read(input);
-		document.setFileContent(input);
-		session.save(document);
-		session.getTransaction().commit();
-		session.close();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.dao.IDocumentDao#save(com.gcrm.domain.Document,
+     * java.io.File)
+     */
+    @SuppressWarnings("resource")
+    public void save(Document document, File f) throws Exception {
+        if (f != null) {
+            InputStream stream = new BufferedInputStream(new FileInputStream(f));
+            byte[] input = new byte[stream.available()];
+            stream.read(input);
+            document.setFileContent(input);
+        }
+        super.makePersistent(document);
+    }
 
 }

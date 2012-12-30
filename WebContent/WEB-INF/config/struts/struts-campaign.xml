@@ -8,6 +8,10 @@
     	  <result name="success" type="json"></result>
         </action>
 
+     	<action name="listCampaignFull" class="listCampaignAction" method="listFull">
+    	  <result name="success" type="json"></result>
+        </action>
+        
     	<action name="listCampaignPage">
     	  <result type="redirect">/jsp/crm/listCampaign.jsp</result>
         </action>
@@ -31,7 +35,7 @@
         	<result name="input">/jsp/crm/listCampaign.jsp</result>
 			<result>/jsp/crm/listCampaign.jsp</result>            	  
         </action>
-                                
+                    
         <action name="editCampaign" class="editCampaignAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
 			<interceptor-ref name="prepare"/>

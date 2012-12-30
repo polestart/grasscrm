@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../../themes/icon.css" />
 <link rel="stylesheet" type="text/css" href="../../css/global.css" />
 
-<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
 
@@ -174,17 +174,18 @@
 											id="relatedAccountID" class="easyui-combogrid record-value"
 											name="relatedAccountID" style="width: 250px;"
 											data-options="  
-							            panelWidth:500,  
+							            panelWidth:400,  
 							            idField:'id',  
 							            textField:'name',  
 							            url:'listAccount.action',
 							            fit: true,
 							            mode:'remote',
 							            columns:[[  
-							                {field:'id',title:'ID',width:60},  
-							                {field:'name',title:'Name',width:100},  
-							                {field:'office_phone',title:'Phone',width:120},  
-							                {field:'email',title:'Email',width:100}  
+							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
+							                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
+							                {field:'office_phone',title:'<s:text name="account.office_phone.label" />',width:120},  
+							                {field:'email',title:'<s:text name="account.email.label" />',width:100},
+							                {field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:100}  
 							            ]]  
 							        ">
 										</select>
@@ -201,9 +202,12 @@
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'subject',title:'Subject',width:100},  
-						                {field:'number',title:'Number',width:120}
+						                {field:'id',title:'<s:text name="entity.id.label" />',width:60,align:'center',sortable:'true'},  
+						                {field:'subject',title:'<s:text name="case.subject.label" />',width:100,align:'center',sortable:'true'},  
+										{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'center',sortable:'true'},
+										{field:'priority.name',title:'<s:text name="case.priority.label" />',width:80,align:'right',sortable:'true'},
+										{field:'status.name',title:'<s:text name="case.status.label" />',width:80,align:'center',sortable:'true'},
+										{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 						            ]]  
 						        ">
 										</select>
@@ -220,13 +224,13 @@
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'name',title:'Name',width:100},
-						                {field:'title',title:'Title',width:100}, 
-						                {field:'accountName',title:'Account Name',width:100},   
-						                {field:'email',title:'Email',width:100},
-						                {field:'officePhone',title:'Office Phone',width:100},
-						                {field:'user_name',title:'User Name',width:100}
+										{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+										{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true'},
+										{field:'title',title:'<s:text name="contact.title.label" />',width:80,align:'center',sortable:'true'},
+										{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
+										{field:'email',title:'<s:text name="contact.email.label" />',width:80,align:'center',sortable:'true'},
+										{field:'office_phone',title:'<s:text name="contact.office_phone.label" />',width:80,align:'center',sortable:'true'},
+										{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 						            ]]  
 						        ">
 										</select>
@@ -243,13 +247,13 @@
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'name',title:'Name',width:100},
-						                {field:'title',title:'Title',width:100}, 
-						                {field:'accountName',title:'Account Name',width:100},   
-						                {field:'officePhone',title:'Office Phone',width:100},
-						                {field:'email',title:'Email',width:100},
-						                {field:'user_name',title:'User Name',width:100}
+										{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+										{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true'},
+										{field:'title',title:'<s:text name="lead.title.label" />',width:80,align:'center',sortable:'true'},
+										{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
+										{field:'office_phone',title:'<s:text name="lead.office_phone.label" />',width:80,align:'center',sortable:'true'},
+										{field:'email',title:'<s:text name="lead.email.label" />',width:80,align:'center',sortable:'true'},
+										{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 						            ]]  
 						        ">
 										</select>
@@ -267,9 +271,12 @@
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'name',title:'Name',width:100},
-						                {field:'end_date',title:'End Date',width:100}
+			{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+			{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true'},
+			{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'center',sortable:'true'},
+			{field:'sales_stage.name',title:'<s:text name="opportunity.salesStage.label" />',width:80,align:'right',sortable:'true'},
+			{field:'opportunity_amount',title:'<s:text name="opportunity.opportunity_amount.label" />',width:80,align:'center',sortable:'true'},
+			{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 						            ]]  
 						        ">
 										</select>
@@ -286,13 +293,13 @@
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'name',title:'Name',width:100},
-						                {field:'title',title:'Title',width:100}, 
-						                {field:'accountName',title:'Account Name',width:100},   
-						                {field:'officePhone',title:'Office Phone',width:100},
-						                {field:'email',title:'Email',width:100},
-						                {field:'user_name',title:'User Name',width:100}
+					{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+					{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true'},
+					{field:'title',title:'<s:text name="target.title.label" />',width:80,align:'center',sortable:'true'},
+					{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
+					{field:'office_phone',title:'<s:text name="target.office_phone.label" />',width:80,align:'center',sortable:'true'},
+					{field:'email',title:'<s:text name="target.email.label" />',width:80,align:'center',sortable:'true'},
+					{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 						            ]]  
 						        ">
 										</select>
@@ -309,12 +316,12 @@
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'subject',title:'Subject',width:100},
-						                {field:'contact',title:'Contact',width:100}, 
-						                {field:'related_object',title:'Related Object',width:100},   
-						                {field:'due_date',title:'Due Date',width:100},
-						                {field:'user_name',title:'Assigned User',width:100}
+			{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+			{field:'subject',title:'<s:text name="task.subject.label" />',width:80,align:'center',sortable:'true'},
+			{field:'contact.name',title:'<s:text name="task.contact.label" />',width:80,align:'center',sortable:'true'},
+			{field:'related_object',title:'<s:text name="task.related_object.label" />',width:80,align:'center',sortable:'true'},
+			{field:'due_date',title:'<s:text name="task.due_date.label" />',width:80,align:'center',sortable:'true'},			
+			{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 						            ]]  
 						        ">
 										</select>
@@ -353,10 +360,11 @@
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'name',title:'Name',width:100},  
-						                {field:'phone',title:'Phone',width:120},  
-						                {field:'age',title:'Age',width:100}  
+							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
+							                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
+							                {field:'title',title:'<s:text name="user.title.label" />',width:120},  
+							                {field:'department',title:'<s:text name="user.department.label" />',width:100},
+							                {field:'status.name',title:'<s:text name="user.status.label" />',width:100} 
 						            ]]  
 						        ">
 									</select></td>
@@ -413,7 +421,7 @@
 									<td width="20%" valign="top">
 										<div class="easyui-accordion" style="width: 200px;">
 											<div title="<s:text name="menu.sales.title"/>"
-												iconCls="icon-ok" style="overflow: auto; padding: 10px;"
+												style="overflow: auto; padding: 10px;"
 												selected="true">
 												<a
 													href="filterCallContactPage.action?id=<s:property value="call.id" />"
@@ -426,7 +434,7 @@
 															name="menu.leads.title" /></label></a>
 											</div>
 											<div title="<s:text name="menu.system.title"/>"
-												iconCls="icon-ok" style="overflow: auto; padding: 10px;">
+												style="overflow: auto; padding: 10px;">
 												<a
 													href="filterCallUserPage.action?id=<s:property value="call.id" />"
 													target="contentFrame"><label

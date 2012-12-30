@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../themes/icon.css" />
 <link rel="stylesheet" type="text/css" href="../../css/global.css" />
 
-<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/datagrid.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
@@ -29,18 +29,18 @@
 		idField:'id', 
 		url:'filterTargetListLead.action?id=<s:property value="id" />',
 		columns:[[
-					{field:'ck',checkbox:true},
-					{field:'id',title:'ID',width:80,align:'center',sortable:'true'},
-					{field:'name',title:'Name',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+					{field:'ck',checkbox:true},		          
+					{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+					{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 						   new_format_value = "<a href='editLead.action?id=" + row.id + "' target='_blank'>" + value + "</a>";
 						   return new_format_value 
 		             }  
 		            },
-					{field:'title',title:'Title',width:80,align:'center',sortable:'true'},
-					{field:'accountName',title:'Account Name',width:80,align:'right',sortable:'true'},
-					{field:'office_phone',title:'Phone',width:80,align:'center',sortable:'true'},
-					{field:'email',title:'Email',width:80,align:'center',sortable:'true'},
-					{field:'user_name',title:'User Name',width:80,align:'center',sortable:'true'}
+					{field:'title',title:'<s:text name="lead.title.label" />',width:80,align:'center',sortable:'true'},
+					{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
+					{field:'office_phone',title:'<s:text name="lead.office_phone.label" />',width:80,align:'center',sortable:'true'},
+					{field:'email',title:'<s:text name="lead.email.label" />',width:80,align:'center',sortable:'true'},
+					{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 				]],
 	  });
 		
@@ -57,7 +57,7 @@
         <a id="remove" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.removeRelation" /></a>  
       </span>
       <span style="white-space:nowrap;">
-        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow('/crm/selectLeadPage.action?relationKey=TargetList&relationValue=<s:property value="id" />','Select Lead',750,500)"><s:text name="action.select" /></a>  
+        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow2('/crm/selectLeadPage.action?relationKey=TargetList&relationValue=<s:property value="id" />','Select Lead',750,500)"><s:text name="action.select" /></a>  
       </span>	      		     		     
     </div> 		 
 	<s:form id="addObjectForm" namespace="/jsp/crm"

@@ -26,7 +26,7 @@
 		padding:5px;
 	}
 </style>
-<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
 <script type="text/javascript" src="../../js/jquery.portal.js"></script>

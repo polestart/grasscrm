@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../../themes/icon.css" />
 <link rel="stylesheet" type="text/css" href="../../css/global.css" />
 
-<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/datagrid.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
@@ -36,11 +36,9 @@
 						   return new_format_value 
 		             }  
 		            },
-					{field:'bill_city',title:'<s:text name="account.bill_city.label" />',width:80,align:'center',sortable:'true'},
-					{field:'bill_country',title:'<s:text name="account.billing_country.label" />',width:80,align:'right',sortable:'true'},
 					{field:'office_phone',title:'<s:text name="account.office_phone.label" />',width:80,align:'center',sortable:'true'},
 					{field:'email',title:'<s:text name="account.email.label" />',width:80,align:'center',sortable:'true'},
-					{field:'user_name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
+					{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 				]],
 	  });
 		
@@ -57,7 +55,7 @@
         <a id="remove" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.removeRelation" /></a>  
       </span>
       <span style="white-space:nowrap;">
-        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow('/crm/selectAccountPage.action?relationKey=Document&relationValue=<s:property value="id" />','Select Account',750,500)"><s:text name="action.select" /></a>  
+        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow2('/crm/selectAccountPage.action?relationKey=Document&relationValue=<s:property value="id" />','Select Account',750,500)"><s:text name="action.select" /></a>  
       </span>	      		     		     
     </div> 		 
 	<s:form id="addObjectForm" namespace="/jsp/crm"

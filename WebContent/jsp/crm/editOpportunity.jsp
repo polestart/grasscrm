@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../../themes/icon.css" />
 <link rel="stylesheet" type="text/css" href="../../css/global.css" />
 
-<script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
 
@@ -101,7 +101,7 @@
 								data-options="required:true"
 								value="<s:property value="opportunity.name" />" /></td>
 							<td class="td-label"><label class="record-label"><s:text
-										name="opportunity.account.label"></s:text>：</label></td>
+										name="entity.account.label"></s:text>：</label></td>
 							<td class="td-value"><select id="accountID"
 								class="easyui-combogrid record-value" name="accountID"
 								style="width: 250px;"
@@ -113,10 +113,11 @@
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'name',title:'Name',width:100},  
-						                {field:'office_phone',title:'Phone',width:120},  
-						                {field:'email',title:'Email',width:100}  
+							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
+							                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
+							                {field:'office_phone',title:'<s:text name="account.office_phone.label" />',width:120},  
+							                {field:'email',title:'<s:text name="account.email.label" />',width:100},
+							                {field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:100}  
 						            ]]  
 						        ">
 							</select></td>
@@ -181,10 +182,13 @@
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
-						                {field:'id',title:'ID',width:60},  
-						                {field:'name',title:'Name',width:100},  
-						                {field:'status',title:'Status',width:120},  
-						                {field:'type',title:'Type',width:100}  
+						                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
+						                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
+						                {field:'status.name',title:'<s:text name="campaign.status.label" />',width:120},  
+						                {field:'type.name',title:'<s:text name="campaign.type.label" />',width:100},
+						                {field:'start_date',title:'<s:text name="campaign.startDate.label" />',width:100},  
+						                {field:'end_date',title:'<s:text name="campaign.endDate.label" />',width:100},
+						                {field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:100}
 						            ]]  
 						        ">
 									</select></td>
@@ -208,10 +212,11 @@
 							            fit: true,
 							            mode:'remote',
 							            columns:[[  
-							                {field:'id',title:'ID',width:60},  
-							                {field:'name',title:'Name',width:100},  
-							                {field:'phone',title:'Phone',width:120},  
-							                {field:'age',title:'Age',width:100}  
+							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
+							                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
+							                {field:'title',title:'<s:text name="user.title.label" />',width:120},  
+							                {field:'department',title:'<s:text name="user.department.label" />',width:100},
+							                {field:'status.name',title:'<s:text name="user.status.label" />',width:100} 
 							            ]]  
 						        ">
 									</select></td>
@@ -268,7 +273,7 @@
 									<td width="20%" valign="top">
 										<div class="easyui-accordion" style="width: 200px;">
 											<div title="<s:text name="menu.sales.title"/>"
-												iconCls="icon-ok" style="overflow: auto; padding: 10px;"
+												style="overflow: auto; padding: 10px;"
 												selected="true">
 												<a
 													href="filterOpportunityContactPage.action?id=<s:property value="opportunity.id" />"
@@ -285,7 +290,7 @@
 															name="menu.documents.title" /></label></a>
 											</div>
 											<div title="<s:text name="menu.activities.title"/>"
-												iconCls="icon-ok" style="overflow: auto; padding: 10px;"
+												style="overflow: auto; padding: 10px;"
 												selected="true">
 												<a
 													href="filterTaskPage.action?filter_key=related_record&id=<s:property value="opportunity.id" />&moreFilterKey=relationKey&moreFilterValue=Opportunity&createKey=relationValue&removeKey=Opportunity"

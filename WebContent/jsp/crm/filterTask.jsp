@@ -10,7 +10,7 @@
   <link rel="stylesheet" type="text/css" href="../../themes/icon.css"/>  
   <link rel="stylesheet" type="text/css" href="../../css/global.css" /> 
   
-  <script type="text/javascript" src="../../js/jquery-1.7.2.min.js"></script>  
+  <script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>  
   <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>   
   <script type="text/javascript" src="../../js/datagrid.js"></script> 
   <script type="text/javascript" src="../../js/global.js"></script>   
@@ -31,16 +31,16 @@
 		url:"filterTask.action?filter_key=<s:property value='filter_key' />&id=<s:property value='id' />&moreFilterKey=<s:property value='moreFilterKey' />&moreFilterValue=<s:property value='moreFilterValue' />",
 		columns:[[
 			{field:'ck',checkbox:true},		  		
-			{field:'id',title:'ID',width:80,align:'center',sortable:'true'},
-			{field:'subject',title:'Subject',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+			{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+			{field:'subject',title:'<s:text name="task.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 				   new_format_value = "<a href='editTask.action?id=" + row.id + "'>" + value + "</a>";
 				   return new_format_value 
              }  
             },
-			{field:'contact',title:'Contact',width:80,align:'center',sortable:'true'},
-			{field:'related_object',title:'Related Object',width:80,align:'center',sortable:'true'},
-			{field:'due_date',title:'Due Date',width:80,align:'center',sortable:'true'},			
-			{field:'user_name',title:'Assigned User',width:80,align:'center',sortable:'true'}
+			{field:'contact.name',title:'<s:text name="task.contact.label" />',width:80,align:'center',sortable:'true'},
+			{field:'related_object',title:'<s:text name="task.related_object.label" />',width:80,align:'center',sortable:'true'},
+			{field:'due_date',title:'<s:text name="task.due_date.label" />',width:80,align:'center',sortable:'true'},			
+			{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 		]],
 	  });
 		

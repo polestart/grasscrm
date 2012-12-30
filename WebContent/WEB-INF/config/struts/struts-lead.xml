@@ -7,6 +7,10 @@
       	<action name="listLead" class="listLeadAction" method="list">
     	  <result name="success" type="json"></result>
         </action>
+        
+      	<action name="listLeadFull" class="listLeadAction" method="listFull">
+    	  <result name="success" type="json"></result>
+        </action>        
 
     	<action name="listLeadPage">
     	  <result type="redirect">/jsp/crm/listLead.jsp</result>
