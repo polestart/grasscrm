@@ -7,8 +7,8 @@
   <id column="id" name="id" type="java.lang.Integer">
    <generator class="native"/>
   </id>
-  <property name="fileName" column="fileName" type="string" not-null="true"/> 
-  <property name="fileContent" column="fileContent" type="byte[]" not-null="true"/>   
+  <property name="fileName" column="fileName" type="string"/> 
+  <property name="fileContent" column="fileContent" type="byte[]"/>   
   <many-to-one name="status"
 			class="DocumentStatus" column="status" cascade="save-update"/>	  
   <property name="name" column="name" type="string" not-null="true"/> 			

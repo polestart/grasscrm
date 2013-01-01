@@ -58,15 +58,11 @@
                                 
         <action name="editCall" class="editCallAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/crm/editCall.jsp</result>
         </action>
                         
         <action name="saveCall" class="editCallAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/crm/editCall.jsp</result>          
     	  <result type="redirect">/jsp/crm/listCall.jsp</result>
         </action>

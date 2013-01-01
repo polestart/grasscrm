@@ -69,8 +69,6 @@
                         
         <action name="editTargetList" class="editTargetListAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/crm/editTargetList.jsp</result>
         </action>
 
@@ -81,8 +79,6 @@
                                 
         <action name="saveTargetList" class="editTargetListAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/crm/editTargetList.jsp</result>          
     	  <result type="redirect">/jsp/crm/listTargetList.jsp</result>
         </action>

@@ -67,15 +67,11 @@
                                 
         <action name="editDocument" class="editDocumentAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/crm/editDocument.jsp</result>
         </action>
                         
         <action name="saveDocument" class="editDocumentAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/crm/editDocument.jsp</result>          
     	  <result type="redirect">/jsp/crm/listDocument.jsp</result>
         </action>

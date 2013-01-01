@@ -95,7 +95,10 @@
 						<tr>
 							<td class="td-label"><label class="record-label"><s:text
 										name="case.subject.label"></s:text>：</label></td>
-							<td class="td-value"><s:textfield name="caseInstance.subject" cssClass="record-value"/></td>
+							<td class="td-value"><input name="caseInstance.subject"
+								class="easyui-validatebox record-value"
+								data-options="required:true"
+								value="<s:property value="caseInstance.subject" />" /></td>
 							<td class="td-label"></td>
 							<td class="td-value"></td>
 						</tr>

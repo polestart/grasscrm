@@ -103,8 +103,6 @@ public class EditUserAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String get() throws Exception {
-        List<Role> allRole = roleService.getAllObjects(Role.class
-                .getSimpleName());
         if (this.getId() != null) {
             user = baseService.getEntityById(User.class, this.getId());
             UserStatus status = user.getStatus();
@@ -117,15 +115,13 @@ public class EditUserAction extends BaseEditAction implements Preparable {
             }
             Set<Role> roleSet = user.getRoles();
             rightRoles = new ArrayList<Role>();
-            leftRoles = new ArrayList<Role>();
             for (Role role : roleSet) {
                 rightRoles.add(role);
             }
-            allRole.removeAll(rightRoles);
-            leftRoles = allRole;
+
+            leftRoles.removeAll(rightRoles);
+            ;
             this.getBaseInfo(user);
-        } else {
-            this.leftRoles = allRole;
         }
         return SUCCESS;
     }
@@ -137,6 +133,7 @@ public class EditUserAction extends BaseEditAction implements Preparable {
     public void prepare() throws Exception {
         this.statuses = userStatusService.getAllObjects(UserStatus.class
                 .getSimpleName());
+        this.leftRoles = roleService.getAllObjects(Role.class.getSimpleName());
     }
 
     /**

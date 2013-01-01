@@ -82,15 +82,11 @@
                                 
         <action name="editOpportunity" class="editOpportunityAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/crm/editOpportunity.jsp</result>
         </action>
                         
         <action name="saveOpportunity" class="editOpportunityAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/crm/editOpportunity.jsp</result>          
     	  <result type="redirect">/jsp/crm/listOpportunity.jsp</result>
         </action>

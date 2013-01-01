@@ -90,15 +90,11 @@
                         
         <action name="editContact" class="editContactAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/crm/editContact.jsp</result>
         </action>
                         
         <action name="saveContact" class="editContactAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/crm/editContact.jsp</result>          
     	  <result type="redirect">/jsp/crm/listContact.jsp</result>
         </action>

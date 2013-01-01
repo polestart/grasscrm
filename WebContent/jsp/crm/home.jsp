@@ -53,7 +53,7 @@
 			             }  
 			            },
 						{field:'office_phone',title:'<s:text name="account.office_phone.label" />',width:80,align:'center',sortable:'true'},
-						{field:'email',title:'<s:text name="account.email.label" />',width:80,align:'center',sortable:'true'}		
+						{field:'email',title:'<s:text name="account.email.label" />',width:80,align:'center',sortable:'true'}								
 					]]
 				  });			
 			
@@ -66,15 +66,15 @@
 					idField:'id', 
 					url:'listTask.action?_search=true&filter_key=assigned_to.id&filter_op==&filter_value=<s:property value="userID" />',
 					columns:[[
-						{field:'id',title:'ID',width:80,align:'center',sortable:'true'},
-						{field:'subject',title:'Subject',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+						{field:'subject',title:'<s:text name="task.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 							   new_format_value = "<a href='editTask.action?id=" + row.id + "'>" + value + "</a>";
 							   return new_format_value 
 			             }  
 			            },
-						{field:'contact',title:'Contact',width:80,align:'center',sortable:'true'},
-						{field:'related_object',title:'Related Object',width:80,align:'center',sortable:'true'},
-						{field:'due_date',title:'Due Date',width:120,align:'center',sortable:'true'}			
+						{field:'contact',title:'<s:text name="task.contact.label" />',width:80,align:'center',sortable:'true'},
+						{field:'related_object',title:'<s:text name="task.related_object.label" />',width:80,align:'center',sortable:'true'},
+						{field:'due_date',title:'<s:text name="task.due_date.label" />',width:120,align:'center',sortable:'true'}			
 					]]
 				  });
 			  
@@ -87,16 +87,16 @@
 					idField:'id', 
 					url:'listLead.action?_search=true&filter_key=assigned_to.id&filter_op==&filter_value=<s:property value="userID" />',
 					columns:[[
-						{field:'id',title:'ID',width:80,align:'center',sortable:'true'},
-						{field:'name',title:'Name',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+						{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 							   new_format_value = "<a href='editLead.action?id=" + row.id + "'>" + value + "</a>";
 							   return new_format_value 
 			             }  
 			            },
-						{field:'title',title:'Title',width:80,align:'center',sortable:'true'},
-						{field:'accountName',title:'Account Name',width:80,align:'right',sortable:'true'},
-						{field:'office_phone',title:'Phone',width:80,align:'center',sortable:'true'},
-						{field:'email',title:'Email',width:80,align:'center',sortable:'true'}			
+						{field:'title',title:'<s:text name="lead.title.label" />',width:80,align:'center',sortable:'true'},
+						{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
+						{field:'office_phone',title:'<s:text name="lead.office_phone.label" />',width:80,align:'center',sortable:'true'},
+						{field:'email',title:'<s:text name="lead.email.label" />',width:80,align:'center',sortable:'true'}			
 					]]
 				  });	
 			  
@@ -109,15 +109,15 @@
 					idField:'id', 
 					url:'listOpportunity.action?_search=true&filter_key=assigned_to.id&filter_op==&filter_value=<s:property value="userID" />',
 					columns:[[
-						{field:'id',title:'ID',width:80,align:'center',sortable:'true'},
-						{field:'name',title:'Name',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+						{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 							   new_format_value = "<a href='editOpportunity.action?id=" + row.id + "'>" + value + "</a>";
 							   return new_format_value 
 			             }  
 			            },
-						{field:'accountName',title:'Account Name',width:80,align:'center',sortable:'true'},
-						{field:'stageName',title:'Stage Name',width:80,align:'right',sortable:'true'},
-						{field:'amount',title:'Amount',width:80,align:'center',sortable:'true'}		
+						{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'center',sortable:'true'},
+						{field:'sales_stage.name',title:'<s:text name="opportunity.salesStage.label" />',width:80,align:'right',sortable:'true'},
+						{field:'opportunity_amount',title:'<s:text name="opportunity.opportunity_amount.label" />',width:80,align:'center',sortable:'true'}		
 					]]
 				  });			  
 			  
@@ -136,8 +136,8 @@
 							   return new_format_value 
 			             }  
 			            },
-						{field:'statusName',title:'<s:text name="meeting.status.label" />',width:80,align:'center',sortable:'true'},
-						{field:'startDate',title:'<s:text name="meeting.start_date.label" />',width:80,align:'right',sortable:'true'},
+						{field:'status.name',title:'<s:text name="meeting.status.label" />',width:80,align:'center',sortable:'true'},
+						{field:'start_date',title:'<s:text name="meeting.start_date.label" />',width:80,align:'right',sortable:'true'},
 						{field:'end_date',title:'<s:text name="meeting.end_date.label" />',width:80,align:'center',sortable:'true'},
 						{field:'location',title:'<s:text name="meeting.location.label" />',width:80,align:'center',sortable:'true'}			
 					]]
@@ -153,13 +153,13 @@
 					url:'listCall.action?_search=true&filter_key=assigned_to.id&filter_op==&filter_value=<s:property value="userID" />',
 					columns:[[
 						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-						{field:'direction',title:'<s:text name="call.direction.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+						{field:'direction.name',title:'<s:text name="call.direction.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 							   new_format_value = "<a href='editCall.action?id=" + row.id + "'>" + value + "</a>";
 							   return new_format_value 
 			             }  
 			            },
 						{field:'subject',title:'<s:text name="call.subject.label" />',width:80,align:'center',sortable:'true'},
-						{field:'statusName',title:'<s:text name="call.status.label" />',width:80,align:'right',sortable:'true'},
+						{field:'status.name',title:'<s:text name="call.status.label" />',width:80,align:'right',sortable:'true'},
 						{field:'start_date',title:'<s:text name="call.start_date.label" />',width:80,align:'center',sortable:'true'}		
 					]]
 				  });				  

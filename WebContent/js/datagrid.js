@@ -67,9 +67,11 @@
 			$.messager.confirm('Confirm','Are you sure you want to delete?',function(r){
 				if (r){						
 				    url = url + rows; 
-				    $.post( 
-				       url     
-				    ); 	
+				    $.ajax({  
+				          type : "post",  
+				          url : url,  
+				          async : false,  
+				          });  				    
 				    window.opener.location.reload();
 				}
 			});

@@ -19,7 +19,7 @@
 			class="CaseOrigin" column="origin" cascade="save-update"/>
   <many-to-one name="reason"
 			class="CaseReason" column="reason" cascade="save-update"/>									
-  <property name="subject" column="subject" type="string" /> 
+  <property name="subject" column="subject" type="string" not-null="true"/> 
   <property name="description" column="description" type="string" />   
   <property name="resolution" column="resolution" type="string" />  
   <many-to-one name="assigned_to"

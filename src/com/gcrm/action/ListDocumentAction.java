@@ -133,7 +133,7 @@ public class ListDocumentAction extends BaseListAction {
             }
             DocumentCategory category = instance.getCategory();
             if (category != null) {
-                categoryName = category.toString();
+                categoryName = category.getName();
             } else {
                 categoryName = "";
             }

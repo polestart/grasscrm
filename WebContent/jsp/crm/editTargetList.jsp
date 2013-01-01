@@ -91,8 +91,10 @@
 						<tr>
 							<td class="td-label"><label class="record-label"><s:text
 										name="entity.name.label"></s:text>：</label></td>
-							<td class="td-value"><s:textfield name="targetList.name"
-									cssClass="record-value" /></td>
+							<td class="td-value"><input name="targetList.name"
+								class="easyui-validatebox record-value"
+								data-options="required:true"
+								value="<s:property value="targetList.name" />" /></td>
 							<td class="td-label"></td>
 							<td class="td-value"></td>
 						</tr>

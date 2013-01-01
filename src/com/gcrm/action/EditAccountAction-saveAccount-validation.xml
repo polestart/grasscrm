@@ -4,11 +4,11 @@
     "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
 
 <validators>    
-    <field name="user.name">
+    <field name="account.name">
         <field-validator type="requiredstring">
             <param name="trim">true</param>
-			<message key="error.user.name.required"></message>
-        </field-validator>      
+			<message>${getText("errors.required", {getText("entity.name.label")})}</message>
+        </field-validator>
     </field>
     
 </validators>

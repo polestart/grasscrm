@@ -100,7 +100,7 @@
 	 */
 	function makeDraggable(target, panel){
 		var spacer;
-		panel.panel('panel').draggable({
+		panel.panel('panel')._draggable({
 			handle:'>div.panel-header>div.panel-title',
 			proxy:function(source){
 				var p = $('<div class="portal-proxy">proxy</div>').insertAfter(source);
@@ -278,11 +278,11 @@
 			});
 		},
 		disableDragging: function(jq, panel){
-			panel.panel('panel').draggable('disable');
+			panel.panel('panel')._draggable('disable');
 			return jq;
 		},
 		enableDragging: function(jq, panel){
-			panel.panel('panel').draggable('enable');
+			panel.panel('panel')._draggable('enable');
 			return jq;
 		}
 	};

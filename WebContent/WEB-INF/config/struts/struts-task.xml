@@ -55,15 +55,11 @@
                                 
         <action name="editTask" class="editTaskAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/crm/editTask.jsp</result>
         </action>
                         
         <action name="saveTask" class="editTaskAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/crm/editTask.jsp</result>          
     	  <result type="redirect">/jsp/crm/listTask.jsp</result>
         </action>        

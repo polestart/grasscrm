@@ -58,15 +58,11 @@
                                 
         <action name="editMeeting" class="editMeetingAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/crm/editMeeting.jsp</result>
         </action>
                         
         <action name="saveMeeting" class="editMeetingAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/crm/editMeeting.jsp</result>          
     	  <result type="redirect">/jsp/crm/listMeeting.jsp</result>
         </action>

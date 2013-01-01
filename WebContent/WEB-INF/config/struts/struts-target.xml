@@ -45,8 +45,6 @@
                         
         <action name="editTarget" class="editTargetAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/crm/editTarget.jsp</result>
         </action>
 
@@ -57,8 +55,6 @@
                                 
         <action name="saveTarget" class="editTargetAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/crm/editTarget.jsp</result>          
     	  <result type="redirect">/jsp/crm/listTarget.jsp</result>
         </action>

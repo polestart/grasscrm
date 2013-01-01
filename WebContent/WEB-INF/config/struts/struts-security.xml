@@ -55,15 +55,11 @@
                                 
         <action name="editUser" class="editUserAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/system/editUser.jsp</result>
         </action>
                         
         <action name="saveUser" class="editUserAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/system/editUser.jsp</result>          
     	  <result type="redirect">/jsp/system/listUser.jsp</result>
         </action>
@@ -103,15 +99,11 @@
                                 
         <action name="editRole" class="editRoleAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/system/editRole.jsp</result>
         </action>
                         
         <action name="saveRole" class="editRoleAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/system/editRole.jsp</result>          
     	  <result type="redirect">/jsp/system/resetPermissionMap.action</result>
         </action>

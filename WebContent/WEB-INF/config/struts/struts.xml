@@ -34,11 +34,7 @@
             </interceptor>
             <interceptor-stack name="defaultInterceptor">
                 <interceptor-ref name="exceptionInterceptor" />
-                <interceptor-ref name="defaultStack">
-                    <param name="validation.excludeMethods">
-                        prepareCampaign
-                    </param>
-                </interceptor-ref>
+                <interceptor-ref name="defaultStack"/>
             </interceptor-stack>
         </interceptors>
 

@@ -63,15 +63,11 @@
                                 
         <action name="editLead" class="editLeadAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/crm/editLead.jsp</result>
         </action>
                         
         <action name="saveLead" class="editLeadAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/crm/editLead.jsp</result>          
     	  <result type="redirect">/jsp/crm/listLead.jsp</result>
         </action>

@@ -80,15 +80,11 @@
                                 
         <action name="editAccount" class="editAccountAction" method="get">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/crm/editAccount.jsp</result>
         </action>
                         
         <action name="saveAccount" class="editAccountAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
-			<interceptor-ref name="prepare"/>
-   			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/crm/editAccount.jsp</result>          
     	  <result type="redirect">/jsp/crm/listAccount.jsp</result>
         </action>  

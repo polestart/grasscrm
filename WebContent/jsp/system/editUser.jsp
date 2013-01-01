@@ -79,7 +79,7 @@
 			</div>
 
 			<div id="feature-title">
-				<s:if test="user!=null">
+				<s:if test="user!=null && user.id!=null">
 					<h2>
 						<s:text name="title.updateUser" />
 					</h2>
