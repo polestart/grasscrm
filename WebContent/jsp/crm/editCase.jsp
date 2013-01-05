@@ -30,7 +30,9 @@
 
 	$(document).ready(function() {
 		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
+		$('#assignedToID').combogrid('setText', '<s:property value="assignedToText"/>');
 		$('#accountID').combogrid('setValue', '<s:property value="accountID"/>');
+		$('#accountID').combogrid('setText', '<s:property value="accountText"/>');
 	})
 </script>
 
@@ -125,10 +127,14 @@
 										class="easyui-combogrid record-value" name="accountID"
 										style="width: 250px;"
 										data-options="  
-						            panelWidth:500,  
+						            panelWidth:520,  
 						            idField:'id',  
 						            textField:'name',  
 						            url:'listAccount.action',
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
@@ -167,10 +173,14 @@
 										id="assignedToID" class="easyui-combogrid record-value" name="assignedToID"
 										style="width: 250px;"
 										data-options="  
-							            panelWidth:500,  
+							            panelWidth:520,  
 							            idField:'id',  
 							            textField:'name',  
 							            url:'/grass/jsp/system/listUser.action',
+							            loadMsg: '<s:text name="datagrid.loading" />',
+							            pagination : true,
+							            pageSize: 10,
+							            pageList: [10,30,50],
 							            fit: true,
 							            mode:'remote',
 							            columns:[[  

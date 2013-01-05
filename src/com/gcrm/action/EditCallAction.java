@@ -20,14 +20,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.gcrm.domain.Account;
 import com.gcrm.domain.Call;
 import com.gcrm.domain.CallDirection;
 import com.gcrm.domain.CallStatus;
+import com.gcrm.domain.Case;
+import com.gcrm.domain.Contact;
+import com.gcrm.domain.Lead;
+import com.gcrm.domain.Opportunity;
 import com.gcrm.domain.ReminderOption;
+import com.gcrm.domain.Target;
+import com.gcrm.domain.Task;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
+import com.gcrm.util.Constant;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
@@ -44,6 +52,13 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     private IBaseService<CallDirection> callDirectionService;
     private IBaseService<ReminderOption> reminderOptionService;
     private IBaseService<User> userService;
+    private IBaseService<Account> accountService;
+    private IBaseService<Case> caseService;
+    private IBaseService<Contact> contactService;
+    private IBaseService<Lead> leadService;
+    private IBaseService<Opportunity> opportunityService;
+    private IBaseService<Target> targetService;
+    private IBaseService<Task> taskService;
     private Call call;
     private List<CallStatus> statuses;
     private List<CallDirection> directions;
@@ -53,13 +68,21 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     private Integer reminderOptionPopID = null;
     private Integer reminderOptionEmailID = null;
     private Integer assignedToID = null;
+    private String assignedToText = null;
     private Integer relatedAccountID = null;
+    private String relatedAccountText = null;
     private Integer relatedCaseID = null;
+    private String relatedCaseText = null;
     private Integer relatedContactID = null;
+    private String relatedContactText = null;
     private Integer relatedLeadID = null;
+    private String relatedLeadText = null;
     private Integer relatedOpportunityID = null;
+    private String relatedOpportunityText = null;
     private Integer relatedTargetID = null;
+    private String relatedTargetText = null;
     private Integer relatedTaskID = null;
+    private String relatedTaskText = null;
     private String startDate = null;
 
     /**
@@ -97,7 +120,8 @@ public class EditCallAction extends BaseEditAction implements Preparable {
             user = userService.getEntityById(User.class, assignedToID);
         }
         call.setAssigned_to(user);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_TIME_FORMAT);
         Date start_date = null;
         if (!CommonUtil.isNullOrEmpty(startDate)) {
             start_date = dateFormat.parse(startDate);
@@ -155,10 +179,11 @@ public class EditCallAction extends BaseEditAction implements Preparable {
             User user = call.getAssigned_to();
             if (user != null) {
                 assignedToID = user.getId();
+                assignedToText = user.getName();
             }
             Date start_date = call.getStart_date();
             SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    "M/d/yyyy HH:mm:ss");
+                    Constant.DATE_TIME_FORMAT);
             if (start_date != null) {
                 startDate = dateFormat.format(start_date);
             }
@@ -170,7 +195,8 @@ public class EditCallAction extends BaseEditAction implements Preparable {
             Map<String, Object> session = context.getSession();
             User loginUser = (User) session
                     .get(AuthenticationSuccessListener.LOGIN_USER);
-            this.assignedToID = loginUser.getId();
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
             if (!CommonUtil.isNullOrEmpty(this.getRelationKey())) {
                 call.setRelated_object(this.getRelationKey());
                 setRelatedRecord(this.getRelationKey(),
@@ -191,18 +217,32 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     private void setRelatedRecord(String relatedObject, Integer relatedRecord) {
         if ("Account".equals(relatedObject)) {
             this.relatedAccountID = relatedRecord;
+            this.relatedAccountText = this.accountService.getEntityById(
+                    Account.class, relatedRecord).getName();
         } else if ("Case".equals(relatedObject)) {
             this.relatedCaseID = relatedRecord;
+            this.relatedCaseText = this.caseService.getEntityById(Case.class,
+                    relatedRecord).getSubject();
         } else if ("Contact".equals(relatedObject)) {
             this.relatedContactID = relatedRecord;
+            this.relatedContactText = this.contactService.getEntityById(
+                    Contact.class, relatedRecord).getName();
         } else if ("Lead".equals(relatedObject)) {
             this.relatedLeadID = relatedRecord;
+            this.relatedLeadText = this.leadService.getEntityById(Lead.class,
+                    relatedRecord).getName();
         } else if ("Opportunity".equals(relatedObject)) {
             this.relatedOpportunityID = relatedRecord;
+            this.relatedOpportunityText = this.opportunityService
+                    .getEntityById(Opportunity.class, relatedRecord).getName();
         } else if ("Target".equals(relatedObject)) {
             this.relatedTargetID = relatedRecord;
+            this.relatedTargetText = this.targetService.getEntityById(
+                    Target.class, relatedRecord).getName();
         } else if ("Task".equals(relatedObject)) {
             this.relatedTaskID = relatedRecord;
+            this.relatedTaskText = this.taskService.getEntityById(Task.class,
+                    relatedRecord).getSubject();
         }
     }
 
@@ -557,5 +597,175 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      */
     public void setReminderOptionEmailID(Integer reminderOptionEmailID) {
         this.reminderOptionEmailID = reminderOptionEmailID;
+    }
+
+    /**
+     * @return the assignedToText
+     */
+    public String getAssignedToText() {
+        return assignedToText;
+    }
+
+    /**
+     * @return the relatedAccountText
+     */
+    public String getRelatedAccountText() {
+        return relatedAccountText;
+    }
+
+    /**
+     * @return the relatedCaseText
+     */
+    public String getRelatedCaseText() {
+        return relatedCaseText;
+    }
+
+    /**
+     * @return the relatedContactText
+     */
+    public String getRelatedContactText() {
+        return relatedContactText;
+    }
+
+    /**
+     * @return the relatedLeadText
+     */
+    public String getRelatedLeadText() {
+        return relatedLeadText;
+    }
+
+    /**
+     * @return the relatedOpportunityText
+     */
+    public String getRelatedOpportunityText() {
+        return relatedOpportunityText;
+    }
+
+    /**
+     * @return the relatedTargetText
+     */
+    public String getRelatedTargetText() {
+        return relatedTargetText;
+    }
+
+    /**
+     * @return the relatedTaskText
+     */
+    public String getRelatedTaskText() {
+        return relatedTaskText;
+    }
+
+    /**
+     * @return the accountService
+     */
+    public IBaseService<Account> getAccountService() {
+        return accountService;
+    }
+
+    /**
+     * @param accountService
+     *            the accountService to set
+     */
+    public void setAccountService(IBaseService<Account> accountService) {
+        this.accountService = accountService;
+    }
+
+    /**
+     * @return the caseService
+     */
+    public IBaseService<Case> getCaseService() {
+        return caseService;
+    }
+
+    /**
+     * @param caseService
+     *            the caseService to set
+     */
+    public void setCaseService(IBaseService<Case> caseService) {
+        this.caseService = caseService;
+    }
+
+    /**
+     * @return the contactService
+     */
+    public IBaseService<Contact> getContactService() {
+        return contactService;
+    }
+
+    /**
+     * @param contactService
+     *            the contactService to set
+     */
+    public void setContactService(IBaseService<Contact> contactService) {
+        this.contactService = contactService;
+    }
+
+    /**
+     * @return the leadService
+     */
+    public IBaseService<Lead> getLeadService() {
+        return leadService;
+    }
+
+    /**
+     * @param leadService
+     *            the leadService to set
+     */
+    public void setLeadService(IBaseService<Lead> leadService) {
+        this.leadService = leadService;
+    }
+
+    /**
+     * @return the opportunityService
+     */
+    public IBaseService<Opportunity> getOpportunityService() {
+        return opportunityService;
+    }
+
+    /**
+     * @param opportunityService
+     *            the opportunityService to set
+     */
+    public void setOpportunityService(
+            IBaseService<Opportunity> opportunityService) {
+        this.opportunityService = opportunityService;
+    }
+
+    /**
+     * @return the targetService
+     */
+    public IBaseService<Target> getTargetService() {
+        return targetService;
+    }
+
+    /**
+     * @param targetService
+     *            the targetService to set
+     */
+    public void setTargetService(IBaseService<Target> targetService) {
+        this.targetService = targetService;
+    }
+
+    /**
+     * @return the taskService
+     */
+    public IBaseService<Task> getTaskService() {
+        return taskService;
+    }
+
+    /**
+     * @param taskService
+     *            the taskService to set
+     */
+    public void setTaskService(IBaseService<Task> taskService) {
+        this.taskService = taskService;
+    }
+
+    /**
+     * @param assignedToText
+     *            the assignedToText to set
+     */
+    public void setAssignedToText(String assignedToText) {
+        this.assignedToText = assignedToText;
     }
 }

@@ -20,9 +20,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.gcrm.domain.Account;
+import com.gcrm.domain.Case;
+import com.gcrm.domain.Contact;
+import com.gcrm.domain.Lead;
 import com.gcrm.domain.Meeting;
 import com.gcrm.domain.MeetingStatus;
+import com.gcrm.domain.Opportunity;
 import com.gcrm.domain.ReminderOption;
+import com.gcrm.domain.Target;
+import com.gcrm.domain.Task;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
@@ -43,22 +50,37 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
     private IBaseService<MeetingStatus> meetingStatusService;
     private IBaseService<ReminderOption> reminderOptionService;
     private IBaseService<User> userService;
+    private IBaseService<Account> accountService;
+    private IBaseService<Case> caseService;
+    private IBaseService<Contact> contactService;
+    private IBaseService<Lead> leadService;
+    private IBaseService<Opportunity> opportunityService;
+    private IBaseService<Target> targetService;
+    private IBaseService<Task> taskService;
     private Meeting meeting;
     private List<MeetingStatus> statuses;
     private List<ReminderOption> reminderOptions;
     private Integer statusID = null;
     private Integer reminderOptionPopID = null;
     private Integer reminderOptionEmailID = null;
-    private Integer assignedToID = null;
     private String startDate = null;
     private String endDate = null;
+    private Integer assignedToID = null;
+    private String assignedToText = null;
     private Integer relatedAccountID = null;
+    private String relatedAccountText = null;
     private Integer relatedCaseID = null;
+    private String relatedCaseText = null;
     private Integer relatedContactID = null;
+    private String relatedContactText = null;
     private Integer relatedLeadID = null;
+    private String relatedLeadText = null;
     private Integer relatedOpportunityID = null;
+    private String relatedOpportunityText = null;
     private Integer relatedTargetID = null;
+    private String relatedTargetText = null;
     private Integer relatedTaskID = null;
+    private String relatedTaskText = null;
 
     /**
      * Saves the entity.
@@ -149,6 +171,7 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
             User assignedTo = meeting.getAssigned_to();
             if (assignedTo != null) {
                 assignedToID = assignedTo.getId();
+                assignedToText = assignedTo.getName();
             }
             Date start_date = meeting.getStart_date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
@@ -167,7 +190,8 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
             Map<String, Object> session = context.getSession();
             User loginUser = (User) session
                     .get(AuthenticationSuccessListener.LOGIN_USER);
-            this.assignedToID = loginUser.getId();
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
             if (!CommonUtil.isNullOrEmpty(this.getRelationKey())) {
                 meeting.setRelated_object(this.getRelationKey());
                 setRelatedRecord(this.getRelationKey(),
@@ -188,18 +212,32 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
     private void setRelatedRecord(String relatedObject, Integer relatedRecord) {
         if ("Account".equals(relatedObject)) {
             this.relatedAccountID = relatedRecord;
+            this.relatedAccountText = this.accountService.getEntityById(
+                    Account.class, relatedRecord).getName();
         } else if ("Case".equals(relatedObject)) {
             this.relatedCaseID = relatedRecord;
+            this.relatedCaseText = this.caseService.getEntityById(Case.class,
+                    relatedRecord).getSubject();
         } else if ("Contact".equals(relatedObject)) {
             this.relatedContactID = relatedRecord;
+            this.relatedContactText = this.contactService.getEntityById(
+                    Contact.class, relatedRecord).getName();
         } else if ("Lead".equals(relatedObject)) {
             this.relatedLeadID = relatedRecord;
+            this.relatedLeadText = this.leadService.getEntityById(Lead.class,
+                    relatedRecord).getName();
         } else if ("Opportunity".equals(relatedObject)) {
             this.relatedOpportunityID = relatedRecord;
+            this.relatedOpportunityText = this.opportunityService
+                    .getEntityById(Opportunity.class, relatedRecord).getName();
         } else if ("Target".equals(relatedObject)) {
             this.relatedTargetID = relatedRecord;
+            this.relatedTargetText = this.targetService.getEntityById(
+                    Target.class, relatedRecord).getName();
         } else if ("Task".equals(relatedObject)) {
             this.relatedTaskID = relatedRecord;
+            this.relatedTaskText = this.taskService.getEntityById(Task.class,
+                    relatedRecord).getSubject();
         }
     }
 
@@ -514,6 +552,232 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
      */
     public void setRelatedTaskID(Integer relatedTaskID) {
         this.relatedTaskID = relatedTaskID;
+    }
+
+    /**
+     * @return the assignedToText
+     */
+    public String getAssignedToText() {
+        return assignedToText;
+    }
+
+    /**
+     * @param assignedToText
+     *            the assignedToText to set
+     */
+    public void setAssignedToText(String assignedToText) {
+        this.assignedToText = assignedToText;
+    }
+
+    /**
+     * @return the relatedAccountText
+     */
+    public String getRelatedAccountText() {
+        return relatedAccountText;
+    }
+
+    /**
+     * @param relatedAccountText
+     *            the relatedAccountText to set
+     */
+    public void setRelatedAccountText(String relatedAccountText) {
+        this.relatedAccountText = relatedAccountText;
+    }
+
+    /**
+     * @return the relatedCaseText
+     */
+    public String getRelatedCaseText() {
+        return relatedCaseText;
+    }
+
+    /**
+     * @param relatedCaseText
+     *            the relatedCaseText to set
+     */
+    public void setRelatedCaseText(String relatedCaseText) {
+        this.relatedCaseText = relatedCaseText;
+    }
+
+    /**
+     * @return the relatedContactText
+     */
+    public String getRelatedContactText() {
+        return relatedContactText;
+    }
+
+    /**
+     * @param relatedContactText
+     *            the relatedContactText to set
+     */
+    public void setRelatedContactText(String relatedContactText) {
+        this.relatedContactText = relatedContactText;
+    }
+
+    /**
+     * @return the relatedLeadText
+     */
+    public String getRelatedLeadText() {
+        return relatedLeadText;
+    }
+
+    /**
+     * @param relatedLeadText
+     *            the relatedLeadText to set
+     */
+    public void setRelatedLeadText(String relatedLeadText) {
+        this.relatedLeadText = relatedLeadText;
+    }
+
+    /**
+     * @return the relatedOpportunityText
+     */
+    public String getRelatedOpportunityText() {
+        return relatedOpportunityText;
+    }
+
+    /**
+     * @param relatedOpportunityText
+     *            the relatedOpportunityText to set
+     */
+    public void setRelatedOpportunityText(String relatedOpportunityText) {
+        this.relatedOpportunityText = relatedOpportunityText;
+    }
+
+    /**
+     * @return the relatedTargetText
+     */
+    public String getRelatedTargetText() {
+        return relatedTargetText;
+    }
+
+    /**
+     * @param relatedTargetText
+     *            the relatedTargetText to set
+     */
+    public void setRelatedTargetText(String relatedTargetText) {
+        this.relatedTargetText = relatedTargetText;
+    }
+
+    /**
+     * @return the relatedTaskText
+     */
+    public String getRelatedTaskText() {
+        return relatedTaskText;
+    }
+
+    /**
+     * @param relatedTaskText
+     *            the relatedTaskText to set
+     */
+    public void setRelatedTaskText(String relatedTaskText) {
+        this.relatedTaskText = relatedTaskText;
+    }
+
+    /**
+     * @return the accountService
+     */
+    public IBaseService<Account> getAccountService() {
+        return accountService;
+    }
+
+    /**
+     * @param accountService
+     *            the accountService to set
+     */
+    public void setAccountService(IBaseService<Account> accountService) {
+        this.accountService = accountService;
+    }
+
+    /**
+     * @return the caseService
+     */
+    public IBaseService<Case> getCaseService() {
+        return caseService;
+    }
+
+    /**
+     * @param caseService
+     *            the caseService to set
+     */
+    public void setCaseService(IBaseService<Case> caseService) {
+        this.caseService = caseService;
+    }
+
+    /**
+     * @return the contactService
+     */
+    public IBaseService<Contact> getContactService() {
+        return contactService;
+    }
+
+    /**
+     * @param contactService
+     *            the contactService to set
+     */
+    public void setContactService(IBaseService<Contact> contactService) {
+        this.contactService = contactService;
+    }
+
+    /**
+     * @return the leadService
+     */
+    public IBaseService<Lead> getLeadService() {
+        return leadService;
+    }
+
+    /**
+     * @param leadService
+     *            the leadService to set
+     */
+    public void setLeadService(IBaseService<Lead> leadService) {
+        this.leadService = leadService;
+    }
+
+    /**
+     * @return the opportunityService
+     */
+    public IBaseService<Opportunity> getOpportunityService() {
+        return opportunityService;
+    }
+
+    /**
+     * @param opportunityService
+     *            the opportunityService to set
+     */
+    public void setOpportunityService(
+            IBaseService<Opportunity> opportunityService) {
+        this.opportunityService = opportunityService;
+    }
+
+    /**
+     * @return the targetService
+     */
+    public IBaseService<Target> getTargetService() {
+        return targetService;
+    }
+
+    /**
+     * @param targetService
+     *            the targetService to set
+     */
+    public void setTargetService(IBaseService<Target> targetService) {
+        this.targetService = targetService;
+    }
+
+    /**
+     * @return the taskService
+     */
+    public IBaseService<Task> getTaskService() {
+        return taskService;
+    }
+
+    /**
+     * @param taskService
+     *            the taskService to set
+     */
+    public void setTaskService(IBaseService<Task> taskService) {
+        this.taskService = taskService;
     }
 
 }

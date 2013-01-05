@@ -38,6 +38,7 @@ import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.IDocumentService;
 import com.gcrm.util.CommonUtil;
+import com.gcrm.util.Constant;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
@@ -66,7 +67,9 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     private Integer categoryID = null;
     private Integer subCategoryID = null;
     private Integer relatedDocumentID = null;
+    private String relatedDocumentText = null;
     private Integer assignedToID = null;
+    private String assignedToText = null;
     private String publishDateS = null;
     private String expirationDateS = null;
     private File upload;
@@ -105,7 +108,14 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
             assignedTo = userService.getEntityById(User.class, assignedToID);
         }
         document.setAssigned_to(assignedTo);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
+        Document relatedDocument = null;
+        if (relatedDocumentID != null) {
+            relatedDocument = baseService.getEntityById(Document.class,
+                    relatedDocumentID);
+        }
+        document.setRelated_document(relatedDocument);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_EDIT_FORMAT);
         Date publishDate = null;
         if (!CommonUtil.isNullOrEmpty(publishDateS)) {
             publishDate = dateFormat.parse(publishDateS);
@@ -186,9 +196,16 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
             User assignedTo = document.getAssigned_to();
             if (assignedTo != null) {
                 assignedToID = assignedTo.getId();
+                assignedToText = assignedTo.getName();
+            }
+            Document relatedDocument = document.getRelated_document();
+            if (relatedDocument != null) {
+                relatedDocumentID = relatedDocument.getId();
+                relatedDocumentText = relatedDocument.getName();
             }
             Date publishDate = document.getPublish_date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Constant.DATE_EDIT_FORMAT);
             if (publishDate != null) {
                 publishDateS = dateFormat.format(publishDate);
             }
@@ -201,7 +218,8 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
             Map<String, Object> session = context.getSession();
             User loginUser = (User) session
                     .get(AuthenticationSuccessListener.LOGIN_USER);
-            this.assignedToID = loginUser.getId();
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
         }
         return SUCCESS;
     }
@@ -597,5 +615,19 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
      */
     public void setCaseService(IBaseService<Case> caseService) {
         this.caseService = caseService;
+    }
+
+    /**
+     * @return the relatedDocumentText
+     */
+    public String getRelatedDocumentText() {
+        return relatedDocumentText;
+    }
+
+    /**
+     * @return the assignedToText
+     */
+    public String getAssignedToText() {
+        return assignedToText;
     }
 }

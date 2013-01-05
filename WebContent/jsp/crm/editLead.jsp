@@ -56,9 +56,11 @@
 	  
 	  $(document).ready(function(){
 		$('#accountID').combogrid('setValue', '<s:property value="accountID"/>');
-		$('#leadID').combogrid('setValue', '<s:property value="leadID"/>');	
+		$('#accountID').combogrid('setText', '<s:property value="accountText"/>');
 		$('#campaignID').combogrid('setValue', '<s:property value="campaignID"/>');
+		$('#campaignID').combogrid('setText', '<s:property value="campaignText"/>');
 		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
+		$('#assignedToID').combogrid('setText', '<s:property value="assignedToText"/>');
 	  })
 	</script>
 </head>
@@ -157,11 +159,15 @@
 								class="easyui-combogrid record-value" name="accountID"
 								style="width: 250px;"
 								data-options="  
-				            panelWidth:500,  
+				            panelWidth:520,  
 				            idField:'id',  
 				            textField:'name',  
 				            url:'listAccount.action',
-				            fit: true,
+				            loadMsg: '<s:text name="datagrid.loading" />',
+				            pagination : true,
+				            pageSize: 10,
+				            pageList: [10,30,50],
+						    fit: true,
 				            mode:'remote',
 				            columns:[[  
 							           {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
@@ -324,11 +330,15 @@
 										class="easyui-combogrid" name="campaignID"
 										style="width: 250px;"
 										data-options="  
-						            panelWidth:500,  
+						            panelWidth:520,  
 						            idField:'id',  
 						            textField:'name',  
 						            url:'listCampaign.action',
-						            fit: true,
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
+								    fit: true,
 						            mode:'remote',
 						            columns:[[  
 						                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
@@ -353,11 +363,15 @@
 										class="easyui-combogrid record-value" name="assignedToID"
 										style="width: 250px;"
 										data-options="  
-						            panelWidth:500,  
+						            panelWidth:520,  
 						            idField:'id',  
 						            textField:'name',  
 						            url:'/grass/jsp/system/listUser.action',
-						            fit: true,
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
+								    fit: true,
 						            mode:'remote',
 						            columns:[[  
 							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  

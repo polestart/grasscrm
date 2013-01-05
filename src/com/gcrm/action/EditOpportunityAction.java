@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -31,9 +32,11 @@ import com.gcrm.domain.Opportunity;
 import com.gcrm.domain.OpportunityType;
 import com.gcrm.domain.SalesStage;
 import com.gcrm.domain.User;
+import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -60,12 +63,15 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
     private List<SalesStage> salesStages;
     private List<LeadSource> sources;
     private Integer accountID = null;
+    private String accountText = null;
     private Integer typeID = null;
     private Integer currencyID = null;
     private Integer salesStageID = null;
     private Integer sourceID = null;
-    private Integer assignedToID = null;
     private Integer campaignID = null;
+    private String campaignText = null;
+    private Integer assignedToID = null;
+    private String assignedToText = null;
     private String expectCloseDate = null;
 
     /**
@@ -165,6 +171,7 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
             Account account = opportunity.getAccount();
             if (account != null) {
                 accountID = account.getId();
+                accountText = account.getName();
             }
             Currency currency = opportunity.getCurrency();
             if (currency != null) {
@@ -185,11 +192,13 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
             User assignedTo = opportunity.getAssigned_to();
             if (assignedTo != null) {
                 assignedToID = assignedTo.getId();
+                assignedToText = assignedTo.getName();
             }
 
             Campaign campaign = opportunity.getCampaign();
             if (campaign != null) {
                 campaignID = campaign.getId();
+                campaignText = campaign.getName();
             }
 
             Date expect_close_date = opportunity.getExpect_close_date();
@@ -198,6 +207,13 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
                 expectCloseDate = dateFormat.format(expect_close_date);
             }
 
+        } else {
+            ActionContext context = ActionContext.getContext();
+            Map<String, Object> session = context.getSession();
+            User loginUser = (User) session
+                    .get(AuthenticationSuccessListener.LOGIN_USER);
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
         }
         return SUCCESS;
     }
@@ -561,6 +577,27 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
      */
     public void setDocumentService(IBaseService<Document> documentService) {
         this.documentService = documentService;
+    }
+
+    /**
+     * @return the accountText
+     */
+    public String getAccountText() {
+        return accountText;
+    }
+
+    /**
+     * @return the campaignText
+     */
+    public String getCampaignText() {
+        return campaignText;
+    }
+
+    /**
+     * @return the assignedToText
+     */
+    public String getAssignedToText() {
+        return assignedToText;
     }
 
 }

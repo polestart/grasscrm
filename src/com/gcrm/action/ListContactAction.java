@@ -137,8 +137,7 @@ public class ListContactAction extends BaseListAction {
         while (contacts.hasNext()) {
             Contact instance = contacts.next();
             int id = instance.getId();
-            String name = CommonUtil.fromNullToEmpty(instance.getFirst_name())
-                    + " " + CommonUtil.fromNullToEmpty(instance.getLast_name());
+            String name = instance.getName();
             String title = CommonUtil.fromNullToEmpty(instance.getTitle());
 
             Account account = instance.getAccount();

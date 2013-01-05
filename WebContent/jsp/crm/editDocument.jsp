@@ -30,7 +30,9 @@
 
 	$(document).ready(function() {
 		('#relatedDocumentID').combogrid('setValue', '<s:property value="relatedDocumentID"/>');
+		$('#relatedDocumentID').combogrid('setText', '<s:property value="relatedDocumentText"/>');
 		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
+		$('#assignedToID').combogrid('setText', '<s:property value="assignedToText"/>');
 		$('#publishDateS').datebox('setValue', '<s:property value="publishDateS"/>');
 		$('#expirationDateS').datebox('setValue', '<s:property value="expirationDateS"/>');
 	})
@@ -160,10 +162,14 @@
 										class="easyui-combogrid record-value" name="relatedDocumentID"
 										style="width: 250px;"
 										data-options="  
-						            panelWidth:500,  
+						            panelWidth:520,  
 						            idField:'id',  
 						            textField:'name',  
 						            url:'listDocument.action',
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
 						            fit: true,
 						            mode:'remote',
 						            columns:[[  
@@ -181,10 +187,14 @@
 										class="easyui-combogrid record-value" name="assignedToID"
 										style="width: 250px;"
 										data-options="  
-							            panelWidth:500,  
+							            panelWidth:520,  
 							            idField:'id',  
 							            textField:'name',  
 							            url:'/grass/jsp/system/listUser.action',
+							            loadMsg: '<s:text name="datagrid.loading" />',
+							            pagination : true,
+							            pageSize: 10,
+							            pageList: [10,30,50],
 							            fit: true,
 							            mode:'remote',
 							            columns:[[  

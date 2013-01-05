@@ -57,8 +57,10 @@
 	}
 
 	$(document).ready(function() {
-		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');		
+		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
+		$('#assignedToID').combogrid('setText', '<s:property value="assignedToText"/>');
 		$('#managerID').combogrid('setValue', '<s:property value="managerID"/>');
+		$('#managerID').combogrid('setText', '<s:property value="managerText"/>');
 	})
 </script>
 </head>
@@ -274,11 +276,15 @@
 										class="easyui-combogrid record-value" name="managerID"
 										style="width: 250px;"
 										data-options="  
-							            panelWidth:400,  
+							            panelWidth:520,  
 							            idField:'id',  
 							            textField:'name',  
 							            url:'listAccount.action',
-							            fit: true,
+				                        loadMsg: '<s:text name="datagrid.loading" />',
+				                        pagination : true,
+				                        pageSize: 10,
+				                        pageList: [10,30,50],
+						                fit: true,
 							            mode:'remote',
 							            columns:[[  
 							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
@@ -306,11 +312,15 @@
 										class="easyui-combogrid record-value" name="assignedToID"
 										style="width: 250px;"
 										data-options="  
-							            panelWidth:500,  
+							            panelWidth:520,  
 							            idField:'id',  
 							            textField:'name',  
 							            url:'/grass/jsp/system/listUser.action',
-							            fit: true,
+				                        loadMsg: '<s:text name="datagrid.loading" />',
+				                        pagination : true,
+				                        pageSize: 10,
+				                        pageList: [10,30,50],
+						                fit: true,
 							            mode:'remote',
 							            columns:[[  
 							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  

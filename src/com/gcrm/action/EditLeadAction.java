@@ -17,6 +17,7 @@ package com.gcrm.action;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -30,8 +31,10 @@ import com.gcrm.domain.Meeting;
 import com.gcrm.domain.Opportunity;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
+import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.ILeadService;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -57,11 +60,13 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
     private List<LeadStatus> leadStatuses;
     private List<LeadSource> leadSources;
     private Integer accountID = null;
-    private Integer leadID = null;
+    private String accountText = null;
     private Integer leadStatusID = null;
     private Integer leadSourceID = null;
     private Integer campaignID = null;
+    private String campaignText = null;
     private Integer assignedToID = null;
+    private String assignedToText = null;
     private boolean accountCheck;
     private boolean contactCheck;
     private boolean opportunityCheck;
@@ -165,6 +170,7 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
             Account account = lead.getAccount();
             if (account != null) {
                 accountID = account.getId();
+                accountText = account.getName();
             }
 
             LeadStatus leadStatus = lead.getStatus();
@@ -180,12 +186,21 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
             Campaign campaign = lead.getCampaign();
             if (campaign != null) {
                 campaignID = campaign.getId();
+                campaignText = campaign.getName();
             }
             User user = lead.getAssigned_to();
             if (user != null) {
                 assignedToID = user.getId();
+                assignedToText = user.getName();
             }
 
+        } else {
+            ActionContext context = ActionContext.getContext();
+            Map<String, Object> session = context.getSession();
+            User loginUser = (User) session
+                    .get(AuthenticationSuccessListener.LOGIN_USER);
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
         }
         return SUCCESS;
     }
@@ -345,21 +360,6 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      */
     public void setAssignedToID(Integer assignedToID) {
         this.assignedToID = assignedToID;
-    }
-
-    /**
-     * @return the leadID
-     */
-    public Integer getLeadID() {
-        return leadID;
-    }
-
-    /**
-     * @param leadID
-     *            the leadID to set
-     */
-    public void setLeadID(Integer leadID) {
-        this.leadID = leadID;
     }
 
     /**
@@ -556,6 +556,51 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      */
     public void setContactService(IBaseService<Contact> contactService) {
         this.contactService = contactService;
+    }
+
+    /**
+     * @return the accountText
+     */
+    public String getAccountText() {
+        return accountText;
+    }
+
+    /**
+     * @param accountText
+     *            the accountText to set
+     */
+    public void setAccountText(String accountText) {
+        this.accountText = accountText;
+    }
+
+    /**
+     * @return the campaignText
+     */
+    public String getCampaignText() {
+        return campaignText;
+    }
+
+    /**
+     * @param campaignText
+     *            the campaignText to set
+     */
+    public void setCampaignText(String campaignText) {
+        this.campaignText = campaignText;
+    }
+
+    /**
+     * @return the assignedToText
+     */
+    public String getAssignedToText() {
+        return assignedToText;
+    }
+
+    /**
+     * @param assignedToText
+     *            the assignedToText to set
+     */
+    public void setAssignedToText(String assignedToText) {
+        this.assignedToText = assignedToText;
     }
 
 }

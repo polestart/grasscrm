@@ -145,23 +145,14 @@
 	}   
    
    function many_exportrow(url){
-       rows = $('#tt').datagrid('getSelections');
+	   var rows = jQuery("#grid").jqGrid('getGridParam','selarrrow');
        var num =  rows.length;
 
 		if (num==0){
 			$.messager.alert("Warning","No record is selected.")
 		}
 		else {
-			var ids = null ;
-			data = rows.concat() 
-			for (var i=0;i<num;i++){
-				if (null == ids || i == 0 ) {                 
-				    ids =  data[i].id;             
-				} else  {                 
-					ids = ids + "," +  data[i].id;             
-				} 
-			}
-		    var url = url + ids; 
+		    var url = url + rows; 
 		    url = "/grass/jsp" + url;
 			window.open(url,"_self"); 						
 				
@@ -169,23 +160,14 @@
 	}   
    
    function many_copyrow(url){
-       rows = $('#tt').datagrid('getSelections');
+	   var rows = jQuery("#grid").jqGrid('getGridParam','selarrrow');
        var num =  rows.length;
-
+          
 		if (num==0){
 			$.messager.alert("Warning","No record is selected.")
 		}
 		else {
-			var ids = null ;
-			data = rows.concat() 
-			for (var i=0;i<num;i++){
-				if (null == ids || i == 0 ) {                 
-				    ids =  data[i].id;             
-				} else  {                 
-					ids = ids + "," +  data[i].id;             
-				} 
-			}
-		    var url = url + ids; 
+		    var url = url + rows; 
 		    url = "/grass/jsp" + url;
 			window.open(url,"_self"); 						
 				

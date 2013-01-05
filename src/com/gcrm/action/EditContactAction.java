@@ -58,10 +58,14 @@ public class EditContactAction extends BaseEditAction implements Preparable {
     private Contact contact;
     private List<LeadSource> leadSources;
     private Integer accountID = null;
+    private String accountText = null;
     private Integer reportToID = null;
+    private String reportToText = null;
     private Integer leadSourceID = null;
     private Integer campaignID = null;
+    private String campaignText = null;
     private Integer assignedToID = null;
+    private String assignedToText = null;
 
     /**
      * Saves the entity.
@@ -169,11 +173,13 @@ public class EditContactAction extends BaseEditAction implements Preparable {
             Account account = contact.getAccount();
             if (account != null) {
                 accountID = account.getId();
+                accountText = account.getName();
             }
 
             Contact report_to = contact.getReport_to();
             if (report_to != null) {
                 reportToID = report_to.getId();
+                reportToText = report_to.getName();
             }
 
             LeadSource leadSource = contact.getLeadSource();
@@ -184,10 +190,12 @@ public class EditContactAction extends BaseEditAction implements Preparable {
             Campaign campaign = contact.getCampaign();
             if (campaign != null) {
                 campaignID = campaign.getId();
+                campaignText = campaign.getName();
             }
-            User user = contact.getAssigned_to();
-            if (user != null) {
-                assignedToID = user.getId();
+            User assignedTo = contact.getAssigned_to();
+            if (assignedTo != null) {
+                assignedToID = assignedTo.getId();
+                assignedToText = assignedTo.getName();
             }
 
         } else {
@@ -195,7 +203,8 @@ public class EditContactAction extends BaseEditAction implements Preparable {
             Map<String, Object> session = context.getSession();
             User loginUser = (User) session
                     .get(AuthenticationSuccessListener.LOGIN_USER);
-            this.assignedToID = loginUser.getId();
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
         }
         return SUCCESS;
     }
@@ -478,6 +487,42 @@ public class EditContactAction extends BaseEditAction implements Preparable {
      */
     public void setCaseService(IBaseService<Case> caseService) {
         this.caseService = caseService;
+    }
+
+    /**
+     * @return the accountText
+     */
+    public String getAccountText() {
+        return accountText;
+    }
+
+    /**
+     * @param accountText
+     *            the accountText to set
+     */
+    public void setAccountText(String accountText) {
+        this.accountText = accountText;
+    }
+
+    /**
+     * @return the reportToText
+     */
+    public String getReportToText() {
+        return reportToText;
+    }
+
+    /**
+     * @return the campaignText
+     */
+    public String getCampaignText() {
+        return campaignText;
+    }
+
+    /**
+     * @return the assignedToText
+     */
+    public String getAssignedToText() {
+        return assignedToText;
     }
 
 }

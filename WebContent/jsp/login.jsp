@@ -76,6 +76,7 @@
 				} else
 					$(this).css("border-color", "#D9D6C4");
 			})
+			document.f.j_username.focus();
 		});
 
 		function keypressTab(){

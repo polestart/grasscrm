@@ -18,358 +18,386 @@ package com.gcrm.action;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Map;
 
 import com.gcrm.domain.Campaign;
 import com.gcrm.domain.CampaignStatus;
 import com.gcrm.domain.CampaignType;
 import com.gcrm.domain.Currency;
 import com.gcrm.domain.User;
+import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
+import com.gcrm.util.Constant;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
  * Edits Campaign
  * 
  */
-public class EditCampaignAction extends BaseEditAction implements Preparable{
+public class EditCampaignAction extends BaseEditAction implements Preparable {
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private static final long serialVersionUID = -2404576552417042445L;
 
-	private IBaseService<Campaign> baseService;
-	private IBaseService<CampaignType> campaignTypeService;
-	private IBaseService<CampaignStatus> campaignStatusService;
-	private IBaseService<Currency> currencyService;
-	private IBaseService<User> userService;
-	private Campaign campaign;
-	private List<CampaignType> types;
-	private List<CampaignStatus> statuses;
-	private List<Currency> currencies;
-	private Integer statusID = null;
-	private Integer typeID = null;
-	private Integer currencyID = null;
-	private Integer assignedToID = null;
-	private String startDate = null;
-	private String endDate = null;
+    private IBaseService<Campaign> baseService;
+    private IBaseService<CampaignType> campaignTypeService;
+    private IBaseService<CampaignStatus> campaignStatusService;
+    private IBaseService<Currency> currencyService;
+    private IBaseService<User> userService;
+    private Campaign campaign;
+    private List<CampaignType> types;
+    private List<CampaignStatus> statuses;
+    private List<Currency> currencies;
+    private Integer statusID = null;
+    private Integer typeID = null;
+    private Integer currencyID = null;
+    private Integer assignedToID = null;
+    private String assignedToText = null;
+    private String startDate = null;
+    private String endDate = null;
 
     /**
      * Saves the entity.
      * 
      * @return the SUCCESS result
-     */		
-	public String save() throws Exception {
-		CampaignStatus status = null;
-		if (statusID != null) {
-			status = campaignStatusService.getEntityById(CampaignStatus.class,
-					statusID);
-		}
-		campaign.setStatus(status);
-		CampaignType type = null;
-		if (typeID != null){		
-		type = campaignTypeService.getEntityById(
-				CampaignType.class, typeID);
-		}
-		campaign.setType(type);
-		Currency currency = null;
-		if (currencyID != null){
-		 currency = currencyService.getEntityById(Currency.class,
-				currencyID);
-		}
-		campaign.setCurrency(currency);
-		User assignedTo = null;
-		if (assignedToID != null){
-			assignedTo = userService.getEntityById(User.class, assignedToID);
-		}
-		campaign.setAssigned_to(assignedTo);
-		SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
-		Date start_date = null;
-		if (!CommonUtil.isNullOrEmpty(startDate)){
-		start_date = dateFormat.parse(startDate);
-		}
-		campaign.setStart_date(start_date);
-		Date end_date = null;
-		if (!CommonUtil.isNullOrEmpty(endDate)){
-			end_date = dateFormat.parse(endDate);
-		}
-		campaign.setEnd_date(end_date);		
-		
-		super.updateBaseInfo(campaign);
-		
-		getbaseService().makePersistent(campaign);
-		return SUCCESS;
-	}
+     */
+    public String save() throws Exception {
+        CampaignStatus status = null;
+        if (statusID != null) {
+            status = campaignStatusService.getEntityById(CampaignStatus.class,
+                    statusID);
+        }
+        campaign.setStatus(status);
+        CampaignType type = null;
+        if (typeID != null) {
+            type = campaignTypeService
+                    .getEntityById(CampaignType.class, typeID);
+        }
+        campaign.setType(type);
+        Currency currency = null;
+        if (currencyID != null) {
+            currency = currencyService
+                    .getEntityById(Currency.class, currencyID);
+        }
+        campaign.setCurrency(currency);
+        User assignedTo = null;
+        if (assignedToID != null) {
+            assignedTo = userService.getEntityById(User.class, assignedToID);
+        }
+        campaign.setAssigned_to(assignedTo);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_EDIT_FORMAT);
+        Date start_date = null;
+        if (!CommonUtil.isNullOrEmpty(startDate)) {
+            start_date = dateFormat.parse(startDate);
+        }
+        campaign.setStart_date(start_date);
+        Date end_date = null;
+        if (!CommonUtil.isNullOrEmpty(endDate)) {
+            end_date = dateFormat.parse(endDate);
+        }
+        campaign.setEnd_date(end_date);
+
+        super.updateBaseInfo(campaign);
+
+        getbaseService().makePersistent(campaign);
+        return SUCCESS;
+    }
 
     /**
      * Gets the entity.
      * 
      * @return the SUCCESS result
      */
-	public String get() throws Exception {
-		if (this.getId() != null) {
-			campaign = baseService.getEntityById(Campaign.class, this.getId() );
-			CampaignStatus status = campaign.getStatus();
-			if (status != null) {
-				statusID = status.getId();
-			}
-			CampaignType type = campaign.getType();
-			if (type != null) {
-				typeID = type.getId();
-			}
-			Currency currency = campaign.getCurrency();
-			if (currency != null) {
-				currencyID = currency.getId();
-			}
-			User assignedTo = campaign.getAssigned_to();
-			if (assignedTo != null) {
-				assignedToID = assignedTo.getId();
-			}
-			Date start_date = campaign.getStart_date();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
-			if (start_date != null) {
-				startDate = dateFormat.format(start_date);
-			}
-			Date end_date = campaign.getEnd_date();
-			if (end_date != null) {
-				endDate = dateFormat.format(end_date);
-			}			
-		}
-		return SUCCESS;
-	}
+    public String get() throws Exception {
+        if (this.getId() != null) {
+            campaign = baseService.getEntityById(Campaign.class, this.getId());
+            CampaignStatus status = campaign.getStatus();
+            if (status != null) {
+                statusID = status.getId();
+            }
+            CampaignType type = campaign.getType();
+            if (type != null) {
+                typeID = type.getId();
+            }
+            Currency currency = campaign.getCurrency();
+            if (currency != null) {
+                currencyID = currency.getId();
+            }
+            User assignedTo = campaign.getAssigned_to();
+            if (assignedTo != null) {
+                assignedToID = assignedTo.getId();
+                assignedToText = assignedTo.getName();
+            }
+            Date start_date = campaign.getStart_date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Constant.DATE_EDIT_FORMAT);
+            if (start_date != null) {
+                startDate = dateFormat.format(start_date);
+            }
+            Date end_date = campaign.getEnd_date();
+            if (end_date != null) {
+                endDate = dateFormat.format(end_date);
+            }
+        } else {
+            ActionContext context = ActionContext.getContext();
+            Map<String, Object> session = context.getSession();
+            User loginUser = (User) session
+                    .get(AuthenticationSuccessListener.LOGIN_USER);
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
+        }
+        return SUCCESS;
+    }
 
     /**
      * Prepares the list
      * 
-     */		
-	public void prepare() throws Exception {
-		this.statuses = campaignStatusService.getAllObjects(CampaignStatus.class
-				.getSimpleName());
-		this.types = campaignTypeService.getAllObjects(CampaignType.class
-				.getSimpleName());		
-		this.currencies = currencyService.getAllObjects(Currency.class
-				.getSimpleName());
-	}
-		
-	
-	public IBaseService<Campaign> getbaseService() {
-		return baseService;
-	}
+     */
+    public void prepare() throws Exception {
+        this.statuses = campaignStatusService
+                .getAllObjects(CampaignStatus.class.getSimpleName());
+        this.types = campaignTypeService.getAllObjects(CampaignType.class
+                .getSimpleName());
+        this.currencies = currencyService.getAllObjects(Currency.class
+                .getSimpleName());
+    }
 
-	public void setbaseService(IBaseService<Campaign> baseService) {
-		this.baseService = baseService;
-	}
+    public IBaseService<Campaign> getbaseService() {
+        return baseService;
+    }
 
-	public Campaign getCampaign() {
-		return campaign;
-	}
+    public void setbaseService(IBaseService<Campaign> baseService) {
+        this.baseService = baseService;
+    }
 
-	public void setCampaign(Campaign campaign) {
-		this.campaign = campaign;
-	}
+    public Campaign getCampaign() {
+        return campaign;
+    }
 
-	/**
-	 * @return the types
-	 */
-	public List<CampaignType> getTypes() {
-		return types;
-	}
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
 
-	/**
-	 * @return the campaignTypeService
-	 */
-	public IBaseService<CampaignType> getCampaignTypeService() {
-		return campaignTypeService;
-	}
+    /**
+     * @return the types
+     */
+    public List<CampaignType> getTypes() {
+        return types;
+    }
 
-	/**
-	 * @return the statuses
-	 */
-	public List<CampaignStatus> getStatuses() {
-		return statuses;
-	}
+    /**
+     * @return the campaignTypeService
+     */
+    public IBaseService<CampaignType> getCampaignTypeService() {
+        return campaignTypeService;
+    }
 
-	/**
-	 * @return the campaignStatusService
-	 */
-	public IBaseService<CampaignStatus> getCampaignStatusService() {
-		return campaignStatusService;
-	}
+    /**
+     * @return the statuses
+     */
+    public List<CampaignStatus> getStatuses() {
+        return statuses;
+    }
 
-	/**
-	 * @param campaignStatusService
-	 *            the campaignStatusService to set
-	 */
-	public void setCampaignStatusService(
-			IBaseService<CampaignStatus> campaignStatusService) {
-		this.campaignStatusService = campaignStatusService;
-	}
+    /**
+     * @return the campaignStatusService
+     */
+    public IBaseService<CampaignStatus> getCampaignStatusService() {
+        return campaignStatusService;
+    }
 
-	/**
-	 * @return the statusID
-	 */
-	public Integer getStatusID() {
-		return statusID;
-	}
+    /**
+     * @param campaignStatusService
+     *            the campaignStatusService to set
+     */
+    public void setCampaignStatusService(
+            IBaseService<CampaignStatus> campaignStatusService) {
+        this.campaignStatusService = campaignStatusService;
+    }
 
-	/**
-	 * @param statusID
-	 *            the statusID to set
-	 */
-	public void setStatusID(Integer statusID) {
-		this.statusID = statusID;
-	}
+    /**
+     * @return the statusID
+     */
+    public Integer getStatusID() {
+        return statusID;
+    }
 
-	/**
-	 * @return the typeID
-	 */
-	public Integer getTypeID() {
-		return typeID;
-	}
+    /**
+     * @param statusID
+     *            the statusID to set
+     */
+    public void setStatusID(Integer statusID) {
+        this.statusID = statusID;
+    }
 
-	/**
-	 * @param typeID
-	 *            the typeID to set
-	 */
-	public void setTypeID(Integer typeID) {
-		this.typeID = typeID;
-	}
+    /**
+     * @return the typeID
+     */
+    public Integer getTypeID() {
+        return typeID;
+    }
 
-	/**
-	 * @return the currencyService
-	 */
-	public IBaseService<Currency> getCurrencyService() {
-		return currencyService;
-	}
+    /**
+     * @param typeID
+     *            the typeID to set
+     */
+    public void setTypeID(Integer typeID) {
+        this.typeID = typeID;
+    }
 
-	/**
-	 * @param currencyService
-	 *            the currencyService to set
-	 */
-	public void setCurrencyService(IBaseService<Currency> currencyService) {
-		this.currencyService = currencyService;
-	}
+    /**
+     * @return the currencyService
+     */
+    public IBaseService<Currency> getCurrencyService() {
+        return currencyService;
+    }
 
-	/**
-	 * @return the currencies
-	 */
-	public List<Currency> getCurrencies() {
-		return currencies;
-	}
+    /**
+     * @param currencyService
+     *            the currencyService to set
+     */
+    public void setCurrencyService(IBaseService<Currency> currencyService) {
+        this.currencyService = currencyService;
+    }
 
-	/**
-	 * @param currencies
-	 *            the currencies to set
-	 */
-	public void setCurrencies() {
-		this.currencies = currencyService.getAllObjects(Currency.class
-				.getSimpleName());
-	}
+    /**
+     * @return the currencies
+     */
+    public List<Currency> getCurrencies() {
+        return currencies;
+    }
 
-	/**
-	 * @return the currencyID
-	 */
-	public Integer getCurrencyID() {
-		return currencyID;
-	}
+    /**
+     * @param currencies
+     *            the currencies to set
+     */
+    public void setCurrencies() {
+        this.currencies = currencyService.getAllObjects(Currency.class
+                .getSimpleName());
+    }
 
-	/**
-	 * @param currencyID
-	 *            the currencyID to set
-	 */
-	public void setCurrencyID(Integer currencyID) {
-		this.currencyID = currencyID;
-	}
+    /**
+     * @return the currencyID
+     */
+    public Integer getCurrencyID() {
+        return currencyID;
+    }
 
-	/**
-	 * @return the userService
-	 */
-	public IBaseService<User> getUserService() {
-		return userService;
-	}
+    /**
+     * @param currencyID
+     *            the currencyID to set
+     */
+    public void setCurrencyID(Integer currencyID) {
+        this.currencyID = currencyID;
+    }
 
-	/**
-	 * @param userService
-	 *            the userService to set
-	 */
-	public void setUserService(IBaseService<User> userService) {
-		this.userService = userService;
-	}
+    /**
+     * @return the userService
+     */
+    public IBaseService<User> getUserService() {
+        return userService;
+    }
 
-	/**
-	 * @return the startDate
-	 */
-	public String getStartDate() {
-		return startDate;
-	}
+    /**
+     * @param userService
+     *            the userService to set
+     */
+    public void setUserService(IBaseService<User> userService) {
+        this.userService = userService;
+    }
 
-	/**
-	 * @param startDate
-	 *            the startDate to set
-	 */
-	public void setStartDate(String startDate) {
-		this.startDate = startDate;
-	}
+    /**
+     * @return the startDate
+     */
+    public String getStartDate() {
+        return startDate;
+    }
 
-	/**
-	 * @return the endDate
-	 */
-	public String getEndDate() {
-		return endDate;
-	}
+    /**
+     * @param startDate
+     *            the startDate to set
+     */
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
 
-	/**
-	 * @param endDate the endDate to set
-	 */
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
-	}
+    /**
+     * @return the endDate
+     */
+    public String getEndDate() {
+        return endDate;
+    }
 
+    /**
+     * @param endDate
+     *            the endDate to set
+     */
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
 
-	/**
-	 * @param campaignTypeService the campaignTypeService to set
-	 */
-	public void setCampaignTypeService(
-			IBaseService<CampaignType> campaignTypeService) {
-		this.campaignTypeService = campaignTypeService;
-	}
+    /**
+     * @param campaignTypeService
+     *            the campaignTypeService to set
+     */
+    public void setCampaignTypeService(
+            IBaseService<CampaignType> campaignTypeService) {
+        this.campaignTypeService = campaignTypeService;
+    }
 
+    /**
+     * @param types
+     *            the types to set
+     */
+    public void setTypes(List<CampaignType> types) {
+        this.types = types;
+    }
 
-	/**
-	 * @param types the types to set
-	 */
-	public void setTypes(List<CampaignType> types) {
-		this.types = types;
-	}
+    /**
+     * @param statuses
+     *            the statuses to set
+     */
+    public void setStatuses(List<CampaignStatus> statuses) {
+        this.statuses = statuses;
+    }
 
+    /**
+     * @param currencies
+     *            the currencies to set
+     */
+    public void setCurrencies(List<Currency> currencies) {
+        this.currencies = currencies;
+    }
 
-	/**
-	 * @param statuses the statuses to set
-	 */
-	public void setStatuses(List<CampaignStatus> statuses) {
-		this.statuses = statuses;
-	}
+    /**
+     * @return the assignedToID
+     */
+    public Integer getAssignedToID() {
+        return assignedToID;
+    }
 
+    /**
+     * @param assignedToID
+     *            the assignedToID to set
+     */
+    public void setAssignedToID(Integer assignedToID) {
+        this.assignedToID = assignedToID;
+    }
 
-	/**
-	 * @param currencies the currencies to set
-	 */
-	public void setCurrencies(List<Currency> currencies) {
-		this.currencies = currencies;
-	}
+    /**
+     * @return the assignedToText
+     */
+    public String getAssignedToText() {
+        return assignedToText;
+    }
 
-
-	/**
-	 * @return the assignedToID
-	 */
-	public Integer getAssignedToID() {
-		return assignedToID;
-	}
-
-
-	/**
-	 * @param assignedToID the assignedToID to set
-	 */
-	public void setAssignedToID(Integer assignedToID) {
-		this.assignedToID = assignedToID;
-	}
+    /**
+     * @param assignedToText
+     *            the assignedToText to set
+     */
+    public void setAssignedToText(String assignedToText) {
+        this.assignedToText = assignedToText;
+    }
 }

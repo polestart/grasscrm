@@ -65,7 +65,9 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     private Integer originID = null;
     private Integer reasonID = null;
     private Integer accountID = null;
+    private String accountText = null;
     private Integer assignedToID = null;
+    private String assignedToText = null;
 
     /**
      * Saves the entity.
@@ -169,10 +171,12 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
             Account account = caseInstance.getAccount();
             if (account != null) {
                 accountID = account.getId();
+                accountText = account.getName();
             }
             User assignedTo = caseInstance.getAssigned_to();
             if (assignedTo != null) {
                 assignedToID = assignedTo.getId();
+                assignedToText = assignedTo.getName();
             }
 
         } else {
@@ -180,7 +184,8 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
             Map<String, Object> session = context.getSession();
             User loginUser = (User) session
                     .get(AuthenticationSuccessListener.LOGIN_USER);
-            this.assignedToID = loginUser.getId();
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
         }
         return SUCCESS;
     }
@@ -546,6 +551,36 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      */
     public void setContactService(IBaseService<Contact> contactService) {
         this.contactService = contactService;
+    }
+
+    /**
+     * @return the accountText
+     */
+    public String getAccountText() {
+        return accountText;
+    }
+
+    /**
+     * @param accountText
+     *            the accountText to set
+     */
+    public void setAccountText(String accountText) {
+        this.accountText = accountText;
+    }
+
+    /**
+     * @return the assignedToText
+     */
+    public String getAssignedToText() {
+        return assignedToText;
+    }
+
+    /**
+     * @param assignedToText
+     *            the assignedToText to set
+     */
+    public void setAssignedToText(String assignedToText) {
+        this.assignedToText = assignedToText;
     }
 
 }

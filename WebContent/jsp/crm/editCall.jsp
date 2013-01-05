@@ -57,14 +57,22 @@
 	
 	$(document).ready(function() {
 		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
+		$('#assignedToID').combogrid('setText', '<s:property value="assignedToText"/>');
 		$('#startDate').datebox('setValue', '<s:property value="startDate"/>');
 		$('#relatedAccountID').combogrid('setValue', '<s:property value="relatedAccountID"/>');
+		$('#relatedAccountID').combogrid('setText', '<s:property value="relatedAccountText"/>');
 		$('#relatedCaseID').combogrid('setValue', '<s:property value="relatedCaseID"/>');
+		$('#relatedCaseID').combogrid('setText', '<s:property value="relatedCaseText"/>');
 		$('#relatedContactID').combogrid('setValue', '<s:property value="relatedContactID"/>');
+		$('#relatedContactID').combogrid('setText', '<s:property value="relatedContactText"/>');
 		$('#relatedLeadID').combogrid('setValue', '<s:property value="relatedLeadID"/>');
+		$('#relatedLeadID').combogrid('setText', '<s:property value="relatedLeadText"/>');
 		$('#relatedOpportunityID').combogrid('setValue', '<s:property value="relatedOpportunityID"/>');
+		$('#relatedOpportunityID').combogrid('setText', '<s:property value="relatedOpportunityText"/>');
 		$('#relatedTargetID').combogrid('setValue', '<s:property value="relatedTargetID"/>');
-		$('#relatedTaskID').combogrid('setValue', '<s:property value="relatedTaskID"/>');			
+		$('#relatedTargetID').combogrid('setText', '<s:property value="relatedTargetText"/>');
+		$('#relatedTaskID').combogrid('setValue', '<s:property value="relatedTaskID"/>');	
+		$('#relatedTaskID').combogrid('setText', '<s:property value="relatedTaskText"/>');
 		$('#relatedObject').change(function() {
 			checkRelatedObject();
 		});
@@ -163,8 +171,10 @@
 												name="call.related_object.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="call.related_object"
 											id="relatedObject" cssClass="record-value"
-											list="#{'Account':'Account','Case':'Case','Contact':'Contact','Lead':'Lead',
-											'Opportunity':'Opportunity','Target':'Target','Task':'Task'}" />
+											list="#{'Account':'<s:text name="entity.account.label" />','Case':'<s:text name="entity.case.label" />',
+											'Contact':'<s:text name="entity.contact.label" />','Lead':'<s:text name="entity.lead.label" />',
+											'Opportunity':'<s:text name="entity.opportunity.label" />','Target':'<s:text name="entity.target.label" />',
+											'Task':'<s:text name="entity.task.label" />'}" />
 									</td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="call.related_record.label"></s:text>：</label></td>
@@ -174,11 +184,15 @@
 											id="relatedAccountID" class="easyui-combogrid record-value"
 											name="relatedAccountID" style="width: 250px;"
 											data-options="  
-							            panelWidth:400,  
+							            panelWidth:520,  
 							            idField:'id',  
 							            textField:'name',  
 							            url:'listAccount.action',
-							            fit: true,
+							            loadMsg: '<s:text name="datagrid.loading" />',
+							            pagination : true,
+							            pageSize: 10,
+							            pageList: [10,30,50],
+									    fit: true,
 							            mode:'remote',
 							            columns:[[  
 							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
@@ -195,11 +209,15 @@
 											class="easyui-combogrid record-value" name="relatedCaseID"
 											style="width: 250px;"
 											data-options="  
-						            panelWidth:500,  
+						            panelWidth:520,  
 						            idField:'id',  
-						            textField:'name',  
+						            textField:'subject',  
 						            url:'listCase.action',
-						            fit: true,
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
+								    fit: true,
 						            mode:'remote',
 						            columns:[[  
 						                {field:'id',title:'<s:text name="entity.id.label" />',width:60,align:'center',sortable:'true'},  
@@ -217,11 +235,15 @@
 											class="easyui-combogrid record-value" name="relatedContactID"
 											style="width: 250px;"
 											data-options="  
-						            panelWidth:500,  
+						            panelWidth:520,  
 						            idField:'id',  
 						            textField:'name',  
 						            url:'listContact.action',
-						            fit: true,
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
+								    fit: true,
 						            mode:'remote',
 						            columns:[[  
 										{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
@@ -240,11 +262,15 @@
 											class="easyui-combogrid record-value" name="relatedLeadID"
 											style="width: 250px;"
 											data-options="  
-						            panelWidth:500,  
+						            panelWidth:520,  
 						            idField:'id',  
 						            textField:'name',  
 						            url:'listLead.action',
-						            fit: true,
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
+								    fit: true,
 						            mode:'remote',
 						            columns:[[  
 										{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
@@ -264,19 +290,23 @@
 											class="easyui-combogrid record-value" name="relatedOpportunityID"
 											style="width: 250px;"
 											data-options="  
-						            panelWidth:500,  
+						            panelWidth:520,  
 						            idField:'id',  
 						            textField:'name',  
 						            url:'listOpportunity.action',
-						            fit: true,
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
+								    fit: true,
 						            mode:'remote',
 						            columns:[[  
-			{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-			{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true'},
-			{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'center',sortable:'true'},
-			{field:'sales_stage.name',title:'<s:text name="opportunity.salesStage.label" />',width:80,align:'right',sortable:'true'},
-			{field:'opportunity_amount',title:'<s:text name="opportunity.opportunity_amount.label" />',width:80,align:'center',sortable:'true'},
-			{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
+										{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+										{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true'},
+										{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'center',sortable:'true'},
+										{field:'sales_stage.name',title:'<s:text name="opportunity.salesStage.label" />',width:80,align:'right',sortable:'true'},
+										{field:'opportunity_amount',title:'<s:text name="opportunity.opportunity_amount.label" />',width:80,align:'center',sortable:'true'},
+										{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 						            ]]  
 						        ">
 										</select>
@@ -286,20 +316,24 @@
 											class="easyui-combogrid record-value" name="relatedTargetID"
 											style="width: 250px;"
 											data-options="  
-						            panelWidth:500,  
+						            panelWidth:520,  
 						            idField:'id',  
 						            textField:'name',  
 						            url:'listTarget.action',
-						            fit: true,
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
+								    fit: true,
 						            mode:'remote',
 						            columns:[[  
-					{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-					{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true'},
-					{field:'title',title:'<s:text name="target.title.label" />',width:80,align:'center',sortable:'true'},
-					{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
-					{field:'office_phone',title:'<s:text name="target.office_phone.label" />',width:80,align:'center',sortable:'true'},
-					{field:'email',title:'<s:text name="target.email.label" />',width:80,align:'center',sortable:'true'},
-					{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
+										{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+										{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true'},
+										{field:'title',title:'<s:text name="target.title.label" />',width:80,align:'center',sortable:'true'},
+										{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
+										{field:'office_phone',title:'<s:text name="target.office_phone.label" />',width:80,align:'center',sortable:'true'},
+										{field:'email',title:'<s:text name="target.email.label" />',width:80,align:'center',sortable:'true'},
+										{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 						            ]]  
 						        ">
 										</select>
@@ -311,17 +345,21 @@
 											data-options="  
 						            panelWidth:500,  
 						            idField:'id',  
-						            textField:'name',  
+						            textField:'subject',  
 						            url:'listTask.action',
-						            fit: true,
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
+								    fit: true,
 						            mode:'remote',
 						            columns:[[  
-			{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-			{field:'subject',title:'<s:text name="task.subject.label" />',width:80,align:'center',sortable:'true'},
-			{field:'contact.name',title:'<s:text name="task.contact.label" />',width:80,align:'center',sortable:'true'},
-			{field:'related_object',title:'<s:text name="task.related_object.label" />',width:80,align:'center',sortable:'true'},
-			{field:'due_date',title:'<s:text name="task.due_date.label" />',width:80,align:'center',sortable:'true'},			
-			{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
+										{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+										{field:'subject',title:'<s:text name="task.subject.label" />',width:80,align:'center',sortable:'true'},
+										{field:'contact.name',title:'<s:text name="task.contact.label" />',width:80,align:'center',sortable:'true'},
+										{field:'related_object',title:'<s:text name="task.related_object.label" />',width:80,align:'center',sortable:'true'},
+										{field:'due_date',title:'<s:text name="task.due_date.label" />',width:80,align:'center',sortable:'true'},			
+										{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 						            ]]  
 						        ">
 										</select>
@@ -353,11 +391,15 @@
 										id="assignedToID" class="easyui-combogrid record-value"
 										name="assignedToID" style="width: 250px;"
 										data-options="  
-						            panelWidth:500,  
+						            panelWidth:520,  
 						            idField:'id',  
 						            textField:'name',  
 						            url:'/grass/jsp/system/listUser.action',
-						            fit: true,
+						            loadMsg: '<s:text name="datagrid.loading" />',
+						            pagination : true,
+						            pageSize: 10,
+						            pageList: [10,30,50],
+								    fit: true,
 						            mode:'remote',
 						            columns:[[  
 							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  

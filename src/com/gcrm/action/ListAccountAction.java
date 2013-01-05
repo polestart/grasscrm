@@ -418,8 +418,8 @@ public class ListAccountAction extends BaseListAction {
                     "Shipping State", "Shipping Postal Code",
                     "Shipping Country", "Email", "Description", "Type",
                     "Industry", "Annual Revenue", "Employees", "Sic Code",
-                    "Ticket Symbol", "Manager", "Ownship", "Campaign",
-                    "Rating", "Assigned To" };
+                    "Ticket Symbol", "Manager", "Ownship", "Rating",
+                    "Assigned To" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
