@@ -15,15 +15,19 @@
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.edatagrid.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
+<script type="text/javascript" src="../../js/datagrid.js"></script>
 
 <script type="text/javascript">
 	$(function() {
-		$('#dg').edatagrid({
+		$('#tt').edatagrid({
 			url : 'listUserStatus.action',
 			saveUrl : 'saveUserStatus.action',
 			updateUrl : 'saveUserStatus.action',
 			destroyUrl : 'deleteUserStatus.action'
 		});
+	    $("#delete").click(function() {	
+	    	many_deleterow_easyui("deleteUserStatus.action?seleteIDs=");
+		 });		
 	});
 </script>
 </head>
@@ -41,13 +45,16 @@
 				</h2>
 			</div>
 			<div id="feature-content">
-				<table id="dg" title="<s:text name='title.grid.userStatus'/>"
+				<table id="tt" title="<s:text name='title.grid.userStatus'/>"
 					style="width: 700px; height: 380px" toolbar="#toolbar"
 					pagination="true" rownumbers="true" fitColumns="true"
 					singleSelect="true">
 					<thead>
 						<tr>
-							<th field="userStatus.id" width="50" hidden="true"><s:text
+						    <th data-options="field:'ck',checkbox:true"></th>
+							<th field="id" width="1" hidden="true"><s:text
+									name='entity.id.label' /></th>							
+							<th field="userStatus.id" width="10"><s:text
 									name='entity.id.label' /></th>
 							<th field="userStatus.name" width="50"
 								editor="{type:'validatebox',options:{required:true}}"><s:text
@@ -60,15 +67,15 @@
 				</table>
 				<div id="toolbar">
 					<a href="#" class="easyui-linkbutton" iconCls="icon-add"
-						plain="true" onclick="javascript:$('#dg').edatagrid('addRow')"><s:text
+						plain="true" onclick="javascript:$('#tt').edatagrid('addRow')"><s:text
 							name='button.create' /></a> <a id="delete" href="#" class="easyui-linkbutton"
 						iconCls="icon-remove" plain="true"><s:text
 							name='button.delete' /></a> <a href="#" class="easyui-linkbutton"
 						iconCls="icon-save" plain="true"
-						onclick="javascript:$('#dg').edatagrid('saveRow')"><s:text
+						onclick="javascript:$('#tt').edatagrid('saveRow')"><s:text
 							name='button.save' /></a> <a href="#" class="easyui-linkbutton"
 						iconCls="icon-undo" plain="true"
-						onclick="javascript:$('#dg').edatagrid('cancelRow')"><s:text
+						onclick="javascript:$('#tt').edatagrid('cancelRow')"><s:text
 							name='button.cancel' /></a>
 				</div>
 			</div>

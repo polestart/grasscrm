@@ -62,7 +62,13 @@
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
             <result name="input">/jsp/crm/editTask.jsp</result>          
     	  <result type="redirect">/jsp/crm/listTask.jsp</result>
-        </action>        
+        </action>  
+        
+        <action name="massUpdateTask" class="editTaskAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editTask.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listTask.jsp</result>
+        </action>               
   </package>      
     
 </struts>

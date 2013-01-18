@@ -15,6 +15,9 @@
  */
 package com.gcrm.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,7 @@ import com.gcrm.domain.Document;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
@@ -75,6 +79,93 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
+        saveEntity();
+        getBaseService().makePersistent(caseInstance);
+        return SUCCESS;
+    }
+
+    /**
+     * Gets the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String get() throws Exception {
+        if (this.getId() != null) {
+            caseInstance = baseService.getEntityById(Case.class, this.getId());
+            CaseStatus status = caseInstance.getStatus();
+            if (status != null) {
+                statusID = status.getId();
+            }
+            CasePriority priority = caseInstance.getPriority();
+            if (priority != null) {
+                priorityID = priority.getId();
+            }
+            CaseType type = caseInstance.getType();
+            if (type != null) {
+                typeID = type.getId();
+            }
+            CaseOrigin origin = caseInstance.getOrigin();
+            if (origin != null) {
+                originID = origin.getId();
+            }
+            CaseReason reason = caseInstance.getReason();
+            if (reason != null) {
+                reasonID = reason.getId();
+            }
+            Account account = caseInstance.getAccount();
+            if (account != null) {
+                accountID = account.getId();
+                accountText = account.getName();
+            }
+            User assignedTo = caseInstance.getAssigned_to();
+            if (assignedTo != null) {
+                assignedToID = assignedTo.getId();
+                assignedToText = assignedTo.getName();
+            }
+            this.getBaseInfo(caseInstance);
+        } else {
+            ActionContext context = ActionContext.getContext();
+            Map<String, Object> session = context.getSession();
+            User loginUser = (User) session
+                    .get(AuthenticationSuccessListener.LOGIN_USER);
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Case> cases = new ArrayList<Case>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Case newCaseInstance = this.baseService.getEntityById(Case.class,
+                    id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(caseInstance, fieldName);
+                BeanUtil.setFieldValue(newCaseInstance, fieldName, value);
+            }
+            newCaseInstance.setUpdated_by(user);
+            newCaseInstance.setUpdated_on(new Date());
+            cases.add(newCaseInstance);
+        }
+        if (cases.size() > 0) {
+            this.baseService.batchUpdate(cases);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     */
+    private void saveEntity() {
         CaseStatus status = null;
         if (statusID != null) {
             status = caseStatusService
@@ -133,61 +224,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
             }
             contacts.add(contact);
         }
-
         super.updateBaseInfo(caseInstance);
-
-        getBaseService().makePersistent(caseInstance);
-        return SUCCESS;
-    }
-
-    /**
-     * Gets the entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String get() throws Exception {
-        if (this.getId() != null) {
-            caseInstance = baseService.getEntityById(Case.class, this.getId());
-            CaseStatus status = caseInstance.getStatus();
-            if (status != null) {
-                statusID = status.getId();
-            }
-            CasePriority priority = caseInstance.getPriority();
-            if (priority != null) {
-                priorityID = priority.getId();
-            }
-            CaseType type = caseInstance.getType();
-            if (type != null) {
-                typeID = type.getId();
-            }
-            CaseOrigin origin = caseInstance.getOrigin();
-            if (origin != null) {
-                originID = origin.getId();
-            }
-            CaseReason reason = caseInstance.getReason();
-            if (reason != null) {
-                reasonID = reason.getId();
-            }
-            Account account = caseInstance.getAccount();
-            if (account != null) {
-                accountID = account.getId();
-                accountText = account.getName();
-            }
-            User assignedTo = caseInstance.getAssigned_to();
-            if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
-            }
-
-        } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
-        }
-        return SUCCESS;
     }
 
     /**

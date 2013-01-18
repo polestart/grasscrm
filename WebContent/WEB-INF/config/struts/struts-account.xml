@@ -82,12 +82,18 @@
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
 			<result>/jsp/crm/editAccount.jsp</result>
         </action>
-                        
+
         <action name="saveAccount" class="editAccountAction" method="save">
 			<interceptor-ref name="paramsPrepareParamsStack" /> 
             <result name="input">/jsp/crm/editAccount.jsp</result>          
     	  <result type="redirect">/jsp/crm/listAccount.jsp</result>
         </action>  
+        
+        <action name="massUpdateAccount" class="editAccountAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editAccount.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listAccount.jsp</result>
+        </action>        
   </package>      
     
 </struts>

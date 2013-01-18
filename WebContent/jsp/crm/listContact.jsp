@@ -28,6 +28,10 @@
 		  many_deleterow("deleteContact.action?seleteIDs=");
 	  });	
 
+	  $("#massUpdate").click(function() {	
+		  many_massUpdaterow("/crm/editContact.action?seleteIDs=");
+	  });
+	  
 	  $("#export").click(function() {	
 		  many_exportrow("/crm/exportContact.action?seleteIDs=");
 	  });
@@ -127,6 +131,9 @@
 	       	 <div id="mtm1" style="width:150px;">
 				<div onClick="openwindow('/crm/uploadContact.jsp','<s:text name="title.import.contact" />')"><s:text name='menu.item.import.title'/></div>
 				<div id="export"><s:text name='menu.item.export.title'/></div>
+				<div id="massUpdate">
+					<s:text name='menu.item.massupdate.title' />
+				</div>					
 				<div id="copy"><s:text name='menu.item.copy.title'/></div>
 			 </div>
 	       </span>			   

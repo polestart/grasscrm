@@ -54,6 +54,15 @@ public class EditRoleAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
+        saveEntity();
+        getBaseService().makePersistent(role);
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     */
+    private void saveEntity() {
         if (rightPermission != null && rightPermission.length > 0) {
             Set<Permission> permissionSet = new HashSet<Permission>(0);
             for (int i = 0; i < rightPermission.length; i++) {
@@ -64,9 +73,7 @@ public class EditRoleAction extends BaseEditAction implements Preparable {
             }
             role.setPermissions(permissionSet);
         }
-        getBaseService().makePersistent(role);
-
-        return SUCCESS;
+        super.updateBaseInfo(role);
     }
 
     /**
@@ -112,6 +119,7 @@ public class EditRoleAction extends BaseEditAction implements Preparable {
                 rightPermissions.add(permisson);
             }
             leftPermissions.removeAll(rightPermissions);
+            this.getBaseInfo(role);
         }
         return SUCCESS;
     }

@@ -16,6 +16,7 @@
 package com.gcrm.service;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import com.gcrm.vo.SearchCondition;
@@ -25,61 +26,81 @@ import com.gcrm.vo.SearchResult;
  * Base service Interface
  */
 public interface IBaseService<T extends Serializable> {
-	
-	/**
-	 * Gets all entity instances
-	 * 
-	 * @param clazz class name
-	 * @return result list
-	 */	
-	public List<T> getAllObjects(String clazz);
 
-	/**
-	 * Persists entity
-	 * 
-	 * @param entity entity instance
-	 */		
-	public void makePersistent(T entity);
-	
-	/**
-	 * Deletes entity by id
-	 * 
-	 * @param entityClass entity class
-	 * @param id entity id
-	 */	
-	public void deleteEntity(Class<T> entityClass,Integer id);
-	
-	/**
-	 * Batch deletes entities
-	 * 
-	 * @param entityClass entity class
-	 * @param seleteIDs selected entities' id
-	 */	
-	public void batchDeleteEntity(Class<T> entityClass, String seleteIDs);
-	
-	/**
-	 * Gets entity by id
-	 * 
-	 * @param entityClass entity class
-	 * @param id entity instance id
-	 * @return entity instance
-	 */
-	public T getEntityById(Class<T> entityClass,Integer id);
-	
-	/**
-	 * Gets object count
-	 * 
-	 * @param clazz entity class name
-	 * @return object count
-	 */
-	public long getObjectsCount(String clazz);
-	
-	/**
-	 * Gets pagination objects
-	 * 
-	 * @param clazz entity class name
-	 * @param searchCondition search condition
-	 * @return search result
-	 */
-	public SearchResult<T> getPaginationObjects(final String clazz,final SearchCondition searchCondition);
+    /**
+     * Gets all entity instances
+     * 
+     * @param clazz
+     *            class name
+     * @return result list
+     */
+    public List<T> getAllObjects(String clazz);
+
+    /**
+     * Persists entity
+     * 
+     * @param entity
+     *            entity instance
+     */
+    public void makePersistent(T entity);
+
+    /**
+     * Batch updates entities
+     * 
+     * @param entities
+     *            entity instance collection
+     */
+    public void batchUpdate(Collection<T> entities);
+
+    /**
+     * Deletes entity by id
+     * 
+     * @param entityClass
+     *            entity class
+     * @param id
+     *            entity id
+     */
+    public void deleteEntity(Class<T> entityClass, Integer id);
+
+    /**
+     * Batch deletes entities
+     * 
+     * @param entityClass
+     *            entity class
+     * @param seleteIDs
+     *            selected entities' id
+     */
+    public void batchDeleteEntity(Class<T> entityClass, String seleteIDs);
+
+    /**
+     * Gets entity by id
+     * 
+     * @param entityClass
+     *            entity class
+     * @param id
+     *            entity instance id
+     * @return entity instance
+     */
+    public T getEntityById(Class<T> entityClass, Integer id);
+
+    /**
+     * Gets object count
+     * 
+     * @param clazz
+     *            entity class name
+     * @return object count
+     */
+    public long getObjectsCount(String clazz);
+
+    /**
+     * Gets pagination objects
+     * 
+     * @param clazz
+     *            entity class name
+     * @param searchCondition
+     *            search condition
+     * @return search result
+     */
+    public SearchResult<T> getPaginationObjects(final String clazz,
+            final SearchCondition searchCondition);
 }

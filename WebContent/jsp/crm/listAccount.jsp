@@ -28,6 +28,10 @@
 	  $("#delete").click(function() {	
 		  many_deleterow("deleteAccount.action?seleteIDs=");
 	  });	
+
+	  $("#massUpdate").click(function() {	
+		  many_massUpdaterow("/crm/editAccount.action?seleteIDs=");
+	  });
 	  
 	  $("#export").click(function() {	
 		  many_exportrow("/crm/exportAccount.action?seleteIDs=");
@@ -162,6 +166,9 @@
 							<div id="export">
 								<s:text name='menu.item.export.title' />
 							</div>
+							<div id="massUpdate">
+								<s:text name='menu.item.massupdate.title' />
+							</div>							
 							<div id="copy">
 								<s:text name='menu.item.copy.title' />
 							</div>

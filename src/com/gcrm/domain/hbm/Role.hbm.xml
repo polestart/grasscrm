@@ -11,6 +11,7 @@
    length="50" name="name" not-null="true" type="java.lang.String" update="true"/>
   <property column="sequence" generated="never" insert="true"
    lazy="false" name="sequence" type="int" update="true"/>
+  <property name="description" column="description" type="string" />
   <set cascade="all" name="permissions" table="role_permission">   
      <key column="role_id" />   
      <many-to-many class="com.gcrm.domain.Permission"  column="permission_id" />
@@ -20,6 +21,6 @@
   <many-to-one name="updated_by"
             class="User" column="updated_by" cascade="save-update"/>
   <property name="created_on" column="created_on" type="java.util.Date" />
-  <property name="updated_on" column="updated_on" type="java.util.Date" />     
+  <property name="updated_on" column="updated_on" type="java.util.Date" /> 
  </class>
 </hibernate-mapping>

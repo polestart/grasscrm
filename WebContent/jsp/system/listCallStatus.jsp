@@ -26,7 +26,7 @@
 			destroyUrl : 'deleteCallStatus.action'
 		});
 	    $("#delete").click(function() {	
-			  many_deleterow("deleteCallStatus.action?seleteIDs=");
+	    	many_deleterow_easyui("deleteCallStatus.action?seleteIDs=");
 		    });		
 	});
 </script>
@@ -54,7 +54,7 @@
 						    <th data-options="field:'ck',checkbox:true"></th>
 							<th field="id" width="1" hidden="true"><s:text
 									name='entity.id.label' /></th>							
-							<th field="callStatus.id" width="50" hidden="true"><s:text name='entity.id.label'/></th>
+							<th field="callStatus.id" width="10"><s:text name='entity.id.label'/></th>
 							<th field="callStatus.name" width="50"
 								editor="{type:'validatebox',options:{required:true}}"><s:text name='entity.name.label'/></th>
 							<th field="callStatus.sequence" width="50"

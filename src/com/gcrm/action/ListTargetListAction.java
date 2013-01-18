@@ -247,8 +247,9 @@ public class ListTargetListAction extends BaseListAction {
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Name", "Type",
-                    "Description", "Assigned To" };
+            final String[] header = new String[] { "ID", "Name", "Type ID",
+                    "Type Name", "Description", "Assigned To ID",
+                    "Assigned To Name" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -261,15 +262,19 @@ public class ListTargetListAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(targetList.getName()));
                 if (targetList.getType() != null) {
                     data1.put(header[2], targetList.getType().getId());
+                    data1.put(header[3], targetList.getType().getName());
                 } else {
                     data1.put(header[2], "");
+                    data1.put(header[3], "");
                 }
-                data1.put(header[3],
+                data1.put(header[4],
                         CommonUtil.fromNullToEmpty(targetList.getDescription()));
                 if (targetList.getAssigned_to() != null) {
-                    data1.put(header[4], targetList.getAssigned_to().getId());
+                    data1.put(header[5], targetList.getAssigned_to().getId());
+                    data1.put(header[6], targetList.getAssigned_to().getName());
                 } else {
-                    data1.put(header[4], "");
+                    data1.put(header[5], "");
+                    data1.put(header[6], "");
                 }
                 writer.write(data1, header);
             }
@@ -315,7 +320,7 @@ public class ListTargetListAction extends BaseListAction {
                     }
                     targetList.setName(CommonUtil.fromNullToEmpty(row
                             .get("Name")));
-                    String typeID = row.get("Type");
+                    String typeID = row.get("Type ID");
                     if (CommonUtil.isNullOrEmpty(typeID)) {
                         targetList.setType(null);
                     } else {
@@ -326,7 +331,7 @@ public class ListTargetListAction extends BaseListAction {
                     }
                     targetList.setDescription(CommonUtil.fromNullToEmpty(row
                             .get("Description")));
-                    String assignedToID = row.get("Assigned To");
+                    String assignedToID = row.get("Assigned To ID");
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         targetList.setAssigned_to(null);
                     } else {

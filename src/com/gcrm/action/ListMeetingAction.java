@@ -102,17 +102,17 @@ public class ListMeetingAction extends BaseListAction {
             } else {
                 statusName = "";
             }
-            SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    Constant.DATE_FORMAT);
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+                    Constant.DATE_TIME_FORMAT);
             Date startDate = instance.getStart_date();
             String startDateString = "";
             if (startDate != null) {
-                startDateString = dateFormat.format(startDate);
+                startDateString = dateTimeFormat.format(startDate);
             }
             Date endDate = instance.getEnd_date();
             String endDateString = "";
             if (endDate != null) {
-                endDateString = dateFormat.format(endDate);
+                endDateString = dateTimeFormat.format(endDate);
             }
             String location = instance.getLocation();
             User user = instance.getAssigned_to();
@@ -131,8 +131,6 @@ public class ListMeetingAction extends BaseListAction {
             if (updatedBy != null) {
                 updatedByName = CommonUtil.fromNullToEmpty(updatedBy.getName());
             }
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-                    Constant.DATE_TIME_FORMAT);
             Date createdOn = instance.getCreated_on();
             String createdOnName = "";
             if (createdOn != null) {
@@ -248,11 +246,13 @@ public class ListMeetingAction extends BaseListAction {
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Subject", "Status",
-                    "Start Date", "End Date", "Related Object",
-                    "Related Record", "Location", "Reminder Way Popup",
-                    "Reminder Option Popup", "Reminder Way Email",
-                    "Reminder Option Email", "Description", "Assigned To" };
+            final String[] header = new String[] { "ID", "Subject",
+                    "Status ID", "Status Name", "Start Date", "End Date",
+                    "Related Object", "Related Record ID", "Location",
+                    "Reminder Way Popup", "Reminder Option Popup ID",
+                    "Reminder Option Popup Name", "Reminder Way Email",
+                    "Reminder Option Email ID", "Reminder Option Email Name",
+                    "Description", "Assigned To ID", "Assigned To Name" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -265,48 +265,63 @@ public class ListMeetingAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(meeting.getSubject()));
                 if (meeting.getStatus() != null) {
                     data1.put(header[2], meeting.getStatus().getId());
+                    data1.put(header[3], meeting.getStatus().getName());
                 } else {
                     data1.put(header[2], "");
-                }
-                SimpleDateFormat dateFormat = new SimpleDateFormat(
-                        "M/d/yyyy HH:mm:ss");
-                Date startDate = meeting.getStart_date();
-                if (startDate != null) {
-                    data1.put(header[3], dateFormat.format(startDate));
-                } else {
                     data1.put(header[3], "");
                 }
-                Date endDate = meeting.getEnd_date();
-                if (endDate != null) {
-                    data1.put(header[4], dateFormat.format(endDate));
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        Constant.DATE_TIME_FORMAT);
+                Date startDate = meeting.getStart_date();
+                if (startDate != null) {
+                    data1.put(header[4], dateFormat.format(startDate));
                 } else {
                     data1.put(header[4], "");
                 }
-                data1.put(header[5],
-                        CommonUtil.fromNullToEmpty(meeting.getRelated_object()));
-                data1.put(header[6], meeting.getRelated_record());
-                data1.put(header[7],
-                        CommonUtil.fromNullToEmpty(meeting.getLocation()));
-                data1.put(header[8], meeting.isReminder_pop());
-                if (meeting.getReminder_option_pop() != null) {
-                    data1.put(header[9], meeting.getReminder_option_pop()
-                            .getId());
+                Date endDate = meeting.getEnd_date();
+                if (endDate != null) {
+                    data1.put(header[5], dateFormat.format(endDate));
                 } else {
-                    data1.put(header[9], "");
+                    data1.put(header[5], "");
                 }
-                data1.put(header[10], meeting.isReminder_email());
-                if (meeting.getReminder_option_email() != null) {
-                    data1.put(header[11], meeting.getReminder_option_email()
-                            .getId());
+                data1.put(header[6],
+                        CommonUtil.fromNullToEmpty(meeting.getRelated_object()));
+                if (meeting.getRelated_record() == null) {
+                    data1.put(header[7], "");
                 } else {
+                    data1.put(header[7],
+                            String.valueOf(meeting.getRelated_record()));
+                }
+                data1.put(header[8],
+                        CommonUtil.fromNullToEmpty(meeting.getLocation()));
+                data1.put(header[9], meeting.isReminder_pop());
+                if (meeting.getReminder_option_pop() != null) {
+                    data1.put(header[10], meeting.getReminder_option_pop()
+                            .getId());
+                    data1.put(header[11], meeting.getReminder_option_pop()
+                            .getName());
+                } else {
+                    data1.put(header[10], "");
                     data1.put(header[11], "");
                 }
-                data1.put(header[12],
-                        CommonUtil.fromNullToEmpty(meeting.getDescription()));
-                if (meeting.getAssigned_to() != null) {
-                    data1.put(header[13], meeting.getAssigned_to().getId());
+                data1.put(header[12], meeting.isReminder_email());
+                if (meeting.getReminder_option_email() != null) {
+                    data1.put(header[13], meeting.getReminder_option_email()
+                            .getId());
+                    data1.put(header[14], meeting.getReminder_option_email()
+                            .getName());
                 } else {
                     data1.put(header[13], "");
+                    data1.put(header[14], "");
+                }
+                data1.put(header[15],
+                        CommonUtil.fromNullToEmpty(meeting.getDescription()));
+                if (meeting.getAssigned_to() != null) {
+                    data1.put(header[16], meeting.getAssigned_to().getId());
+                    data1.put(header[17], meeting.getAssigned_to().getName());
+                } else {
+                    data1.put(header[16], "");
+                    data1.put(header[17], "");
                 }
                 writer.write(data1, header);
             }
@@ -351,7 +366,7 @@ public class ListMeetingAction extends BaseListAction {
                     }
                     meeting.setSubject(CommonUtil.fromNullToEmpty(row
                             .get("Subject")));
-                    String statusID = row.get("Status");
+                    String statusID = row.get("Status ID");
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         meeting.setStatus(null);
                     } else {
@@ -361,7 +376,7 @@ public class ListMeetingAction extends BaseListAction {
                         meeting.setStatus(status);
                     }
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
-                            "M/d/yyyy HH:mm:ss");
+                            Constant.DATE_TIME_FORMAT);
                     String startDateS = row.get("Start Date");
                     if (startDateS != null) {
                         Date startDate = dateFormat.parse(startDateS);
@@ -378,7 +393,7 @@ public class ListMeetingAction extends BaseListAction {
                     }
                     meeting.setRelated_object(CommonUtil.fromNullToEmpty(row
                             .get("Related Object")));
-                    String relatedRecord = row.get("Related Record");
+                    String relatedRecord = row.get("Related Record ID");
                     if (CommonUtil.isNullOrEmpty(relatedRecord)) {
                         meeting.setRelated_record(0);
                     } else {
@@ -395,7 +410,7 @@ public class ListMeetingAction extends BaseListAction {
                                 .parseBoolean(reminderWayPop));
                     }
                     String reminderOptionPopID = row
-                            .get("Reminder Option Popup");
+                            .get("Reminder Option Popup ID");
                     if (CommonUtil.isNullOrEmpty(reminderOptionPopID)) {
                         meeting.setReminder_option_pop(null);
                     } else {
@@ -412,7 +427,7 @@ public class ListMeetingAction extends BaseListAction {
                                 .parseBoolean(reminderWayEmail));
                     }
                     String reminderOptionEmailID = row
-                            .get("Reminder Option Email");
+                            .get("Reminder Option Email ID");
                     if (CommonUtil.isNullOrEmpty(reminderOptionEmailID)) {
                         meeting.setReminder_option_email(null);
                     } else {
@@ -423,7 +438,7 @@ public class ListMeetingAction extends BaseListAction {
                     }
                     meeting.setDescription(CommonUtil.fromNullToEmpty(row
                             .get("Description")));
-                    String assignedToID = row.get("Assigned To");
+                    String assignedToID = row.get("Assigned To ID");
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         meeting.setAssigned_to(null);
                     } else {

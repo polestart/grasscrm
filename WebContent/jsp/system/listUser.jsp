@@ -27,7 +27,11 @@
   	  $("#delete").click(function() {	
 		  many_deleterow("deleteUser.action?seleteIDs=");
 	  });
-        
+ 
+	  $("#massUpdate").click(function() {	
+		  many_massUpdaterow("/system/editUser.action?seleteIDs=");
+	  });
+	  
 	  $("#export").click(function() {	
 		  many_exportrow("/system/exportUser.action?seleteIDs=");
 	  });		  
@@ -123,8 +127,9 @@
 		       	<div id="mtm1" style="width:150px;">
 					<div onClick="openwindow('/system/uploadUser.jsp','<s:text name="title.import.user" />')"><s:text name='menu.item.import.title'/></div>
 					<div id="export"><s:text name='menu.item.export.title'/></div>
-					<div onClick="#" data-options="iconCls:'icon-mail'"><s:text name='menu.item.email.title'/></div>	
-					<div onClick="#"><s:text name='menu.item.massupdate.title'/></div>
+					<div id="massUpdate">
+						<s:text name='menu.item.massupdate.title' />
+					</div>							
 					<div id="copy"><s:text name='menu.item.copy.title'/></div>
 				</div>
 		     </span>		     		     

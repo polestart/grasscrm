@@ -18,7 +18,11 @@
 <script type="text/javascript">
 	function add() {
 		var addObjectForm = document.getElementById('addObjectForm');
-		addObjectForm.action = "saveCase.action";
+		if ($("#seleteIDs").val()!= ""){
+			   addObjectForm.action = "massUpdateCase.action";
+		}else{
+			   addObjectForm.action = "saveCase.action";
+		}		
 		addObjectForm.submit();
 	}
 
@@ -33,6 +37,10 @@
 		$('#assignedToID').combogrid('setText', '<s:property value="assignedToText"/>');
 		$('#accountID').combogrid('setValue', '<s:property value="accountID"/>');
 		$('#accountID').combogrid('setText', '<s:property value="accountText"/>');
+		if ($("#seleteIDs").val()!= ""){
+			  $("input:checkbox[name=massUpdate]").css("display",'block');
+			  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
+		}		
 	})
 </script>
 
@@ -63,9 +71,16 @@
 					</h2>
 				</s:if>
 				<s:else>
+				  <s:if test="seleteIDs!=null">
+					<h2>
+						<s:text name="title.massUpdateCase" />
+					</h2>
+				  </s:if>
+				  <s:else>				    
 					<h2>
 						<s:text name="title.createCase" />
 					</h2>
+				  </s:else>	
 				</s:else>
 			</div>
 
@@ -74,7 +89,8 @@
 					method="post">
 					<s:hidden name="caseInstance.id" value="%{caseInstance.id}" />
 					<s:hidden name="relationKey" id="relationKey" value="%{relationKey}" />	
-			        <s:hidden name="relationValue" id="relationValue" value="%{relationValue}" />	
+			        <s:hidden name="relationValue" id="relationValue" value="%{relationValue}" />
+			        <s:hidden id="seleteIDs" name="seleteIDs" value="%{seleteIDs}" />
 					
 					<table style="" cellspacing="10" cellpadding="0" width="100%">
 						<s:actionerror />
@@ -95,25 +111,32 @@
 					<table style="padding: 10px;" cellspacing="10" cellpadding="0"
 						width="100%">
 						<tr>
+						    <td class="td-mass-update"><input id="massUpdate"
+										name="massUpdate" type="checkbox" class="massUpdate" value="subject"/></td>
 							<td class="td-label"><label class="record-label"><s:text
 										name="case.subject.label"></s:text>：</label></td>
 							<td class="td-value"><input name="caseInstance.subject"
 								class="easyui-validatebox record-value"
 								data-options="required:true"
 								value="<s:property value="caseInstance.subject" />" /></td>
+						    <td class="td-mass-update"></td>
 							<td class="td-label"></td>
 							<td class="td-value"></td>
 						</tr>
 					</table>
 
-					<div class="easyui-tabs">
+					<div id="tt" class="easyui-tabs">
 						<div title="<s:text name='tab.overview'/>" style="padding: 10px;">
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+									    	    name="massUpdate" type="checkbox" class="massUpdate" value="priority"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="case.priority.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="priorityID"
 											list="casePriorities" listKey="id" listValue="name" cssClass="record-value"/></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+									    	    name="massUpdate" type="checkbox" class="massUpdate" value="status"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="case.status.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="statusID"
@@ -121,6 +144,8 @@
 								</tr>
 
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+									    	    name="massUpdate" type="checkbox" class="massUpdate" value="account"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.account.label"></s:text>：</label></td>
 									<td class="td-value"><select id="accountID"
@@ -146,6 +171,8 @@
 						            ]]  
 						        ">
 									</select></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+									    	    name="massUpdate" type="checkbox" class="massUpdate" value="type"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="case.type.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="typeID"
@@ -153,10 +180,14 @@
 								</tr>
 
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+									    	    name="massUpdate" type="checkbox" class="massUpdate" value="origin"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="case.origin.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="originID"
 											list="caseOrigins" listKey="id" listValue="name" cssClass="record-value"/></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+									    	    name="massUpdate" type="checkbox" class="massUpdate" value="reason"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="case.reason.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="reasonID"
@@ -164,9 +195,13 @@
 								</tr>
 
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+									    	    name="massUpdate" type="checkbox" class="massUpdate" value="resolution"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="case.resolution.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield name="caseInstance.resolution" cssClass="record-value"/>
+						            <td class="td-mass-update"><input id="massUpdate"
+									    	    name="massUpdate" type="checkbox" class="massUpdate" value="assigned_to"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.assigned_to.label"></s:text>：</label></td>
 									<td class="td-value"><select
@@ -199,40 +234,49 @@
 						<div title="<s:text name='tab.details'/>" style="padding: 10px;">
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+									    	    name="massUpdate" type="checkbox" class="massUpdate" value="description"/></td>
 									<td class="td-label" valign="top"><label
 										class="record-label"><s:text
 												name="entity.description.label"></s:text>：</label></td>
 									<td class="td-value" valign="top"><s:textarea
-											name="caseInstance.description" rows="20" cssStyle="width:500px;"
+											name="caseInstance.description" rows="20" cssStyle="width:450px;"
 											cssClass="record-value" /></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"></td>
 									<td class="td-value"></td>
 								</tr>
 								<tr>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.createdBy.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="createdBy" /></label></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.createdOn.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="createdOn" /></label></td>
 								</tr>
 								<tr>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.updatedBy.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="updatedBy" /></label></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.updatedOn.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="updatedOn" /></label></td>
 								</tr>
 								<tr>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.id.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="id" /></label></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"></td>
 									<td class="td-value"></td>
 								</tr>

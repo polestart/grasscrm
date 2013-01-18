@@ -15,6 +15,9 @@
  */
 package com.gcrm.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,7 @@ import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
@@ -64,6 +68,62 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
+        saveEntity();
+
+        if ("TargetList".equals(this.getRelationKey())) {
+            TargetList targetList = targetListService.getEntityById(
+                    TargetList.class, Integer.valueOf(this.getRelationValue()));
+            Set<TargetList> targetLists = account.getTargetLists();
+            if (targetLists == null) {
+                targetLists = new HashSet<TargetList>();
+            }
+            targetLists.add(targetList);
+        } else if ("Document".equals(this.getRelationKey())) {
+            Document document = documentService.getEntityById(Document.class,
+                    Integer.valueOf(this.getRelationValue()));
+            Set<Document> documents = account.getDocuments();
+            if (documents == null) {
+                documents = new HashSet<Document>();
+            }
+            documents.add(document);
+        }
+
+        getBaseService().makePersistent(account);
+        return SUCCESS;
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Account> accounts = new ArrayList<Account>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Account accountInstance = this.baseService.getEntityById(
+                    Account.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(account, fieldName);
+                BeanUtil.setFieldValue(accountInstance, fieldName, value);
+            }
+            accountInstance.setUpdated_by(user);
+            accountInstance.setUpdated_on(new Date());
+            accounts.add(accountInstance);
+        }
+        if (accounts.size() > 0) {
+            this.baseService.batchUpdate(accounts);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     */
+    private void saveEntity() {
         AccountType type = null;
         if (typeID != null) {
             type = accountTypeService.getEntityById(AccountType.class, typeID);
@@ -88,29 +148,7 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
             manager = baseService.getEntityById(Account.class, managerID);
         }
         account.setManager(manager);
-
-        if ("TargetList".equals(this.getRelationKey())) {
-            TargetList targetList = targetListService.getEntityById(
-                    TargetList.class, Integer.valueOf(this.getRelationValue()));
-            Set<TargetList> targetLists = account.getTargetLists();
-            if (targetLists == null) {
-                targetLists = new HashSet<TargetList>();
-            }
-            targetLists.add(targetList);
-        } else if ("Document".equals(this.getRelationKey())) {
-            Document document = documentService.getEntityById(Document.class,
-                    Integer.valueOf(this.getRelationValue()));
-            Set<Document> documents = account.getDocuments();
-            if (documents == null) {
-                documents = new HashSet<Document>();
-            }
-            documents.add(document);
-        }
-
         super.updateBaseInfo(account);
-
-        getBaseService().makePersistent(account);
-        return SUCCESS;
     }
 
     /**

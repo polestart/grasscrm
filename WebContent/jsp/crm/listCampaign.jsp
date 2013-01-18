@@ -29,6 +29,10 @@
 		  many_deleterow("deleteCampaign.action?seleteIDs=");
 	  });	
 
+	  $("#massUpdate").click(function() {	
+		  many_massUpdaterow("/crm/editCampaign.action?seleteIDs=");
+	  });
+	  
 	  $("#export").click(function() {	
 		  many_exportrow("/crm/exportCampaign.action?seleteIDs=");
 	  });
@@ -129,6 +133,9 @@
 		       	<div id="mtm1" style="width:150px;">
 					<div onClick="openwindow('/crm/uploadCampaign.jsp','<s:text name="title.import.campaign" />')"><s:text name='menu.item.import.title'/></div>
 					<div id="export"><s:text name='menu.item.export.title'/></div>
+					<div id="massUpdate">
+						<s:text name='menu.item.massupdate.title' />
+					</div>						
 					<div id="copy"><s:text name='menu.item.copy.title'/></div>
 				</div>
 		     </span>		     		     

@@ -64,7 +64,13 @@
     	  <result type="redirect">/jsp/system/listUser.jsp</result>
         </action>
         
-      	<action name="listRole" class="listRoleAction" method="list">
+        <action name="massUpdateUser" class="editUserAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/system/editUser.jsp</result>          
+    	  <result type="redirect">/jsp/system/listUser.jsp</result>
+        </action>   
+                
+      	<action name="listRoleFull" class="listRoleAction" method="listFull">
     	  <result name="success" type="json"></result>
         </action>
 

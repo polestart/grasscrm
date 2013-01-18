@@ -137,7 +137,8 @@ public class ListTaskAction extends BaseListAction {
             } else {
                 contactName = "";
             }
-            String relatedObject = instance.getRelated_object();
+            String relatedObject = CommonUtil.fromNullToEmpty(instance
+                    .getRelated_object());
             Date dueDate = instance.getDue_date();
             String dueDateS = "";
             SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -269,10 +270,11 @@ public class ListTaskAction extends BaseListAction {
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Subject", "Status",
-                    "Start Date", "Due Date", "Related Object",
-                    "Related Record", "Location", "Contact", "Priority",
-                    "Description", "Assigned To" };
+            final String[] header = new String[] { "ID", "Subject",
+                    "Status ID", "Status Name", "Start Date", "Due Date",
+                    "Related Object", "Related Record ID", "Contact ID",
+                    "Contact Name", "Priority ID", "Priority Name",
+                    "Description", "Assigned To ID", "Assigned To Name" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -285,42 +287,50 @@ public class ListTaskAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(task.getSubject()));
                 if (task.getStatus() != null) {
                     data1.put(header[2], task.getStatus().getId());
+                    data1.put(header[3], task.getStatus().getName());
                 } else {
                     data1.put(header[2], "");
-                }
-                SimpleDateFormat dateFormat = new SimpleDateFormat(
-                        "M/d/yyyy HH:mm:ss");
-                Date startDate = task.getStart_date();
-                if (startDate != null) {
-                    data1.put(header[3], dateFormat.format(startDate));
-                } else {
                     data1.put(header[3], "");
                 }
-                Date due_date = task.getDue_date();
-                if (due_date != null) {
-                    data1.put(header[4], dateFormat.format(due_date));
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        Constant.DATE_TIME_FORMAT);
+                Date startDate = task.getStart_date();
+                if (startDate != null) {
+                    data1.put(header[4], dateFormat.format(startDate));
                 } else {
                     data1.put(header[4], "");
                 }
-                data1.put(header[5],
-                        CommonUtil.fromNullToEmpty(task.getRelated_object()));
-                data1.put(header[6], task.getRelated_record());
-                if (task.getContact() != null) {
-                    data1.put(header[7], task.getContact().getId());
+                Date due_date = task.getDue_date();
+                if (due_date != null) {
+                    data1.put(header[5], dateFormat.format(due_date));
                 } else {
-                    data1.put(header[7], "");
+                    data1.put(header[5], "");
                 }
-                if (task.getPriority() != null) {
-                    data1.put(header[8], task.getPriority().getId());
+                data1.put(header[6],
+                        CommonUtil.fromNullToEmpty(task.getRelated_object()));
+                data1.put(header[7], task.getRelated_record());
+                if (task.getContact() != null) {
+                    data1.put(header[8], task.getContact().getId());
+                    data1.put(header[9], task.getContact().getName());
                 } else {
                     data1.put(header[8], "");
+                    data1.put(header[9], "");
                 }
-                data1.put(header[9],
-                        CommonUtil.fromNullToEmpty(task.getDescription()));
-                if (task.getAssigned_to() != null) {
-                    data1.put(header[10], task.getAssigned_to().getId());
+                if (task.getPriority() != null) {
+                    data1.put(header[10], task.getPriority().getId());
+                    data1.put(header[11], task.getPriority().getName());
                 } else {
                     data1.put(header[10], "");
+                    data1.put(header[11], "");
+                }
+                data1.put(header[12],
+                        CommonUtil.fromNullToEmpty(task.getDescription()));
+                if (task.getAssigned_to() != null) {
+                    data1.put(header[13], task.getAssigned_to().getId());
+                    data1.put(header[14], task.getAssigned_to().getName());
+                } else {
+                    data1.put(header[13], "");
+                    data1.put(header[14], "");
                 }
                 writer.write(data1, header);
             }
@@ -366,7 +376,7 @@ public class ListTaskAction extends BaseListAction {
                     }
                     task.setSubject(CommonUtil.fromNullToEmpty(row
                             .get("Subject")));
-                    String statusID = row.get("Status");
+                    String statusID = row.get("Status ID");
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         task.setStatus(null);
                     } else {
@@ -375,7 +385,7 @@ public class ListTaskAction extends BaseListAction {
                         task.setStatus(status);
                     }
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
-                            "M/d/yyyy HH:mm:ss");
+                            Constant.DATE_TIME_FORMAT);
                     String startDateS = row.get("Start Date");
                     if (startDateS != null) {
                         Date startDate = dateFormat.parse(startDateS);
@@ -392,13 +402,13 @@ public class ListTaskAction extends BaseListAction {
                     }
                     task.setRelated_object(CommonUtil.fromNullToEmpty(row
                             .get("Related Object")));
-                    String relatedRecord = row.get("Related Record");
+                    String relatedRecord = row.get("Related Record ID");
                     if (CommonUtil.isNullOrEmpty(relatedRecord)) {
                         task.setRelated_record(0);
                     } else {
                         task.setRelated_record(Integer.parseInt(relatedRecord));
                     }
-                    String contactID = row.get("Contact");
+                    String contactID = row.get("Contact ID");
                     if (CommonUtil.isNullOrEmpty(contactID)) {
                         task.setContact(null);
                     } else {
@@ -406,7 +416,7 @@ public class ListTaskAction extends BaseListAction {
                                 Contact.class, Integer.parseInt(contactID));
                         task.setContact(contact);
                     }
-                    String priorityID = row.get("Priority");
+                    String priorityID = row.get("Priority ID");
                     if (CommonUtil.isNullOrEmpty(priorityID)) {
                         task.setPriority(null);
                     } else {
@@ -417,7 +427,7 @@ public class ListTaskAction extends BaseListAction {
                     }
                     task.setDescription(CommonUtil.fromNullToEmpty(row
                             .get("Description")));
-                    String assignedToID = row.get("Assigned To");
+                    String assignedToID = row.get("Assigned To ID");
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         task.setAssigned_to(null);
                     } else {

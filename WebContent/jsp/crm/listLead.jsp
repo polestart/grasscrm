@@ -27,6 +27,10 @@
 	  $("#delete").click(function() {	
 		  many_deleterow("deleteLead.action?seleteIDs=");
 	  });	
+
+	  $("#massUpdate").click(function() {	
+		  many_massUpdaterow("/crm/editLead.action?seleteIDs=");
+	  });
 	  
 	  $("#export").click(function() {	
 		  many_exportrow("/crm/exportLead.action?seleteIDs=");
@@ -127,6 +131,9 @@
 	       	 <div id="mtm1" style="width:150px;">
 				<div onClick="openwindow('/crm/uploadLead.jsp','<s:text name="title.import.lead" />')"><s:text name='menu.item.import.title'/></div>
 				<div id="export"><s:text name='menu.item.export.title'/></div>
+				<div id="massUpdate">
+					<s:text name='menu.item.massupdate.title' />
+				</div>				
 				<div id="copy"><s:text name='menu.item.copy.title'/></div>
 			 </div>
 	       </span>			   

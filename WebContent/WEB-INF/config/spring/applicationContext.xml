@@ -266,7 +266,7 @@
     </bean> 
     
     <bean id="editLeadAction" class="com.gcrm.action.EditLeadAction" scope="prototype">   
-        <property name="leadService" ref="leadService" />
+        <property name="baseService" ref="leadService" />
         <property name="accountService" ref="baseService" /> 
         <property name="leadStatusService" ref="baseService" />
         <property name="leadSourceService" ref="baseService" /> 	

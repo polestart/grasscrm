@@ -78,6 +78,41 @@
 		}
 	}
  
+   function many_deleterow_easyui(url){
+	   
+       rows = $('#tt').datagrid('getSelections');
+       var num =  rows.length;
+       var url = url
+       
+       
+		if (num==0){
+			$.messager.alert("Warning","No record is selected.")
+		}
+		else {
+			$.messager.confirm('Confirm','Are you sure you want to delete?',function(r){
+				if (r){
+					var ids = null ;
+					data = rows.concat(); 
+					for (var i = 0 ;i < num; i++){
+						if (null == ids || i == 0 ) {                 
+						    ids =  data[i].id;             
+						} else  {                 
+							ids = ids + "," +  data[i].id;             
+						} 
+					}	
+					for (var i = num - 1 ;i >= 0; i--){
+						index = $('#tt').datagrid('getRowIndex',data[i]);
+						$('#tt').datagrid('deleteRow',index);
+					}						
+				    url = url + ids; 
+				    $.post( 
+				       url     
+				    ); 	
+				}
+			});
+		}
+	}
+   
    function many_selectrow(url){
 	   
        rows = $('#tt').datagrid('getSelections');
@@ -143,6 +178,21 @@
 			});
 		}
 	}   
+
+   function many_massUpdaterow(url){
+	   var rows = jQuery("#grid").jqGrid('getGridParam','selarrrow');
+       var num =  rows.length;
+
+		if (num==0){
+			$.messager.alert("Warning","No record is selected.")
+		}
+		else {
+		    var url = url + rows; 
+		    url = "/grass/jsp" + url;
+			window.open(url,"_self"); 						
+				
+		}
+	}    
    
    function many_exportrow(url){
 	   var rows = jQuery("#grid").jqGrid('getGridParam','selarrrow');

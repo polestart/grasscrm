@@ -16,6 +16,8 @@
 package com.gcrm.action;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +29,7 @@ import com.gcrm.domain.User;
 import com.gcrm.domain.UserStatus;
 import com.gcrm.security.AuthenticationFilter;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -55,6 +58,71 @@ public class EditUserAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
+        saveEntity();
+        getBaseService().makePersistent(user);
+        return SUCCESS;
+    }
+
+    /**
+     * Gets the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String get() throws Exception {
+        if (this.getId() != null) {
+            user = baseService.getEntityById(User.class, this.getId());
+            UserStatus status = user.getStatus();
+            if (status != null) {
+                statusID = status.getId();
+            }
+            User reportTo = user.getReport_to();
+            if (reportTo != null) {
+                reportToID = reportTo.getId();
+            }
+            Set<Role> roleSet = user.getRoles();
+            rightRoles = new ArrayList<Role>();
+            for (Role role : roleSet) {
+                rightRoles.add(role);
+            }
+
+            leftRoles.removeAll(rightRoles);
+            ;
+            this.getBaseInfo(user);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<User> users = new ArrayList<User>();
+        User loginUser = this.getLoginUser();
+        User user = baseService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            User userInstance = this.baseService.getEntityById(User.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(user, fieldName);
+                BeanUtil.setFieldValue(userInstance, fieldName, value);
+            }
+            userInstance.setUpdated_by(user);
+            userInstance.setUpdated_on(new Date());
+            users.add(userInstance);
+        }
+        if (users.size() > 0) {
+            this.baseService.batchUpdate(users);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     */
+    private void saveEntity() {
         UserStatus status = null;
         if (statusID != null) {
             status = userStatusService
@@ -91,39 +159,7 @@ public class EditUserAction extends BaseEditAction implements Preparable {
             user.setPassword(encoder.encodePassword(user.getPassword(),
                     AuthenticationFilter.SALT));
         }
-
         super.updateBaseInfo(user);
-        getBaseService().makePersistent(user);
-        return SUCCESS;
-    }
-
-    /**
-     * Gets the entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String get() throws Exception {
-        if (this.getId() != null) {
-            user = baseService.getEntityById(User.class, this.getId());
-            UserStatus status = user.getStatus();
-            if (status != null) {
-                statusID = status.getId();
-            }
-            User reportTo = user.getReport_to();
-            if (reportTo != null) {
-                reportToID = reportTo.getId();
-            }
-            Set<Role> roleSet = user.getRoles();
-            rightRoles = new ArrayList<Role>();
-            for (Role role : roleSet) {
-                rightRoles.add(role);
-            }
-
-            leftRoles.removeAll(rightRoles);
-            ;
-            this.getBaseInfo(user);
-        }
-        return SUCCESS;
     }
 
     /**

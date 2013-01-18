@@ -15,7 +15,10 @@
  */
 package com.gcrm.action;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +36,7 @@ import com.gcrm.domain.Task;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.opensymphony.xwork2.ActionContext;
@@ -88,61 +92,7 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
-        MeetingStatus status = null;
-        if (statusID != null) {
-            status = meetingStatusService.getEntityById(MeetingStatus.class,
-                    statusID);
-        }
-        meeting.setStatus(status);
-        ReminderOption reminderOptionPop = null;
-        if (reminderOptionPopID != null) {
-            reminderOptionPop = reminderOptionService.getEntityById(
-                    ReminderOption.class, reminderOptionPopID);
-        }
-        meeting.setReminder_option_pop(reminderOptionPop);
-        ReminderOption reminderOptionEmail = null;
-        if (reminderOptionEmailID != null) {
-            reminderOptionEmail = reminderOptionService.getEntityById(
-                    ReminderOption.class, reminderOptionEmailID);
-        }
-        meeting.setReminder_option_email(reminderOptionEmail);
-        User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
-        }
-        meeting.setAssigned_to(assignedTo);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                Constant.DATE_EDIT_FORMAT);
-        Date start_date = null;
-        if (!CommonUtil.isNullOrEmpty(startDate)) {
-            start_date = dateFormat.parse(startDate);
-        }
-        meeting.setStart_date(start_date);
-        Date end_date = null;
-        if (!CommonUtil.isNullOrEmpty(endDate)) {
-            end_date = dateFormat.parse(endDate);
-        }
-        meeting.setEnd_date(end_date);
-
-        String relatedObject = meeting.getRelated_object();
-        if ("Account".equals(relatedObject)) {
-            meeting.setRelated_record(relatedAccountID);
-        } else if ("Case".equals(relatedObject)) {
-            meeting.setRelated_record(relatedCaseID);
-        } else if ("Contact".equals(relatedObject)) {
-            meeting.setRelated_record(relatedContactID);
-        } else if ("Lead".equals(relatedObject)) {
-            meeting.setRelated_record(relatedLeadID);
-        } else if ("Opportunity".equals(relatedObject)) {
-            meeting.setRelated_record(relatedOpportunityID);
-        } else if ("Target".equals(relatedObject)) {
-            meeting.setRelated_record(relatedTargetID);
-        } else if ("Task".equals(relatedObject)) {
-            meeting.setRelated_record(relatedTaskID);
-        }
-
-        super.updateBaseInfo(meeting);
-
+        saveEntity();
         getBaseService().makePersistent(meeting);
         return SUCCESS;
     }
@@ -174,7 +124,8 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
                 assignedToText = assignedTo.getName();
             }
             Date start_date = meeting.getStart_date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Constant.DATE_TIME_FORMAT);
             if (start_date != null) {
                 startDate = dateFormat.format(start_date);
             }
@@ -185,6 +136,7 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
             String relatedObject = meeting.getRelated_object();
             Integer relatedRecord = meeting.getRelated_record();
             setRelatedRecord(relatedObject, relatedRecord);
+            this.getBaseInfo(meeting);
         } else {
             ActionContext context = ActionContext.getContext();
             Map<String, Object> session = context.getSession();
@@ -239,6 +191,95 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
             this.relatedTaskText = this.taskService.getEntityById(Task.class,
                     relatedRecord).getSubject();
         }
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Meeting> meetings = new ArrayList<Meeting>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Meeting meetingInstance = this.baseService.getEntityById(
+                    Meeting.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(meeting, fieldName);
+                BeanUtil.setFieldValue(meetingInstance, fieldName, value);
+            }
+            meetingInstance.setUpdated_by(user);
+            meetingInstance.setUpdated_on(new Date());
+            meetings.add(meetingInstance);
+        }
+        if (meetings.size() > 0) {
+            this.baseService.batchUpdate(meetings);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     * 
+     * @throws ParseException
+     */
+    private void saveEntity() throws ParseException {
+        MeetingStatus status = null;
+        if (statusID != null) {
+            status = meetingStatusService.getEntityById(MeetingStatus.class,
+                    statusID);
+        }
+        meeting.setStatus(status);
+        ReminderOption reminderOptionPop = null;
+        if (reminderOptionPopID != null) {
+            reminderOptionPop = reminderOptionService.getEntityById(
+                    ReminderOption.class, reminderOptionPopID);
+        }
+        meeting.setReminder_option_pop(reminderOptionPop);
+        ReminderOption reminderOptionEmail = null;
+        if (reminderOptionEmailID != null) {
+            reminderOptionEmail = reminderOptionService.getEntityById(
+                    ReminderOption.class, reminderOptionEmailID);
+        }
+        meeting.setReminder_option_email(reminderOptionEmail);
+        User assignedTo = null;
+        if (assignedToID != null) {
+            assignedTo = userService.getEntityById(User.class, assignedToID);
+        }
+        meeting.setAssigned_to(assignedTo);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_TIME_FORMAT);
+        Date start_date = null;
+        if (!CommonUtil.isNullOrEmpty(startDate)) {
+            start_date = dateFormat.parse(startDate);
+        }
+        meeting.setStart_date(start_date);
+        Date end_date = null;
+        if (!CommonUtil.isNullOrEmpty(endDate)) {
+            end_date = dateFormat.parse(endDate);
+        }
+        meeting.setEnd_date(end_date);
+
+        String relatedObject = meeting.getRelated_object();
+        if ("Account".equals(relatedObject)) {
+            meeting.setRelated_record(relatedAccountID);
+        } else if ("Case".equals(relatedObject)) {
+            meeting.setRelated_record(relatedCaseID);
+        } else if ("Contact".equals(relatedObject)) {
+            meeting.setRelated_record(relatedContactID);
+        } else if ("Lead".equals(relatedObject)) {
+            meeting.setRelated_record(relatedLeadID);
+        } else if ("Opportunity".equals(relatedObject)) {
+            meeting.setRelated_record(relatedOpportunityID);
+        } else if ("Target".equals(relatedObject)) {
+            meeting.setRelated_record(relatedTargetID);
+        } else if ("Task".equals(relatedObject)) {
+            meeting.setRelated_record(relatedTaskID);
+        }
+        super.updateBaseInfo(meeting);
     }
 
     /**

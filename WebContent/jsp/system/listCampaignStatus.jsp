@@ -26,7 +26,7 @@
 			destroyUrl : 'deleteCampaignStatus.action'
 		});
 	    $("#delete").click(function() {	
-			  many_deleterow("deleteCampaignStatus.action?seleteIDs=");
+	    	many_deleterow_easyui("deleteCampaignStatus.action?seleteIDs=");
 		    });		
 	});
 </script>
@@ -54,7 +54,7 @@
 						    <th data-options="field:'ck',checkbox:true"></th>
 							<th field="id" width="1" hidden="true"><s:text
 									name='entity.id.label' /></th>							
-							<th field="campaignStatus.id" width="50" hidden="true"><s:text
+							<th field="campaignStatus.id" width="10"><s:text
 									name='entity.id.label' /></th>
 							<th field="campaignStatus.name" width="50"
 								editor="{type:'validatebox',options:{required:true}}"><s:text

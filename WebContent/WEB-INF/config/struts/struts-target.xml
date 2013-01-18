@@ -62,6 +62,12 @@
         <action name="deleteTarget" class="listTargetAction" method="delete">
 			<result type="redirect">/jsp/crm/listTarget.jsp</result>
         </action>   
+        
+        <action name="massUpdateTarget" class="editTargetAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editTarget.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listTarget.jsp</result>
+        </action>         
   </package>      
     
 </struts>

@@ -26,7 +26,7 @@
 			destroyUrl : 'deleteLeadStatus.action'
 		});
 	    $("#delete").click(function() {	
-			  many_deleterow("deleteLeadStatus.action?seleteIDs=");
+	    	many_deleterow_easyui("deleteLeadStatus.action?seleteIDs=");
 		    });		
 	});
 </script>
@@ -54,7 +54,7 @@
 						    <th data-options="field:'ck',checkbox:true"></th>
 							<th field="id" width="1" hidden="true"><s:text
 									name='entity.id.label' /></th>							
-							<th field="leadStatus.id" width="50" hidden="true"><s:text
+							<th field="leadStatus.id" width="10"><s:text
 									name='entity.id.label' /></th>
 							<th field="leadStatus.name" width="50"
 								editor="{type:'validatebox',options:{required:true}}"><s:text

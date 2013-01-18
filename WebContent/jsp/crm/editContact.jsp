@@ -18,7 +18,11 @@
 <script type="text/javascript">
 	  function add(){
 		var addObjectForm = document.getElementById('addObjectForm');
-		addObjectForm.action = "saveContact.action";
+		if ($("#seleteIDs").val()!= ""){
+			   addObjectForm.action = "massUpdateContact.action";
+		}else{
+			   addObjectForm.action = "saveContact.action";
+		}		
 		addObjectForm.submit();
 	  }
 	
@@ -108,7 +112,11 @@
 		});		
 		$('#accountID').combogrid('setValue', '<s:property value="accountID"/>');
 		$('#accountID').combogrid('setText', '<s:property value="accountText"/>');
-		 })
+		if ($("#seleteIDs").val()!= ""){
+			  $("input:checkbox[name=massUpdate]").css("display",'block');
+			  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
+		}		
+	})
 	</script>
 </head>
 
@@ -138,9 +146,16 @@
 					</h2>
 				</s:if>
 				<s:else>
+				  <s:if test="seleteIDs!=null">
+					<h2>
+						<s:text name="title.massUpdateContact" />
+					</h2>
+				  </s:if>
+				  <s:else>				    
 					<h2>
 						<s:text name="title.createContact" />
 					</h2>
+				  </s:else>	
 				</s:else>
 			</div>
 
@@ -150,6 +165,7 @@
 					<s:hidden name="contact.id" value="%{contact.id}" />
 			        <s:hidden name="relationKey" id="relationKey" value="%{relationKey}" />	
 			        <s:hidden name="relationValue" id="relationValue" value="%{relationValue}" />	
+			        <s:hidden id="seleteIDs" name="seleteIDs" value="%{seleteIDs}" />
 			        					
 					<table style="" cellspacing="10" cellpadding="0" width="100%">
 						<s:actionerror />
@@ -170,10 +186,14 @@
 					<table style="padding: 10px;" cellspacing="10" cellpadding="0"
 						width="100%">
 						<tr>
+						    <td class="td-mass-update"><input id="massUpdate"
+										name="massUpdate" type="checkbox" class="massUpdate" value="first_name"/></td>
 							<td class="td-label"><label class="record-label"><s:text
 										name="entity.first_name.label"></s:text>：</label></td>
 							<td class="td-value"><s:textfield name="contact.first_name"
 									cssClass="record-value" /></td>
+						    <td class="td-mass-update"><input id="massUpdate"
+										name="massUpdate" type="checkbox" class="massUpdate" value="last_name"/></td>
 							<td class="td-label"><label class="record-label"><s:text
 										name="entity.last_name.label"></s:text>：</label></td>
 							<td class="td-value"><input name="contact.last_name"
@@ -183,10 +203,14 @@
 						</tr>
 
 						<tr>
+						    <td class="td-mass-update"><input id="massUpdate"
+										name="massUpdate" type="checkbox" class="massUpdate" value="title"/></td>
 							<td class="td-label"><label class="record-label"><s:text
 										name="contact.title.label"></s:text>：</label></td>
 							<td class="td-value"><s:textfield name="contact.title"
 									cssClass="record-value" /></td>
+						    <td class="td-mass-update"><input id="massUpdate"
+										name="massUpdate" type="checkbox" class="massUpdate" value="department"/></td>
 							<td class="td-label"><label class="record-label"><s:text
 										name="contact.department.label"></s:text>：</label></td>
 							<td class="td-value"><s:textfield name="contact.department"
@@ -194,6 +218,8 @@
 						</tr>
 
 						<tr>
+						    <td class="td-mass-update"><input id="massUpdate"
+										name="massUpdate" type="checkbox" class="massUpdate" value="account"/></td>
 							<td class="td-label"><label class="record-label"><s:text
 										name="entity.account.label"></s:text>：</label></td>
 							<td class="td-value"><select id="accountID"
@@ -219,42 +245,54 @@
 				            ]]  
 				        ">
 							</select></td>
+						    <td class="td-mass-update"></td>
 							<td class="td-label"></td>
 							<td class="td-value"></td>
 						</tr>
 					</table>
 
-					<div class="easyui-tabs">
+					<div id="tt" class="easyui-tabs">
 						<div title="<s:text name='tab.overview'/>" style="padding: 10px;">
 							<div class="section-header">
 								<span><s:text name="span.contact" /></span>
 							</div>
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="email"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.email.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield name="contact.email"
 											cssClass="record-value" /></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="office_phone"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.office_phone.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield id="office_phone"
 											name="contact.office_phone" cssClass="record-value" /></td>
 								</tr>
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="website"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.website.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield name="contact.website"
 											cssClass="record-value" /></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="fax"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.fax.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield name="contact.fax"
 											cssClass="record-value" /></td>
 								</tr>
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="mobile"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.mobile.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield name="contact.mobile"
 											cssClass="record-value" /></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"></td>
 									<td class="td-value"></td>
 								</tr>
@@ -265,10 +303,14 @@
 							</div>
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="mailing_address"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.mailing_address.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield id="mailing_address"
 											name="contact.mailing_address" cssClass="record-value" /></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="mailing_city"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.mailing_city.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield id="mailing_city"
@@ -276,10 +318,14 @@
 								</tr>
 
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="mailing_state"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.mailing_state.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield id="mailing_state"
 											name="contact.mailing_state" cssClass="record-value" /></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="mailing_postal_code"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.mailing_postal_code.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield id="mailing_postal_code"
@@ -288,10 +334,13 @@
 								</tr>
 
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="mailing_country"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.mailing_country.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield id="mailing_country"
 											name="contact.mailing_country" cssClass="record-value" /></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"></td>
 									<td class="td-value"></td>
 								</tr>
@@ -302,10 +351,14 @@
 							</div>
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="other_address"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.other_address.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="contact.other_address" cssClass="record-value" /></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="other_city"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.other_city.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
@@ -313,10 +366,14 @@
 								</tr>
 
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="other_state"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.other_state.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="contact.other_state" cssClass="record-value" /></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="other_postal_code"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.other_postal_code.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
@@ -325,10 +382,13 @@
 								</tr>
 
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="other_country"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.other_country.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="contact.other_country" cssClass="record-value" /></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.copyAddress.label" />：</label></td>
 									<td class="td-value"><input id="copy_checkbox"
@@ -342,6 +402,8 @@
 							</div>
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="report_to"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.report_to.label"></s:text>：</label></td>
 									<td class="td-value"><select id="reportToID"
@@ -369,6 +431,8 @@
 						            ]]  
 						        ">
 									</select></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="leadSource"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.leadSource.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="leadSourceID"
@@ -377,6 +441,8 @@
 								</tr>
 
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="campaign"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.campaign.label"></s:text>：</label></td>
 									<td class="td-value"><select id="campaignID"
@@ -404,12 +470,16 @@
 						            ]]  
 						        ">
 									</select></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="not_call"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="contact.not_call.label"></s:text>：</label></td>
 									<td class="td-value"><s:checkbox id="contact.not_call"
 											name="contact.not_call" cssClass="record-value" /></td>
 								</tr>
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="assigned_to"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.assigned_to.label"></s:text>：</label></td>
 									<td class="td-value"><select id="assignedToID"
@@ -435,6 +505,7 @@
 						            ]]  
 						        ">
 									</select></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"></td>
 									<td class="td-value"></td>
 								</tr>
@@ -444,40 +515,49 @@
 						<div title="<s:text name='tab.details'/>" style="padding: 10px;">
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										        name="massUpdate" type="checkbox" class="massUpdate" value="description"/></td>
 									<td class="td-label" valign="top"><label
 										class="record-label"><s:text
 												name="entity.description.label"></s:text>：</label></td>
 									<td class="td-value" valign="top"><s:textarea
-											name="contact.description" rows="20" cssStyle="width:500px;"
+											name="contact.description" rows="20" cssStyle="width:450px;"
 											cssClass="record-value" /></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"></td>
 									<td class="td-value"></td>
 								</tr>
 								<tr>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.createdBy.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="createdBy" /></label></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.createdOn.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="createdOn" /></label></td>
 								</tr>
 								<tr>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.updatedBy.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="updatedBy" /></label></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.updatedOn.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="updatedOn" /></label></td>
 								</tr>
 								<tr>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.id.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="id" /></label></td>
+						            <td class="td-mass-update"></td>
 									<td class="td-label"></td>
 									<td class="td-value"></td>
 								</tr>

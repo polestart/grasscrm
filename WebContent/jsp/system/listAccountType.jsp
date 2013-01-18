@@ -26,7 +26,7 @@
 			destroyUrl : 'deleteAccountType.action'
 		});
 	    $("#delete").click(function() {	
-			  many_deleterow("deleteAccountType.action?seleteIDs=");
+	    	many_deleterow_easyui("deleteAccountType.action?seleteIDs=");
 		});		
 	});
 </script>
@@ -54,7 +54,7 @@
 						    <th data-options="field:'ck',checkbox:true"></th>
 							<th field="id" width="1" hidden="true"><s:text
 									name='entity.id.label' /></th>							
-							<th field="accountType.id" width="50" hidden="true"><s:text name='entity.id.label'/></th>
+							<th field="accountType.id" width="10" ><s:text name='entity.id.label'/></th>
 							<th field="accountType.name" width="50"
 								editor="{type:'validatebox',options:{required:true}}"><s:text name='entity.name.label'/></th>
 							<th field="accountType.sequence" width="50"

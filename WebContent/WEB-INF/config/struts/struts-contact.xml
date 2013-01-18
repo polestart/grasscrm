@@ -106,6 +106,12 @@
         <action name="removeContact" class="listContactAction" method="remove">
 			<result type="redirect">/jsp/crm/listContact.jsp</result>
         </action> 
+        
+        <action name="massUpdateContact" class="editContactAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editContact.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listContact.jsp</result>
+        </action>          
   </package>      
     
 </struts>

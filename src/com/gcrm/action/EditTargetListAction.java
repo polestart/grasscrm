@@ -15,6 +15,9 @@
  */
 package com.gcrm.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +26,7 @@ import com.gcrm.domain.TargetListType;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
@@ -49,21 +53,7 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
-        TargetListType type = null;
-        if (typeID != null) {
-            type = targetListTypeService.getEntityById(TargetListType.class,
-                    typeID);
-        }
-        targetList.setType(type);
-
-        User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
-        }
-        targetList.setAssigned_to(assignedTo);
-
-        super.updateBaseInfo(targetList);
-
+        saveEntity();
         getBaseService().makePersistent(targetList);
         return SUCCESS;
     }
@@ -87,7 +77,7 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
                 assignedToID = assignedTo.getId();
                 assignedToText = assignedTo.getName();
             }
-
+            this.getBaseInfo(targetList);
         } else {
             ActionContext context = ActionContext.getContext();
             Map<String, Object> session = context.getSession();
@@ -97,6 +87,54 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
             assignedToText = loginUser.getName();
         }
         return SUCCESS;
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<TargetList> targetLists = new ArrayList<TargetList>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            TargetList targetListInstance = this.baseService.getEntityById(
+                    TargetList.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(targetList, fieldName);
+                BeanUtil.setFieldValue(targetListInstance, fieldName, value);
+            }
+            targetListInstance.setUpdated_by(user);
+            targetListInstance.setUpdated_on(new Date());
+            targetLists.add(targetListInstance);
+        }
+        if (targetLists.size() > 0) {
+            this.baseService.batchUpdate(targetLists);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     */
+    private void saveEntity() {
+        TargetListType type = null;
+        if (typeID != null) {
+            type = targetListTypeService.getEntityById(TargetListType.class,
+                    typeID);
+        }
+        targetList.setType(type);
+
+        User assignedTo = null;
+        if (assignedToID != null) {
+            assignedTo = userService.getEntityById(User.class, assignedToID);
+        }
+        targetList.setAssigned_to(assignedTo);
+
+        super.updateBaseInfo(targetList);
     }
 
     /**

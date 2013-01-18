@@ -466,13 +466,15 @@ public class ListContactAction extends BaseListAction {
         try {
             final String[] header = new String[] { "ID", "First Name",
                     "Last Name", "Office Phone", "Title", "Mobile",
-                    "Department", "Fax", "Account", "Web Site",
-                    "Primary Address", "Primary City", "Primary State",
-                    "Primary Postal Code", "Primary Country", "Other Address",
-                    "Other City", "Other State", "Other Postal Code",
-                    "Other Country", "Email", "Description", "Report To",
-                    "Sync Outlook", "Do Not Call", "Lead Source", "Campaign",
-                    "Assigned To" };
+                    "Department", "Fax", "Account ID", "Account Name",
+                    "Web Site", "Primary Address", "Primary City",
+                    "Primary State", "Primary Postal Code", "Primary Country",
+                    "Other Address", "Other City", "Other State",
+                    "Other Postal Code", "Other Country", "Email",
+                    "Description", "Report To ID", "Report To Name",
+                    "Sync Outlook", "Do Not Call", "Lead Source ID",
+                    "Lead Source Name", "Campaign ID", "Campaign Nae",
+                    "Assigned To ID", "Assigned To Name" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -497,56 +499,66 @@ public class ListContactAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(contact.getFax()));
                 if (contact.getAccount() != null) {
                     data1.put(header[8], contact.getAccount().getId());
+                    data1.put(header[9], contact.getAccount().getName());
                 } else {
                     data1.put(header[8], "");
+                    data1.put(header[9], "");
                 }
-                data1.put(header[9],
+                data1.put(header[10],
                         CommonUtil.fromNullToEmpty(contact.getWebsite()));
-                data1.put(header[10], CommonUtil.fromNullToEmpty(contact
+                data1.put(header[11], CommonUtil.fromNullToEmpty(contact
                         .getMailing_address()));
-                data1.put(header[11],
-                        CommonUtil.fromNullToEmpty(contact.getMailing_city()));
                 data1.put(header[12],
+                        CommonUtil.fromNullToEmpty(contact.getMailing_city()));
+                data1.put(header[13],
                         CommonUtil.fromNullToEmpty(contact.getMailing_state()));
-                data1.put(header[13], CommonUtil.fromNullToEmpty(contact
-                        .getMailing_postal_code()));
                 data1.put(header[14], CommonUtil.fromNullToEmpty(contact
+                        .getMailing_postal_code()));
+                data1.put(header[15], CommonUtil.fromNullToEmpty(contact
                         .getMailing_country()));
-                data1.put(header[15],
-                        CommonUtil.fromNullToEmpty(contact.getOther_address()));
                 data1.put(header[16],
-                        CommonUtil.fromNullToEmpty(contact.getOther_city()));
+                        CommonUtil.fromNullToEmpty(contact.getOther_address()));
                 data1.put(header[17],
+                        CommonUtil.fromNullToEmpty(contact.getOther_city()));
+                data1.put(header[18],
                         CommonUtil.fromNullToEmpty(contact.getOther_state()));
-                data1.put(header[18], CommonUtil.fromNullToEmpty(contact
+                data1.put(header[19], CommonUtil.fromNullToEmpty(contact
                         .getOther_postal_code()));
-                data1.put(header[19],
-                        CommonUtil.fromNullToEmpty(contact.getOther_country()));
                 data1.put(header[20],
-                        CommonUtil.fromNullToEmpty(contact.getEmail()));
+                        CommonUtil.fromNullToEmpty(contact.getOther_country()));
                 data1.put(header[21],
+                        CommonUtil.fromNullToEmpty(contact.getEmail()));
+                data1.put(header[22],
                         CommonUtil.fromNullToEmpty(contact.getDescription()));
                 if (contact.getReport_to() != null) {
-                    data1.put(header[22], contact.getReport_to().getId());
+                    data1.put(header[23], contact.getReport_to().getId());
+                    data1.put(header[24], contact.getReport_to().getName());
                 } else {
-                    data1.put(header[22], "");
+                    data1.put(header[23], "");
+                    data1.put(header[24], "");
                 }
-                data1.put(header[23], contact.isSync_outlook());
-                data1.put(header[24], contact.isNot_call());
+                data1.put(header[25], contact.isSync_outlook());
+                data1.put(header[26], contact.isNot_call());
                 if (contact.getLeadSource() != null) {
-                    data1.put(header[25], contact.getLeadSource().getId());
-                } else {
-                    data1.put(header[25], "");
-                }
-                if (contact.getCampaign() != null) {
-                    data1.put(header[26], contact.getCampaign().getId());
-                } else {
-                    data1.put(header[26], "");
-                }
-                if (contact.getAssigned_to() != null) {
-                    data1.put(header[27], contact.getAssigned_to().getId());
+                    data1.put(header[27], contact.getLeadSource().getId());
+                    data1.put(header[28], contact.getLeadSource().getName());
                 } else {
                     data1.put(header[27], "");
+                    data1.put(header[28], "");
+                }
+                if (contact.getCampaign() != null) {
+                    data1.put(header[29], contact.getCampaign().getId());
+                    data1.put(header[30], contact.getCampaign().getName());
+                } else {
+                    data1.put(header[29], "");
+                    data1.put(header[30], "");
+                }
+                if (contact.getAssigned_to() != null) {
+                    data1.put(header[31], contact.getAssigned_to().getId());
+                    data1.put(header[32], contact.getAssigned_to().getName());
+                } else {
+                    data1.put(header[31], "");
+                    data1.put(header[32], "");
                 }
                 writer.write(data1, header);
             }
@@ -603,7 +615,7 @@ public class ListContactAction extends BaseListAction {
                     contact.setDepartment(CommonUtil.fromNullToEmpty(row
                             .get("Department")));
                     contact.setFax(CommonUtil.fromNullToEmpty(row.get("Fax")));
-                    String accountID = row.get("Account");
+                    String accountID = row.get("Account ID");
                     if (CommonUtil.isNullOrEmpty(accountID)) {
                         contact.setAccount(null);
                     } else {
@@ -639,7 +651,7 @@ public class ListContactAction extends BaseListAction {
                             .get("Email")));
                     contact.setDescription(CommonUtil.fromNullToEmpty(row
                             .get("Description")));
-                    String reportToID = row.get("Report To");
+                    String reportToID = row.get("Report To ID");
                     if (CommonUtil.isNullOrEmpty(reportToID)) {
                         contact.setReport_to(null);
                     } else {
@@ -661,7 +673,7 @@ public class ListContactAction extends BaseListAction {
                         contact.setNot_call(Boolean.parseBoolean(doNotCall));
                     }
 
-                    String leadSourceID = row.get("Lead Source");
+                    String leadSourceID = row.get("Lead Source ID");
                     if (CommonUtil.isNullOrEmpty(leadSourceID)) {
                         contact.setLeadSource(null);
                     } else {
@@ -670,7 +682,7 @@ public class ListContactAction extends BaseListAction {
                                         Integer.parseInt(leadSourceID));
                         contact.setLeadSource(leadSource);
                     }
-                    String campaignID = row.get("Campaign");
+                    String campaignID = row.get("Campaign ID");
                     if (CommonUtil.isNullOrEmpty(campaignID)) {
                         contact.setCampaign(null);
                     } else {
@@ -678,7 +690,7 @@ public class ListContactAction extends BaseListAction {
                                 Campaign.class, Integer.parseInt(campaignID));
                         contact.setCampaign(campaign);
                     }
-                    String assignedToID = row.get("Assigned To");
+                    String assignedToID = row.get("Assigned To ID");
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         contact.setAssigned_to(null);
                     } else {

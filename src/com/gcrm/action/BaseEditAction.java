@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-
 import com.gcrm.domain.BaseEntity;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
@@ -31,157 +30,212 @@ import com.opensymphony.xwork2.ActionSupport;
  * Base Action for entity edit.
  */
 public class BaseEditAction extends ActionSupport {
-	
-	private String createdBy = "";
-	private String createdOn = "";
-	private String updatedBy = "";
-	private String updatedOn = "";
-	private Integer id;
-	private String relationKey;
-	private String relationValue;
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private String createdBy = "";
+    private String createdOn = "";
+    private String updatedBy = "";
+    private String updatedOn = "";
+    private Integer id;
+    private String relationKey;
+    private String relationValue;
+    protected String seleteIDs = null;
+    protected String[] massUpdate = null;
+
+    private static final long serialVersionUID = -2404576552417042445L;
 
     /**
      * Updates the base information for entity.
      * 
-     * @param entity instance
-     */	
-	protected void updateBaseInfo(BaseEntity entity) {
-		ActionContext context = ActionContext.getContext();
-		Map<String, Object> session = context.getSession();
-		User loginUser = (User) session
-				.get(AuthenticationSuccessListener.LOGIN_USER);
-		if (entity.getId() == null) {
-			entity.setCreated_by(loginUser);
-			entity.setCreated_on(new Date());
-		} else {
-			entity.setUpdated_by(loginUser);
-			entity.setUpdated_on(new Date());
-		}
-	}
+     * @param entity
+     *            instance
+     */
+    protected void updateBaseInfo(BaseEntity entity) {
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        User loginUser = (User) session
+                .get(AuthenticationSuccessListener.LOGIN_USER);
+        if (entity.getId() == null) {
+            entity.setCreated_by(loginUser);
+            entity.setCreated_on(new Date());
+        } else {
+            entity.setUpdated_by(loginUser);
+            entity.setUpdated_on(new Date());
+        }
+    }
+
+    /**
+     * Gets login user.
+     * 
+     * @return login user
+     */
+    protected User getLoginUser() {
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        User loginUser = (User) session
+                .get(AuthenticationSuccessListener.LOGIN_USER);
+        return loginUser;
+    }
 
     /**
      * Gets the base information for entity.
      * 
-     * @param entity instance
-     */		
-	protected void getBaseInfo(BaseEntity entity) {
-		User createdUser = entity.getCreated_by();
-		if (createdUser != null){
-			this.setCreatedBy(createdUser.getName());
-		}
-		User updatedUser = entity.getUpdated_by();
-		if (updatedUser != null){
-			this.setUpdatedBy(updatedUser.getName());
-		}	
-		SimpleDateFormat dateFormat = new SimpleDateFormat(Constant.DATE_TIME_FORMAT);
-		Date createdOn = entity.getCreated_on();
-		if (createdOn != null) {
-			this.setCreatedOn(dateFormat.format(createdOn));
-		}		
-		Date updatedOn = entity.getUpdated_on();
-		if (updatedOn != null) {
-			this.setUpdatedOn(dateFormat.format(updatedOn));
-		}			
-	}
-	
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
+     * @param entity
+     *            instance
+     */
+    protected void getBaseInfo(BaseEntity entity) {
+        User createdUser = entity.getCreated_by();
+        if (createdUser != null) {
+            this.setCreatedBy(createdUser.getName());
+        }
+        User updatedUser = entity.getUpdated_by();
+        if (updatedUser != null) {
+            this.setUpdatedBy(updatedUser.getName());
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_TIME_FORMAT);
+        Date createdOn = entity.getCreated_on();
+        if (createdOn != null) {
+            this.setCreatedOn(dateFormat.format(createdOn));
+        }
+        Date updatedOn = entity.getUpdated_on();
+        if (updatedOn != null) {
+            this.setUpdatedOn(dateFormat.format(updatedOn));
+        }
+    }
 
-	/**
-	 * @param createdBy the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    /**
+     * @return the createdBy
+     */
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	/**
-	 * @return the createdOn
-	 */
-	public String getCreatedOn() {
-		return createdOn;
-	}
+    /**
+     * @param createdBy
+     *            the createdBy to set
+     */
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	/**
-	 * @param createdOn the createdOn to set
-	 */
-	public void setCreatedOn(String createdOn) {
-		this.createdOn = createdOn;
-	}
+    /**
+     * @return the createdOn
+     */
+    public String getCreatedOn() {
+        return createdOn;
+    }
 
-	/**
-	 * @return the updatedBy
-	 */
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
+    /**
+     * @param createdOn
+     *            the createdOn to set
+     */
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
+    }
 
-	/**
-	 * @param updatedBy the updatedBy to set
-	 */
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
+    /**
+     * @return the updatedBy
+     */
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
 
-	/**
-	 * @return the updatedOn
-	 */
-	public String getUpdatedOn() {
-		return updatedOn;
-	}
+    /**
+     * @param updatedBy
+     *            the updatedBy to set
+     */
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 
-	/**
-	 * @param updatedOn the updatedOn to set
-	 */
-	public void setUpdatedOn(String updatedOn) {
-		this.updatedOn = updatedOn;
-	}
+    /**
+     * @return the updatedOn
+     */
+    public String getUpdatedOn() {
+        return updatedOn;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Integer getId() {
-		return id;
-	}
+    /**
+     * @param updatedOn
+     *            the updatedOn to set
+     */
+    public void setUpdatedOn(String updatedOn) {
+        this.updatedOn = updatedOn;
+    }
 
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    /**
+     * @return the id
+     */
+    public Integer getId() {
+        return id;
+    }
 
-	/**
-	 * @return the relationKey
-	 */
-	public String getRelationKey() {
-		return relationKey;
-	}
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	/**
-	 * @param relationKey the relationKey to set
-	 */
-	public void setRelationKey(String relationKey) {
-		this.relationKey = relationKey;
-	}
+    /**
+     * @return the relationKey
+     */
+    public String getRelationKey() {
+        return relationKey;
+    }
 
-	/**
-	 * @return the relationValue
-	 */
-	public String getRelationValue() {
-		return relationValue;
-	}
+    /**
+     * @param relationKey
+     *            the relationKey to set
+     */
+    public void setRelationKey(String relationKey) {
+        this.relationKey = relationKey;
+    }
 
-	/**
-	 * @param relationValue the relationValue to set
-	 */
-	public void setRelationValue(String relationValue) {
-		this.relationValue = relationValue;
-	}
+    /**
+     * @return the relationValue
+     */
+    public String getRelationValue() {
+        return relationValue;
+    }
+
+    /**
+     * @param relationValue
+     *            the relationValue to set
+     */
+    public void setRelationValue(String relationValue) {
+        this.relationValue = relationValue;
+    }
+
+    /**
+     * @return the seleteIDs
+     */
+    public String getSeleteIDs() {
+        return seleteIDs;
+    }
+
+    /**
+     * @param seleteIDs
+     *            the seleteIDs to set
+     */
+    public void setSeleteIDs(String seleteIDs) {
+        this.seleteIDs = seleteIDs;
+    }
+
+    /**
+     * @return the massUpdate
+     */
+    public String[] getMassUpdate() {
+        return massUpdate;
+    }
+
+    /**
+     * @param massUpdate
+     *            the massUpdate to set
+     */
+    public void setMassUpdate(String[] massUpdate) {
+        this.massUpdate = massUpdate;
+    }
 
 }

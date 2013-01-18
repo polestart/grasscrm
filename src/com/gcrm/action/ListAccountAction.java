@@ -416,10 +416,11 @@ public class ListAccountAction extends BaseListAction {
                     "Billing City", "Billing State", "Billing Postal Code",
                     "Billing Country", "Shipping Street", "Shipping City",
                     "Shipping State", "Shipping Postal Code",
-                    "Shipping Country", "Email", "Description", "Type",
-                    "Industry", "Annual Revenue", "Employees", "Sic Code",
-                    "Ticket Symbol", "Manager", "Ownship", "Rating",
-                    "Assigned To" };
+                    "Shipping Country", "Email", "Description", "Type ID",
+                    "Type Name", "Industry ID", "Industry Name",
+                    "Annual Revenue", "Employees", "Sic Code", "Ticket Symbol",
+                    "Manager ID", "Manager Name", "Ownship", "Rating",
+                    "Assigned To ID", "Assigned To Name" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -462,35 +463,43 @@ public class ListAccountAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(account.getDescription()));
                 if (account.getAccount_type() != null) {
                     data1.put(header[17], account.getAccount_type().getId());
+                    data1.put(header[18], account.getAccount_type().getName());
                 } else {
                     data1.put(header[17], "");
-                }
-                if (account.getIndustry() != null) {
-                    data1.put(header[18], account.getIndustry().getId());
-                } else {
                     data1.put(header[18], "");
                 }
-                data1.put(header[19],
-                        CommonUtil.fromNullToEmpty(account.getAnnual_revenue()));
-                data1.put(header[20],
-                        CommonUtil.fromNullToEmpty(account.getEmployees()));
+                if (account.getIndustry() != null) {
+                    data1.put(header[19], account.getIndustry().getId());
+                    data1.put(header[20], account.getIndustry().getName());
+                } else {
+                    data1.put(header[19], "");
+                    data1.put(header[20], "");
+                }
                 data1.put(header[21],
-                        CommonUtil.fromNullToEmpty(account.getSic_code()));
+                        CommonUtil.fromNullToEmpty(account.getAnnual_revenue()));
                 data1.put(header[22],
+                        CommonUtil.fromNullToEmpty(account.getEmployees()));
+                data1.put(header[23],
+                        CommonUtil.fromNullToEmpty(account.getSic_code()));
+                data1.put(header[24],
                         CommonUtil.fromNullToEmpty(account.getTicket_symbol()));
                 if (account.getManager() != null) {
-                    data1.put(header[23], account.getManager().getId());
+                    data1.put(header[25], account.getManager().getId());
+                    data1.put(header[25], account.getManager().getName());
                 } else {
-                    data1.put(header[23], "");
+                    data1.put(header[25], "");
+                    data1.put(header[26], "");
                 }
-                data1.put(header[24],
+                data1.put(header[27],
                         CommonUtil.fromNullToEmpty(account.getOwnship()));
-                data1.put(header[25],
+                data1.put(header[28],
                         CommonUtil.fromNullToEmpty(account.getRating()));
                 if (account.getAssigned_to() != null) {
-                    data1.put(header[26], account.getAssigned_to().getId());
+                    data1.put(header[29], account.getAssigned_to().getId());
+                    data1.put(header[30], account.getAssigned_to().getName());
                 } else {
-                    data1.put(header[26], "");
+                    data1.put(header[29], "");
+                    data1.put(header[30], "");
                 }
                 writer.write(data1, header);
             }
@@ -564,7 +573,7 @@ public class ListAccountAction extends BaseListAction {
                             .get("Email")));
                     account.setDescription(CommonUtil.fromNullToEmpty(row
                             .get("Description")));
-                    String typeID = row.get("Type");
+                    String typeID = row.get("Type ID");
                     if (CommonUtil.isNullOrEmpty(typeID)) {
                         account.setAccount_type(null);
                     } else {
@@ -573,7 +582,7 @@ public class ListAccountAction extends BaseListAction {
                                         Integer.parseInt(typeID));
                         account.setAccount_type(accountType);
                     }
-                    String industryID = row.get("Industry");
+                    String industryID = row.get("Industry ID");
                     if (CommonUtil.isNullOrEmpty(industryID)) {
                         account.setIndustry(null);
                     } else {
@@ -589,7 +598,7 @@ public class ListAccountAction extends BaseListAction {
                             .get("Sic Code")));
                     account.setTicket_symbol(CommonUtil.fromNullToEmpty(row
                             .get("Ticket Symbol")));
-                    String managerID = row.get("Manager");
+                    String managerID = row.get("Manager ID");
                     if (CommonUtil.isNullOrEmpty(managerID)) {
                         account.setManager(null);
                     } else {
@@ -601,7 +610,7 @@ public class ListAccountAction extends BaseListAction {
                             .get("Ownship")));
                     account.setRating(CommonUtil.fromNullToEmpty(row
                             .get("Rating")));
-                    String assignedToID = row.get("Assigned To");
+                    String assignedToID = row.get("Assigned To ID");
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         account.setAssigned_to(null);
                     } else {

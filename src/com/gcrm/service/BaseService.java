@@ -16,6 +16,7 @@
 package com.gcrm.service;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -30,72 +31,94 @@ import com.gcrm.vo.SearchResult;
 @Transactional
 public class BaseService<T extends Serializable> implements IBaseService<T> {
 
-	private IBaseDao<T> baseDao;
-	
-	/* (non-Javadoc)
-	 * @see com.gcrm.service.IBaseService#getAllObjects(java.lang.String)
-	 */
-	public List<T> getAllObjects(String clazz){
-		return baseDao.getAllObjects(clazz);
-	}
+    private IBaseDao<T> baseDao;
 
-	/* (non-Javadoc)
-	 * @see com.gcrm.service.IBaseService#makePersistent(java.io.Serializable)
-	 */
-	public void makePersistent(T entity) {
-		baseDao.makePersistent(entity);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.service.IBaseService#getAllObjects(java.lang.String)
+     */
+    public List<T> getAllObjects(String clazz) {
+        return baseDao.getAllObjects(clazz);
+    }
 
-	/* (non-Javadoc)
-	 * @see com.gcrm.service.IBaseService#deleteEntity(java.lang.Class, java.lang.Integer)
-	 */
-	public void deleteEntity(Class<T> entityClass, Integer id) {
-		baseDao.deleteEntity(entityClass, id);
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.gcrm.service.IBaseService#batchDeleteEntity(java.lang.Class, java.lang.String)
-	 */
-	public void batchDeleteEntity(Class<T> entityClass, String seleteIDs) {
-		if (seleteIDs != null) {
-			String[] ids = seleteIDs.split(",");
-			for (int i = 0; i < ids.length; i++) {
-				String deleteid = ids[i];
-				baseDao.deleteEntity(entityClass,
-						Integer.valueOf(deleteid));
-			}
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.gcrm.service.IBaseService#getEntityById(java.lang.Class, java.lang.Integer)
-	 */
-	public T getEntityById(Class<T> entityClass,Integer id) {
-		return baseDao.getEntityById(entityClass,id);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.service.IBaseService#makePersistent(java.io.Serializable)
+     */
+    public void makePersistent(T entity) {
+        baseDao.makePersistent(entity);
+    }
 
-	/* (non-Javadoc)
-	 * @see com.gcrm.service.IBaseService#getObjectsCount(java.lang.String)
-	 */
-	public long getObjectsCount(String clazz) {
-		return baseDao.getObjectsCount(clazz);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.service.IBaseService#deleteEntity(java.lang.Class,
+     * java.lang.Integer)
+     */
+    public void deleteEntity(Class<T> entityClass, Integer id) {
+        baseDao.deleteEntity(entityClass, id);
+    }
 
-	/* (non-Javadoc)
-	 * @see com.gcrm.service.IBaseService#getPaginationObjects(java.lang.String, com.gcrm.vo.SearchCondition)
-	 */
-	public SearchResult<T> getPaginationObjects(String clazz,
-			final SearchCondition searchCondition) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.service.IBaseService#batchDeleteEntity(java.lang.Class,
+     * java.lang.String)
+     */
+    public void batchDeleteEntity(Class<T> entityClass, String seleteIDs) {
+        if (seleteIDs != null) {
+            String[] ids = seleteIDs.split(",");
+            for (int i = 0; i < ids.length; i++) {
+                String deleteid = ids[i];
+                baseDao.deleteEntity(entityClass, Integer.valueOf(deleteid));
+            }
+        }
+    }
 
-		return baseDao.getPaginationObjects(clazz,searchCondition);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.service.IBaseService#getEntityById(java.lang.Class,
+     * java.lang.Integer)
+     */
+    public T getEntityById(Class<T> entityClass, Integer id) {
+        return baseDao.getEntityById(entityClass, id);
+    }
 
-	public IBaseDao<T> getBaseDao() {
-		return baseDao;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.service.IBaseService#getObjectsCount(java.lang.String)
+     */
+    public long getObjectsCount(String clazz) {
+        return baseDao.getObjectsCount(clazz);
+    }
 
-	public void setBaseDao(IBaseDao<T> baseDao) {
-		this.baseDao = baseDao;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.service.IBaseService#getPaginationObjects(java.lang.String,
+     * com.gcrm.vo.SearchCondition)
+     */
+    public SearchResult<T> getPaginationObjects(String clazz,
+            final SearchCondition searchCondition) {
+
+        return baseDao.getPaginationObjects(clazz, searchCondition);
+    }
+
+    public IBaseDao<T> getBaseDao() {
+        return baseDao;
+    }
+
+    public void setBaseDao(IBaseDao<T> baseDao) {
+        this.baseDao = baseDao;
+    }
+
+    @Override
+    public void batchUpdate(Collection<T> entities) {
+        baseDao.batchUpdate(entities);
+    }
 
 }

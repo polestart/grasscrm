@@ -15,6 +15,9 @@
  */
 package com.gcrm.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +36,7 @@ import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
@@ -73,6 +77,90 @@ public class EditContactAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
+        saveEntity();
+        getBaseService().makePersistent(contact);
+        return SUCCESS;
+    }
+
+    /**
+     * Gets the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String get() throws Exception {
+        if (this.getId() != null) {
+            contact = baseService.getEntityById(Contact.class, this.getId());
+            Account account = contact.getAccount();
+            if (account != null) {
+                accountID = account.getId();
+                accountText = account.getName();
+            }
+
+            Contact report_to = contact.getReport_to();
+            if (report_to != null) {
+                reportToID = report_to.getId();
+                reportToText = report_to.getName();
+            }
+
+            LeadSource leadSource = contact.getLeadSource();
+            if (leadSource != null) {
+                leadSourceID = leadSource.getId();
+            }
+
+            Campaign campaign = contact.getCampaign();
+            if (campaign != null) {
+                campaignID = campaign.getId();
+                campaignText = campaign.getName();
+            }
+            User assignedTo = contact.getAssigned_to();
+            if (assignedTo != null) {
+                assignedToID = assignedTo.getId();
+                assignedToText = assignedTo.getName();
+            }
+            this.getBaseInfo(contact);
+        } else {
+            ActionContext context = ActionContext.getContext();
+            Map<String, Object> session = context.getSession();
+            User loginUser = (User) session
+                    .get(AuthenticationSuccessListener.LOGIN_USER);
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Contact> contacts = new ArrayList<Contact>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Contact contactInstance = this.baseService.getEntityById(
+                    Contact.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(contact, fieldName);
+                BeanUtil.setFieldValue(contactInstance, fieldName, value);
+            }
+            contactInstance.setUpdated_by(user);
+            contactInstance.setUpdated_on(new Date());
+            contacts.add(contactInstance);
+        }
+        if (contacts.size() > 0) {
+            this.baseService.batchUpdate(contacts);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     */
+    private void saveEntity() {
         Account account = null;
         if (accountID != null) {
             account = accountService.getEntityById(Account.class, accountID);
@@ -155,58 +243,7 @@ public class EditContactAction extends BaseEditAction implements Preparable {
             }
             cases.add(caseInstance);
         }
-
         super.updateBaseInfo(contact);
-
-        getBaseService().makePersistent(contact);
-        return SUCCESS;
-    }
-
-    /**
-     * Gets the entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String get() throws Exception {
-        if (this.getId() != null) {
-            contact = baseService.getEntityById(Contact.class, this.getId());
-            Account account = contact.getAccount();
-            if (account != null) {
-                accountID = account.getId();
-                accountText = account.getName();
-            }
-
-            Contact report_to = contact.getReport_to();
-            if (report_to != null) {
-                reportToID = report_to.getId();
-                reportToText = report_to.getName();
-            }
-
-            LeadSource leadSource = contact.getLeadSource();
-            if (leadSource != null) {
-                leadSourceID = leadSource.getId();
-            }
-
-            Campaign campaign = contact.getCampaign();
-            if (campaign != null) {
-                campaignID = campaign.getId();
-                campaignText = campaign.getName();
-            }
-            User assignedTo = contact.getAssigned_to();
-            if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
-            }
-
-        } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
-        }
-        return SUCCESS;
     }
 
     /**

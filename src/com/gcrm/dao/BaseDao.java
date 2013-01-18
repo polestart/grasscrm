@@ -17,6 +17,7 @@ package com.gcrm.dao;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -106,6 +107,16 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport
      */
     public void makePersistent(T entity) {
         getHibernateTemplate().merge(entity);
+        getHibernateTemplate().flush();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.dao.IBaseDao#batchUpdate(java.util.Collection)
+     */
+    public void batchUpdate(Collection<T> entities) {
+        getHibernateTemplate().saveOrUpdateAll(entities);
         getHibernateTemplate().flush();
     }
 

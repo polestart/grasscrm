@@ -15,7 +15,10 @@
  */
 package com.gcrm.action;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,7 @@ import com.gcrm.domain.TaskStatus;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.opensymphony.xwork2.ActionContext;
@@ -88,59 +92,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
-        TaskStatus status = null;
-        if (statusID != null) {
-            status = taskStatusService
-                    .getEntityById(TaskStatus.class, statusID);
-        }
-        task.setStatus(status);
-        TaskPriority priority = null;
-        if (priorityID != null) {
-            priority = taskPriorityService.getEntityById(TaskPriority.class,
-                    priorityID);
-        }
-        task.setPriority(priority);
-        Contact contact = null;
-        if (contactID != null) {
-            contact = contactService.getEntityById(Contact.class, contactID);
-        }
-        task.setContact(contact);
-        User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
-        }
-        task.setAssigned_to(assignedTo);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                Constant.DATE_TIME_FORMAT);
-        Date start_date = null;
-        if (!CommonUtil.isNullOrEmpty(startDate)) {
-            start_date = dateFormat.parse(startDate);
-        }
-        task.setStart_date(start_date);
-        Date due_date = null;
-        if (!CommonUtil.isNullOrEmpty(dueDate)) {
-            due_date = dateFormat.parse(dueDate);
-        }
-        task.setDue_date(due_date);
-        String relatedObject = task.getRelated_object();
-        if ("Account".equals(relatedObject)) {
-            task.setRelated_record(relatedAccountID);
-        } else if ("Case".equals(relatedObject)) {
-            task.setRelated_record(relatedCaseID);
-        } else if ("Contact".equals(relatedObject)) {
-            task.setRelated_record(relatedContactID);
-        } else if ("Lead".equals(relatedObject)) {
-            task.setRelated_record(relatedLeadID);
-        } else if ("Opportunity".equals(relatedObject)) {
-            task.setRelated_record(relatedOpportunityID);
-        } else if ("Target".equals(relatedObject)) {
-            task.setRelated_record(relatedTargetID);
-        } else if ("Task".equals(relatedObject)) {
-            task.setRelated_record(relatedTaskID);
-        }
-
-        super.updateBaseInfo(task);
-
+        saveEntity();
         getBaseService().makePersistent(task);
         return SUCCESS;
     }
@@ -184,7 +136,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
             String relatedObject = task.getRelated_object();
             Integer relatedRecord = task.getRelated_record();
             setRelatedRecord(relatedObject, relatedRecord);
-
+            this.getBaseInfo(task);
         } else {
             ActionContext context = ActionContext.getContext();
             Map<String, Object> session = context.getSession();
@@ -239,6 +191,92 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
             this.relatedTaskText = this.taskService.getEntityById(Task.class,
                     relatedRecord).getSubject();
         }
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Task> tasks = new ArrayList<Task>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Task taskInstance = this.baseService.getEntityById(Task.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(task, fieldName);
+                BeanUtil.setFieldValue(taskInstance, fieldName, value);
+            }
+            taskInstance.setUpdated_by(user);
+            taskInstance.setUpdated_on(new Date());
+            tasks.add(taskInstance);
+        }
+        if (tasks.size() > 0) {
+            this.baseService.batchUpdate(tasks);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     * 
+     * @throws ParseException
+     */
+    private void saveEntity() throws ParseException {
+        TaskStatus status = null;
+        if (statusID != null) {
+            status = taskStatusService
+                    .getEntityById(TaskStatus.class, statusID);
+        }
+        task.setStatus(status);
+        TaskPriority priority = null;
+        if (priorityID != null) {
+            priority = taskPriorityService.getEntityById(TaskPriority.class,
+                    priorityID);
+        }
+        task.setPriority(priority);
+        Contact contact = null;
+        if (contactID != null) {
+            contact = contactService.getEntityById(Contact.class, contactID);
+        }
+        task.setContact(contact);
+        User assignedTo = null;
+        if (assignedToID != null) {
+            assignedTo = userService.getEntityById(User.class, assignedToID);
+        }
+        task.setAssigned_to(assignedTo);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_TIME_FORMAT);
+        Date start_date = null;
+        if (!CommonUtil.isNullOrEmpty(startDate)) {
+            start_date = dateFormat.parse(startDate);
+        }
+        task.setStart_date(start_date);
+        Date due_date = null;
+        if (!CommonUtil.isNullOrEmpty(dueDate)) {
+            due_date = dateFormat.parse(dueDate);
+        }
+        task.setDue_date(due_date);
+        String relatedObject = task.getRelated_object();
+        if ("Account".equals(relatedObject)) {
+            task.setRelated_record(relatedAccountID);
+        } else if ("Case".equals(relatedObject)) {
+            task.setRelated_record(relatedCaseID);
+        } else if ("Contact".equals(relatedObject)) {
+            task.setRelated_record(relatedContactID);
+        } else if ("Lead".equals(relatedObject)) {
+            task.setRelated_record(relatedLeadID);
+        } else if ("Opportunity".equals(relatedObject)) {
+            task.setRelated_record(relatedOpportunityID);
+        } else if ("Target".equals(relatedObject)) {
+            task.setRelated_record(relatedTargetID);
+        } else if ("Task".equals(relatedObject)) {
+            task.setRelated_record(relatedTaskID);
+        }
+        super.updateBaseInfo(task);
     }
 
     /**

@@ -50,6 +50,12 @@
         <action name="deleteCampaign" class="listCampaignAction" method="delete">
 			<result type="redirect">/jsp/crm/listCampaign.jsp</result>
         </action>  
+        
+        <action name="massUpdateCampaign" class="editCampaignAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editCampaign.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listCampaign.jsp</result>
+        </action>          
   </package>      
     
 </struts>

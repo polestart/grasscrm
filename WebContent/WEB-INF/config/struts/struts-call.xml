@@ -70,6 +70,12 @@
         <action name="deleteCall" class="ListCallAction" method="delete">
 			<result type="redirect">/jsp/crm/listCall.jsp</result>
         </action>  
+        
+        <action name="massUpdateCall" class="editCallAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editCall.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listCall.jsp</result>
+        </action>        
   </package>      
     
 </struts>

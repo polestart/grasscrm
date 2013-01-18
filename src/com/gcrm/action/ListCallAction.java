@@ -111,7 +111,7 @@ public class ListCallAction extends BaseListAction {
                 statusName = "";
             }
             SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    Constant.DATE_FORMAT);
+                    Constant.DATE_TIME_FORMAT);
             Date startDate = instance.getStart_date();
             String startDateString = "";
             if (startDate != null) {
@@ -250,9 +250,12 @@ public class ListCallAction extends BaseListAction {
                 CsvPreference.EXCEL_PREFERENCE);
         try {
             final String[] header = new String[] { "ID", "Subject",
-                    "Direction", "Status", "Start Date", "Reminder Way Popup",
-                    "Reminder Option Popup", "Reminder Way Email",
-                    "Reminder Option Email", "Description", "Assigned To" };
+                    "Direction ID", "Direction Name", "Status ID",
+                    "Status Name", "Start Date", "Reminder Way Popup",
+                    "Reminder Option Popup ID", "Reminder Option Popup Name",
+                    "Reminder Way Email", "Reminder Option Email ID",
+                    "Reminder Option Email Name", "Description",
+                    "Assigned To ID", "Assigned To Name" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -263,39 +266,55 @@ public class ListCallAction extends BaseListAction {
                 data1.put(header[0], call.getId());
                 data1.put(header[1],
                         CommonUtil.fromNullToEmpty(call.getSubject()));
-                data1.put(header[2], call.getDirection());
-                if (call.getStatus() != null) {
-                    data1.put(header[3], call.getStatus().getId());
+                if (call.getDirection() != null) {
+                    data1.put(header[2], call.getDirection().getId());
+                    data1.put(header[3], call.getDirection().getName());
                 } else {
+                    data1.put(header[2], "");
                     data1.put(header[3], "");
                 }
-                SimpleDateFormat dateFormat = new SimpleDateFormat(
-                        "M/d/yyyy HH:mm:ss");
-                Date startDate = call.getStart_date();
-                if (startDate != null) {
-                    data1.put(header[4], dateFormat.format(startDate));
+                if (call.getStatus() != null) {
+                    data1.put(header[4], call.getStatus().getId());
+                    data1.put(header[5], call.getStatus().getName());
                 } else {
                     data1.put(header[4], "");
+                    data1.put(header[5], "");
                 }
-                data1.put(header[5], call.isReminder_pop());
-                if (call.getReminder_option_pop() != null) {
-                    data1.put(header[6], call.getReminder_option_pop().getId());
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        Constant.DATE_TIME_FORMAT);
+                Date startDate = call.getStart_date();
+                if (startDate != null) {
+                    data1.put(header[6], dateFormat.format(startDate));
                 } else {
                     data1.put(header[6], "");
                 }
-                data1.put(header[7], call.isReminder_email());
-                if (call.getReminder_option_email() != null) {
-                    data1.put(header[8], call.getReminder_option_email()
-                            .getId());
+                data1.put(header[7], call.isReminder_pop());
+                if (call.getReminder_option_pop() != null) {
+                    data1.put(header[8], call.getReminder_option_pop().getId());
+                    data1.put(header[9], call.getReminder_option_pop()
+                            .getName());
                 } else {
                     data1.put(header[8], "");
+                    data1.put(header[9], "");
                 }
-                data1.put(header[9],
+                data1.put(header[10], call.isReminder_email());
+                if (call.getReminder_option_email() != null) {
+                    data1.put(header[11], call.getReminder_option_email()
+                            .getId());
+                    data1.put(header[12], call.getReminder_option_email()
+                            .getName());
+                } else {
+                    data1.put(header[11], "");
+                    data1.put(header[12], "");
+                }
+                data1.put(header[13],
                         CommonUtil.fromNullToEmpty(call.getDescription()));
                 if (call.getAssigned_to() != null) {
-                    data1.put(header[10], call.getAssigned_to().getId());
+                    data1.put(header[14], call.getAssigned_to().getId());
+                    data1.put(header[15], call.getAssigned_to().getName());
                 } else {
-                    data1.put(header[10], "");
+                    data1.put(header[14], "");
+                    data1.put(header[15], "");
                 }
                 writer.write(data1, header);
             }
@@ -341,7 +360,7 @@ public class ListCallAction extends BaseListAction {
                     }
                     call.setSubject(CommonUtil.fromNullToEmpty(row
                             .get("Subject")));
-                    String directionID = row.get("Direction");
+                    String directionID = row.get("Direction ID");
                     if (CommonUtil.isNullOrEmpty(directionID)) {
                         call.setDirection(null);
                     } else {
@@ -350,7 +369,7 @@ public class ListCallAction extends BaseListAction {
                                         Integer.parseInt(directionID));
                         call.setDirection(callDirection);
                     }
-                    String statusID = row.get("Status");
+                    String statusID = row.get("Status ID");
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         call.setStatus(null);
                     } else {
@@ -359,7 +378,7 @@ public class ListCallAction extends BaseListAction {
                         call.setStatus(status);
                     }
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
-                            "M/d/yyyy HH:mm:ss");
+                            Constant.DATE_TIME_FORMAT);
                     String startDateS = row.get("Start Date");
                     if (startDateS != null) {
                         Date startDate = dateFormat.parse(startDateS);
@@ -375,7 +394,7 @@ public class ListCallAction extends BaseListAction {
                                 .parseBoolean(reminderWayPop));
                     }
                     String reminderOptionPopID = row
-                            .get("Reminder Option Popup");
+                            .get("Reminder Option Popup ID");
                     if (CommonUtil.isNullOrEmpty(reminderOptionPopID)) {
                         call.setReminder_option_pop(null);
                     } else {
@@ -392,7 +411,7 @@ public class ListCallAction extends BaseListAction {
                                 .parseBoolean(reminderWayEmail));
                     }
                     String reminderOptionEmailID = row
-                            .get("Reminder Option Email");
+                            .get("Reminder Option Email ID");
                     if (CommonUtil.isNullOrEmpty(reminderOptionEmailID)) {
                         call.setReminder_option_email(null);
                     } else {
@@ -403,7 +422,7 @@ public class ListCallAction extends BaseListAction {
                     }
                     call.setDescription(CommonUtil.fromNullToEmpty(row
                             .get("Description")));
-                    String assignedToID = row.get("Assigned To");
+                    String assignedToID = row.get("Assigned To ID");
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         call.setAssigned_to(null);
                     } else {

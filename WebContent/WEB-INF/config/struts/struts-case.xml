@@ -90,6 +90,12 @@
         <action name="removeCase" class="listCaseAction" method="remove">
 			<result type="redirect">/jsp/crm/listCase.jsp</result>
         </action> 
+        
+        <action name="massUpdateCase" class="editCaseAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editCase.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listCase.jsp</result>
+        </action>            
   </package>      
     
 </struts>

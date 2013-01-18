@@ -47,7 +47,7 @@
 	<div id="mm6" style="width:150px;">
 	    <div>
 	      <span><s:text name='menu.dropdown.title'/></span>
-	      <div style="width:150px;">  
+	      <div style="width:170px;">  
 			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listAccountType.jsp\")%>"><div onClick="openPage('/system/listAccountTypePage.action')"><s:text name='menu.accountType.title'/></div></security:authorize>
 			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCallStatus.jsp\")%>"><div onClick="openPage('/system/listCallStatusPage.action')"><s:text name='menu.callStatus.title'/></div></security:authorize>
 			<security:authorize ifAnyGranted="<%= permissions.get(\"/jsp/system/listCallDirection.jsp\")%>"><div onClick="openPage('/system/listCallDirectionPage.action')"><s:text name='menu.callDirection.title'/></div></security:authorize>

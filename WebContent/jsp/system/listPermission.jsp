@@ -26,7 +26,7 @@
 			destroyUrl : 'deletePermission.action'
 		});
 	    $("#delete").click(function() {	
-		  many_deleterow("deletePermission.action?seleteIDs=");
+	    	many_deleterow_easyui("deletePermission.action?seleteIDs=");
 	    });
 	});
 </script>
@@ -54,7 +54,7 @@
 						    <th data-options="field:'ck',checkbox:true"></th>
 							<th field="id" width="1" hidden="true"><s:text
 									name='entity.id.label' /></th>						    
-							<th field="permission.id" width="1" hidden="true"><s:text
+							<th field="permission.id" width="10"><s:text
 									name='entity.id.label' /></th>
 							<th field="permission.name" width="30"
 								editor="{type:'validatebox',options:{required:true}}"><s:text

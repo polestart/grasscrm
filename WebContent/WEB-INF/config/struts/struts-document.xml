@@ -88,7 +88,13 @@
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
                 <param name="bufferSize">4096</param>
             </result>            	  
-        </action>        
+        </action>   
+        
+        <action name="massUpdateDocument" class="editDocumentAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editDocument.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listDocument.jsp</result>
+        </action>             
   </package>      
     
 </struts>

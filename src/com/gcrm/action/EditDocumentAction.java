@@ -18,7 +18,10 @@ package com.gcrm.action;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -37,6 +40,7 @@ import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.IDocumentService;
+import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.opensymphony.xwork2.ActionContext;
@@ -83,90 +87,8 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
-        DocumentStatus status = null;
-        if (statusID != null) {
-            status = documentStatusService.getEntityById(DocumentStatus.class,
-                    statusID);
-        }
-        document.setStatus(status);
-
-        DocumentCategory category = null;
-        if (categoryID != null) {
-            category = documentCategoryService.getEntityById(
-                    DocumentCategory.class, categoryID);
-        }
-        document.setCategory(category);
-
-        DocumentSubCategory subCategory = null;
-        if (subCategoryID != null) {
-            subCategory = documentSubCategoryService.getEntityById(
-                    DocumentSubCategory.class, subCategoryID);
-        }
-        document.setSub_category(subCategory);
-        User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
-        }
-        document.setAssigned_to(assignedTo);
-        Document relatedDocument = null;
-        if (relatedDocumentID != null) {
-            relatedDocument = baseService.getEntityById(Document.class,
-                    relatedDocumentID);
-        }
-        document.setRelated_document(relatedDocument);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                Constant.DATE_EDIT_FORMAT);
-        Date publishDate = null;
-        if (!CommonUtil.isNullOrEmpty(publishDateS)) {
-            publishDate = dateFormat.parse(publishDateS);
-        }
-        document.setPublish_date(publishDate);
-        Date expirationDate = null;
-        if (!CommonUtil.isNullOrEmpty(expirationDateS)) {
-            expirationDate = dateFormat.parse(expirationDateS);
-        }
-        document.setExpiration_date(expirationDate);
+        saveEntity();
         File file = this.getUpload();
-
-        document.setFileName(this.uploadFileName);
-
-        if ("Account".equals(this.getRelationKey())) {
-            Account account = accountService.getEntityById(Account.class,
-                    Integer.valueOf(this.getRelationValue()));
-            Set<Account> accounts = document.getAccounts();
-            if (accounts == null) {
-                accounts = new HashSet<Account>();
-            }
-            accounts.add(account);
-        } else if ("Contact".equals(this.getRelationKey())) {
-            Contact contact = contactService.getEntityById(Contact.class,
-                    Integer.valueOf(this.getRelationValue()));
-            Set<Contact> contacts = document.getContacts();
-            if (contacts == null) {
-                contacts = new HashSet<Contact>();
-            }
-            contacts.add(contact);
-        } else if ("Opportunity".equals(this.getRelationKey())) {
-            Opportunity opportunity = opportunityService
-                    .getEntityById(Opportunity.class,
-                            Integer.valueOf(this.getRelationValue()));
-            Set<Opportunity> opportunities = document.getOpportunities();
-            if (opportunities == null) {
-                opportunities = new HashSet<Opportunity>();
-            }
-            opportunities.add(opportunity);
-        } else if ("Case".equals(this.getRelationKey())) {
-            Case caseInstance = caseService.getEntityById(Case.class,
-                    Integer.valueOf(this.getRelationValue()));
-            Set<Case> cases = document.getCases();
-            if (cases == null) {
-                cases = new HashSet<Case>();
-            }
-            cases.add(caseInstance);
-        }
-
-        super.updateBaseInfo(document);
-
         this.baseService.save(document, file);
         return SUCCESS;
     }
@@ -213,6 +135,7 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
             if (expirationDate != null) {
                 expirationDateS = dateFormat.format(expirationDate);
             }
+            this.getBaseInfo(document);
         } else {
             ActionContext context = ActionContext.getContext();
             Map<String, Object> session = context.getSession();
@@ -222,6 +145,123 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
             assignedToText = loginUser.getName();
         }
         return SUCCESS;
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Document> documents = new ArrayList<Document>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Document documentInstance = this.baseService.getEntityById(
+                    Document.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(document, fieldName);
+                BeanUtil.setFieldValue(documentInstance, fieldName, value);
+            }
+            documentInstance.setUpdated_by(user);
+            documentInstance.setUpdated_on(new Date());
+            documents.add(documentInstance);
+        }
+        if (documents.size() > 0) {
+            this.baseService.batchUpdate(documents);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     * 
+     * @throws ParseException
+     */
+    private void saveEntity() throws ParseException {
+        DocumentStatus status = null;
+        if (statusID != null) {
+            status = documentStatusService.getEntityById(DocumentStatus.class,
+                    statusID);
+        }
+        document.setStatus(status);
+
+        DocumentCategory category = null;
+        if (categoryID != null) {
+            category = documentCategoryService.getEntityById(
+                    DocumentCategory.class, categoryID);
+        }
+        document.setCategory(category);
+
+        DocumentSubCategory subCategory = null;
+        if (subCategoryID != null) {
+            subCategory = documentSubCategoryService.getEntityById(
+                    DocumentSubCategory.class, subCategoryID);
+        }
+        document.setSub_category(subCategory);
+        User assignedTo = null;
+        if (assignedToID != null) {
+            assignedTo = userService.getEntityById(User.class, assignedToID);
+        }
+        document.setAssigned_to(assignedTo);
+        Document relatedDocument = null;
+        if (relatedDocumentID != null) {
+            relatedDocument = baseService.getEntityById(Document.class,
+                    relatedDocumentID);
+        }
+        document.setRelated_document(relatedDocument);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_EDIT_FORMAT);
+        Date publishDate = null;
+        if (!CommonUtil.isNullOrEmpty(publishDateS)) {
+            publishDate = dateFormat.parse(publishDateS);
+        }
+        document.setPublish_date(publishDate);
+        Date expirationDate = null;
+        if (!CommonUtil.isNullOrEmpty(expirationDateS)) {
+            expirationDate = dateFormat.parse(expirationDateS);
+        }
+        document.setExpiration_date(expirationDate);
+
+        document.setFileName(this.uploadFileName);
+
+        if ("Account".equals(this.getRelationKey())) {
+            Account account = accountService.getEntityById(Account.class,
+                    Integer.valueOf(this.getRelationValue()));
+            Set<Account> accounts = document.getAccounts();
+            if (accounts == null) {
+                accounts = new HashSet<Account>();
+            }
+            accounts.add(account);
+        } else if ("Contact".equals(this.getRelationKey())) {
+            Contact contact = contactService.getEntityById(Contact.class,
+                    Integer.valueOf(this.getRelationValue()));
+            Set<Contact> contacts = document.getContacts();
+            if (contacts == null) {
+                contacts = new HashSet<Contact>();
+            }
+            contacts.add(contact);
+        } else if ("Opportunity".equals(this.getRelationKey())) {
+            Opportunity opportunity = opportunityService
+                    .getEntityById(Opportunity.class,
+                            Integer.valueOf(this.getRelationValue()));
+            Set<Opportunity> opportunities = document.getOpportunities();
+            if (opportunities == null) {
+                opportunities = new HashSet<Opportunity>();
+            }
+            opportunities.add(opportunity);
+        } else if ("Case".equals(this.getRelationKey())) {
+            Case caseInstance = caseService.getEntityById(Case.class,
+                    Integer.valueOf(this.getRelationValue()));
+            Set<Case> cases = document.getCases();
+            if (cases == null) {
+                cases = new HashSet<Case>();
+            }
+            cases.add(caseInstance);
+        }
+        super.updateBaseInfo(document);
     }
 
     /**

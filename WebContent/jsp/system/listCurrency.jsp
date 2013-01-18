@@ -26,7 +26,7 @@
 			destroyUrl : 'deleteCurrency.action'
 		});
 	    $("#delete").click(function() {	
-			  many_deleterow("deleteCurrency.action?seleteIDs=");
+	    	many_deleterow_easyui("deleteCurrency.action?seleteIDs=");
 		    });		
 	});
 </script>
@@ -54,7 +54,7 @@
 						    <th data-options="field:'ck',checkbox:true"></th>
 							<th field="id" width="1" hidden="true"><s:text
 									name='entity.id.label' /></th>							
-							<th field="currency.id" width="50" hidden="true"><s:text
+							<th field="currency.id" width="10"><s:text
 									name='entity.id.label' /></th>
 							<th field="currency.name" width="50"
 								editor="{type:'validatebox',options:{required:true}}"><s:text

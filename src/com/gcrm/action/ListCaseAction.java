@@ -384,9 +384,12 @@ public class ListCaseAction extends BaseListAction {
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Priority", "Status",
-                    "Case Type", "Case Origin", "Case Reason", "Subject",
-                    "Description", "Resolution", "Assigned To" };
+            final String[] header = new String[] { "ID", "Priority ID",
+                    "Priority Name", "Status ID", "Status Name",
+                    "Case Type ID", "Case Type Name", "Case Origin ID",
+                    "Case Origin Name", "Case Reason ID", "Case Reason Name",
+                    "Subject", "Description", "Resolution", "Assigned To ID",
+                    "Assigned To Name" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -397,39 +400,52 @@ public class ListCaseAction extends BaseListAction {
                 data1.put(header[0], caseInstance.getId());
                 if (caseInstance.getPriority() != null) {
                     data1.put(header[1], caseInstance.getPriority().getId());
+                    data1.put(header[2], caseInstance.getPriority().getName());
                 } else {
                     data1.put(header[1], "");
-                }
-                if (caseInstance.getStatus() != null) {
-                    data1.put(header[2], caseInstance.getStatus().getId());
-                } else {
                     data1.put(header[2], "");
                 }
-                if (caseInstance.getType() != null) {
-                    data1.put(header[3], caseInstance.getType().getId());
+                if (caseInstance.getStatus() != null) {
+                    data1.put(header[3], caseInstance.getStatus().getId());
+                    data1.put(header[4], caseInstance.getStatus().getName());
                 } else {
                     data1.put(header[3], "");
-                }
-                if (caseInstance.getOrigin() != null) {
-                    data1.put(header[4], caseInstance.getOrigin().getId());
-                } else {
                     data1.put(header[4], "");
                 }
-                if (caseInstance.getReason() != null) {
-                    data1.put(header[5], caseInstance.getReason().getId());
+                if (caseInstance.getType() != null) {
+                    data1.put(header[5], caseInstance.getType().getId());
+                    data1.put(header[6], caseInstance.getType().getName());
                 } else {
                     data1.put(header[5], "");
+                    data1.put(header[6], "");
                 }
-                data1.put(header[6],
-                        CommonUtil.fromNullToEmpty(caseInstance.getSubject()));
-                data1.put(header[7], CommonUtil.fromNullToEmpty(caseInstance
-                        .getDescription()));
-                data1.put(header[8], CommonUtil.fromNullToEmpty(caseInstance
-                        .getResolution()));
-                if (caseInstance.getAssigned_to() != null) {
-                    data1.put(header[9], caseInstance.getAssigned_to().getId());
+                if (caseInstance.getOrigin() != null) {
+                    data1.put(header[7], caseInstance.getOrigin().getId());
+                    data1.put(header[8], caseInstance.getOrigin().getName());
+                } else {
+                    data1.put(header[7], "");
+                    data1.put(header[8], "");
+                }
+                if (caseInstance.getReason() != null) {
+                    data1.put(header[9], caseInstance.getReason().getId());
+                    data1.put(header[10], caseInstance.getReason().getName());
                 } else {
                     data1.put(header[9], "");
+                    data1.put(header[10], "");
+                }
+                data1.put(header[11],
+                        CommonUtil.fromNullToEmpty(caseInstance.getSubject()));
+                data1.put(header[12], CommonUtil.fromNullToEmpty(caseInstance
+                        .getDescription()));
+                data1.put(header[13], CommonUtil.fromNullToEmpty(caseInstance
+                        .getResolution()));
+                if (caseInstance.getAssigned_to() != null) {
+                    data1.put(header[14], caseInstance.getAssigned_to().getId());
+                    data1.put(header[15], caseInstance.getAssigned_to()
+                            .getName());
+                } else {
+                    data1.put(header[14], "");
+                    data1.put(header[15], "");
                 }
                 writer.write(data1, header);
             }
@@ -472,7 +488,7 @@ public class ListCaseAction extends BaseListAction {
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         caseInstance.setId(Integer.parseInt(id));
                     }
-                    String priorityID = row.get("Priority");
+                    String priorityID = row.get("Priority ID");
                     if (CommonUtil.isNullOrEmpty(priorityID)) {
                         caseInstance.setPriority(null);
                     } else {
@@ -481,7 +497,7 @@ public class ListCaseAction extends BaseListAction {
                                         Integer.parseInt(priorityID));
                         caseInstance.setPriority(priority);
                     }
-                    String statusID = row.get("Status");
+                    String statusID = row.get("Status ID");
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         caseInstance.setStatus(null);
                     } else {
@@ -489,7 +505,7 @@ public class ListCaseAction extends BaseListAction {
                                 CaseStatus.class, Integer.parseInt(statusID));
                         caseInstance.setStatus(status);
                     }
-                    String typeID = row.get("Case Type");
+                    String typeID = row.get("Case Type ID");
                     if (CommonUtil.isNullOrEmpty(typeID)) {
                         caseInstance.setType(null);
                     } else {
@@ -497,7 +513,7 @@ public class ListCaseAction extends BaseListAction {
                                 CaseType.class, Integer.parseInt(typeID));
                         caseInstance.setType(type);
                     }
-                    String originID = row.get("Case Origin");
+                    String originID = row.get("Case Origin ID");
                     if (CommonUtil.isNullOrEmpty(originID)) {
                         caseInstance.setOrigin(null);
                     } else {
@@ -505,7 +521,7 @@ public class ListCaseAction extends BaseListAction {
                                 CaseOrigin.class, Integer.parseInt(originID));
                         caseInstance.setOrigin(origin);
                     }
-                    String reasonID = row.get("Case Reason");
+                    String reasonID = row.get("Case Reason ID");
                     if (CommonUtil.isNullOrEmpty(reasonID)) {
                         caseInstance.setReason(null);
                     } else {
@@ -519,7 +535,7 @@ public class ListCaseAction extends BaseListAction {
                             .get("Description")));
                     caseInstance.setResolution(CommonUtil.fromNullToEmpty(row
                             .get("Resolution")));
-                    String assignedToID = row.get("Assigned To");
+                    String assignedToID = row.get("Assigned To ID");
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         caseInstance.setAssigned_to(null);
                     } else {

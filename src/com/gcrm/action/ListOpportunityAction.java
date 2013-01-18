@@ -396,10 +396,13 @@ public class ListOpportunityAction extends BaseListAction {
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Name", "Account",
-                    "Currency", "Expect Close Date", "Opportunity Amount",
-                    "Type", "Sales Stage", "Lead Source", "Probability",
-                    "Campaign", "Next Step", "Description", "Assigned To" };
+            final String[] header = new String[] { "ID", "Name", "Account ID",
+                    "Account Name", "Currency ID", "Currency Name",
+                    "Expect Close Date", "Opportunity Amount", "Type ID",
+                    "Type Name", "Sales Stage ID", "Sales Stage Name",
+                    "Lead Source ID", "Lead Source Name", "Probability",
+                    "Campaign ID", "Campaign Name", "Next Step", "Description",
+                    "Assigned To ID", "Assigned To Name" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -412,53 +415,71 @@ public class ListOpportunityAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(opportunity.getName()));
                 if (opportunity.getAccount() != null) {
                     data1.put(header[2], opportunity.getAccount().getId());
+                    data1.put(header[3], opportunity.getAccount().getName());
                 } else {
                     data1.put(header[2], "");
-                }
-                if (opportunity.getCurrency() != null) {
-                    data1.put(header[3], opportunity.getCurrency().getId());
-                } else {
                     data1.put(header[3], "");
                 }
-                Date expectCloseDate = opportunity.getExpect_close_date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
-                if (expectCloseDate != null) {
-                    data1.put(header[4], dateFormat.format(expectCloseDate));
+                if (opportunity.getCurrency() != null) {
+                    data1.put(header[4], opportunity.getCurrency().getId());
+                    data1.put(header[5], opportunity.getCurrency().getName());
                 } else {
                     data1.put(header[4], "");
+                    data1.put(header[5], "");
                 }
-                data1.put(header[5], CommonUtil.fromNullToEmpty(opportunity
-                        .getOpportunity_amount()));
-                if (opportunity.getType() != null) {
-                    data1.put(header[6], opportunity.getType().getId());
+                Date expectCloseDate = opportunity.getExpect_close_date();
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        Constant.DATE_EDIT_FORMAT);
+                if (expectCloseDate != null) {
+                    data1.put(header[6], dateFormat.format(expectCloseDate));
                 } else {
                     data1.put(header[6], "");
                 }
-                if (opportunity.getSales_stage() != null) {
-                    data1.put(header[7], opportunity.getSales_stage().getId());
-                } else {
-                    data1.put(header[7], "");
-                }
-                if (opportunity.getLead_source() != null) {
-                    data1.put(header[8], opportunity.getLead_source().getId());
+                data1.put(header[7], CommonUtil.fromNullToEmpty(opportunity
+                        .getOpportunity_amount()));
+                if (opportunity.getType() != null) {
+                    data1.put(header[8], opportunity.getType().getId());
+                    data1.put(header[9], opportunity.getType().getName());
                 } else {
                     data1.put(header[8], "");
+                    data1.put(header[9], "");
                 }
-                data1.put(header[9], opportunity.getProbability());
-
-                if (opportunity.getCampaign() != null) {
-                    data1.put(header[10], opportunity.getCampaign().getId());
+                if (opportunity.getSales_stage() != null) {
+                    data1.put(header[10], opportunity.getSales_stage().getId());
+                    data1.put(header[11], opportunity.getSales_stage()
+                            .getName());
                 } else {
                     data1.put(header[10], "");
+                    data1.put(header[11], "");
                 }
-                data1.put(header[11],
+                if (opportunity.getLead_source() != null) {
+                    data1.put(header[12], opportunity.getLead_source().getId());
+                    data1.put(header[13], opportunity.getLead_source()
+                            .getName());
+                } else {
+                    data1.put(header[12], "");
+                    data1.put(header[13], "");
+                }
+                data1.put(header[14], opportunity.getProbability());
+
+                if (opportunity.getCampaign() != null) {
+                    data1.put(header[15], opportunity.getCampaign().getId());
+                    data1.put(header[16], opportunity.getCampaign().getName());
+                } else {
+                    data1.put(header[15], "");
+                    data1.put(header[16], "");
+                }
+                data1.put(header[17],
                         CommonUtil.fromNullToEmpty(opportunity.getNext_step()));
-                data1.put(header[12], CommonUtil.fromNullToEmpty(opportunity
+                data1.put(header[18], CommonUtil.fromNullToEmpty(opportunity
                         .getDescription()));
                 if (opportunity.getAssigned_to() != null) {
-                    data1.put(header[13], opportunity.getAssigned_to().getId());
+                    data1.put(header[19], opportunity.getAssigned_to().getId());
+                    data1.put(header[20], opportunity.getAssigned_to()
+                            .getName());
                 } else {
-                    data1.put(header[13], "");
+                    data1.put(header[19], "");
+                    data1.put(header[20], "");
                 }
                 writer.write(data1, header);
             }
@@ -504,7 +525,7 @@ public class ListOpportunityAction extends BaseListAction {
                     }
                     opportunity.setName(CommonUtil.fromNullToEmpty(row
                             .get("Name")));
-                    String accountID = row.get("Account");
+                    String accountID = row.get("Account ID");
                     if (CommonUtil.isNullOrEmpty(accountID)) {
                         opportunity.setAccount(null);
                     } else {
@@ -512,7 +533,7 @@ public class ListOpportunityAction extends BaseListAction {
                                 Account.class, Integer.parseInt(accountID));
                         opportunity.setAccount(account);
                     }
-                    String currencyID = row.get("Currency");
+                    String currencyID = row.get("Currency ID");
                     if (CommonUtil.isNullOrEmpty(currencyID)) {
                         opportunity.setCurrency(null);
                     } else {
@@ -521,7 +542,7 @@ public class ListOpportunityAction extends BaseListAction {
                         opportunity.setCurrency(currency);
                     }
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
-                            "M/d/yyyy");
+                            Constant.DATE_EDIT_FORMAT);
                     String expectCloseDateS = row.get("currencyID");
 
                     if (expectCloseDateS != null) {
@@ -533,7 +554,7 @@ public class ListOpportunityAction extends BaseListAction {
                     }
                     opportunity.setOpportunity_amount(CommonUtil
                             .fromNullToEmpty(row.get("Opportunity Amount")));
-                    String typeID = row.get("Type");
+                    String typeID = row.get("Type ID");
                     if (CommonUtil.isNullOrEmpty(typeID)) {
                         opportunity.setType(null);
                     } else {
@@ -542,7 +563,7 @@ public class ListOpportunityAction extends BaseListAction {
                                         Integer.parseInt(typeID));
                         opportunity.setType(opportunityType);
                     }
-                    String salesStageID = row.get("Sales Stage");
+                    String salesStageID = row.get("Sales Stage ID");
                     if (CommonUtil.isNullOrEmpty(salesStageID)) {
                         opportunity.setSales_stage(null);
                     } else {
@@ -551,7 +572,7 @@ public class ListOpportunityAction extends BaseListAction {
                                         Integer.parseInt(salesStageID));
                         opportunity.setSales_stage(salesStage);
                     }
-                    String leadSourceID = row.get("Lead Source");
+                    String leadSourceID = row.get("Lead Source ID");
                     if (CommonUtil.isNullOrEmpty(leadSourceID)) {
                         opportunity.setLead_source(null);
                     } else {
@@ -567,7 +588,7 @@ public class ListOpportunityAction extends BaseListAction {
                         opportunity.setProbability(Double
                                 .parseDouble(probability));
                     }
-                    String campaignID = row.get("Campaign");
+                    String campaignID = row.get("Campaign ID");
                     if (CommonUtil.isNullOrEmpty(campaignID)) {
                         opportunity.setCampaign(null);
                     } else {
@@ -579,7 +600,7 @@ public class ListOpportunityAction extends BaseListAction {
                             .get("Next Step")));
                     opportunity.setDescription(CommonUtil.fromNullToEmpty(row
                             .get("Description")));
-                    String assignedToID = row.get("Assigned To");
+                    String assignedToID = row.get("Assigned To ID");
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         opportunity.setAssigned_to(null);
                     } else {

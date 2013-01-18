@@ -121,6 +121,58 @@
 								</tr>
 							</table>
 						</div>
+						<div title="<s:text name='tab.details'/>"
+							style="padding: 10px;">
+							<table style="" cellspacing="10" cellpadding="0" width="100%">
+								<tr>
+						            <td class="td-mass-update"><input id="massUpdate"
+										name="massUpdate" type="checkbox" class="massUpdate" value="description"/></td>
+									<td class="td-label" valign="top"><label
+										class="record-label"><s:text
+												name="entity.description.label"></s:text>：</label></td>
+									<td class="td-value" valign="top"><s:textarea
+											name="role.description" rows="20" cssStyle="width:450px;"
+											cssClass="record-value" /></td>
+						            <td class="td-mass-update"></td>
+									<td class="td-label"></td>
+									<td class="td-value"></td>
+								</tr>
+								<tr>
+						            <td class="td-mass-update"></td>
+									<td class="td-label"><label class="record-label"><s:text
+												name="entity.createdBy.label"></s:text>：</label></td>
+									<td class="td-value"><label class="record-value"><s:property
+												value="createdBy" /></label></td>
+						            <td class="td-mass-update"></td>
+									<td class="td-label"><label class="record-label"><s:text
+												name="entity.createdOn.label"></s:text>：</label></td>
+									<td class="td-value"><label class="record-value"><s:property
+												value="createdOn" /></label></td>
+								</tr>
+								<tr>
+						            <td class="td-mass-update"></td>
+									<td class="td-label"><label class="record-label"><s:text
+												name="entity.updatedBy.label"></s:text>：</label></td>
+									<td class="td-value"><label class="record-value"><s:property
+												value="updatedBy" /></label></td>
+						            <td class="td-mass-update"></td>
+									<td class="td-label"><label class="record-label"><s:text
+												name="entity.updatedOn.label"></s:text>：</label></td>
+									<td class="td-value"><label class="record-value"><s:property
+												value="updatedOn" /></label></td>
+								</tr>
+								<tr>
+						            <td class="td-mass-update"></td>
+									<td class="td-label"><label class="record-label"><s:text
+												name="entity.id.label"></s:text>：</label></td>
+									<td class="td-value"><label class="record-value"><s:property
+												value="id" /></label></td>
+						            <td class="td-mass-update"></td>
+									<td class="td-label"></td>
+									<td class="td-value"></td>
+								</tr>
+							</table>
+						</div>						
 					</div>
 
 				</s:form>

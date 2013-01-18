@@ -15,6 +15,9 @@
  */
 package com.gcrm.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +37,7 @@ import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.ILeadService;
+import com.gcrm.util.BeanUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
@@ -45,7 +49,7 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
 
     private static final long serialVersionUID = -2404576552417042445L;
 
-    private ILeadService leadService;
+    private ILeadService baseService;
     private IBaseService<Account> accountService;
     private IBaseService<LeadStatus> leadStatusService;
     private IBaseService<LeadSource> leadSourceService;
@@ -77,6 +81,88 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
+        saveEntity();
+        this.getBaseService().makePersistent(lead);
+        return SUCCESS;
+    }
+
+    /**
+     * Gets the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String get() throws Exception {
+        if (this.getId() != null) {
+            lead = baseService.getEntityById(Lead.class, this.getId());
+            Account account = lead.getAccount();
+            if (account != null) {
+                accountID = account.getId();
+                accountText = account.getName();
+            }
+
+            LeadStatus leadStatus = lead.getStatus();
+            if (leadStatus != null) {
+                leadStatusID = leadStatus.getId();
+            }
+
+            LeadSource leadSource = lead.getLead_source();
+            if (leadSource != null) {
+                leadSourceID = leadSource.getId();
+            }
+
+            Campaign campaign = lead.getCampaign();
+            if (campaign != null) {
+                campaignID = campaign.getId();
+                campaignText = campaign.getName();
+            }
+            User user = lead.getAssigned_to();
+            if (user != null) {
+                assignedToID = user.getId();
+                assignedToText = user.getName();
+            }
+            this.getBaseInfo(lead);
+        } else {
+            ActionContext context = ActionContext.getContext();
+            Map<String, Object> session = context.getSession();
+            User loginUser = (User) session
+                    .get(AuthenticationSuccessListener.LOGIN_USER);
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Lead> leads = new ArrayList<Lead>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Lead leadInstance = this.baseService.getEntityById(Lead.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(lead, fieldName);
+                BeanUtil.setFieldValue(leadInstance, fieldName, value);
+            }
+            leadInstance.setUpdated_by(user);
+            leadInstance.setUpdated_on(new Date());
+            leads.add(leadInstance);
+        }
+        if (leads.size() > 0) {
+            this.baseService.batchUpdate(leads);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     */
+    private void saveEntity() {
         Account account = null;
         if (accountID != null) {
             account = accountService.getEntityById(Account.class, accountID);
@@ -152,57 +238,7 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
             }
             contacts.add(contact);
         }
-
         super.updateBaseInfo(lead);
-
-        this.getLeadService().makePersistent(lead);
-        return SUCCESS;
-    }
-
-    /**
-     * Gets the entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String get() throws Exception {
-        if (this.getId() != null) {
-            lead = leadService.getEntityById(Lead.class, this.getId());
-            Account account = lead.getAccount();
-            if (account != null) {
-                accountID = account.getId();
-                accountText = account.getName();
-            }
-
-            LeadStatus leadStatus = lead.getStatus();
-            if (leadStatus != null) {
-                leadStatusID = leadStatus.getId();
-            }
-
-            LeadSource leadSource = lead.getLead_source();
-            if (leadSource != null) {
-                leadSourceID = leadSource.getId();
-            }
-
-            Campaign campaign = lead.getCampaign();
-            if (campaign != null) {
-                campaignID = campaign.getId();
-                campaignText = campaign.getName();
-            }
-            User user = lead.getAssigned_to();
-            if (user != null) {
-                assignedToID = user.getId();
-                assignedToText = user.getName();
-            }
-
-        } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
-        }
-        return SUCCESS;
     }
 
     /**
@@ -222,7 +258,7 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String convert() throws Exception {
-        this.getLeadService().convert(this.getId(), accountCheck, contactCheck,
+        this.getBaseService().convert(this.getId(), accountCheck, contactCheck,
                 opportunityCheck);
         return SUCCESS;
     }
@@ -468,21 +504,6 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the leadService
-     */
-    public ILeadService getLeadService() {
-        return leadService;
-    }
-
-    /**
-     * @param leadService
-     *            the leadService to set
-     */
-    public void setLeadService(ILeadService leadService) {
-        this.leadService = leadService;
-    }
-
-    /**
      * @return the opportunityService
      */
     public IBaseService<Opportunity> getOpportunityService() {
@@ -601,6 +622,21 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      */
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
+    }
+
+    /**
+     * @return the baseService
+     */
+    public ILeadService getBaseService() {
+        return baseService;
+    }
+
+    /**
+     * @param baseService
+     *            the baseService to set
+     */
+    public void setBaseService(ILeadService baseService) {
+        this.baseService = baseService;
     }
 
 }

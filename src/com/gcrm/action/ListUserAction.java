@@ -319,12 +319,12 @@ public class ListUserAction extends BaseListAction {
                 CsvPreference.EXCEL_PREFERENCE);
         try {
             final String[] header = new String[] { "ID", "User Name",
-                    "First Name", "Last Name", "Status", "Password", "Title",
-                    "Email", "Mobile", "Phone", "Fax", "Department",
-                    "Report To", "Mailing Street", "Mailing City",
-                    "Mailing State", "Mailing Postal Code", "Mailing Country",
-                    "Other Street", "Other City", "Other State",
-                    "Other Postal Code", "Other Country", "Age",
+                    "First Name", "Last Name", "Status ID", "Status Name",
+                    "Title", "Email", "Mobile", "Phone", "Fax", "Department",
+                    "Report To ID", "Report To Name", "Mailing Street",
+                    "Mailing City", "Mailing State", "Mailing Postal Code",
+                    "Mailing Country", "Other Street", "Other City",
+                    "Other State", "Other Postal Code", "Other Country", "Age",
                     "Smtp Username", "Smtp Password", "Description" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
@@ -341,51 +341,55 @@ public class ListUserAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(user.getLast_name()));
                 if (user.getStatus() != null) {
                     data1.put(header[4], user.getStatus().getId());
+                    data1.put(header[5], user.getStatus().getName());
                 } else {
                     data1.put(header[4], "");
+                    data1.put(header[5], "");
                 }
-                data1.put(header[5],
-                        CommonUtil.fromNullToEmpty(user.getPassword()));
                 data1.put(header[6],
                         CommonUtil.fromNullToEmpty(user.getTitle()));
                 data1.put(header[7],
-                        CommonUtil.fromNullToEmpty(user.getMobile()));
+                        CommonUtil.fromNullToEmpty(user.getEmail()));
                 data1.put(header[8],
+                        CommonUtil.fromNullToEmpty(user.getMobile()));
+                data1.put(header[9],
                         CommonUtil.fromNullToEmpty(user.getPhone()));
-                data1.put(header[9], CommonUtil.fromNullToEmpty(user.getFax()));
-                data1.put(header[10],
+                data1.put(header[10], CommonUtil.fromNullToEmpty(user.getFax()));
+                data1.put(header[11],
                         CommonUtil.fromNullToEmpty(user.getDepartment()));
                 if (user.getReport_to() != null) {
-                    data1.put(header[11], user.getReport_to().getId());
+                    data1.put(header[12], user.getReport_to().getId());
+                    data1.put(header[13], user.getReport_to().getName());
                 } else {
-                    data1.put(header[11], "");
+                    data1.put(header[12], "");
+                    data1.put(header[13], "");
                 }
-                data1.put(header[12],
-                        CommonUtil.fromNullToEmpty(user.getMail_street()));
-                data1.put(header[13],
-                        CommonUtil.fromNullToEmpty(user.getMail_city()));
                 data1.put(header[14],
-                        CommonUtil.fromNullToEmpty(user.getMail_state()));
+                        CommonUtil.fromNullToEmpty(user.getMail_street()));
                 data1.put(header[15],
-                        CommonUtil.fromNullToEmpty(user.getMail_postal_code()));
+                        CommonUtil.fromNullToEmpty(user.getMail_city()));
                 data1.put(header[16],
-                        CommonUtil.fromNullToEmpty(user.getMail_country()));
+                        CommonUtil.fromNullToEmpty(user.getMail_state()));
                 data1.put(header[17],
-                        CommonUtil.fromNullToEmpty(user.getOther_street()));
+                        CommonUtil.fromNullToEmpty(user.getMail_postal_code()));
                 data1.put(header[18],
-                        CommonUtil.fromNullToEmpty(user.getOther_city()));
+                        CommonUtil.fromNullToEmpty(user.getMail_country()));
                 data1.put(header[19],
-                        CommonUtil.fromNullToEmpty(user.getOther_state()));
+                        CommonUtil.fromNullToEmpty(user.getOther_street()));
                 data1.put(header[20],
-                        CommonUtil.fromNullToEmpty(user.getOther_postal_code()));
+                        CommonUtil.fromNullToEmpty(user.getOther_city()));
                 data1.put(header[21],
-                        CommonUtil.fromNullToEmpty(user.getOther_country()));
-                data1.put(header[22], user.getAge());
+                        CommonUtil.fromNullToEmpty(user.getOther_state()));
+                data1.put(header[22],
+                        CommonUtil.fromNullToEmpty(user.getOther_postal_code()));
                 data1.put(header[23],
-                        CommonUtil.fromNullToEmpty(user.getSmtp_username()));
-                data1.put(header[24],
-                        CommonUtil.fromNullToEmpty(user.getSmtp_password()));
+                        CommonUtil.fromNullToEmpty(user.getOther_country()));
+                data1.put(header[24], user.getAge());
                 data1.put(header[25],
+                        CommonUtil.fromNullToEmpty(user.getSmtp_username()));
+                data1.put(header[26],
+                        CommonUtil.fromNullToEmpty(user.getSmtp_password()));
+                data1.put(header[27],
                         CommonUtil.fromNullToEmpty(user.getDescription()));
                 writer.write(data1, header);
             }
@@ -435,7 +439,7 @@ public class ListUserAction extends BaseListAction {
                             .get("First Name")));
                     user.setLast_name(CommonUtil.fromNullToEmpty(row
                             .get("Last Name")));
-                    String statusID = row.get("Status");
+                    String statusID = row.get("Status ID");
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         user.setStatus(null);
                     } else {
@@ -444,8 +448,6 @@ public class ListUserAction extends BaseListAction {
                                         Integer.parseInt(statusID));
                         user.setStatus(userStatus);
                     }
-                    user.setPassword(CommonUtil.fromNullToEmpty(row
-                            .get("Password")));
                     user.setTitle(CommonUtil.fromNullToEmpty(row.get("Title")));
                     user.setEmail(CommonUtil.fromNullToEmpty(row.get("Email")));
                     user.setMobile(CommonUtil.fromNullToEmpty(row.get("Mobile")));
@@ -453,7 +455,7 @@ public class ListUserAction extends BaseListAction {
                     user.setFax(CommonUtil.fromNullToEmpty(row.get("Fax")));
                     user.setDepartment(CommonUtil.fromNullToEmpty(row
                             .get("Department")));
-                    String reportToID = row.get("Report To");
+                    String reportToID = row.get("Report To ID");
                     if (CommonUtil.isNullOrEmpty(reportToID)) {
                         user.setReport_to(null);
                     } else {

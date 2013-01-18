@@ -15,7 +15,10 @@
  */
 package com.gcrm.action;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +37,7 @@ import com.gcrm.domain.SalesStage;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.opensymphony.xwork2.ActionContext;
@@ -80,6 +84,106 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
      * @return the SUCCESS result
      */
     public String save() throws Exception {
+        saveEntity();
+        getBaseService().makePersistent(opportunity);
+        return SUCCESS;
+    }
+
+    /**
+     * Gets the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String get() throws Exception {
+        if (this.getId() != null) {
+            opportunity = baseService.getEntityById(Opportunity.class,
+                    this.getId());
+
+            Account account = opportunity.getAccount();
+            if (account != null) {
+                accountID = account.getId();
+                accountText = account.getName();
+            }
+            Currency currency = opportunity.getCurrency();
+            if (currency != null) {
+                currencyID = currency.getId();
+            }
+            SalesStage slesStage = opportunity.getSales_stage();
+            if (slesStage != null) {
+                salesStageID = slesStage.getId();
+            }
+            LeadSource leadSource = opportunity.getLead_source();
+            if (leadSource != null) {
+                sourceID = leadSource.getId();
+            }
+            OpportunityType type = opportunity.getType();
+            if (type != null) {
+                typeID = type.getId();
+            }
+            User assignedTo = opportunity.getAssigned_to();
+            if (assignedTo != null) {
+                assignedToID = assignedTo.getId();
+                assignedToText = assignedTo.getName();
+            }
+
+            Campaign campaign = opportunity.getCampaign();
+            if (campaign != null) {
+                campaignID = campaign.getId();
+                campaignText = campaign.getName();
+            }
+
+            Date expect_close_date = opportunity.getExpect_close_date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Constant.DATE_EDIT_FORMAT);
+            if (expect_close_date != null) {
+                expectCloseDate = dateFormat.format(expect_close_date);
+            }
+            this.getBaseInfo(opportunity);
+        } else {
+            ActionContext context = ActionContext.getContext();
+            Map<String, Object> session = context.getSession();
+            User loginUser = (User) session
+                    .get(AuthenticationSuccessListener.LOGIN_USER);
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Opportunity> opportunities = new ArrayList<Opportunity>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Opportunity opportunityInstance = this.baseService.getEntityById(
+                    Opportunity.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(opportunity, fieldName);
+                BeanUtil.setFieldValue(opportunityInstance, fieldName, value);
+            }
+            opportunityInstance.setUpdated_by(user);
+            opportunityInstance.setUpdated_on(new Date());
+            opportunities.add(opportunityInstance);
+        }
+        if (opportunities.size() > 0) {
+            this.baseService.batchUpdate(opportunities);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     * 
+     * @throws ParseException
+     */
+    private void saveEntity() throws ParseException {
         Account account = null;
         if (accountID != null) {
             account = accountService.getEntityById(Account.class, accountID);
@@ -152,70 +256,7 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
             }
             documents.add(document);
         }
-
         super.updateBaseInfo(opportunity);
-        getBaseService().makePersistent(opportunity);
-        return SUCCESS;
-    }
-
-    /**
-     * Gets the entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String get() throws Exception {
-        if (this.getId() != null) {
-            opportunity = baseService.getEntityById(Opportunity.class,
-                    this.getId());
-
-            Account account = opportunity.getAccount();
-            if (account != null) {
-                accountID = account.getId();
-                accountText = account.getName();
-            }
-            Currency currency = opportunity.getCurrency();
-            if (currency != null) {
-                currencyID = currency.getId();
-            }
-            SalesStage slesStage = opportunity.getSales_stage();
-            if (slesStage != null) {
-                salesStageID = slesStage.getId();
-            }
-            LeadSource leadSource = opportunity.getLead_source();
-            if (leadSource != null) {
-                sourceID = leadSource.getId();
-            }
-            OpportunityType type = opportunity.getType();
-            if (type != null) {
-                typeID = type.getId();
-            }
-            User assignedTo = opportunity.getAssigned_to();
-            if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
-            }
-
-            Campaign campaign = opportunity.getCampaign();
-            if (campaign != null) {
-                campaignID = campaign.getId();
-                campaignText = campaign.getName();
-            }
-
-            Date expect_close_date = opportunity.getExpect_close_date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
-            if (expect_close_date != null) {
-                expectCloseDate = dateFormat.format(expect_close_date);
-            }
-
-        } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
-        }
-        return SUCCESS;
     }
 
     /**

@@ -28,6 +28,10 @@
 		  many_deleterow("deleteDocument.action?seleteIDs=");
 	  });	
 
+	  $("#massUpdate").click(function() {	
+		  many_massUpdaterow("/crm/editDocument.action?seleteIDs=");
+	  });
+	  
 	  $("#copy").click(function() {	
 		  many_copyrow("/crm/copyDocument.action?seleteIDs=");
 	  });
@@ -118,6 +122,9 @@
 		     <span style="white-space:nowrap;">
 		       <a href="javascript:void(0)" id="mtmt" class="easyui-menubutton" data-options="menu:'#mtm1',iconCls:'icon-more'"><s:text name='menu.toolbar.more.title'/></a>
 		       	<div id="mtm1" style="width:150px;">
+					<div id="massUpdate">
+						<s:text name='menu.item.massupdate.title' />
+					</div>		       	
 					<div id="copy"><s:text name='menu.item.copy.title'/></div>
 				</div>
 		     </span>		     		     

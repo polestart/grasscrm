@@ -79,6 +79,12 @@
         <action name="removeLead" class="listLeadAction" method="remove">
 			<result type="redirect">/jsp/crm/listLead.jsp</result>
         </action> 
+        
+        <action name="massUpdateLead" class="editLeadAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editLead.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listLead.jsp</result>
+        </action>         
   </package>      
     
 </struts>

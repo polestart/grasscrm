@@ -26,7 +26,7 @@
 			destroyUrl : 'deleteSalesStage.action'
 		});
 	    $("#delete").click(function() {	
-			  many_deleterow("deleteSalesStage.action?seleteIDs=");
+	    	many_deleterow_easyui("deleteSalesStage.action?seleteIDs=");
 		    });		
 	});
 </script>
@@ -54,7 +54,7 @@
 						    <th data-options="field:'ck',checkbox:true"></th>
 							<th field="id" width="1" hidden="true"><s:text
 									name='entity.id.label' /></th>							
-							<th field="salesStage.id" width="50" hidden="true"><s:text
+							<th field="salesStage.id" width="10"><s:text
 									name='entity.id.label' /></th>
 							<th field="salesStage.name" width="50"
 								editor="{type:'validatebox',options:{required:true}}"><s:text

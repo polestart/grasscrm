@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,257 +54,333 @@ import com.gcrm.vo.SearchResult;
  */
 public class ListRoleAction extends BaseListAction {
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private static final long serialVersionUID = -2404576552417042445L;
 
-	private IBaseService<Role> baseService;
-	private IBaseService<Permission> permissionService;
-	private Role role;
-	private Integer id;
+    private IBaseService<Role> baseService;
+    private IBaseService<Permission> permissionService;
+    private Role role;
+    private Integer id;
 
-	private static final String CLAZZ = Role.class.getSimpleName();
+    private static final String CLAZZ = Role.class.getSimpleName();
 
     /**
      * Gets the list data.
      * 
      * @return null
-     */	
-	public String list() throws Exception {
+     */
+    @Override
+    public String list() throws Exception {
 
-		SearchCondition searchCondition = getSearchCondition();
-		SearchResult<Role> result = baseService.getPaginationObjects(CLAZZ,
-				searchCondition);
-		List<Role> roles = result.getResult();
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<Role> result = baseService.getPaginationObjects(CLAZZ,
+                searchCondition);
 
-		long totalRecords = result.getTotalRecords();
+        Iterator<Role> roles = result.getResult().iterator();
+        long totalRecords = result.getTotalRecords();
+        getListJson(roles, totalRecords, null, false);
+        return null;
+    }
 
-		String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-		int size = roles.size();
-		for (int i = 0; i < size; i++) {
-			Role instance = (Role) roles.get(i);
-			int id = instance.getId();
-			String name = instance.getName();
-			int sequence = 0;
-			if (instance.getSequence() != null){
-			 sequence = instance.getSequence();
-			}
-			
-			json += "{\"id\":\"" + id + "\",\"name\":\"" + name
-					+ "\",\"sequence\":\"" + sequence + "\"}";
-			if (i < size - 1) {
-				json += ",";
-			}
-		}
-		json += "]}";
+    /**
+     * Gets the list data.
+     * 
+     * @return null
+     */
+    public String listFull() throws Exception {
 
-		// Returns JSON data back to page
-		HttpServletResponse response = ServletActionContext.getResponse();
-		response.getWriter().write(json);
-		return null;
-	}
+        Map<String, String> fieldTypeMap = new HashMap<String, String>();
+        fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
+        fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
+
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        SearchResult<Role> result = baseService.getPaginationObjects(CLAZZ,
+                searchCondition);
+
+        Iterator<Role> roles = result.getResult().iterator();
+        long totalRecords = result.getTotalRecords();
+        getListJson(roles, totalRecords, searchCondition, true);
+        return null;
+    }
+
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    public static void getListJson(Iterator<Role> roles, long totalRecords,
+            SearchCondition searchCondition, boolean isList) throws Exception {
+
+        StringBuilder jsonBuilder = new StringBuilder("");
+        jsonBuilder
+                .append(getJsonHeader(totalRecords, searchCondition, isList));
+
+        while (roles.hasNext()) {
+            Role instance = roles.next();
+            int id = instance.getId();
+            String name = CommonUtil.fromNullToEmpty(instance.getName());
+            Integer sequence = instance.getSequence();
+            String sequenceS = "";
+            if (sequence != null) {
+                sequenceS = String.valueOf(sequence);
+            }
+
+            if (isList) {
+                User createdBy = instance.getCreated_by();
+                String createdByName = "";
+                if (createdBy != null) {
+                    createdByName = CommonUtil.fromNullToEmpty(createdBy
+                            .getName());
+                }
+                User updatedBy = instance.getUpdated_by();
+                String updatedByName = "";
+                if (updatedBy != null) {
+                    updatedByName = CommonUtil.fromNullToEmpty(updatedBy
+                            .getName());
+                }
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        Constant.DATE_TIME_FORMAT);
+                Date createdOn = instance.getCreated_on();
+                String createdOnName = "";
+                if (createdOn != null) {
+                    createdOnName = dateFormat.format(createdOn);
+                }
+                Date updatedOn = instance.getUpdated_on();
+                String updatedOnName = "";
+                if (updatedOn != null) {
+                    updatedOnName = dateFormat.format(updatedOn);
+                }
+                jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
+                        .append(name).append("\",\"").append(sequenceS)
+                        .append("\",\"").append(createdByName).append("\",\"")
+                        .append(updatedByName).append("\",\"")
+                        .append(createdOnName).append("\",\"")
+                        .append(updatedOnName).append("\"]}");
+            } else {
+                jsonBuilder.append("{\"id\":\"").append(id)
+                        .append("\",\"name\":\"").append(name)
+                        .append("\",\"sequence\":\"").append(sequence)
+                        .append("\"}");
+            }
+            if (roles.hasNext()) {
+                jsonBuilder.append(",");
+            }
+        }
+        jsonBuilder.append("]}");
+
+        // Returns JSON data back to page
+        HttpServletResponse response = ServletActionContext.getResponse();
+        response.getWriter().write(jsonBuilder.toString());
+    }
 
     /**
      * Deletes the selected entities.
      * 
      * @return the SUCCESS result
-     */		
-	public String delete() throws ServiceException {
-		baseService.batchDeleteEntity(Role.class, this.getSeleteIDs());
-		return SUCCESS;
-	}
+     */
+    public String delete() throws ServiceException {
+        baseService.batchDeleteEntity(Role.class, this.getSeleteIDs());
+        return SUCCESS;
+    }
 
     /**
      * Copies the selected entities
      * 
      * @return the SUCCESS result
-     */	
-	public String copy() throws ServiceException {
-		if (this.getSeleteIDs() != null) {
-			String[] ids = seleteIDs.split(",");
-			for (int i = 0; i < ids.length; i++) {
-				String copyid = ids[i];
-				Role oriRecord = baseService.getEntityById(Role.class,
-						Integer.valueOf(copyid));
-				Role targetRecord = oriRecord.clone();
-				targetRecord.setId(null);
-				this.baseService.makePersistent(targetRecord);
-			}
-		}
-		return SUCCESS;
-	}
+     */
+    public String copy() throws ServiceException {
+        if (this.getSeleteIDs() != null) {
+            String[] ids = seleteIDs.split(",");
+            for (int i = 0; i < ids.length; i++) {
+                String copyid = ids[i];
+                Role oriRecord = baseService.getEntityById(Role.class,
+                        Integer.valueOf(copyid));
+                Role targetRecord = oriRecord.clone();
+                targetRecord.setId(null);
+                this.baseService.makePersistent(targetRecord);
+            }
+        }
+        return SUCCESS;
+    }
 
     /**
      * Exports the entities
      * 
      * @return the exported entities inputStream
-     */	
-	public InputStream getInputStream() throws Exception {
-		File file = new File(CLAZZ + ".csv");
-		ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
-				CsvPreference.EXCEL_PREFERENCE);
-		try {
-			final String[] header = new String[] { "ID", "Name",
-					"Sequence", "Permissions"};
-			writer.writeHeader(header);
-			String[] ids = seleteIDs.split(",");
-			for (int i = 0; i < ids.length; i++) {
-				String id = ids[i];
-				Role role = baseService.getEntityById(Role.class,
-						Integer.parseInt(id));
-				final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-				data1.put(header[0], role.getId());
-				data1.put(header[1], CommonUtil.fromNullToEmpty(role.getName()));
-				data1.put(header[2], role.getSequence());
-				Set<Permission> permissions = role.getPermissions();
-				String permissionIDs = "";
-				for (Permission permission: permissions){
-					if (permissionIDs.length() > 0){
-						permissionIDs += ",";
-					}
-					permissionIDs += String.valueOf(permission.getId());
-				}
-				data1.put(header[3],permissionIDs);
-				writer.write(data1, header);
-			}
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			writer.close();
-		}
+     */
+    public InputStream getInputStream() throws Exception {
+        File file = new File(CLAZZ + ".csv");
+        ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
+                CsvPreference.EXCEL_PREFERENCE);
+        try {
+            final String[] header = new String[] { "ID", "Name", "Sequence",
+                    "Permissions" };
+            writer.writeHeader(header);
+            String[] ids = seleteIDs.split(",");
+            for (int i = 0; i < ids.length; i++) {
+                String id = ids[i];
+                Role role = baseService.getEntityById(Role.class,
+                        Integer.parseInt(id));
+                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                data1.put(header[0], role.getId());
+                data1.put(header[1], CommonUtil.fromNullToEmpty(role.getName()));
+                data1.put(header[2], role.getSequence());
+                Set<Permission> permissions = role.getPermissions();
+                String permissionIDs = "";
+                for (Permission permission : permissions) {
+                    if (permissionIDs.length() > 0) {
+                        permissionIDs += ",";
+                    }
+                    permissionIDs += String.valueOf(permission.getId());
+                }
+                data1.put(header[3], permissionIDs);
+                writer.write(data1, header);
+            }
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            writer.close();
+        }
 
-		InputStream in = new FileInputStream(file);
-		this.setFileName(CLAZZ + ".csv");
-		return in;
-	}
+        InputStream in = new FileInputStream(file);
+        this.setFileName(CLAZZ + ".csv");
+        return in;
+    }
 
     /**
      * Imports the entities
      * 
      * @return the SUCCESS result
-     */	
-	public String importCSV() throws Exception {
-		File file = this.getUpload();
-		CsvListReader reader = new CsvListReader(new FileReader(file),
-				CsvPreference.EXCEL_PREFERENCE);
-		int failedNum = 0;
-		int successfulNum = 0;
-		try {
-			final String[] header = reader.getCSVHeader(true);
+     */
+    public String importCSV() throws Exception {
+        File file = this.getUpload();
+        CsvListReader reader = new CsvListReader(new FileReader(file),
+                CsvPreference.EXCEL_PREFERENCE);
+        int failedNum = 0;
+        int successfulNum = 0;
+        try {
+            final String[] header = reader.getCSVHeader(true);
 
-			List<String> line = new ArrayList<String>();
-			Map<String, String> failedMsg = new HashMap<String, String>();
-			while ((line = reader.read()) != null) {
+            List<String> line = new ArrayList<String>();
+            Map<String, String> failedMsg = new HashMap<String, String>();
+            while ((line = reader.read()) != null) {
 
-				Map<String, String> row = new HashMap<String, String>();
-				for (int i = 0; i < line.size(); i++) {
-					row.put(header[i], line.get(i));
-				}
+                Map<String, String> row = new HashMap<String, String>();
+                for (int i = 0; i < line.size(); i++) {
+                    row.put(header[i], line.get(i));
+                }
 
-				Role role = new Role();
-				try {
-					String id = row.get("ID");
-					if (!CommonUtil.isNullOrEmpty(id)) {
-						role.setId(Integer.parseInt(id));
-					}				
-					role.setName(CommonUtil.fromNullToEmpty(row.get("Role Name")));
-					String sequence = row.get("Sequence");
-					if (CommonUtil.isNullOrEmpty(sequence)) {
-						role.setSequence(0);
-					} else {
-						role.setSequence(Integer.parseInt(sequence));
-					}
-					String permissions = row.get("Permissions");
-					if (!CommonUtil.isNullOrEmpty(permissions)) {
-						String[] ids = permissions.split(",");
-						Set<Permission> permissionSet = new HashSet<Permission>(0);
-						for (int i = 0; i < ids.length; i++) {
-							String permissionID = ids[i];
-							Permission permission = permissionService.getEntityById(Permission.class,
-									Integer.parseInt(permissionID));
-							permissionSet.add(permission);
-						}		
-						role.setPermissions(permissionSet);
-					}
-					
-					baseService.makePersistent(role);
-					successfulNum++;
-				} catch (Exception e) {
-					failedNum++;
-					failedMsg.put(role.getName(), e.getMessage());
-				}
+                Role role = new Role();
+                try {
+                    String id = row.get("ID");
+                    if (!CommonUtil.isNullOrEmpty(id)) {
+                        role.setId(Integer.parseInt(id));
+                    }
+                    role.setName(CommonUtil.fromNullToEmpty(row.get("Name")));
+                    String sequence = row.get("Sequence");
+                    if (CommonUtil.isNullOrEmpty(sequence)) {
+                        role.setSequence(0);
+                    } else {
+                        role.setSequence(Integer.parseInt(sequence));
+                    }
+                    String permissions = row.get("Permissions");
+                    if (!CommonUtil.isNullOrEmpty(permissions)) {
+                        String[] ids = permissions.split(",");
+                        Set<Permission> permissionSet = new HashSet<Permission>(
+                                0);
+                        for (int i = 0; i < ids.length; i++) {
+                            String permissionID = ids[i];
+                            Permission permission = permissionService
+                                    .getEntityById(Permission.class,
+                                            Integer.parseInt(permissionID));
+                            permissionSet.add(permission);
+                        }
+                        role.setPermissions(permissionSet);
+                    }
 
-			}
+                    baseService.makePersistent(role);
+                    successfulNum++;
+                } catch (Exception e) {
+                    failedNum++;
+                    failedMsg.put(role.getName(), e.getMessage());
+                }
 
-			this.setFailedMsg(failedMsg);
-			this.setFailedNum(failedNum);
-			this.setSuccessfulNum(successfulNum);
-			this.setTotalNum(successfulNum + failedNum);
-		} finally {
-			reader.close();
-		}
-		return SUCCESS;
-	}
+            }
 
-	public String execute() throws Exception {
-		return SUCCESS;
-	}
+            this.setFailedMsg(failedMsg);
+            this.setFailedNum(failedNum);
+            this.setSuccessfulNum(successfulNum);
+            this.setTotalNum(successfulNum + failedNum);
+        } finally {
+            reader.close();
+        }
+        return SUCCESS;
+    }
 
-	/**
-	 * @return the baseService
-	 */
-	public IBaseService<Role> getBaseService() {
-		return baseService;
-	}
+    @Override
+    public String execute() throws Exception {
+        return SUCCESS;
+    }
 
-	/**
-	 * @param baseService
-	 *            the baseService to set
-	 */
-	public void setBaseService(IBaseService<Role> baseService) {
-		this.baseService = baseService;
-	}
+    /**
+     * @return the baseService
+     */
+    public IBaseService<Role> getBaseService() {
+        return baseService;
+    }
 
-	/**
-	 * @return the role
-	 */
-	public Role getRole() {
-		return role;
-	}
+    /**
+     * @param baseService
+     *            the baseService to set
+     */
+    public void setBaseService(IBaseService<Role> baseService) {
+        this.baseService = baseService;
+    }
 
-	/**
-	 * @param role
-	 *            the role to set
-	 */
-	public void setRole(Role role) {
-		this.role = role;
-	}
+    /**
+     * @return the role
+     */
+    public Role getRole() {
+        return role;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public Integer getId() {
-		return id;
-	}
+    /**
+     * @param role
+     *            the role to set
+     */
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    /**
+     * @return the id
+     */
+    @Override
+    public Integer getId() {
+        return id;
+    }
 
-	/**
-	 * @return the permissionService
-	 */
-	public IBaseService<Permission> getPermissionService() {
-		return permissionService;
-	}
+    /**
+     * @param id
+     *            the id to set
+     */
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	/**
-	 * @param permissionService the permissionService to set
-	 */
-	public void setPermissionService(IBaseService<Permission> permissionService) {
-		this.permissionService = permissionService;
-	}
+    /**
+     * @return the permissionService
+     */
+    public IBaseService<Permission> getPermissionService() {
+        return permissionService;
+    }
+
+    /**
+     * @param permissionService
+     *            the permissionService to set
+     */
+    public void setPermissionService(IBaseService<Permission> permissionService) {
+        this.permissionService = permissionService;
+    }
 
 }

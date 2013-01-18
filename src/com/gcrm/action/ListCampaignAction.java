@@ -254,11 +254,12 @@ public class ListCampaignAction extends BaseListAction {
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Name", "Status",
-                    "Type", "Start Date", "End Date", "Currency",
-                    "Impressions", "Budget", "Expected Cost", "Actual Cost",
+            final String[] header = new String[] { "ID", "Name", "Status ID",
+                    "Status Name", "Type ID", "Type Name", "Start Date",
+                    "End Date", "Currency ID", "Currency Name", "Impressions",
+                    "Budget", "Expected Cost", "Actual Cost",
                     "Expected Revenue", "Objective", "Description",
-                    "Assigned To" };
+                    "Assigned To ID", "Assigned To Name" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -271,45 +272,54 @@ public class ListCampaignAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(campaign.getName()));
                 if (campaign.getStatus() != null) {
                     data1.put(header[2], campaign.getStatus().getId());
+                    data1.put(header[3], campaign.getStatus().getName());
                 } else {
                     data1.put(header[2], "");
-                }
-                if (campaign.getType() != null) {
-                    data1.put(header[3], campaign.getType().getId());
-                } else {
                     data1.put(header[3], "");
                 }
-                SimpleDateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
-                Date startDate = campaign.getStart_date();
-                if (startDate != null) {
-                    data1.put(header[4], dateFormat.format(startDate));
+                if (campaign.getType() != null) {
+                    data1.put(header[4], campaign.getType().getId());
+                    data1.put(header[5], campaign.getType().getName());
                 } else {
                     data1.put(header[4], "");
-                }
-                Date endDate = campaign.getEnd_date();
-                if (endDate != null) {
-                    data1.put(header[5], dateFormat.format(endDate));
-                } else {
                     data1.put(header[5], "");
                 }
-                if (campaign.getCurrency() != null) {
-                    data1.put(header[6], campaign.getCurrency().getId());
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        Constant.DATE_EDIT_FORMAT);
+                Date startDate = campaign.getStart_date();
+                if (startDate != null) {
+                    data1.put(header[6], dateFormat.format(startDate));
                 } else {
                     data1.put(header[6], "");
                 }
-                data1.put(header[7], campaign.getImpressions());
-                data1.put(header[8], campaign.getBudget());
-                data1.put(header[9], campaign.getExpected_cost());
-                data1.put(header[10], campaign.getActual_cost());
-                data1.put(header[11], campaign.getExpected_revenue());
-                data1.put(header[12],
+                Date endDate = campaign.getEnd_date();
+                if (endDate != null) {
+                    data1.put(header[7], dateFormat.format(endDate));
+                } else {
+                    data1.put(header[7], "");
+                }
+                if (campaign.getCurrency() != null) {
+                    data1.put(header[8], campaign.getCurrency().getId());
+                    data1.put(header[9], campaign.getCurrency().getName());
+                } else {
+                    data1.put(header[8], "");
+                    data1.put(header[9], "");
+                }
+                data1.put(header[10], campaign.getImpressions());
+                data1.put(header[11], campaign.getBudget());
+                data1.put(header[12], campaign.getExpected_cost());
+                data1.put(header[13], campaign.getActual_cost());
+                data1.put(header[14], campaign.getExpected_revenue());
+                data1.put(header[15],
                         CommonUtil.fromNullToEmpty(campaign.getObjective()));
-                data1.put(header[13],
+                data1.put(header[16],
                         CommonUtil.fromNullToEmpty(campaign.getDescription()));
                 if (campaign.getAssigned_to() != null) {
-                    data1.put(header[14], campaign.getAssigned_to().getId());
+                    data1.put(header[17], campaign.getAssigned_to().getId());
+                    data1.put(header[18], campaign.getAssigned_to().getName());
                 } else {
-                    data1.put(header[14], "");
+                    data1.put(header[17], "");
+                    data1.put(header[18], "");
                 }
                 writer.write(data1, header);
             }
@@ -354,7 +364,7 @@ public class ListCampaignAction extends BaseListAction {
                         campaign.setId(Integer.parseInt(id));
                     }
                     campaign.setName(CommonUtil.fromNullToEmpty(row.get("Name")));
-                    String statusID = row.get("Status");
+                    String statusID = row.get("Status ID");
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         campaign.setStatus(null);
                     } else {
@@ -363,7 +373,7 @@ public class ListCampaignAction extends BaseListAction {
                                         Integer.parseInt(statusID));
                         campaign.setStatus(status);
                     }
-                    String typeID = row.get("Type");
+                    String typeID = row.get("Type ID");
                     if (CommonUtil.isNullOrEmpty(typeID)) {
                         campaign.setType(null);
                     } else {
@@ -372,7 +382,7 @@ public class ListCampaignAction extends BaseListAction {
                         campaign.setType(type);
                     }
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
-                            "M/d/yyyy");
+                            Constant.DATE_EDIT_FORMAT);
                     String startDateS = row.get("Start Date");
                     if (startDateS != null) {
                         Date startDate = dateFormat.parse(startDateS);
@@ -387,7 +397,7 @@ public class ListCampaignAction extends BaseListAction {
                     } else {
                         campaign.setEnd_date(null);
                     }
-                    String currencyID = row.get("Currency");
+                    String currencyID = row.get("Currency ID");
                     if (CommonUtil.isNullOrEmpty(currencyID)) {
                         campaign.setCurrency(null);
                     } else {
@@ -431,7 +441,7 @@ public class ListCampaignAction extends BaseListAction {
                             .get("Objective")));
                     campaign.setDescription(CommonUtil.fromNullToEmpty(row
                             .get("Description")));
-                    String assignedToID = row.get("Assigned To");
+                    String assignedToID = row.get("Assigned To ID");
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         campaign.setAssigned_to(null);
                     } else {

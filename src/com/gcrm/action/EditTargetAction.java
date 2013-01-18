@@ -15,6 +15,9 @@
  */
 package com.gcrm.action;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +28,7 @@ import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
@@ -51,30 +55,7 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
-        Account account = null;
-        if (accountID != null) {
-            account = accountService.getEntityById(Account.class, accountID);
-        }
-        target.setAccount(account);
-
-        User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
-        }
-        target.setAssigned_to(assignedTo);
-
-        if ("TargetList".equals(this.getRelationKey())) {
-            TargetList targetList = targetListService.getEntityById(
-                    TargetList.class, Integer.valueOf(this.getRelationValue()));
-            Set<TargetList> targetLists = target.getTargetLists();
-            if (targetLists == null) {
-                targetLists = new HashSet<TargetList>();
-            }
-            targetLists.add(targetList);
-        }
-
-        super.updateBaseInfo(target);
-
+        saveEntity();
         getBaseService().makePersistent(target);
         return SUCCESS;
     }
@@ -97,7 +78,7 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
                 assignedToID = assignedTo.getId();
                 assignedToText = assignedTo.getName();
             }
-
+            this.getBaseInfo(target);
         } else {
             ActionContext context = ActionContext.getContext();
             Map<String, Object> session = context.getSession();
@@ -107,6 +88,62 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
             assignedToText = loginUser.getName();
         }
         return SUCCESS;
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Target> targets = new ArrayList<Target>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Target targetInstance = this.baseService.getEntityById(
+                    Target.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(target, fieldName);
+                BeanUtil.setFieldValue(targetInstance, fieldName, value);
+            }
+            targetInstance.setUpdated_by(user);
+            targetInstance.setUpdated_on(new Date());
+            targets.add(targetInstance);
+        }
+        if (targets.size() > 0) {
+            this.baseService.batchUpdate(targets);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     */
+    private void saveEntity() {
+        Account account = null;
+        if (accountID != null) {
+            account = accountService.getEntityById(Account.class, accountID);
+        }
+        target.setAccount(account);
+
+        User assignedTo = null;
+        if (assignedToID != null) {
+            assignedTo = userService.getEntityById(User.class, assignedToID);
+        }
+        target.setAssigned_to(assignedTo);
+
+        if ("TargetList".equals(this.getRelationKey())) {
+            TargetList targetList = targetListService.getEntityById(
+                    TargetList.class, Integer.valueOf(this.getRelationValue()));
+            Set<TargetList> targetLists = target.getTargetLists();
+            if (targetLists == null) {
+                targetLists = new HashSet<TargetList>();
+            }
+            targetLists.add(targetList);
+        }
+        super.updateBaseInfo(account);
     }
 
     /**

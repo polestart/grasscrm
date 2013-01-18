@@ -15,7 +15,10 @@
  */
 package com.gcrm.action;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +37,7 @@ import com.gcrm.domain.Task;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.opensymphony.xwork2.ActionContext;
@@ -91,6 +95,165 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
+        saveEntity();
+        getbaseService().makePersistent(call);
+        return SUCCESS;
+    }
+
+    /**
+     * Gets the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String get() throws Exception {
+        if (this.getId() != null) {
+            call = baseService.getEntityById(Call.class, this.getId());
+            CallStatus status = call.getStatus();
+            if (status != null) {
+                statusID = status.getId();
+            }
+            CallDirection direction = call.getDirection();
+            if (direction != null) {
+                directionID = direction.getId();
+            }
+            ReminderOption reminderOptionPop = call.getReminder_option_pop();
+            if (reminderOptionPop != null) {
+                reminderOptionPopID = reminderOptionPop.getId();
+            }
+            ReminderOption reminderOptionEmail = call
+                    .getReminder_option_email();
+            if (reminderOptionEmail != null) {
+                reminderOptionEmailID = reminderOptionEmail.getId();
+            }
+            User user = call.getAssigned_to();
+            if (user != null) {
+                assignedToID = user.getId();
+                assignedToText = user.getName();
+            }
+            Date start_date = call.getStart_date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Constant.DATE_TIME_FORMAT);
+            if (start_date != null) {
+                startDate = dateFormat.format(start_date);
+            }
+            String relatedObject = call.getRelated_object();
+            Integer relatedRecord = call.getRelated_record();
+            setRelatedRecord(relatedObject, relatedRecord);
+            this.getBaseInfo(call);
+        } else {
+            ActionContext context = ActionContext.getContext();
+            Map<String, Object> session = context.getSession();
+            User loginUser = (User) session
+                    .get(AuthenticationSuccessListener.LOGIN_USER);
+            assignedToID = loginUser.getId();
+            assignedToText = loginUser.getName();
+            if (!CommonUtil.isNullOrEmpty(this.getRelationKey())) {
+                call.setRelated_object(this.getRelationKey());
+                setRelatedRecord(this.getRelationKey(),
+                        Integer.parseInt(this.getRelationValue()));
+            }
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Sets the related record ID
+     * 
+     * @param relatedObject
+     *            Related Object name
+     * @param relatedRecord
+     *            Related Record ID
+     */
+    private void setRelatedRecord(String relatedObject, Integer relatedRecord) {
+        if ("Account".equals(relatedObject)) {
+            this.relatedAccountID = relatedRecord;
+            if (relatedRecord != null) {
+                this.relatedAccountText = this.accountService.getEntityById(
+                        Account.class, relatedRecord).getName();
+            }
+        } else if ("Case".equals(relatedObject)) {
+            this.relatedCaseID = relatedRecord;
+            if (relatedRecord != null) {
+                this.relatedCaseText = this.caseService.getEntityById(
+                        Case.class, relatedRecord).getSubject();
+            }
+        } else if ("Contact".equals(relatedObject)) {
+            this.relatedContactID = relatedRecord;
+            if (relatedRecord != null) {
+                this.relatedContactText = this.contactService.getEntityById(
+                        Contact.class, relatedRecord).getName();
+            }
+        } else if ("Lead".equals(relatedObject)) {
+            this.relatedLeadID = relatedRecord;
+            if (relatedRecord != null) {
+                this.relatedLeadText = this.leadService.getEntityById(
+                        Lead.class, relatedRecord).getName();
+            }
+        } else if ("Opportunity".equals(relatedObject)) {
+            this.relatedOpportunityID = relatedRecord;
+            if (relatedRecord != null) {
+                this.relatedOpportunityText = this.opportunityService
+                        .getEntityById(Opportunity.class, relatedRecord)
+                        .getName();
+            }
+        } else if ("Target".equals(relatedObject)) {
+            this.relatedTargetID = relatedRecord;
+            if (relatedRecord != null) {
+                this.relatedTargetText = this.targetService.getEntityById(
+                        Target.class, relatedRecord).getName();
+            }
+        } else if ("Task".equals(relatedObject)) {
+            this.relatedTaskID = relatedRecord;
+            if (relatedRecord != null) {
+                this.relatedTaskText = this.taskService.getEntityById(
+                        Task.class, relatedRecord).getSubject();
+            }
+        }
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        Collection<String> feildNameCollection = new ArrayList<String>();
+        for (int i = 0; i < fieldNames.length; i++) {
+            feildNameCollection.add(fieldNames[i]);
+            if ("reminder_pop".equals(fieldNames[i])) {
+                feildNameCollection.add("reminder_email");
+                feildNameCollection.add("reminder_option_pop");
+                feildNameCollection.add("reminder_option_email");
+            }
+        }
+
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Call> calls = new ArrayList<Call>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Call callInstance = this.baseService.getEntityById(Call.class, id);
+            for (String fieldName : feildNameCollection) {
+                Object value = BeanUtil.getFieldValue(call, fieldName);
+                BeanUtil.setFieldValue(callInstance, fieldName, value);
+            }
+            callInstance.setUpdated_by(user);
+            callInstance.setUpdated_on(new Date());
+            calls.add(callInstance);
+        }
+        if (calls.size() > 0) {
+            this.baseService.batchUpdate(calls);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     * 
+     * @throws ParseException
+     */
+    private void saveEntity() throws ParseException {
         CallDirection direction = null;
         if (directionID != null) {
             direction = callDirectionService.getEntityById(CallDirection.class,
@@ -144,106 +307,7 @@ public class EditCallAction extends BaseEditAction implements Preparable {
         } else if ("Task".equals(relatedObject)) {
             call.setRelated_record(relatedTaskID);
         }
-
         super.updateBaseInfo(call);
-
-        getbaseService().makePersistent(call);
-        return SUCCESS;
-    }
-
-    /**
-     * Gets the entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String get() throws Exception {
-        if (this.getId() != null) {
-            call = baseService.getEntityById(Call.class, this.getId());
-            CallStatus status = call.getStatus();
-            if (status != null) {
-                statusID = status.getId();
-            }
-            CallDirection direction = call.getDirection();
-            if (direction != null) {
-                directionID = direction.getId();
-            }
-            ReminderOption reminderOptionPop = call.getReminder_option_pop();
-            if (reminderOptionPop != null) {
-                reminderOptionPopID = reminderOptionPop.getId();
-            }
-            ReminderOption reminderOptionEmail = call
-                    .getReminder_option_email();
-            if (reminderOptionEmail != null) {
-                reminderOptionEmailID = reminderOptionEmail.getId();
-            }
-            User user = call.getAssigned_to();
-            if (user != null) {
-                assignedToID = user.getId();
-                assignedToText = user.getName();
-            }
-            Date start_date = call.getStart_date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    Constant.DATE_TIME_FORMAT);
-            if (start_date != null) {
-                startDate = dateFormat.format(start_date);
-            }
-            String relatedObject = call.getRelated_object();
-            Integer relatedRecord = call.getRelated_record();
-            setRelatedRecord(relatedObject, relatedRecord);
-        } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
-            if (!CommonUtil.isNullOrEmpty(this.getRelationKey())) {
-                call.setRelated_object(this.getRelationKey());
-                setRelatedRecord(this.getRelationKey(),
-                        Integer.parseInt(this.getRelationValue()));
-            }
-        }
-        return SUCCESS;
-    }
-
-    /**
-     * Sets the related record ID
-     * 
-     * @param relatedObject
-     *            Related Object name
-     * @param relatedRecord
-     *            Related Record ID
-     */
-    private void setRelatedRecord(String relatedObject, Integer relatedRecord) {
-        if ("Account".equals(relatedObject)) {
-            this.relatedAccountID = relatedRecord;
-            this.relatedAccountText = this.accountService.getEntityById(
-                    Account.class, relatedRecord).getName();
-        } else if ("Case".equals(relatedObject)) {
-            this.relatedCaseID = relatedRecord;
-            this.relatedCaseText = this.caseService.getEntityById(Case.class,
-                    relatedRecord).getSubject();
-        } else if ("Contact".equals(relatedObject)) {
-            this.relatedContactID = relatedRecord;
-            this.relatedContactText = this.contactService.getEntityById(
-                    Contact.class, relatedRecord).getName();
-        } else if ("Lead".equals(relatedObject)) {
-            this.relatedLeadID = relatedRecord;
-            this.relatedLeadText = this.leadService.getEntityById(Lead.class,
-                    relatedRecord).getName();
-        } else if ("Opportunity".equals(relatedObject)) {
-            this.relatedOpportunityID = relatedRecord;
-            this.relatedOpportunityText = this.opportunityService
-                    .getEntityById(Opportunity.class, relatedRecord).getName();
-        } else if ("Target".equals(relatedObject)) {
-            this.relatedTargetID = relatedRecord;
-            this.relatedTargetText = this.targetService.getEntityById(
-                    Target.class, relatedRecord).getName();
-        } else if ("Task".equals(relatedObject)) {
-            this.relatedTaskID = relatedRecord;
-            this.relatedTaskText = this.taskService.getEntityById(Task.class,
-                    relatedRecord).getSubject();
-        }
     }
 
     /**

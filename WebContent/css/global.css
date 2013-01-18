@@ -160,9 +160,21 @@ vertical-align: middle;
   font-size: 15px;  
 }
 
+.massUpdate{
+  font-weight: normal;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  display:none;  
+}
+
+.td-mass-update{
+ text-align: right;
+ width: 2%; 	
+}
+
 .td-label{
  text-align: right;
- width: 15%; 	
+ width: 13%; 	
 }
 
 .td-value{

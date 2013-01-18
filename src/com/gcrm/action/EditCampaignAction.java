@@ -15,7 +15,10 @@
  */
 package com.gcrm.action;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +30,7 @@ import com.gcrm.domain.Currency;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.opensymphony.xwork2.ActionContext;
@@ -63,44 +67,7 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
-        CampaignStatus status = null;
-        if (statusID != null) {
-            status = campaignStatusService.getEntityById(CampaignStatus.class,
-                    statusID);
-        }
-        campaign.setStatus(status);
-        CampaignType type = null;
-        if (typeID != null) {
-            type = campaignTypeService
-                    .getEntityById(CampaignType.class, typeID);
-        }
-        campaign.setType(type);
-        Currency currency = null;
-        if (currencyID != null) {
-            currency = currencyService
-                    .getEntityById(Currency.class, currencyID);
-        }
-        campaign.setCurrency(currency);
-        User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
-        }
-        campaign.setAssigned_to(assignedTo);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                Constant.DATE_EDIT_FORMAT);
-        Date start_date = null;
-        if (!CommonUtil.isNullOrEmpty(startDate)) {
-            start_date = dateFormat.parse(startDate);
-        }
-        campaign.setStart_date(start_date);
-        Date end_date = null;
-        if (!CommonUtil.isNullOrEmpty(endDate)) {
-            end_date = dateFormat.parse(endDate);
-        }
-        campaign.setEnd_date(end_date);
-
-        super.updateBaseInfo(campaign);
-
+        saveEntity();
         getbaseService().makePersistent(campaign);
         return SUCCESS;
     }
@@ -140,6 +107,7 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
             if (end_date != null) {
                 endDate = dateFormat.format(end_date);
             }
+            this.getBaseInfo(campaign);
         } else {
             ActionContext context = ActionContext.getContext();
             Map<String, Object> session = context.getSession();
@@ -149,6 +117,78 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
             assignedToText = loginUser.getName();
         }
         return SUCCESS;
+    }
+
+    /**
+     * Mass update entity record information
+     */
+    public String massUpdate() throws Exception {
+        saveEntity();
+        String[] fieldNames = this.massUpdate;
+        String[] selectIDArray = this.seleteIDs.split(",");
+        Collection<Campaign> campaigns = new ArrayList<Campaign>();
+        User loginUser = this.getLoginUser();
+        User user = userService.getEntityById(User.class, loginUser.getId());
+        for (String IDString : selectIDArray) {
+            int id = Integer.parseInt(IDString);
+            Campaign campaignInstance = this.baseService.getEntityById(
+                    Campaign.class, id);
+            for (String fieldName : fieldNames) {
+                Object value = BeanUtil.getFieldValue(campaign, fieldName);
+                BeanUtil.setFieldValue(campaignInstance, fieldName, value);
+            }
+            campaignInstance.setUpdated_by(user);
+            campaignInstance.setUpdated_on(new Date());
+            campaigns.add(campaignInstance);
+        }
+        if (campaigns.size() > 0) {
+            this.baseService.batchUpdate(campaigns);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Saves entity field
+     * 
+     * @throws ParseException
+     */
+    private void saveEntity() throws ParseException {
+        CampaignStatus status = null;
+        if (statusID != null) {
+            status = campaignStatusService.getEntityById(CampaignStatus.class,
+                    statusID);
+        }
+        campaign.setStatus(status);
+        CampaignType type = null;
+        if (typeID != null) {
+            type = campaignTypeService
+                    .getEntityById(CampaignType.class, typeID);
+        }
+        campaign.setType(type);
+        Currency currency = null;
+        if (currencyID != null) {
+            currency = currencyService
+                    .getEntityById(Currency.class, currencyID);
+        }
+        campaign.setCurrency(currency);
+        User assignedTo = null;
+        if (assignedToID != null) {
+            assignedTo = userService.getEntityById(User.class, assignedToID);
+        }
+        campaign.setAssigned_to(assignedTo);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_EDIT_FORMAT);
+        Date start_date = null;
+        if (!CommonUtil.isNullOrEmpty(startDate)) {
+            start_date = dateFormat.parse(startDate);
+        }
+        campaign.setStart_date(start_date);
+        Date end_date = null;
+        if (!CommonUtil.isNullOrEmpty(endDate)) {
+            end_date = dateFormat.parse(endDate);
+        }
+        campaign.setEnd_date(end_date);
+        super.updateBaseInfo(campaign);
     }
 
     /**

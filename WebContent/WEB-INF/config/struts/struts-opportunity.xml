@@ -98,6 +98,12 @@
         <action name="removeOpportunity" class="listOpportunityAction" method="remove">
 			<result type="redirect">/jsp/crm/listOpportunity.jsp</result>
         </action> 
+        
+        <action name="massUpdateOpportunity" class="editOpportunityAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editOpportunity.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listOpportunity.jsp</result>
+        </action>            
   </package>      
     
 </struts>

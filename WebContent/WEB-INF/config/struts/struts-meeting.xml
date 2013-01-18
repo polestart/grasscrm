@@ -70,6 +70,12 @@
         <action name="deleteMeeting" class="ListMeetingAction" method="delete">
 			<result type="redirect">/jsp/crm/listMeeting.jsp</result>
         </action>  
+        
+        <action name="massUpdateMeeting" class="editMeetingAction" method="massUpdate">
+			<interceptor-ref name="paramsPrepareParamsStack" /> 
+            <result name="input">/jsp/crm/editMeeting.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listMeeting.jsp</result>
+        </action>        
   </package>      
     
 </struts>
