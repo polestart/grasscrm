@@ -23,11 +23,13 @@ import com.gcrm.domain.Document;
  * Document DAO
  */
 public interface IDocumentDao extends IBaseDao<Document> {
-	/**
-	 * Saves document
-	 * 
-	 * @param document document instance
-	 * @param f file that will be saved in document
-	 */	
-	public void save(Document document, File f) throws Exception;
+    /**
+     * Saves document
+     * 
+     * @param document
+     *            document instance
+     * @param f
+     *            file that will be saved in document
+     */
+    public Document save(Document document, File f) throws Exception;
 }

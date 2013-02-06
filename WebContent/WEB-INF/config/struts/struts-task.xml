@@ -36,7 +36,7 @@
 
          <action name="deleteTask" class="listTaskAction" method="delete">
         	<result name="input">/jsp/crm/listTask.jsp</result>
-			<result>/jsp/crm/listTask.jsp</result>            	  
+			<result type="redirect">/jsp/crm/listTask.jsp</result>            	  
         </action>
 
         <action name="removeTask" class="listTaskAction" method="remove">
@@ -54,21 +54,33 @@
         </action>
                                 
         <action name="editTask" class="editTaskAction" method="get">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
 			<result>/jsp/crm/editTask.jsp</result>
         </action>
                         
         <action name="saveTask" class="editTaskAction" method="save">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editTask.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listTask.jsp</result>
+    	    <result>/jsp/crm/editTask.jsp</result>
+        </action>  
+
+        <action name="saveCloseTask" class="editTaskAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editTask.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listTask.jsp</result>
+        </action>
+                
+        <action name="massUpdateTask" class="editTaskAction" method="massUpdate">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editTask.jsp</result>          
+    	    <result>/jsp/crm/editTask.jsp</result>
         </action>  
         
-        <action name="massUpdateTask" class="editTaskAction" method="massUpdate">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+        <action name="massUpdateCloseTask" class="editTaskAction" method="massUpdate">
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editTask.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listTask.jsp</result>
-        </action>               
+    	    <result type="redirect">/jsp/crm/listTask.jsp</result>
+        </action>                               
   </package>      
     
 </struts>

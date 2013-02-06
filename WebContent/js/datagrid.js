@@ -67,12 +67,7 @@
 			$.messager.confirm('Confirm','Are you sure you want to delete?',function(r){
 				if (r){						
 				    url = url + rows; 
-				    $.ajax({  
-				          type : "post",  
-				          url : url,  
-				          async : false,  
-				          });  				    
-				    window.opener.location.reload();
+				    window.open(url,"_self");
 				}
 			});
 		}
@@ -105,9 +100,7 @@
 						$('#tt').datagrid('deleteRow',index);
 					}						
 				    url = url + ids; 
-				    $.post( 
-				       url     
-				    ); 	
+				    window.open(url,"_self");
 				}
 			});
 		}

@@ -29,6 +29,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.gcrm.domain.Role;
+import com.gcrm.domain.User;
 import com.gcrm.exception.ServiceException;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
@@ -132,7 +134,8 @@ public abstract class BaseListAction extends ActionSupport {
     }
 
     protected SearchCondition getSearchCondition(
-            Map<String, String> fieldTypeMap) throws Exception {
+            Map<String, String> fieldTypeMap, int scope, User loginUser)
+            throws Exception {
 
         HttpServletRequest request = ServletActionContext.getRequest();
 
@@ -170,6 +173,13 @@ public abstract class BaseListAction extends ActionSupport {
                 }
 
             }
+        }
+
+        if (scope == Role.OWNER_OR_DISABLED) {
+            if (condition.length() != 0) {
+                condition.append(" AND ");
+            }
+            condition.append("owner = ").append(loginUser.getId());
         }
 
         int pageNo = page;

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page import="com.gcrm.util.DateTimeUtil"%>
+<%@ page language="java"  import="com.gcrm.domain.User"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -76,7 +77,12 @@
 		});
 		function urlFmatter (cellvalue, options, rowObject)
 		{  
-		   new_format_value = "<a href='editTarget.action?id=" + rowObject[0] + "'>" + cellvalue + "</a>";
+		   var par='<%=((User)session.getAttribute("loginUser")).getUpdate_target()%>';
+		   if (par == 1){
+			   new_format_value = "<a href='editTarget.action?id=" + rowObject[0] + "'>" + cellvalue + "</a>";
+		   }else {
+			 new_format_value = cellvalue;
+		   }			
 		   return new_format_value
 		};	
 		
@@ -119,23 +125,36 @@
 		<div id="shortcuts" class="headerList">
 		  <b style="white-space:nowrap;color:#444;"><s:text name="title.action" />:&nbsp;&nbsp;</b>
 		  <span>
+			<s:if test="#request.user.create_target == 1">
+		      <span style="white-space:nowrap;">
+		        <a href="editTarget.action" class="easyui-linkbutton" iconCls="icon-add" plain="true"><s:text name="action.createTarget" /></a>  
+		      </span>
+			  </s:if>
+			  <s:if test="#request.user.delete_target == 1">	
+		      <span style="white-space:nowrap;">
+		        <a id="delete" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.deleteTarget" /></a>  
+		      </span>
+			</s:if>
 		     <span style="white-space:nowrap;">
-		       <a href="editTarget.action" class="easyui-linkbutton" iconCls="icon-add" plain="true"><s:text name="action.createTarget" /></a>  
-		     </span>
-		     <span style="white-space:nowrap;">
-		       <a id="delete" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.deleteTarget" /></a>  
-		     </span>
-	       <span style="white-space:nowrap;">
-	         <a href="javascript:void(0)" id="mtmt" class="easyui-menubutton" data-options="menu:'#mtm1',iconCls:'icon-more'"><s:text name='menu.toolbar.more.title'/></a>
-	       	 <div id="mtm1" style="width:150px;">
-				<div onClick="openwindow('/crm/uploadTarget.jsp','<s:text name="title.import.target" />')"><s:text name='menu.item.import.title'/></div>
-				<div id="export"><s:text name='menu.item.export.title'/></div>
-				<div id="massUpdate">
-					<s:text name='menu.item.massupdate.title' />
-				</div>				
-				<div id="copy"><s:text name='menu.item.copy.title'/></div>
-			 </div>
-	       </span>			   
+		       <a href="javascript:void(0)" id="mtmt" class="easyui-menubutton" data-options="menu:'#mtm1',iconCls:'icon-more'"><s:text name='menu.toolbar.more.title'/></a>
+		       	<div id="mtm1" style="width:150px;">
+				  <s:if test="#request.user.create_target == 1 || #request.user.update_target == 1">
+					<div onClick="openwindow('/crm/uploadTarget.jsp','<s:text name="title.import.target" />')"><s:text name='menu.item.import.title'/></div>
+				  </s:if>	  
+				  <s:if test="#request.user.view_target == 1">
+					<div id="export"><s:text name='menu.item.export.title'/></div>
+				  </s:if>	
+				  <s:if test="#request.user.update_target == 1">
+					<div id="massUpdate">
+					  <s:text name='menu.item.massupdate.title' />
+					</div>
+				  </s:if>
+				  <s:if test="#request.user.create_target == 1">
+					<div id="copy"><s:text name='menu.item.copy.title'/></div>
+				  </s:if>
+				</div>
+		     </span>		     		     
+		   </span>		   
          </div> 
 		  <div id="feature-title">
 			<h2> <s:text name="title.listTarget" /> </h2>	   

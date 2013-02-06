@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page import="com.gcrm.util.DateTimeUtil"%>
+<%@ page language="java"  import="com.gcrm.domain.User"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -75,7 +76,12 @@
 		});
 		function urlFmatter (cellvalue, options, rowObject)
 		{  
-		   new_format_value = "<a href='editTask.action?id=" + rowObject[0] + "'>" + cellvalue + "</a>";
+		   var par='<%=((User)session.getAttribute("loginUser")).getUpdate_task()%>';
+		   if (par == 1){
+			   new_format_value = "<a href='editTask.action?id=" + rowObject[0] + "'>" + cellvalue + "</a>";
+		   }else {
+			 new_format_value = cellvalue;
+		   }			
 		   return new_format_value
 		};	
 		
@@ -118,21 +124,33 @@
 		<div id="shortcuts" class="headerList">
 		  <b style="white-space:nowrap;color:#444;"><s:text name="title.action" />:&nbsp;&nbsp;</b>
 		  <span>
-		     <span style="white-space:nowrap;">
-		       <a href="editTask.action" class="easyui-linkbutton" iconCls="icon-add" plain="true"><s:text name="action.createTask" /></a>  
-		     </span>
-		     <span style="white-space:nowrap;">
-		       <a id="delete" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.deleteTask" /></a>  
-		     </span>
+			<s:if test="#request.user.create_task == 1">
+		      <span style="white-space:nowrap;">
+		        <a href="editTask.action" class="easyui-linkbutton" iconCls="icon-add" plain="true"><s:text name="action.createTask" /></a>  
+		      </span>
+			  </s:if>
+			  <s:if test="#request.user.delete_task == 1">	
+		      <span style="white-space:nowrap;">
+		        <a id="delete" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.deleteTask" /></a>  
+		      </span>
+			</s:if>
 		     <span style="white-space:nowrap;">
 		       <a href="javascript:void(0)" id="mtmt" class="easyui-menubutton" data-options="menu:'#mtm1',iconCls:'icon-more'"><s:text name='menu.toolbar.more.title'/></a>
 		       	<div id="mtm1" style="width:150px;">
+				  <s:if test="#request.user.create_task == 1 || #request.user.update_task == 1">
 					<div onClick="openwindow('/crm/uploadTask.jsp','<s:text name="title.import.task" />')"><s:text name='menu.item.import.title'/></div>
+				  </s:if>	  
+				  <s:if test="#request.user.view_task == 1">
 					<div id="export"><s:text name='menu.item.export.title'/></div>
+				  </s:if>	
+				  <s:if test="#request.user.update_task == 1">
 					<div id="massUpdate">
-						<s:text name='menu.item.massupdate.title' />
-					</div>					
+					  <s:text name='menu.item.massupdate.title' />
+					</div>
+				  </s:if>
+				  <s:if test="#request.user.create_task == 1">
 					<div id="copy"><s:text name='menu.item.copy.title'/></div>
+				  </s:if>
 				</div>
 		     </span>		     		     
 		   </span>
@@ -141,6 +159,13 @@
 			<h2> <s:text name="title.listTask" /> </h2>	   
 		  </div>		
 		  <div id="feature-content">
+			  <table style="" cellspacing="10" cellpadding="0" width="100%">
+				 <s:if test="hasActionErrors()"> 
+				   <tr>
+					 <td align="left" colspan="4"><font color="red"><s:actionerror /></font></td>
+				   </tr>	
+				</s:if>   
+			  </table>		  
 			<table id="grid" class="scroll" cellpadding="0" cellspacing="0"></table>
 	        <div id="pager" class="scroll"></div>
 	        <div id="filter" style="margin-left:30%;display:none"><s:text name="title.listTask" /></div>

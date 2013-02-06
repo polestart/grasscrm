@@ -25,6 +25,8 @@
 			class="Campaign" column="campaign" cascade="save-update"/>
   <property name="next_step" column="next_step" type="string" />  
   <property name="description" column="description" type="string" /> 
+  <many-to-one name="owner"
+			class="User" column="owner" cascade="save-update"/>			  
   <many-to-one name="assigned_to"
 			class="User" column="assigned_to" cascade="save-update"/>	
   <many-to-one name="created_by"

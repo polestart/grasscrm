@@ -21,6 +21,8 @@
   <property name="description" column="description" type="string" />  
   <many-to-one name="assigned_to"
 			class="User" column="assigned_to" cascade="save-update"/>
+  <many-to-one name="owner"
+			class="User" column="owner" cascade="save-update"/>						
   <many-to-one name="created_by"
 			class="User" column="created_by" cascade="save-update"/>
   <many-to-one name="updated_by"

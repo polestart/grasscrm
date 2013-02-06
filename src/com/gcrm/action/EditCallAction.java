@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.gcrm.domain.Account;
 import com.gcrm.domain.Call;
@@ -35,12 +34,11 @@ import com.gcrm.domain.ReminderOption;
 import com.gcrm.domain.Target;
 import com.gcrm.domain.Task;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -71,8 +69,6 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     private Integer directionID = null;
     private Integer reminderOptionPopID = null;
     private Integer reminderOptionEmailID = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
     private Integer relatedAccountID = null;
     private String relatedAccountText = null;
     private Integer relatedCaseID = null;
@@ -96,7 +92,9 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
-        getbaseService().makePersistent(call);
+        call = getbaseService().makePersistent(call);
+        this.setId(call.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -107,7 +105,9 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      */
     public String get() throws Exception {
         if (this.getId() != null) {
+            UserUtil.permissionCheck("view_call");
             call = baseService.getEntityById(Call.class, this.getId());
+            UserUtil.scopeCheck(call, "scope_call");
             CallStatus status = call.getStatus();
             if (status != null) {
                 statusID = status.getId();
@@ -125,10 +125,10 @@ public class EditCallAction extends BaseEditAction implements Preparable {
             if (reminderOptionEmail != null) {
                 reminderOptionEmailID = reminderOptionEmail.getId();
             }
-            User user = call.getAssigned_to();
-            if (user != null) {
-                assignedToID = user.getId();
-                assignedToText = user.getName();
+            User assignedTo = call.getAssigned_to();
+            if (assignedTo != null) {
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
             Date start_date = call.getStart_date();
             SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -141,12 +141,7 @@ public class EditCallAction extends BaseEditAction implements Preparable {
             setRelatedRecord(relatedObject, relatedRecord);
             this.getBaseInfo(call);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
             if (!CommonUtil.isNullOrEmpty(this.getRelationKey())) {
                 call.setRelated_object(this.getRelationKey());
                 setRelatedRecord(this.getRelationKey(),
@@ -217,33 +212,37 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        Collection<String> feildNameCollection = new ArrayList<String>();
-        for (int i = 0; i < fieldNames.length; i++) {
-            feildNameCollection.add(fieldNames[i]);
-            if ("reminder_pop".equals(fieldNames[i])) {
-                feildNameCollection.add("reminder_email");
-                feildNameCollection.add("reminder_option_pop");
-                feildNameCollection.add("reminder_option_email");
+        if (fieldNames != null) {
+            Collection<String> feildNameCollection = new ArrayList<String>();
+            for (int i = 0; i < fieldNames.length; i++) {
+                feildNameCollection.add(fieldNames[i]);
+                if ("reminder_pop".equals(fieldNames[i])) {
+                    feildNameCollection.add("reminder_email");
+                    feildNameCollection.add("reminder_option_pop");
+                    feildNameCollection.add("reminder_option_email");
+                }
             }
-        }
 
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<Call> calls = new ArrayList<Call>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            Call callInstance = this.baseService.getEntityById(Call.class, id);
-            for (String fieldName : feildNameCollection) {
-                Object value = BeanUtil.getFieldValue(call, fieldName);
-                BeanUtil.setFieldValue(callInstance, fieldName, value);
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<Call> calls = new ArrayList<Call>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                Call callInstance = this.baseService.getEntityById(Call.class,
+                        id);
+                for (String fieldName : feildNameCollection) {
+                    Object value = BeanUtil.getFieldValue(call, fieldName);
+                    BeanUtil.setFieldValue(callInstance, fieldName, value);
+                }
+                callInstance.setUpdated_by(user);
+                callInstance.setUpdated_on(new Date());
+                calls.add(callInstance);
             }
-            callInstance.setUpdated_by(user);
-            callInstance.setUpdated_on(new Date());
-            calls.add(callInstance);
-        }
-        if (calls.size() > 0) {
-            this.baseService.batchUpdate(calls);
+            if (calls.size() > 0) {
+                this.baseService.batchUpdate(calls);
+            }
         }
         return SUCCESS;
     }
@@ -253,7 +252,18 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      * 
      * @throws ParseException
      */
-    private void saveEntity() throws ParseException {
+    private void saveEntity() throws Exception {
+        if (call.getId() == null) {
+            UserUtil.permissionCheck("create_call");
+        } else {
+            UserUtil.permissionCheck("update_call");
+            Call originalCall = baseService.getEntityById(Call.class,
+                    call.getId());
+            call.setContacts(originalCall.getContacts());
+            call.setLeads(originalCall.getLeads());
+            call.setUsers(originalCall.getUsers());
+        }
+
         CallDirection direction = null;
         if (directionID != null) {
             direction = callDirectionService.getEntityById(CallDirection.class,
@@ -279,10 +289,16 @@ public class EditCallAction extends BaseEditAction implements Preparable {
         }
         call.setReminder_option_email(reminderOptionEmail);
         User user = null;
-        if (assignedToID != null) {
-            user = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            user = userService
+                    .getEntityById(User.class, this.getAssignedToID());
         }
         call.setAssigned_to(user);
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        call.setOwner(owner);
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 Constant.DATE_TIME_FORMAT);
         Date start_date = null;
@@ -619,21 +635,6 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the assignedToID
-     */
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
-    }
-
-    /**
      * @return the reminderOptionPopID
      */
     public Integer getReminderOptionPopID() {
@@ -661,13 +662,6 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      */
     public void setReminderOptionEmailID(Integer reminderOptionEmailID) {
         this.reminderOptionEmailID = reminderOptionEmailID;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    public String getAssignedToText() {
-        return assignedToText;
     }
 
     /**
@@ -825,11 +819,4 @@ public class EditCallAction extends BaseEditAction implements Preparable {
         this.taskService = taskService;
     }
 
-    /**
-     * @param assignedToText
-     *            the assignedToText to set
-     */
-    public void setAssignedToText(String assignedToText) {
-        this.assignedToText = assignedToText;
-    }
 }

@@ -44,10 +44,10 @@ import com.gcrm.domain.Contact;
 import com.gcrm.domain.Lead;
 import com.gcrm.domain.ReminderOption;
 import com.gcrm.domain.User;
-import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -76,20 +76,49 @@ public class ListCallAction extends BaseListAction {
     @Override
     public String list() throws Exception {
 
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<Call> result = baseService.getPaginationObjects(CLAZZ,
+                searchCondition);
+        Iterator<Call> calls = result.getResult().iterator();
+        long totalRecords = result.getTotalRecords();
+        getListJson(calls, totalRecords, null, false);
+        return null;
+    }
+
+    /**
+     * Gets the list data.
+     * 
+     * @return null
+     */
+    public String listFull() throws Exception {
+        UserUtil.permissionCheck("view_call");
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("start_date", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        User loginUser = UserUtil.getLoginUser();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
+                loginUser.getScope_call(), loginUser);
         SearchResult<Call> result = baseService.getPaginationObjects(CLAZZ,
                 searchCondition);
         Iterator<Call> calls = result.getResult().iterator();
-
         long totalRecords = result.getTotalRecords();
+        getListJson(calls, totalRecords, searchCondition, true);
+        return null;
+    }
+
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    public static void getListJson(Iterator<Call> calls, long totalRecords,
+            SearchCondition searchCondition, boolean isList) throws Exception {
 
         StringBuilder jsonBuilder = new StringBuilder("");
-        jsonBuilder.append(getJsonHeader(totalRecords, searchCondition, true));
+        jsonBuilder
+                .append(getJsonHeader(totalRecords, searchCondition, isList));
 
         String statusName = null;
         String directionName = null;
@@ -117,43 +146,56 @@ public class ListCallAction extends BaseListAction {
             if (startDate != null) {
                 startDateString = dateFormat.format(startDate);
             }
-            User user = instance.getAssigned_to();
-            if (user != null) {
-                assignedTo = CommonUtil.fromNullToEmpty(user.getName());
-            } else {
-                assignedTo = "";
-            }
-            User createdBy = instance.getCreated_by();
-            String createdByName = "";
-            if (createdBy != null) {
-                createdByName = CommonUtil.fromNullToEmpty(createdBy.getName());
-            }
-            User updatedBy = instance.getUpdated_by();
-            String updatedByName = "";
-            if (updatedBy != null) {
-                updatedByName = CommonUtil.fromNullToEmpty(updatedBy.getName());
-            }
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
-                    Constant.DATE_TIME_FORMAT);
-            Date createdOn = instance.getCreated_on();
-            String createdOnString = "";
-            if (createdOn != null) {
-                createdOnString = dateTimeFormat.format(createdOn);
-            }
-            Date updatedOn = instance.getUpdated_on();
-            String updatedOnString = "";
-            if (updatedOn != null) {
-                updatedOnString = dateTimeFormat.format(updatedOn);
-            }
 
-            jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
-                    .append(directionName).append("\",\"").append(subject)
-                    .append("\",\"").append(statusName).append("\",\"")
-                    .append(startDateString).append("\",\"").append(assignedTo)
-                    .append("\",\"").append(createdByName).append("\",\"")
-                    .append(updatedByName).append("\",\"")
-                    .append(createdOnString).append("\",\"")
-                    .append(updatedOnString).append("\"]}");
+            if (isList) {
+                User user = instance.getAssigned_to();
+                if (user != null) {
+                    assignedTo = CommonUtil.fromNullToEmpty(user.getName());
+                } else {
+                    assignedTo = "";
+                }
+                User createdBy = instance.getCreated_by();
+                String createdByName = "";
+                if (createdBy != null) {
+                    createdByName = CommonUtil.fromNullToEmpty(createdBy
+                            .getName());
+                }
+                User updatedBy = instance.getUpdated_by();
+                String updatedByName = "";
+                if (updatedBy != null) {
+                    updatedByName = CommonUtil.fromNullToEmpty(updatedBy
+                            .getName());
+                }
+                SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
+                        Constant.DATE_TIME_FORMAT);
+                Date createdOn = instance.getCreated_on();
+                String createdOnString = "";
+                if (createdOn != null) {
+                    createdOnString = dateTimeFormat.format(createdOn);
+                }
+                Date updatedOn = instance.getUpdated_on();
+                String updatedOnString = "";
+                if (updatedOn != null) {
+                    updatedOnString = dateTimeFormat.format(updatedOn);
+                }
+
+                jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
+                        .append(directionName).append("\",\"").append(subject)
+                        .append("\",\"").append(statusName).append("\",\"")
+                        .append(startDateString).append("\",\"")
+                        .append(assignedTo).append("\",\"")
+                        .append(createdByName).append("\",\"")
+                        .append(updatedByName).append("\",\"")
+                        .append(createdOnString).append("\",\"")
+                        .append(updatedOnString).append("\"]}");
+            } else {
+                jsonBuilder.append("{\"id\":\"").append(id)
+                        .append("\",\"direction\":\"").append(directionName)
+                        .append("\",\"subject\":\"").append(subject)
+                        .append("\",\"statusName\":\"").append(statusName)
+                        .append("\",\"start_date\":\"").append(startDateString)
+                        .append("\"}");
+            }
             if (calls.hasNext()) {
                 jsonBuilder.append(",");
             }
@@ -163,7 +205,6 @@ public class ListCallAction extends BaseListAction {
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
         response.getWriter().write(jsonBuilder.toString());
-        return null;
     }
 
     /**
@@ -214,7 +255,8 @@ public class ListCallAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_call");
         baseService.batchDeleteEntity(Call.class, this.getSeleteIDs());
         return SUCCESS;
     }
@@ -224,7 +266,8 @@ public class ListCallAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String copy() throws ServiceException {
+    public String copy() throws Exception {
+        UserUtil.permissionCheck("create_call");
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -245,6 +288,7 @@ public class ListCallAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        UserUtil.permissionCheck("view_call");
         File file = new File(CLAZZ + ".csv");
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
@@ -357,6 +401,9 @@ public class ListCallAction extends BaseListAction {
                     String id = row.get("ID");
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         call.setId(Integer.parseInt(id));
+                        UserUtil.permissionCheck("update_call");
+                    } else {
+                        UserUtil.permissionCheck("create_call");
                     }
                     call.setSubject(CommonUtil.fromNullToEmpty(row
                             .get("Subject")));

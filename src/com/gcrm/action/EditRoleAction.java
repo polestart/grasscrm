@@ -15,21 +15,15 @@
  */
 package com.gcrm.action;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.ResourceBundle;
 
-import org.springframework.security.access.ConfigAttribute;
-
-import com.gcrm.domain.Permission;
 import com.gcrm.domain.Role;
-import com.gcrm.security.SecurityMetadataSource;
+import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.CommonUtil;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -41,12 +35,10 @@ public class EditRoleAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<Role> baseService;
-    private IBaseService<Permission> permissionService;
+    private IBaseService<User> userService;
     private Role role;
-    private List<Permission> leftPermissions;
-    private List<Permission> rightPermissions;
-    private String[] leftPermission;
-    private String[] rightPermission;
+    private Map<Integer, String> scopeMap;
+    private Map<Integer, String> accessMap;
 
     /**
      * Saves the entity.
@@ -55,54 +47,30 @@ public class EditRoleAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
-        getBaseService().makePersistent(role);
+        role = getBaseService().makePersistent(role);
+        this.setId(role.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
     /**
      * Saves entity field
-     */
-    private void saveEntity() {
-        if (rightPermission != null && rightPermission.length > 0) {
-            Set<Permission> permissionSet = new HashSet<Permission>(0);
-            for (int i = 0; i < rightPermission.length; i++) {
-                String permissionID = rightPermission[i];
-                Permission permission = permissionService.getEntityById(
-                        Permission.class, Integer.parseInt(permissionID));
-                permissionSet.add(permission);
-            }
-            role.setPermissions(permissionSet);
-        }
-        super.updateBaseInfo(role);
-    }
-
-    /**
-     * Resets permission Map
      * 
-     * @return the SUCCESS result
+     * @throws Exception
      */
-    public String resetPermissionMap() {
-        SecurityMetadataSource.permissionMap = null;
-        new SecurityMetadataSource(this.getPermissionService());
-        Map<String, Collection<ConfigAttribute>> permissionMap = SecurityMetadataSource.permissionMap;
-        Map<String, String> urlPermissions = new HashMap<String, String>();
-        for (String url : permissionMap.keySet()) {
-            String roles = "";
-            Collection<ConfigAttribute> configAttributes = permissionMap
-                    .get(url);
-            for (ConfigAttribute configAttribute : configAttributes) {
-                String roleName = configAttribute.getAttribute();
-                if (roles.length() > 0) {
-                    roles += ",";
-                }
-                roles += roleName;
-            }
-            urlPermissions.put(url, roles);
+    private void saveEntity() throws Exception {
+        if (role.getId() == null) {
+            UserUtil.permissionCheck("create_system");
+        } else {
+            UserUtil.permissionCheck("update_system");
         }
-        ActionContext context = ActionContext.getContext();
-        Map<String, Object> session = context.getSession();
-        session.put("permissions", urlPermissions);
-        return SUCCESS;
+
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        role.setOwner(owner);
+        super.updateBaseInfo(role);
     }
 
     /**
@@ -113,13 +81,9 @@ public class EditRoleAction extends BaseEditAction implements Preparable {
     public String get() throws Exception {
         if (this.getId() != null) {
             role = baseService.getEntityById(Role.class, this.getId());
-            Set<Permission> permissionSet = role.getPermissions();
-            rightPermissions = new ArrayList<Permission>();
-            for (Permission permisson : permissionSet) {
-                rightPermissions.add(permisson);
-            }
-            leftPermissions.removeAll(rightPermissions);
             this.getBaseInfo(role);
+        } else {
+            this.initBaseInfo();
         }
         return SUCCESS;
     }
@@ -129,9 +93,15 @@ public class EditRoleAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.leftPermissions = permissionService.getAllObjects(Permission.class
-                .getSimpleName());
-        ;
+        ResourceBundle rb = CommonUtil.getResourceBundle();
+        scopeMap = new HashMap<Integer, String>();
+        scopeMap.put(0, rb.getString("access.notSet.value"));
+        scopeMap.put(1, rb.getString("access.all.value"));
+        scopeMap.put(2, rb.getString("access.owner.value"));
+        accessMap = new HashMap<Integer, String>();
+        accessMap.put(0, rb.getString("access.notSet.value"));
+        accessMap.put(1, rb.getString("access.enabled.value"));
+        accessMap.put(2, rb.getString("access.disabled.value"));
     }
 
     /**
@@ -150,21 +120,6 @@ public class EditRoleAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the permissionService
-     */
-    public IBaseService<Permission> getPermissionService() {
-        return permissionService;
-    }
-
-    /**
-     * @param permissionService
-     *            the permissionService to set
-     */
-    public void setPermissionService(IBaseService<Permission> permissionService) {
-        this.permissionService = permissionService;
-    }
-
-    /**
      * @return the role
      */
     public Role getRole() {
@@ -180,63 +135,48 @@ public class EditRoleAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the leftPermissions
+     * @return the scopeMap
      */
-    public List<Permission> getLeftPermissions() {
-        return leftPermissions;
+    public Map<Integer, String> getScopeMap() {
+        return scopeMap;
     }
 
     /**
-     * @param leftPermissions
-     *            the leftPermissions to set
+     * @param scopeMap
+     *            the scopeMap to set
      */
-    public void setLeftPermissions(List<Permission> leftPermissions) {
-        this.leftPermissions = leftPermissions;
+    public void setScopeMap(Map<Integer, String> scopeMap) {
+        this.scopeMap = scopeMap;
     }
 
     /**
-     * @return the rightPermissions
+     * @return the accessMap
      */
-    public List<Permission> getRightPermissions() {
-        return rightPermissions;
+    public Map<Integer, String> getAccessMap() {
+        return accessMap;
     }
 
     /**
-     * @param rightPermissions
-     *            the rightPermissions to set
+     * @param accessMap
+     *            the accessMap to set
      */
-    public void setRightPermissions(List<Permission> rightPermissions) {
-        this.rightPermissions = rightPermissions;
+    public void setAccessMap(Map<Integer, String> accessMap) {
+        this.accessMap = accessMap;
     }
 
     /**
-     * @return the leftPermission
+     * @return the userService
      */
-    public String[] getLeftPermission() {
-        return leftPermission;
+    public IBaseService<User> getUserService() {
+        return userService;
     }
 
     /**
-     * @param leftPermission
-     *            the leftPermission to set
+     * @param userService
+     *            the userService to set
      */
-    public void setLeftPermission(String[] leftPermission) {
-        this.leftPermission = leftPermission;
-    }
-
-    /**
-     * @return the rightPermission
-     */
-    public String[] getRightPermission() {
-        return rightPermission;
-    }
-
-    /**
-     * @param rightPermission
-     *            the rightPermission to set
-     */
-    public void setRightPermission(String[] rightPermission) {
-        this.rightPermission = rightPermission;
+    public void setUserService(IBaseService<User> userService) {
+        this.userService = userService;
     }
 
 }

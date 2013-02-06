@@ -89,17 +89,24 @@
         </action>
                         
         <action name="editContact" class="editContactAction" method="get">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
 			<result>/jsp/crm/editContact.jsp</result>
         </action>
                         
         <action name="saveContact" class="editContactAction" method="save">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editContact.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listContact.jsp</result>
+    	    <result>/jsp/crm/editContact.jsp</result>
         </action>
-                
+
+        <action name="saveCloseContact" class="editContactAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editContact.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listContact.jsp</result>
+        </action>
+                        
         <action name="deleteContact" class="listContactAction" method="delete">
+			<result name="input">/jsp/crm/listContact.jsp</result>
 			<result type="redirect">/jsp/crm/listContact.jsp</result>
         </action>  
         
@@ -108,10 +115,16 @@
         </action> 
         
         <action name="massUpdateContact" class="editContactAction" method="massUpdate">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editContact.jsp</result>          
+    	    <result>/jsp/crm/editContact.jsp</result>
+        </action> 
+        
+         <action name="massUpdateCloseContact" class="editContactAction" method="massUpdate">
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editContact.jsp</result>          
     	  <result type="redirect">/jsp/crm/listContact.jsp</result>
-        </action>          
+        </action> 
   </package>      
     
 </struts>

@@ -390,12 +390,12 @@
 
     <bean id="listRoleAction" class="com.gcrm.action.ListRoleAction" scope="prototype">   
         <property name="baseService" ref="baseService" />
-        <property name="permissionService" ref="baseService" />        
+        <property name="userService" ref="baseService" />
     </bean> 
 
     <bean id="editRoleAction" class="com.gcrm.action.EditRoleAction" scope="prototype">   
         <property name="baseService" ref="baseService" />
-        <property name="permissionService" ref="baseService" /> 
+        <property name="userService" ref="baseService" />
     </bean>
 
     <bean id="emailSettingAction" class="com.gcrm.action.EmailSettingAction" scope="prototype">   
@@ -505,9 +505,5 @@
         
     <bean id="userStatusAction" class="com.gcrm.action.UserStatusAction" scope="prototype">   
         <property name="baseService" ref="baseService" /> 	
-    </bean>
-
-    <bean id="permissionAction" class="com.gcrm.action.PermissionAction" scope="prototype">   
-        <property name="baseService" ref="baseService" /> 	
-    </bean>                           
+    </bean>                          
 </beans>

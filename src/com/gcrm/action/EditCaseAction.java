@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -33,10 +32,9 @@ import com.gcrm.domain.CaseType;
 import com.gcrm.domain.Contact;
 import com.gcrm.domain.Document;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.BeanUtil;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -80,7 +78,9 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
-        getBaseService().makePersistent(caseInstance);
+        caseInstance = getBaseService().makePersistent(caseInstance);
+        this.setId(caseInstance.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -124,12 +124,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
             }
             this.getBaseInfo(caseInstance);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
         }
         return SUCCESS;
     }
@@ -140,32 +135,48 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<Case> cases = new ArrayList<Case>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            Case newCaseInstance = this.baseService.getEntityById(Case.class,
-                    id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(caseInstance, fieldName);
-                BeanUtil.setFieldValue(newCaseInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<Case> cases = new ArrayList<Case>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                Case newCaseInstance = this.baseService.getEntityById(
+                        Case.class, id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil.getFieldValue(caseInstance,
+                            fieldName);
+                    BeanUtil.setFieldValue(newCaseInstance, fieldName, value);
+                }
+                newCaseInstance.setUpdated_by(user);
+                newCaseInstance.setUpdated_on(new Date());
+                cases.add(newCaseInstance);
             }
-            newCaseInstance.setUpdated_by(user);
-            newCaseInstance.setUpdated_on(new Date());
-            cases.add(newCaseInstance);
-        }
-        if (cases.size() > 0) {
-            this.baseService.batchUpdate(cases);
+            if (cases.size() > 0) {
+                this.baseService.batchUpdate(cases);
+            }
         }
         return SUCCESS;
     }
 
     /**
      * Saves entity field
+     * 
+     * @throws Exception
      */
-    private void saveEntity() {
+    private void saveEntity() throws Exception {
+        if (caseInstance.getId() == null) {
+            UserUtil.permissionCheck("create_case");
+        } else {
+            UserUtil.permissionCheck("update_case");
+            Case originalCase = baseService.getEntityById(Case.class,
+                    caseInstance.getId());
+            caseInstance.setContacts(originalCase.getContacts());
+            caseInstance.setDocuments(originalCase.getDocuments());
+        }
+
         CaseStatus status = null;
         if (statusID != null) {
             status = caseStatusService
@@ -206,6 +217,12 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
             assignedTo = userService.getEntityById(User.class, assignedToID);
         }
         caseInstance.setAssigned_to(assignedTo);
+
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        caseInstance.setOwner(owner);
 
         if ("Document".equals(this.getRelationKey())) {
             Document document = documentService.getEntityById(Document.class,
@@ -458,6 +475,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToID
      */
+    @Override
     public Integer getAssignedToID() {
         return assignedToID;
     }
@@ -466,6 +484,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      * @param assignedToID
      *            the assignedToID to set
      */
+    @Override
     public void setAssignedToID(Integer assignedToID) {
         this.assignedToID = assignedToID;
     }
@@ -608,6 +627,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToText
      */
+    @Override
     public String getAssignedToText() {
         return assignedToText;
     }
@@ -616,6 +636,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      * @param assignedToText
      *            the assignedToText to set
      */
+    @Override
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
     }

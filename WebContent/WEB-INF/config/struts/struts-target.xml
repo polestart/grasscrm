@@ -44,7 +44,7 @@
         </action>
                         
         <action name="editTarget" class="editTargetAction" method="get">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
 			<result>/jsp/crm/editTarget.jsp</result>
         </action>
 
@@ -54,20 +54,33 @@
         </action>
                                 
         <action name="saveTarget" class="editTargetAction" method="save">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editTarget.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listTarget.jsp</result>
+    	    <result>/jsp/crm/editTarget.jsp</result>
         </action>
-                
+
+        <action name="saveCloseTarget" class="editTargetAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editTarget.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listTarget.jsp</result>
+        </action>
+                        
         <action name="deleteTarget" class="listTargetAction" method="delete">
+			<result name="input">/jsp/crm/listTarget.jsp</result>
 			<result type="redirect">/jsp/crm/listTarget.jsp</result>
         </action>   
         
         <action name="massUpdateTarget" class="editTargetAction" method="massUpdate">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editTarget.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listTarget.jsp</result>
-        </action>         
+    	    <result>/jsp/crm/editTarget.jsp</result>
+        </action> 
+        
+        <action name="massUpdateCloseTarget" class="editTargetAction" method="massUpdate">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editTarget.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listTarget.jsp</result>
+        </action>                
   </package>      
     
 </struts>

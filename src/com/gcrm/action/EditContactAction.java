@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -34,10 +33,9 @@ import com.gcrm.domain.Meeting;
 import com.gcrm.domain.Opportunity;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.BeanUtil;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -78,7 +76,9 @@ public class EditContactAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
-        getBaseService().makePersistent(contact);
+        contact = getBaseService().makePersistent(contact);
+        this.setId(contact.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -119,12 +119,7 @@ public class EditContactAction extends BaseEditAction implements Preparable {
             }
             this.getBaseInfo(contact);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
         }
         return SUCCESS;
     }
@@ -135,32 +130,52 @@ public class EditContactAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<Contact> contacts = new ArrayList<Contact>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            Contact contactInstance = this.baseService.getEntityById(
-                    Contact.class, id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(contact, fieldName);
-                BeanUtil.setFieldValue(contactInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<Contact> contacts = new ArrayList<Contact>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                Contact contactInstance = this.baseService.getEntityById(
+                        Contact.class, id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil.getFieldValue(contact, fieldName);
+                    BeanUtil.setFieldValue(contactInstance, fieldName, value);
+                }
+                contactInstance.setUpdated_by(user);
+                contactInstance.setUpdated_on(new Date());
+                contacts.add(contactInstance);
             }
-            contactInstance.setUpdated_by(user);
-            contactInstance.setUpdated_on(new Date());
-            contacts.add(contactInstance);
-        }
-        if (contacts.size() > 0) {
-            this.baseService.batchUpdate(contacts);
+            if (contacts.size() > 0) {
+                this.baseService.batchUpdate(contacts);
+            }
         }
         return SUCCESS;
     }
 
     /**
      * Saves entity field
+     * 
+     * @throws Exception
      */
-    private void saveEntity() {
+    private void saveEntity() throws Exception {
+        if (contact.getId() == null) {
+            UserUtil.permissionCheck("create_contact");
+        } else {
+            UserUtil.permissionCheck("update_contact");
+            Contact originalContact = baseService.getEntityById(Contact.class,
+                    contact.getId());
+            contact.setOpportunities(originalContact.getOpportunities());
+            contact.setCalls(originalContact.getCalls());
+            contact.setCases(originalContact.getCases());
+            contact.setDocuments(originalContact.getDocuments());
+            contact.setMeetings(originalContact.getMeetings());
+            contact.setLeads(originalContact.getLeads());
+            contact.setTargetLists(originalContact.getTargetLists());
+        }
+
         Account account = null;
         if (accountID != null) {
             account = accountService.getEntityById(Account.class, accountID);
@@ -185,6 +200,12 @@ public class EditContactAction extends BaseEditAction implements Preparable {
             user = userService.getEntityById(User.class, assignedToID);
         }
         contact.setAssigned_to(user);
+
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        contact.setOwner(owner);
 
         Campaign campaign = null;
         if (campaignID != null) {
@@ -393,6 +414,7 @@ public class EditContactAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToID
      */
+    @Override
     public Integer getAssignedToID() {
         return assignedToID;
     }
@@ -401,6 +423,7 @@ public class EditContactAction extends BaseEditAction implements Preparable {
      * @param assignedToID
      *            the assignedToID to set
      */
+    @Override
     public void setAssignedToID(Integer assignedToID) {
         this.assignedToID = assignedToID;
     }
@@ -558,6 +581,7 @@ public class EditContactAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToText
      */
+    @Override
     public String getAssignedToText() {
         return assignedToText;
     }

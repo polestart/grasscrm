@@ -34,14 +34,14 @@ public class DocumentDao extends BaseDao<Document> implements IDocumentDao {
      * java.io.File)
      */
     @SuppressWarnings("resource")
-    public void save(Document document, File f) throws Exception {
+    public Document save(Document document, File f) throws Exception {
         if (f != null) {
             InputStream stream = new BufferedInputStream(new FileInputStream(f));
             byte[] input = new byte[stream.available()];
             stream.read(input);
             document.setFileContent(input);
         }
-        super.makePersistent(document);
+        return super.makePersistent(document);
     }
 
 }

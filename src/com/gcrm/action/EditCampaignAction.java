@@ -21,19 +21,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.gcrm.domain.Campaign;
 import com.gcrm.domain.CampaignStatus;
 import com.gcrm.domain.CampaignType;
 import com.gcrm.domain.Currency;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -68,7 +66,9 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
-        getbaseService().makePersistent(campaign);
+        campaign = getbaseService().makePersistent(campaign);
+        this.setId(campaign.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -109,12 +109,7 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
             }
             this.getBaseInfo(campaign);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
         }
         return SUCCESS;
     }
@@ -125,24 +120,27 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<Campaign> campaigns = new ArrayList<Campaign>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            Campaign campaignInstance = this.baseService.getEntityById(
-                    Campaign.class, id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(campaign, fieldName);
-                BeanUtil.setFieldValue(campaignInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<Campaign> campaigns = new ArrayList<Campaign>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                Campaign campaignInstance = this.baseService.getEntityById(
+                        Campaign.class, id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil.getFieldValue(campaign, fieldName);
+                    BeanUtil.setFieldValue(campaignInstance, fieldName, value);
+                }
+                campaignInstance.setUpdated_by(user);
+                campaignInstance.setUpdated_on(new Date());
+                campaigns.add(campaignInstance);
             }
-            campaignInstance.setUpdated_by(user);
-            campaignInstance.setUpdated_on(new Date());
-            campaigns.add(campaignInstance);
-        }
-        if (campaigns.size() > 0) {
-            this.baseService.batchUpdate(campaigns);
+            if (campaigns.size() > 0) {
+                this.baseService.batchUpdate(campaigns);
+            }
         }
         return SUCCESS;
     }
@@ -152,7 +150,12 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
      * 
      * @throws ParseException
      */
-    private void saveEntity() throws ParseException {
+    private void saveEntity() throws Exception {
+        if (campaign.getId() == null) {
+            UserUtil.permissionCheck("create_campaign");
+        } else {
+            UserUtil.permissionCheck("update_campaign");
+        }
         CampaignStatus status = null;
         if (statusID != null) {
             status = campaignStatusService.getEntityById(CampaignStatus.class,
@@ -176,6 +179,11 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
             assignedTo = userService.getEntityById(User.class, assignedToID);
         }
         campaign.setAssigned_to(assignedTo);
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        campaign.setOwner(owner);
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 Constant.DATE_EDIT_FORMAT);
         Date start_date = null;
@@ -414,6 +422,7 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToID
      */
+    @Override
     public Integer getAssignedToID() {
         return assignedToID;
     }
@@ -422,6 +431,7 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
      * @param assignedToID
      *            the assignedToID to set
      */
+    @Override
     public void setAssignedToID(Integer assignedToID) {
         this.assignedToID = assignedToID;
     }
@@ -429,6 +439,7 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToText
      */
+    @Override
     public String getAssignedToText() {
         return assignedToText;
     }
@@ -437,6 +448,7 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
      * @param assignedToText
      *            the assignedToText to set
      */
+    @Override
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
     }

@@ -16,21 +16,54 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-	function add() {
-		var right = document.getElementById('addObjectForm_rightPermission');		 
-		for ( var i = 0; i < right.length; i++)	{	 
-		  right[i].selected = true;		 
-		}
+	function save() {
 		var addObjectForm = document.getElementById('addObjectForm');
 		addObjectForm.action = "saveRole.action";
 		addObjectForm.submit();
 	}
 
+	function saveClose() {
+		var addObjectForm = document.getElementById('addObjectForm');
+		addObjectForm.action = "saveCloseRole.action";
+		addObjectForm.submit();
+	}
+	
 	function cancel() {		
 		var addObjectForm = document.getElementById('addObjectForm');
 		addObjectForm.action = "listRolePage.action";
 		addObjectForm.submit();
 	}
+
+	$(document).ready(function() {
+		$('#ownerID').combogrid('setValue', '<s:property value="ownerID"/>');
+		$('#ownerID').combogrid('setText', '<s:property value="ownerText"/>');			
+		if ($("#id").val() == ""){
+		  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
+		}
+		if ($("#saveFlag").val() == "true"){
+			$.messager.show({  
+	          title:'<s:text name="message.title" />',  
+	          msg:'<s:text name="message.save" />',  
+	          timeout:5000,  
+	          showType:'slide'  
+	      });  
+			$("#saveFlag").val("");
+	    }	
+		
+		$("#enable").click(function() {
+			$("[id^=view_]").val(1);
+			$("[id^=create_]").val(1);
+			$("[id^=update_]").val(1);
+			$("[id^=delete_]").val(1);
+	   	});
+		$("#disable").click(function() {
+			$("[id^=view_]").val(2);
+			$("[id^=create_]").val(2);
+			$("[id^=update_]").val(2);
+			$("[id^=delete_]").val(2);
+	   	});		
+		
+	})	
 </script>
 </head>
 
@@ -44,8 +77,12 @@
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
 				<span> <span style="white-space: nowrap;"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-ok" onclick="add()"
+						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
+				</span>			
+				<span> <span style="white-space: nowrap;"> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
+						plain="true"><s:text name="button.saveClose" /></a>
 				</span> <span style="white-space: nowrap;"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
@@ -69,7 +106,8 @@
 			<div id="feature-content">
 				<s:form id="addObjectForm" validate="true" namespace="/jsp/system"
 					method="post">
-					<s:hidden name="role.id" value="%{role.id}" />
+					<s:hidden id="id" name="role.id" value="%{role.id}" />
+					<s:hidden id="saveFlag" name="saveFlag"/>
 					<table style="" cellspacing="10" cellpadding="0" width="100%">
 						<s:actionerror />
 						<s:if test="hasFieldErrors()">
@@ -96,83 +134,330 @@
 								data-options="required:true"
 								value="<s:property value="role.name" />" /></td>
 							<td class="td-label"><label class="record-label"><s:text
-										name="entity.sequence.label"></s:text>：</label></td>
-							<td class="td-value"><input name="role.sequence" type="text"
-								class="easyui-numberbox record-value"
-								value="<s:property value="role.sequence" />"
-								data-options="min:0,precision:0"></input></td>
+										name="entity.owner.label"></s:text>：</label></td>
+							<td class="td-value"><select id="ownerID"
+								class="easyui-combogrid record-value" name="ownerID"
+								style="width: 180px;"
+								data-options="  
+					            panelWidth:520,  
+					            idField:'id',  
+					            textField:'name',  
+					            url:'/grass/jsp/system/listUser.action',
+		                        loadMsg: '<s:text name="datagrid.loading" />',
+		                        pagination : true,
+		                        pageSize: 10,
+		                        pageList: [10,30,50],
+				                fit: true,
+					            mode:'remote',
+					            columns:[[  
+					                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
+					                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
+					                {field:'title',title:'<s:text name="user.title.label" />',width:120},  
+					                {field:'department',title:'<s:text name="user.department.label" />',width:100},
+					                {field:'status.name',title:'<s:text name="user.status.label" />',width:100}   
+					            ]]  
+					        ">
+							</select></td>
 						</tr>
 					</table>
 
 					<div class="easyui-tabs">
 						<div title="<s:text name='tab.overview'/>" style="padding: 10px;">
-							<table style="" cellspacing="10" cellpadding="0" width="100%">
+						    <div id="shortcuts" class="headerList">
+						      <span style="white-space:nowrap;">
+						        <a id="enable" href="#" class="easyui-linkbutton" iconCls="icon-enable" plain="true"><s:text name="action.enable" /></a>  
+						      </span>
+						      <span style="white-space:nowrap;">
+						        <a id="disable" href="#" class="easyui-linkbutton" iconCls="icon-disable" plain="true"><s:text name="action.disable" /></a>  
+						      </span>	      		     		     
+						    </div> 							
+							<table class="view-table" cellspacing="0" cellpadding="0" width="100%" border="0">
+                                <tr>
+                                   <th class="view-column"></th>
+                                   <th class="view-column"><s:text name="access.scope.head"/></th>
+                                   <th class="view-column"><s:text name="access.view.head"/></th>
+                                   <th class="view-column"><s:text name="access.create.head"/></th>
+                                   <th class="view-column"><s:text name="access.update.head"/></th>
+                                   <th class="view-column"><s:text name="access.delete.head"/></th>
+                                </tr>
 								<tr>
-									<td class="td-label"><label class="record-label"><s:text
-												name="role.permission.label"></s:text>：</label></td>
-									<td class="td-value" colspan="3"><s:optiontransferselect
-											name="leftPermission" list="leftPermissions" listKey="id"
-											listValue="name" doubleName="rightPermission"
-											doubleList="rightPermissions" doubleListKey="id"
-											doubleListValue="name" cssStyle="width:150px"
-											doubleCssStyle="width:150px"
-											ondblclick="moveSelectedOptions(document.getElementById('addObjectForm_leftPermission'), document.getElementById('addObjectForm_rightPermission'), false, '');"
-											doubleOndblclick="moveSelectedOptions(document.getElementById('addObjectForm_rightPermission'), document.getElementById('addObjectForm_leftPermission'), false, '');" /></td>
+								    <td class="view-column"><s:text name="access.account.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_account" name="role.scope_account" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_account" name="role.view_account" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_account" name="role.create_account" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_account" name="role.update_account" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_account" name="role.delete_account" list="accessMap" style="width:100px;"/>  
+									</td>
 								</tr>
-							</table>
+								<tr>
+								    <td class="view-column"><s:text name="access.call.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_call" name="role.scope_call" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_call" name="role.view_call" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_call" name="role.create_call" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_call" name="role.update_call" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_call" name="role.delete_call" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.campaign.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_campaign" name="role.scope_campaign" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_campaign" name="role.view_campaign" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_campaign" name="role.create_campaign" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_campaign" name="role.update_campaign" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_campaign" name="role.delete_campaign" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.case.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_case" name="role.scope_case" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_case" name="role.view_case" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_case" name="role.create_case" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_case" name="role.update_case" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_case" name="role.delete_case" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.contact.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_contact" name="role.scope_contact" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_contact" name="role.view_contact" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_contact" name="role.create_contact" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_contact" name="role.update_contact" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_contact" name="role.delete_contact" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.document.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_document" name="role.scope_document" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_document" name="role.view_document" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_document" name="role.create_document" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_document" name="role.update_document" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_document" name="role.delete_document" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.lead.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_lead" name="role.scope_lead" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_lead" name="role.view_lead" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_lead" name="role.create_lead" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_lead" name="role.update_lead" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_lead" name="role.delete_lead" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.meeting.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_meeting" name="role.scope_meeting" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_meeting" name="role.view_meeting" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_meeting" name="role.create_meeting" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_meeting" name="role.update_meeting" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_meeting" name="role.delete_meeting" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.opportunity.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_opportunity" name="role.scope_opportunity" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_opportunity" name="role.view_opportunity" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_opportunity" name="role.create_opportunity" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_opportunity" name="role.update_opportunity" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_opportunity" name="role.delete_opportunity" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.target.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_target" name="role.scope_target" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_target" name="role.view_target" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_target" name="role.create_target" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_target" name="role.update_target" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_target" name="role.delete_target" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.targetList.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_targetList" name="role.scope_targetList" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_targetList" name="role.view_targetList" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_targetList" name="role.create_targetList" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_targetList" name="role.update_targetList" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_targetList" name="role.delete_targetList" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.task.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_task" name="role.scope_task" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_task" name="role.view_task" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_task" name="role.create_task" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_task" name="role.update_task" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_task" name="role.delete_task" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>
+								<tr>
+								    <td class="view-column"><s:text name="access.system.label"/></td>
+									<td class="view-column">
+										<s:select id="scope_system" name="role.scope_system" list="scopeMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="view_system" name="role.view_system" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="create_system" name="role.create_system" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="update_system" name="role.update_system" list="accessMap" style="width:100px;"/>  
+									</td>
+									<td class="view-column">
+										<s:select id="delete_system" name="role.delete_system" list="accessMap" style="width:100px;"/>  
+									</td>
+								</tr>																	
+							</table>							
 						</div>
-						<div title="<s:text name='tab.details'/>"
-							style="padding: 10px;">
+						<div title="<s:text name='tab.details'/>" style="padding: 10px;">
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
-						            <td class="td-mass-update"><input id="massUpdate"
-										name="massUpdate" type="checkbox" class="massUpdate" value="description"/></td>
 									<td class="td-label" valign="top"><label
 										class="record-label"><s:text
 												name="entity.description.label"></s:text>：</label></td>
 									<td class="td-value" valign="top"><s:textarea
 											name="role.description" rows="20" cssStyle="width:450px;"
 											cssClass="record-value" /></td>
-						            <td class="td-mass-update"></td>
 									<td class="td-label"></td>
 									<td class="td-value"></td>
 								</tr>
 								<tr>
-						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.createdBy.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="createdBy" /></label></td>
-						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.createdOn.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="createdOn" /></label></td>
 								</tr>
 								<tr>
-						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.updatedBy.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="updatedBy" /></label></td>
-						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.updatedOn.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="updatedOn" /></label></td>
 								</tr>
 								<tr>
-						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.id.label"></s:text>：</label></td>
 									<td class="td-value"><label class="record-value"><s:property
 												value="id" /></label></td>
-						            <td class="td-mass-update"></td>
 									<td class="td-label"></td>
 									<td class="td-value"></td>
 								</tr>
 							</table>
-						</div>						
+						</div>												
 					</div>
 
 				</s:form>

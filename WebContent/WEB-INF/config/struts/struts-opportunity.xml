@@ -81,17 +81,24 @@
         </action>
                                 
         <action name="editOpportunity" class="editOpportunityAction" method="get">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
 			<result>/jsp/crm/editOpportunity.jsp</result>
         </action>
                         
         <action name="saveOpportunity" class="editOpportunityAction" method="save">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editOpportunity.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listOpportunity.jsp</result>
+    	    <result>/jsp/crm/editOpportunity.jsp</result>
         </action>
-                
+
+        <action name="saveCloseOpportunity" class="editOpportunityAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editOpportunity.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listOpportunity.jsp</result>
+        </action>
+                        
         <action name="deleteOpportunity" class="listOpportunityAction" method="delete">
+			<result name="input">/jsp/crm/listOpportunity.jsp</result>
 			<result type="redirect">/jsp/crm/listOpportunity.jsp</result>
         </action> 
         
@@ -100,10 +107,16 @@
         </action> 
         
         <action name="massUpdateOpportunity" class="editOpportunityAction" method="massUpdate">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editOpportunity.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listOpportunity.jsp</result>
-        </action>            
+    	    <result>/jsp/crm/editOpportunity.jsp</result>
+        </action>  
+        
+        <action name="massUpdateCloseOpportunity" class="editOpportunityAction" method="massUpdate">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editOpportunity.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listOpportunity.jsp</result>
+        </action>                  
   </package>      
     
 </struts>

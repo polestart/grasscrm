@@ -19,15 +19,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.TargetListType;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.BeanUtil;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -54,7 +52,9 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
-        getBaseService().makePersistent(targetList);
+        targetList = getBaseService().makePersistent(targetList);
+        this.setId(targetList.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -79,12 +79,7 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
             }
             this.getBaseInfo(targetList);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
         }
         return SUCCESS;
     }
@@ -95,32 +90,51 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<TargetList> targetLists = new ArrayList<TargetList>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            TargetList targetListInstance = this.baseService.getEntityById(
-                    TargetList.class, id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(targetList, fieldName);
-                BeanUtil.setFieldValue(targetListInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<TargetList> targetLists = new ArrayList<TargetList>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                TargetList targetListInstance = this.baseService.getEntityById(
+                        TargetList.class, id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil
+                            .getFieldValue(targetList, fieldName);
+                    BeanUtil.setFieldValue(targetListInstance, fieldName, value);
+                }
+                targetListInstance.setUpdated_by(user);
+                targetListInstance.setUpdated_on(new Date());
+                targetLists.add(targetListInstance);
             }
-            targetListInstance.setUpdated_by(user);
-            targetListInstance.setUpdated_on(new Date());
-            targetLists.add(targetListInstance);
-        }
-        if (targetLists.size() > 0) {
-            this.baseService.batchUpdate(targetLists);
+            if (targetLists.size() > 0) {
+                this.baseService.batchUpdate(targetLists);
+            }
         }
         return SUCCESS;
     }
 
     /**
      * Saves entity field
+     * 
+     * @throws Exception
      */
-    private void saveEntity() {
+    private void saveEntity() throws Exception {
+        if (targetList.getId() == null) {
+            UserUtil.permissionCheck("create_targetList");
+        } else {
+            UserUtil.permissionCheck("update_targetList");
+            TargetList originalTargetList = baseService.getEntityById(
+                    TargetList.class, targetList.getId());
+            targetList.setTargets(originalTargetList.getTargets());
+            targetList.setContacts(originalTargetList.getContacts());
+            targetList.setLeads(originalTargetList.getLeads());
+            targetList.setUsers(originalTargetList.getUsers());
+            targetList.setAccounts(originalTargetList.getAccounts());
+        }
+
         TargetListType type = null;
         if (typeID != null) {
             type = targetListTypeService.getEntityById(TargetListType.class,
@@ -133,6 +147,12 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
             assignedTo = userService.getEntityById(User.class, assignedToID);
         }
         targetList.setAssigned_to(assignedTo);
+
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        targetList.setOwner(owner);
 
         super.updateBaseInfo(targetList);
     }
@@ -179,6 +199,7 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToID
      */
+    @Override
     public Integer getAssignedToID() {
         return assignedToID;
     }
@@ -187,6 +208,7 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
      * @param assignedToID
      *            the assignedToID to set
      */
+    @Override
     public void setAssignedToID(Integer assignedToID) {
         this.assignedToID = assignedToID;
     }
@@ -255,6 +277,7 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToText
      */
+    @Override
     public String getAssignedToText() {
         return assignedToText;
     }
@@ -263,6 +286,7 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
      * @param assignedToText
      *            the assignedToText to set
      */
+    @Override
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
     }

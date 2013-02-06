@@ -270,20 +270,6 @@ WITH (
 ALTER TABLE opportunitytype
   OWNER TO postgres;
 
-CREATE TABLE permission
-(
-  id integer NOT NULL,
-  name character varying(50) NOT NULL,
-  url character varying(255),
-  sequence integer,
-  CONSTRAINT permission_pkey PRIMARY KEY (id )
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE permission
-  OWNER TO postgres;
-
 CREATE TABLE reminderoption
 (
   id integer NOT NULL,
@@ -342,6 +328,7 @@ CREATE TABLE users
   updated_by integer,
   created_on timestamp without time zone,
   updated_on timestamp without time zone,
+  owner integer,
   CONSTRAINT users_pkey PRIMARY KEY (id ),
   CONSTRAINT fk6a68e084c37dd59 FOREIGN KEY (created_by)
       REFERENCES users (id) MATCH SIMPLE
@@ -352,6 +339,9 @@ CREATE TABLE users
   CONSTRAINT fk6a68e08e584d5b1 FOREIGN KEY (report_to)
       REFERENCES users (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk6a68e08e826fe FOREIGN KEY (owner)
+      REFERENCES users (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT fk6a68e08e8f7c6a6 FOREIGN KEY (updated_by)
       REFERENCES users (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
@@ -360,8 +350,8 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE users
-  OWNER TO postgres;  
-  
+  OWNER TO postgres;
+    
 CREATE TABLE role
 (
   id integer NOT NULL,
@@ -371,8 +361,78 @@ CREATE TABLE role
   updated_by integer,
   created_on timestamp without time zone,
   updated_on timestamp without time zone,
+  description character varying(255),
+  owner integer,
+  scope_account integer,
+  view_account integer,
+  create_account integer,
+  update_account integer,
+  delete_account integer,
+  scope_call integer,
+  view_call integer,
+  create_call integer,
+  update_call integer,
+  delete_call integer,
+  scope_campaign integer,
+  view_campaign integer,
+  create_campaign integer,
+  update_campaign integer,
+  delete_campaign integer,
+  scope_case integer,
+  view_case integer,
+  create_case integer,
+  update_case integer,
+  delete_case integer,
+  scope_contact integer,
+  view_contact integer,
+  create_contact integer,
+  update_contact integer,
+  delete_contact integer,
+  scope_document integer,
+  view_document integer,
+  create_document integer,
+  update_document integer,
+  delete_document integer,
+  scope_lead integer,
+  view_lead integer,
+  create_lead integer,
+  update_lead integer,
+  delete_lead integer,
+  scope_meeting integer,
+  view_meeting integer,
+  create_meeting integer,
+  update_meeting integer,
+  delete_meeting integer,
+  scope_opportunity integer,
+  view_opportunity integer,
+  create_opportunity integer,
+  update_opportunity integer,
+  delete_opportunity integer,
+  scope_target integer,
+  view_target integer,
+  create_target integer,
+  update_target integer,
+  delete_target integer,
+  scope_targetlist integer,
+  view_targetlist integer,
+  create_targetlist integer,
+  update_targetlist integer,
+  delete_targetlist integer,
+  scope_task integer,
+  view_task integer,
+  create_task integer,
+  update_task integer,
+  delete_task integer,
+  scope_system integer,
+  view_system integer,
+  create_system integer,
+  update_system integer,
+  delete_system integer,
   CONSTRAINT role_pkey PRIMARY KEY (id ),
   CONSTRAINT fk3580764c37dd59 FOREIGN KEY (created_by)
+      REFERENCES users (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk358076e826fe FOREIGN KEY (owner)
       REFERENCES users (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT fk358076e8f7c6a6 FOREIGN KEY (updated_by)
@@ -385,24 +445,6 @@ WITH (
 ALTER TABLE role
   OWNER TO postgres;
   
-CREATE TABLE role_permission
-(
-  permission_id integer NOT NULL,
-  role_id integer NOT NULL,
-  CONSTRAINT role_permission_pkey PRIMARY KEY (role_id , permission_id ),
-  CONSTRAINT fkbd40d5384ca45e7a FOREIGN KEY (role_id)
-      REFERENCES role (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fkbd40d538c03253da FOREIGN KEY (permission_id)
-      REFERENCES permission (id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE role_permission
-  OWNER TO postgres;
-
 CREATE TABLE salesstage
 (
   id integer NOT NULL,
@@ -478,88 +520,23 @@ INSERT INTO userstatus(id, name, sequence) VALUES (nextval('hibernate_sequence')
 
 INSERT INTO users(id, name,password,status) VALUES (nextval('hibernate_sequence'),'admin','f23434d100b958477670c0c4593f69b5',currval('hibernate_sequence') - 2);
 
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Account', '/jsp/crm/listAccount.jsp,/jsp/crm/editAccount.jsp,/jsp/crm/deleteAccount.action,/jsp/crm/saveAccount.action,/jsp/crm/listAccountFull.action',1);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Call', '/jsp/crm/listCall.jsp,/jsp/crm/editCall.jsp,/jsp/crm/deleteCall.action,/jsp/crm/saveCall.action',2);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Campaign', '/jsp/crm/listCampaign.jsp,/jsp/crm/editCampaign.jsp,/jsp/crm/deleteCampaign.action,/jsp/crm/saveCampaign.action',3);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Case', '/jsp/crm/listCase.jsp,/jsp/crm/editCase.jsp,/jsp/crm/deleteCase.action,/jsp/crm/saveCase.action',4);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Contact', '/jsp/crm/listContact.jsp,/jsp/crm/editContact.jsp,/jsp/crm/deleteContact.action,/jsp/crm/saveContact.action',5);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Document', '/jsp/crm/listDocument.jsp,/jsp/crm/editDocument.jsp,/jsp/crm/deleteDocument.action,/jsp/crm/saveDocument.action',6);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Lead', '/jsp/crm/listLead.jsp,/jsp/crm/editLead.jsp,/jsp/crm/deleteLead.action,/jsp/crm/saveLead.action',7);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Meeting', '/jsp/crm/listMeeting.jsp,/jsp/crm/editMeeting.jsp,/jsp/crm/deleteMeeting.action,/jsp/crm/saveMeeting.action',8);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Opportunity', '/jsp/crm/listOpportunity.jsp,/jsp/crm/editOpportunity.jsp,/jsp/crm/deleteOpportunity.action,/jsp/crm/saveOpportunity.action',9);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Target', '/jsp/crm/listTarget.jsp,/jsp/crm/editTarget.jsp,/jsp/crm/deleteTarget.action,/jsp/crm/saveTarget.action',10);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'TargetList', '/jsp/crm/listTargetList.jsp,/jsp/crm/editTargetList.jsp,/jsp/crm/deleteTargetList.action,/jsp/crm/saveTargetList.action',11);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Task', '/jsp/crm/listTask.jsp,/jsp/crm/editTask.jsp,/jsp/crm/deleteTask.action,/jsp/crm/saveTask.action',12);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'User', '/jsp/system/listUser.jsp,/jsp/system/editUser.jsp,/jsp/system/deleteUser.action,/jsp/system/saveUser.action',13);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Role', '/jsp/system/listRole.jsp,/jsp/system/editRole.jsp,/jsp/system/deleteRole.action,/jsp/system/saveRole.action',14);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Permission', '/jsp/system/listPermission.jsp,/jsp/system/deletePermission.action,/jsp/system/savePermission.action',15);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Account Type', '/jsp/system/listAccountType.jsp,/jsp/system/deleteAccountType.action,/jsp/system/saveAccountType.action',16);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Call Status', '/jsp/system/listCallStatus.jsp,/jsp/system/deleteCallStatus.action,/jsp/system/saveCallStatus.action',17);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Call Direction', '/jsp/system/listCallDirection.jsp,/jsp/system/deleteCallDirection.action,/jsp/system/saveCallDirection.action',18);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Campaign Type', '/jsp/system/listCampaignType.jsp,/jsp/system/deleteCampaignType.action,/jsp/system/saveCampaignType.action',19);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Campaign Status', '/jsp/system/listCampaignStatus.jsp,/jsp/system/deleteCampaignStatus.action,/jsp/system/saveCampaignStatus.action',20);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Case Origin', '/jsp/system/listCaseOrigin.jsp,/jsp/system/deleteCaseOrigin.action,/jsp/system/saveCaseOrigin.action',21);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Case Priority', '/jsp/system/listCasePriority.jsp,/jsp/system/deleteCasePriority.action,/jsp/system/saveCasePriority.action',22);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Case Reason', '/jsp/system/listCaseReason.jsp,/jsp/system/deleteCaseReason.action,/jsp/system/saveCaseReason.action',23);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Case Status', '/jsp/system/listCaseStatus.jsp,/jsp/system/deleteCaseStatus.action,/jsp/system/saveCaseStatus.action',24);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Currency', '/jsp/system/listCurrency.jsp,/jsp/system/deleteCurrency.action,/jsp/system/saveCurrency.action',25);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Document Category', '/jsp/system/listDocumentCategory.jsp,/jsp/system/deleteDocumentCategory.action,/jsp/system/saveDocumentCategory.action',26);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Document Status', '/jsp/system/listDocumentStatus.jsp,/jsp/system/deleteDocumentStatus.action,/jsp/system/saveDocumentStatus.action',27);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Document SubCategory', '/jsp/system/listDocumentSubCategory.jsp,/jsp/system/deleteDocumentSubCategory.action,/jsp/system/saveDocumentSubCategory.action',28);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Document Type', '/jsp/system/listDocumentType.jsp,/jsp/system/deleteDocumentType.action,/jsp/system/saveDocumentType.action',29);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Industry', '/jsp/system/listIndustry.jsp,/jsp/system/deleteIndustry.action,/jsp/system/saveIndustry.action',30);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Lead Source', '/jsp/system/listLeadSource.jsp,/jsp/system/deleteLeadSource.action,/jsp/system/saveLeadSource.action',31);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Lead Status', '/jsp/system/listLeadStatus.jsp,/jsp/system/deleteLeadStatus.action,/jsp/system/saveLeadStatus.action',32);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'User Status', '/jsp/system/listUserStatus.jsp,/jsp/system/deleteUserStatus.action,/jsp/system/saveUserStatus.action',33);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Task Status', '/jsp/system/listTaskStatus.jsp,/jsp/system/deleteTaskStatus.action,/jsp/system/saveTaskStatus.action',34);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Task Priority', '/jsp/system/listTaskPriority.jsp,/jsp/system/deleteTaskPriority.action,/jsp/system/saveTaskPriority.action',35);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'TargetList Type', '/jsp/system/listTargetListType.jsp,/jsp/system/deleteTargetListType.action,/jsp/system/saveTargetListType.action',36);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Reminder Option', '/jsp/system/listReminderOption.jsp,/jsp/system/deleteReminderOption.action,/jsp/system/saveReminderOption.action',37);
-INSERT INTO permission(id, name, url, sequence) VALUES (nextval('hibernate_sequence'),'Email Setting', '/jsp/system/emailSetting.jsp,/jsp/system/editEmailSetting.action,/jsp/system/saveEmailSetting.action',38);
+INSERT INTO role(id, name, sequence,scope_account, view_account, create_account, 
+            update_account, delete_account, scope_call, view_call, 
+            create_call, update_call, delete_call, scope_campaign, view_campaign, 
+            create_campaign, update_campaign, delete_campaign, scope_case, 
+            view_case, create_case, update_case, delete_case, scope_contact, 
+            view_contact, create_contact, update_contact, delete_contact, 
+            scope_document, view_document, create_document, update_document, 
+            delete_document, scope_lead, view_lead, create_lead, update_lead, 
+            delete_lead, scope_meeting, view_meeting, create_meeting, update_meeting, 
+            delete_meeting, scope_opportunity, view_opportunity, create_opportunity, 
+            update_opportunity, delete_opportunity, scope_target, view_target, 
+            create_target, update_target, delete_target, scope_targetlist, 
+            view_targetlist, create_targetlist, update_targetlist, delete_targetlist, 
+            scope_task, view_task, create_task, update_task, delete_task, scope_system, view_system, create_system, update_system, delete_system) VALUES (nextval('hibernate_sequence'),'Administrator', 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1);
 
-
-INSERT INTO role(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Administrator', 1);
-
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 1);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 2);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 3);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 4);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 5);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 6);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 7);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 8);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 9);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 10);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 11);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 12);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 13);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 14);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 15);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 16);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 17);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 18);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 19);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 20);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 21);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 22);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 23);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 24);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 25);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 26);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 27);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 28);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 29);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 30);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 31);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 32);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 33);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 34);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 35);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 36);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 37);
-INSERT INTO role_permission(role_id, permission_id) VALUES (currval('hibernate_sequence') ,currval('hibernate_sequence') - 38);
-
-INSERT INTO users_role(user_id, role_id) VALUES (3,currval('hibernate_sequence'));   
+INSERT INTO users_role(user_id, role_id) VALUES (currval('hibernate_sequence') - 1 ,currval('hibernate_sequence'));   
   
 INSERT INTO accounttype(id, name, sequence) VALUES (nextval('hibernate_sequence'),'--None--', 1);
 INSERT INTO accounttype(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Analyst', 2);
@@ -752,8 +729,8 @@ INSERT INTO targetlisttype(id, name, sequence) VALUES (nextval('hibernate_sequen
 INSERT INTO targetlisttype(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Suppression list - Ey ID', 5);
 INSERT INTO targetlisttype(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Test', 6);
 
-update users set created_by=3,created_on=now();
-update role set created_by=3,created_on=now();
+update users set created_by=3,owner=3,created_on=now();
+update role set created_by=3,owner=3,created_on=now();
 
 
 

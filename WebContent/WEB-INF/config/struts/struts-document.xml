@@ -66,17 +66,24 @@
         </action>
                                 
         <action name="editDocument" class="editDocumentAction" method="get">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
 			<result>/jsp/crm/editDocument.jsp</result>
         </action>
                         
         <action name="saveDocument" class="editDocumentAction" method="save">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editDocument.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listDocument.jsp</result>
+    	    <result>/jsp/crm/editDocument.jsp</result>
         </action>
-                
+ 
+        <action name="saveCloseDocument" class="editDocumentAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editDocument.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listDocument.jsp</result>
+        </action>
+                        
         <action name="deleteDocument" class="listDocumentAction" method="delete">
+			<result name="input">/jsp/crm/listDocument.jsp</result>
 			<result type="redirect">/jsp/crm/listDocument.jsp</result>
         </action>  
         
@@ -91,10 +98,16 @@
         </action>   
         
         <action name="massUpdateDocument" class="editDocumentAction" method="massUpdate">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editDocument.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listDocument.jsp</result>
-        </action>             
+    	    <result>/jsp/crm/editDocument.jsp</result>
+        </action> 
+        
+        <action name="massUpdateCloseDocument" class="editDocumentAction" method="massUpdate">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editDocument.jsp</result>          
+    	   <result type="redirect">/jsp/crm/listDocument.jsp</result>
+        </action>                    
   </package>      
     
 </struts>

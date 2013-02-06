@@ -23,29 +23,34 @@ import com.gcrm.domain.Document;
 /**
  * Document service
  */
-public class DocumentService extends BaseService<Document> implements IDocumentService {
+public class DocumentService extends BaseService<Document> implements
+        IDocumentService {
 
-	private IDocumentDao documentDao;
-	
-	/* (non-Javadoc)
-	 * @see com.gcrm.service.IDocumentService#save(com.gcrm.domain.Document, java.io.File)
-	 */
-	public void save(Document document, File f) throws Exception{
-		documentDao.save(document, f);
-	}
+    private IDocumentDao documentDao;
 
-	/**
-	 * @return the documentDao
-	 */
-	public IDocumentDao getDocumentDao() {
-		return documentDao;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.service.IDocumentService#save(com.gcrm.domain.Document,
+     * java.io.File)
+     */
+    public Document save(Document document, File f) throws Exception {
+        return documentDao.save(document, f);
+    }
 
-	/**
-	 * @param documentDao the documentDao to set
-	 */
-	public void setDocumentDao(IDocumentDao documentDao) {
-		this.documentDao = documentDao;
-	}
+    /**
+     * @return the documentDao
+     */
+    public IDocumentDao getDocumentDao() {
+        return documentDao;
+    }
+
+    /**
+     * @param documentDao
+     *            the documentDao to set
+     */
+    public void setDocumentDao(IDocumentDao documentDao) {
+        this.documentDao = documentDao;
+    }
 
 }

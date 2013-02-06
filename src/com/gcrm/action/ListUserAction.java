@@ -40,6 +40,7 @@ import org.supercsv.prefs.CsvPreference;
 
 import com.gcrm.domain.Call;
 import com.gcrm.domain.Meeting;
+import com.gcrm.domain.Role;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.domain.UserStatus;
@@ -47,6 +48,7 @@ import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -91,12 +93,15 @@ public class ListUserAction extends BaseListAction {
      * @return null
      */
     public String listFull() throws Exception {
+        UserUtil.permissionCheck("view_system");
 
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        User loginUser = UserUtil.getLoginUser();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
+                loginUser.getScope_system(), loginUser);
         SearchResult<User> result = baseService.getPaginationObjects(CLAZZ,
                 searchCondition);
 
@@ -283,7 +288,8 @@ public class ListUserAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_system");
         baseService.batchDeleteEntity(User.class, this.getSeleteIDs());
         return SUCCESS;
     }
@@ -293,7 +299,8 @@ public class ListUserAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String copy() throws ServiceException {
+    public String copy() throws Exception {
+        UserUtil.permissionCheck("create_system");
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -314,6 +321,8 @@ public class ListUserAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        UserUtil.permissionCheck("view_system");
+
         File file = new File(CLAZZ + ".csv");
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
@@ -512,6 +521,20 @@ public class ListUserAction extends BaseListAction {
             reader.close();
         }
         return SUCCESS;
+    }
+
+    /**
+     * Gets the related roles.
+     * 
+     * @return null
+     */
+    public String filterUserRole() throws Exception {
+        user = baseService.getEntityById(User.class, id);
+        Set<Role> roles = user.getRoles();
+        Iterator<Role> roleIterator = roles.iterator();
+        long totalRecords = roles.size();
+        ListRoleAction.getListJson(roleIterator, totalRecords, null, false);
+        return null;
     }
 
     @Override

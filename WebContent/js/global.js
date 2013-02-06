@@ -37,3 +37,5 @@ function openwindow2(url, name, iWidth,iHeight) {
 							+ iLeft
 							+ ',toolbar=no,menubar=no,scrollbars=no,resizeable=no,location=no,status=no');
 }
+
+

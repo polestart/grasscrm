@@ -37,15 +37,19 @@
 		<s:include value="../menu.jsp" />
 
 		<div id="feature">
-			<div id="shortcuts" class="headerList">
-				<span> <span style="white-space: nowrap;"> <a href="#"
+		  <div id="shortcuts" class="headerList">
+			<span> 
+			  <s:if test="#request.user.update_system == 1">
+				<span style="white-space: nowrap;"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-ok" onclick="add()"
 						plain="true"><s:text name="button.save" /></a>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				 </span> 
+			   </s:if>	 
+			   <span style="white-space: nowrap;"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-mail" onclick="openwindow2('/system/sendTestMail.jsp','<s:text name="title.sendTestMail" />',450,200)"
 						plain="true"><s:text name="button.sendTestMail" /></a>
 				</span>
-				</span>
+			  </span>
 			</div>
 
 			<div id="feature-title">

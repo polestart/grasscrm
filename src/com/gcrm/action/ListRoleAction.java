@@ -22,9 +22,9 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +38,13 @@ import org.supercsv.io.CsvMapWriter;
 import org.supercsv.io.ICsvMapWriter;
 import org.supercsv.prefs.CsvPreference;
 
-import com.gcrm.domain.Permission;
 import com.gcrm.domain.Role;
 import com.gcrm.domain.User;
 import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -57,7 +57,7 @@ public class ListRoleAction extends BaseListAction {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<Role> baseService;
-    private IBaseService<Permission> permissionService;
+    private IBaseService<User> userService;
     private Role role;
     private Integer id;
 
@@ -87,12 +87,15 @@ public class ListRoleAction extends BaseListAction {
      * @return null
      */
     public String listFull() throws Exception {
+        UserUtil.permissionCheck("view_system");
 
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        User loginUser = UserUtil.getLoginUser();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
+                loginUser.getScope_system(), loginUser);
         SearchResult<Role> result = baseService.getPaginationObjects(CLAZZ,
                 searchCondition);
 
@@ -118,12 +121,8 @@ public class ListRoleAction extends BaseListAction {
             Role instance = roles.next();
             int id = instance.getId();
             String name = CommonUtil.fromNullToEmpty(instance.getName());
-            Integer sequence = instance.getSequence();
-            String sequenceS = "";
-            if (sequence != null) {
-                sequenceS = String.valueOf(sequence);
-            }
-
+            String description = CommonUtil.fromNullToEmpty(instance
+                    .getDescription());
             if (isList) {
                 User createdBy = instance.getCreated_by();
                 String createdByName = "";
@@ -150,7 +149,7 @@ public class ListRoleAction extends BaseListAction {
                     updatedOnName = dateFormat.format(updatedOn);
                 }
                 jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
-                        .append(name).append("\",\"").append(sequenceS)
+                        .append(name).append("\",\"").append(description)
                         .append("\",\"").append(createdByName).append("\",\"")
                         .append(updatedByName).append("\",\"")
                         .append(createdOnName).append("\",\"")
@@ -158,7 +157,7 @@ public class ListRoleAction extends BaseListAction {
             } else {
                 jsonBuilder.append("{\"id\":\"").append(id)
                         .append("\",\"name\":\"").append(name)
-                        .append("\",\"sequence\":\"").append(sequence)
+                        .append("\",\"description\":\"").append(description)
                         .append("\"}");
             }
             if (roles.hasNext()) {
@@ -177,7 +176,8 @@ public class ListRoleAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_system");
         baseService.batchDeleteEntity(Role.class, this.getSeleteIDs());
         return SUCCESS;
     }
@@ -187,7 +187,8 @@ public class ListRoleAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String copy() throws ServiceException {
+    public String copy() throws Exception {
+        UserUtil.permissionCheck("create_system");
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -208,12 +209,13 @@ public class ListRoleAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        UserUtil.permissionCheck("view_system");
+
         File file = new File(CLAZZ + ".csv");
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Name", "Sequence",
-                    "Permissions" };
+            final String[] header = new String[] { "ID", "Name", "Description" };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -223,16 +225,8 @@ public class ListRoleAction extends BaseListAction {
                 final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
                 data1.put(header[0], role.getId());
                 data1.put(header[1], CommonUtil.fromNullToEmpty(role.getName()));
-                data1.put(header[2], role.getSequence());
-                Set<Permission> permissions = role.getPermissions();
-                String permissionIDs = "";
-                for (Permission permission : permissions) {
-                    if (permissionIDs.length() > 0) {
-                        permissionIDs += ",";
-                    }
-                    permissionIDs += String.valueOf(permission.getId());
-                }
-                data1.put(header[3], permissionIDs);
+                data1.put(header[2],
+                        CommonUtil.fromNullToEmpty(role.getDescription()));
                 writer.write(data1, header);
             }
         } catch (Exception e) {
@@ -276,27 +270,8 @@ public class ListRoleAction extends BaseListAction {
                         role.setId(Integer.parseInt(id));
                     }
                     role.setName(CommonUtil.fromNullToEmpty(row.get("Name")));
-                    String sequence = row.get("Sequence");
-                    if (CommonUtil.isNullOrEmpty(sequence)) {
-                        role.setSequence(0);
-                    } else {
-                        role.setSequence(Integer.parseInt(sequence));
-                    }
-                    String permissions = row.get("Permissions");
-                    if (!CommonUtil.isNullOrEmpty(permissions)) {
-                        String[] ids = permissions.split(",");
-                        Set<Permission> permissionSet = new HashSet<Permission>(
-                                0);
-                        for (int i = 0; i < ids.length; i++) {
-                            String permissionID = ids[i];
-                            Permission permission = permissionService
-                                    .getEntityById(Permission.class,
-                                            Integer.parseInt(permissionID));
-                            permissionSet.add(permission);
-                        }
-                        role.setPermissions(permissionSet);
-                    }
-
+                    role.setDescription(CommonUtil.fromNullToEmpty(row
+                            .get("Description")));
                     baseService.makePersistent(role);
                     successfulNum++;
                 } catch (Exception e) {
@@ -312,6 +287,71 @@ public class ListRoleAction extends BaseListAction {
             this.setTotalNum(successfulNum + failedNum);
         } finally {
             reader.close();
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Selects the entities
+     * 
+     * @return the SUCCESS result
+     */
+    public String select() throws ServiceException {
+        User user = null;
+        Set<Role> roles = null;
+
+        if ("User".equals(this.getRelationKey())) {
+            user = userService.getEntityById(User.class,
+                    Integer.valueOf(this.getRelationValue()));
+            roles = user.getRoles();
+        }
+
+        if (this.getSeleteIDs() != null) {
+            String[] ids = seleteIDs.split(",");
+            for (int i = 0; i < ids.length; i++) {
+                String selectId = ids[i];
+                role = baseService.getEntityById(Role.class,
+                        Integer.valueOf(selectId));
+                roles.add(role);
+            }
+        }
+
+        if ("User".equals(this.getRelationKey())) {
+            userService.makePersistent(user);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Unselects the entities
+     * 
+     * @return the SUCCESS result
+     */
+    public String unselect() throws ServiceException {
+        User user = null;
+        Set<Role> roles = null;
+        if ("User".equals(this.getRelationKey())) {
+            user = userService.getEntityById(User.class,
+                    Integer.valueOf(this.getRelationValue()));
+            roles = user.getRoles();
+        }
+
+        if (this.getSeleteIDs() != null) {
+            String[] ids = seleteIDs.split(",");
+            Collection<Role> selectedRoles = new ArrayList<Role>();
+            for (int i = 0; i < ids.length; i++) {
+                Integer removeId = Integer.valueOf(ids[i]);
+                A: for (Role role : roles) {
+                    if (role.getId().intValue() == removeId.intValue()) {
+                        selectedRoles.add(role);
+                        break A;
+                    }
+                }
+            }
+            roles.removeAll(selectedRoles);
+        }
+        if ("User".equals(super.getRelationKey())) {
+            userService.makePersistent(user);
         }
         return SUCCESS;
     }
@@ -369,18 +409,18 @@ public class ListRoleAction extends BaseListAction {
     }
 
     /**
-     * @return the permissionService
+     * @return the userService
      */
-    public IBaseService<Permission> getPermissionService() {
-        return permissionService;
+    public IBaseService<User> getUserService() {
+        return userService;
     }
 
     /**
-     * @param permissionService
-     *            the permissionService to set
+     * @param userService
+     *            the userService to set
      */
-    public void setPermissionService(IBaseService<Permission> permissionService) {
-        this.permissionService = permissionService;
+    public void setUserService(IBaseService<User> userService) {
+        this.userService = userService;
     }
 
 }

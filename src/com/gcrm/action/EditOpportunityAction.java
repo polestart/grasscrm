@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -35,12 +34,11 @@ import com.gcrm.domain.Opportunity;
 import com.gcrm.domain.OpportunityType;
 import com.gcrm.domain.SalesStage;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -85,7 +83,9 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
      */
     public String save() throws Exception {
         saveEntity();
-        getBaseService().makePersistent(opportunity);
+        opportunity = getBaseService().makePersistent(opportunity);
+        this.setId(opportunity.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -140,12 +140,7 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
             }
             this.getBaseInfo(opportunity);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
         }
         return SUCCESS;
     }
@@ -156,24 +151,29 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<Opportunity> opportunities = new ArrayList<Opportunity>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            Opportunity opportunityInstance = this.baseService.getEntityById(
-                    Opportunity.class, id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(opportunity, fieldName);
-                BeanUtil.setFieldValue(opportunityInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<Opportunity> opportunities = new ArrayList<Opportunity>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                Opportunity opportunityInstance = this.baseService
+                        .getEntityById(Opportunity.class, id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil.getFieldValue(opportunity,
+                            fieldName);
+                    BeanUtil.setFieldValue(opportunityInstance, fieldName,
+                            value);
+                }
+                opportunityInstance.setUpdated_by(user);
+                opportunityInstance.setUpdated_on(new Date());
+                opportunities.add(opportunityInstance);
             }
-            opportunityInstance.setUpdated_by(user);
-            opportunityInstance.setUpdated_on(new Date());
-            opportunities.add(opportunityInstance);
-        }
-        if (opportunities.size() > 0) {
-            this.baseService.batchUpdate(opportunities);
+            if (opportunities.size() > 0) {
+                this.baseService.batchUpdate(opportunities);
+            }
         }
         return SUCCESS;
     }
@@ -183,7 +183,18 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
      * 
      * @throws ParseException
      */
-    private void saveEntity() throws ParseException {
+    private void saveEntity() throws Exception {
+        if (opportunity.getId() == null) {
+            UserUtil.permissionCheck("create_opportunity");
+        } else {
+            UserUtil.permissionCheck("update_opportunity");
+            Opportunity originalOpportunity = baseService.getEntityById(
+                    Opportunity.class, opportunity.getId());
+            opportunity.setContacts(originalOpportunity.getContacts());
+            opportunity.setLeads(originalOpportunity.getLeads());
+            opportunity.setDocuments(originalOpportunity.getDocuments());
+        }
+
         Account account = null;
         if (accountID != null) {
             account = accountService.getEntityById(Account.class, accountID);
@@ -223,6 +234,12 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
             assignedTo = userService.getEntityById(User.class, assignedToID);
         }
         opportunity.setAssigned_to(assignedTo);
+
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        opportunity.setOwner(owner);
 
         Campaign campaign = null;
         if (campaignID != null) {
@@ -578,6 +595,7 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
     /**
      * @return the assignedToID
      */
+    @Override
     public Integer getAssignedToID() {
         return assignedToID;
     }
@@ -586,6 +604,7 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
      * @param assignedToID
      *            the assignedToID to set
      */
+    @Override
     public void setAssignedToID(Integer assignedToID) {
         this.assignedToID = assignedToID;
     }
@@ -637,6 +656,7 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
     /**
      * @return the assignedToText
      */
+    @Override
     public String getAssignedToText() {
         return assignedToText;
     }

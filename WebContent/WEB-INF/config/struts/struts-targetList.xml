@@ -68,7 +68,7 @@
         </action>
                         
         <action name="editTargetList" class="editTargetListAction" method="get">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
 			<result>/jsp/crm/editTargetList.jsp</result>
         </action>
 
@@ -78,20 +78,33 @@
         </action>
                                 
         <action name="saveTargetList" class="editTargetListAction" method="save">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editTargetList.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listTargetList.jsp</result>
+    	    <result>/jsp/crm/editTargetList.jsp</result>
         </action>
-                
+
+        <action name="saveCloseTargetList" class="editTargetListAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editTargetList.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listTargetList.jsp</result>
+        </action>
+                        
         <action name="deleteTargetList" class="listTargetListAction" method="delete">
+			<result name="input">/jsp/crm/listTargetList.jsp</result>
 			<result type="redirect">/jsp/crm/listTargetList.jsp</result>
         </action>
         
         <action name="massUpdateTargetList" class="editTargetListAction" method="massUpdate">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editTargetList.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listTargetList.jsp</result>
-        </action>        
+    	    <result>/jsp/crm/editTargetList.jsp</result>
+        </action>  
+        
+        <action name="massUpdateCloseTargetList" class="editTargetListAction" method="massUpdate">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editTargetList.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listTargetList.jsp</result>
+        </action>              
   </package>      
     
 </struts>

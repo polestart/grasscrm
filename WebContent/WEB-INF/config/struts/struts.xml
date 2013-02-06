@@ -36,10 +36,17 @@
                 <interceptor-ref name="exceptionInterceptor" />
                 <interceptor-ref name="defaultStack"/>
             </interceptor-stack>
+            <interceptor-stack name="prepareInterceptor">
+                <interceptor-ref name="exceptionInterceptor" />
+                <interceptor-ref name="paramsPrepareParamsStack"/>
+            </interceptor-stack>            
         </interceptors>
 
         <default-interceptor-ref name="defaultInterceptor">
         </default-interceptor-ref>
+        <global-results>
+           <result name="accessDenied">/jsp/403.jsp</result>
+        </global-results>        
     </package>
           
 </struts>

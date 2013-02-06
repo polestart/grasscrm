@@ -44,10 +44,10 @@ import com.gcrm.domain.Target;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.TargetListType;
 import com.gcrm.domain.User;
-import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -73,12 +73,15 @@ public class ListTargetListAction extends BaseListAction {
      */
     @Override
     public String list() throws Exception {
+        UserUtil.permissionCheck("view_targetList");
 
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        User loginUser = UserUtil.getLoginUser();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
+                loginUser.getScope_targetList(), loginUser);
         SearchResult<TargetList> result = baseService.getPaginationObjects(
                 CLAZZ, searchCondition);
         Iterator<TargetList> targetLists = result.getResult().iterator();
@@ -212,7 +215,8 @@ public class ListTargetListAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_targetList");
         baseService.batchDeleteEntity(TargetList.class, this.getSeleteIDs());
         return SUCCESS;
     }
@@ -222,7 +226,8 @@ public class ListTargetListAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String copy() throws ServiceException {
+    public String copy() throws Exception {
+        UserUtil.permissionCheck("create_targetList");
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -243,6 +248,8 @@ public class ListTargetListAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        UserUtil.permissionCheck("view_targetList");
+
         File file = new File(CLAZZ + ".csv");
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);

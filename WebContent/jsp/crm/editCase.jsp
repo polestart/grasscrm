@@ -16,16 +16,26 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-	function add() {
+	function save() {
 		var addObjectForm = document.getElementById('addObjectForm');
 		if ($("#seleteIDs").val()!= ""){
-			   addObjectForm.action = "massUpdateCase.action";
+		   addObjectForm.action = "massUpdateCase.action";
 		}else{
-			   addObjectForm.action = "saveCase.action";
+		   addObjectForm.action = "saveCase.action";
 		}		
 		addObjectForm.submit();
 	}
 
+	function saveClose() {
+		var addObjectForm = document.getElementById('addObjectForm');
+		if ($("#seleteIDs").val()!= ""){
+		   addObjectForm.action = "massUpdateCloseCase.action";
+		}else{
+		   addObjectForm.action = "saveCloseCase.action";
+		}		
+		addObjectForm.submit();
+	}
+	
 	function cancel() {
 		var addObjectForm = document.getElementById('addObjectForm');
 		addObjectForm.action = "listCasePage.action";
@@ -33,6 +43,8 @@
 	}
 
 	$(document).ready(function() {
+		$('#ownerID').combogrid('setValue', '<s:property value="ownerID"/>');
+		$('#ownerID').combogrid('setText', '<s:property value="ownerText"/>');				
 		$('#assignedToID').combogrid('setValue', '<s:property value="assignedToID"/>');
 		$('#assignedToID').combogrid('setText', '<s:property value="assignedToText"/>');
 		$('#accountID').combogrid('setValue', '<s:property value="accountID"/>');
@@ -40,7 +52,19 @@
 		if ($("#seleteIDs").val()!= ""){
 			  $("input:checkbox[name=massUpdate]").css("display",'block');
 			  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
-		}		
+		}
+		if ($("#id").val() == ""){
+			  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
+		}
+		if ($("#saveFlag").val() == "true"){
+			$.messager.show({  
+	          title:'<s:text name="message.title" />',  
+	          msg:'<s:text name="message.save" />',  
+	          timeout:5000,  
+	          showType:'slide'  
+	      });  
+			$("#saveFlag").val("");
+	    }		
 	})
 </script>
 
@@ -55,8 +79,12 @@
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
 				<span> <span style="white-space: nowrap;"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-ok" onclick="add()"
+						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
+				</span>			
+				<span> <span style="white-space: nowrap;"> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
+						plain="true"><s:text name="button.saveClose" /></a>
 				</span> <span style="white-space: nowrap;"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
@@ -87,7 +115,8 @@
 			<div id="feature-content">
 				<s:form id="addObjectForm" validate="true" namespace="/jsp/crm"
 					method="post">
-					<s:hidden name="caseInstance.id" value="%{caseInstance.id}" />
+					<s:hidden id="id" name="caseInstance.id" value="%{caseInstance.id}" />
+					<s:hidden id="saveFlag" name="saveFlag"/>					
 					<s:hidden name="relationKey" id="relationKey" value="%{relationKey}" />	
 			        <s:hidden name="relationValue" id="relationValue" value="%{relationValue}" />
 			        <s:hidden id="seleteIDs" name="seleteIDs" value="%{seleteIDs}" />
@@ -119,9 +148,33 @@
 								class="easyui-validatebox record-value"
 								data-options="required:true"
 								value="<s:property value="caseInstance.subject" />" /></td>
-						    <td class="td-mass-update"></td>
-							<td class="td-label"></td>
-							<td class="td-value"></td>
+				            <td class="td-mass-update"><input id="massUpdate"
+								name="massUpdate" type="checkbox" class="massUpdate" value="owner"/></td>
+							<td class="td-label"><label class="record-label"><s:text
+										name="entity.owner.label"></s:text>：</label></td>
+							<td class="td-value"><select id="ownerID"
+								class="easyui-combogrid record-value" name="ownerID"
+								style="width: 180px;"
+								data-options="  
+					            panelWidth:520,  
+					            idField:'id',  
+					            textField:'name',  
+					            url:'/grass/jsp/system/listUser.action',
+		                        loadMsg: '<s:text name="datagrid.loading" />',
+		                        pagination : true,
+		                        pageSize: 10,
+		                        pageList: [10,30,50],
+				                fit: true,
+					            mode:'remote',
+					            columns:[[  
+					                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
+					                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
+					                {field:'title',title:'<s:text name="user.title.label" />',width:120},  
+					                {field:'department',title:'<s:text name="user.department.label" />',width:100},
+					                {field:'status.name',title:'<s:text name="user.status.label" />',width:100}   
+					            ]]  
+					        ">
+							</select></td>
 						</tr>
 					</table>
 
@@ -150,7 +203,7 @@
 												name="entity.account.label"></s:text>：</label></td>
 									<td class="td-value"><select id="accountID"
 										class="easyui-combogrid record-value" name="accountID"
-										style="width: 250px;"
+										style="width: 180px;"
 										data-options="  
 						            panelWidth:520,  
 						            idField:'id',  
@@ -206,7 +259,7 @@
 												name="entity.assigned_to.label"></s:text>：</label></td>
 									<td class="td-value"><select
 										id="assignedToID" class="easyui-combogrid record-value" name="assignedToID"
-										style="width: 250px;"
+										style="width: 180px;"
 										data-options="  
 							            panelWidth:520,  
 							            idField:'id',  

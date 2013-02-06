@@ -15,7 +15,11 @@
  */
 package com.gcrm.util;
 
+import java.util.ResourceBundle;
+
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.AccessDeniedException;
 
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
@@ -55,7 +59,15 @@ public class ExceptionInterceptor implements Interceptor {
             result = Action.INPUT;
             logger.error(e.getMessage(), e);
             ActionSupport actionSupport = (ActionSupport) action.getAction();
-            actionSupport.addActionError(e.getMessage());
+            String errorMessage = e.getMessage();
+            ResourceBundle rb = CommonUtil.getResourceBundle();
+            if (e instanceof DataIntegrityViolationException) {
+                errorMessage = rb.getString("error.message.head") + ":"
+                        + rb.getString("error.message.violationException");
+            } else if (e instanceof AccessDeniedException) {
+                result = "accessDenied";
+            }
+            actionSupport.addActionError(errorMessage);
         }
 
         return result;

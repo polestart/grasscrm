@@ -23,13 +23,13 @@
          <security:custom-filter ref="securityFilter" before="FILTER_SECURITY_INTERCEPTOR"/> 
          <security:intercept-url pattern="/jsp/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>   
        	 <security:form-login login-page="/jsp/login.jsp" authentication-failure-url="/jsp/login.jsp?login_error=1"
-       	 	default-target-url="/jsp/crm/listAccountPage.action"/>
+       	 	default-target-url="/jsp/crm/homePage.action"/>
        	 	<security:logout invalidate-session="true" logout-success-url="/jsp/login.jsp" logout-url="/j_spring_security_logout"/>
     </security:http>    
 
     <bean id="loginFilter"
         class="com.gcrm.security.AuthenticationFilter">
-        <!-- 处理登录 -->
+        <!-- handle login -->
         <property name="filterProcessesUrl" value="/j_spring_security_check"></property>
         <property name="authenticationSuccessHandler" ref="loginLogAuthenticationSuccessHandler"></property>
         <property name="authenticationFailureHandler" ref="simpleUrlAuthenticationFailureHandler"></property>
@@ -37,17 +37,17 @@
     </bean>
  
      <bean id="securityFilter" class="com.gcrm.security.SecurityFilter">
-        <!-- 用户拥有的权限 -->
+        <!-- authentication -->
         <property name="authenticationManager" ref="myAuthenticationManager" />
-        <!-- 用户是否拥有所请求资源的权限 -->
+        <!-- authorization -->
         <property name="accessDecisionManager" ref="myAccessDecisionManager" />
-        <!-- 资源与权限对应关系 -->
+        <!-- resource and permission relationship -->
         <property name="securityMetadataSource" ref="mySecurityMetadataSource" />
     </bean>
        
     <bean id="loginLogAuthenticationSuccessHandler"
         class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
-        <property name="defaultTargetUrl" value="/jsp/crm/listAccountPage.action"></property>
+        <property name="defaultTargetUrl" value="/jsp/crm/homePage.action"></property>
     </bean>
     <bean id="simpleUrlAuthenticationFailureHandler"
         class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
@@ -61,7 +61,7 @@
     
     <bean id="myAccessDecisionManager" class="com.gcrm.security.UrlAccessDecisionManager"></bean>
     <bean id="mySecurityMetadataSource" class="com.gcrm.security.SecurityMetadataSource">
-        <constructor-arg name="permissionService" ref="baseService"></constructor-arg>
+        <constructor-arg name="roleService" ref="baseService"></constructor-arg>
     </bean>
     <bean id="myUserDetailServiceImpl" class="com.gcrm.security.UserDetailsServiceImpl">
       <property name="userService" ref="userService" />

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -34,11 +33,10 @@ import com.gcrm.domain.Meeting;
 import com.gcrm.domain.Opportunity;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.ILeadService;
 import com.gcrm.util.BeanUtil;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -82,7 +80,9 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
-        this.getBaseService().makePersistent(lead);
+        lead = this.getBaseService().makePersistent(lead);
+        this.setId(lead.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -122,12 +122,7 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
             }
             this.getBaseInfo(lead);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
         }
         return SUCCESS;
     }
@@ -138,31 +133,50 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<Lead> leads = new ArrayList<Lead>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            Lead leadInstance = this.baseService.getEntityById(Lead.class, id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(lead, fieldName);
-                BeanUtil.setFieldValue(leadInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<Lead> leads = new ArrayList<Lead>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                Lead leadInstance = this.baseService.getEntityById(Lead.class,
+                        id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil.getFieldValue(lead, fieldName);
+                    BeanUtil.setFieldValue(leadInstance, fieldName, value);
+                }
+                leadInstance.setUpdated_by(user);
+                leadInstance.setUpdated_on(new Date());
+                leads.add(leadInstance);
             }
-            leadInstance.setUpdated_by(user);
-            leadInstance.setUpdated_on(new Date());
-            leads.add(leadInstance);
-        }
-        if (leads.size() > 0) {
-            this.baseService.batchUpdate(leads);
+            if (leads.size() > 0) {
+                this.baseService.batchUpdate(leads);
+            }
         }
         return SUCCESS;
     }
 
     /**
      * Saves entity field
+     * 
+     * @throws Exception
      */
-    private void saveEntity() {
+    private void saveEntity() throws Exception {
+        if (lead.getId() == null) {
+            UserUtil.permissionCheck("create_lead");
+        } else {
+            UserUtil.permissionCheck("update_lead");
+            Lead originalLead = baseService.getEntityById(Lead.class,
+                    lead.getId());
+            lead.setContacts(originalLead.getContacts());
+            lead.setOpportunities(originalLead.getOpportunities());
+            lead.setTargetLists(originalLead.getTargetLists());
+            lead.setCalls(originalLead.getCalls());
+            lead.setMeetings(originalLead.getMeetings());
+        }
+
         Account account = null;
         if (accountID != null) {
             account = accountService.getEntityById(Account.class, accountID);
@@ -188,6 +202,12 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
             user = userService.getEntityById(User.class, assignedToID);
         }
         lead.setAssigned_to(user);
+
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        lead.setOwner(owner);
 
         Campaign campaign = null;
         if (campaignID != null) {
@@ -386,6 +406,7 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToID
      */
+    @Override
     public Integer getAssignedToID() {
         return assignedToID;
     }
@@ -394,6 +415,7 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      * @param assignedToID
      *            the assignedToID to set
      */
+    @Override
     public void setAssignedToID(Integer assignedToID) {
         this.assignedToID = assignedToID;
     }
@@ -612,6 +634,7 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToText
      */
+    @Override
     public String getAssignedToText() {
         return assignedToText;
     }
@@ -620,6 +643,7 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      * @param assignedToText
      *            the assignedToText to set
      */
+    @Override
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
     }

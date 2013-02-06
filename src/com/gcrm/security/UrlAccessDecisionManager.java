@@ -16,14 +16,12 @@
 package com.gcrm.security;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
 
 /**
@@ -31,47 +29,32 @@ import org.springframework.security.web.FilterInvocation;
  */
 public class UrlAccessDecisionManager implements AccessDecisionManager {
 
-	public void decide(Authentication authentication, Object securityObject,
-			Collection<ConfigAttribute> configAttributes)
-			throws AccessDeniedException, InsufficientAuthenticationException {
-		String url = null;
+    public void decide(Authentication authentication, Object securityObject,
+            Collection<ConfigAttribute> configAttributes)
+            throws AccessDeniedException, InsufficientAuthenticationException {
+        String url = null;
 
-		try {
-			if (securityObject instanceof FilterInvocation) {
-				FilterInvocation filter = (FilterInvocation) securityObject;
-				url = filter.getRequestUrl();
-			}
-			if (authentication.getPrincipal() instanceof String && "anonymousUser".equals(authentication.getPrincipal())){
-				throw new AccessDeniedException(" no permission access！");
-			}
-			Map<String, Collection<ConfigAttribute>> permissionMap = SecurityMetadataSource.permissionMap;
-			Collection<ConfigAttribute> customConfigAttributes = permissionMap.get(url);
-			if (customConfigAttributes == null){
-				return;
-			}
-			if (customConfigAttributes.size() == 0){
-				throw new AccessDeniedException(" no permission access！");
-			}			
-			for (ConfigAttribute configAttribute : customConfigAttributes ){
-				String needPermission = configAttribute.getAttribute();
-				for (GrantedAuthority ga : authentication.getAuthorities()) {
-					if (needPermission.equals(ga.getAuthority())) {
-						return;
-					}
-				}
-			}
-			throw new AccessDeniedException(" no permission access！");
-		} catch (Exception e) {
-			throw new AccessDeniedException("Role check fails.");
-		}
-	}
+        try {
+            if (securityObject instanceof FilterInvocation) {
+                FilterInvocation filter = (FilterInvocation) securityObject;
+                url = filter.getRequestUrl();
+            }
+            if (authentication.getPrincipal() instanceof String
+                    && "anonymousUser".equals(authentication.getPrincipal())) {
+                throw new AccessDeniedException(" no permission access！");
+            }
+            return;
+        } catch (Exception e) {
+            throw new AccessDeniedException("Role check fails.");
+        }
+    }
 
-	public boolean supports(ConfigAttribute attribute) {
-		return true;
-	}
+    public boolean supports(ConfigAttribute attribute) {
+        return true;
+    }
 
-	public boolean supports(Class<?> clazz) {
-		return true;
-	}
+    public boolean supports(Class<?> clazz) {
+        return true;
+    }
 
 }

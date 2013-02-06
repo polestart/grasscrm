@@ -1,8 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
-<%@ page import="org.springframework.security.core.Authentication" %>
+<%@ page language="java"  import="com.gcrm.domain.User"%> 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -36,7 +35,8 @@
 				border:false,
 				fit:true
 			});
-		
+			var viewAccount='<%=((User)session.getAttribute("loginUser")).getView_account()%>';
+			if (viewAccount == 1){		
 			  $('#myAccountGrid').datagrid({
 				    border:false,
 					iconCls:'icon-save',
@@ -47,16 +47,23 @@
 					url:'listAccount.action?_search=true&filter_key=assigned_to.id&filter_op==&filter_value=<s:property value="userID" />',
 					columns:[[
 						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-						{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+						{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){ 
+							var updateAccount='<%=((User)session.getAttribute("loginUser")).getUpdate_account()%>';
+							if (updateAccount == 1){
 							   new_format_value = "<a href='editAccount.action?id=" + row.id + "'>" + value + "</a>";
-							   return new_format_value 
+							} else {
+								new_format_value = value;
+							}   
+							return new_format_value 
 			             }  
 			            },
 						{field:'office_phone',title:'<s:text name="account.office_phone.label" />',width:80,align:'center',sortable:'true'},
 						{field:'email',title:'<s:text name="account.email.label" />',width:80,align:'center',sortable:'true'}								
 					]]
 				  });			
-			
+			}
+			var viewTask='<%=((User)session.getAttribute("loginUser")).getView_task()%>';
+			if (viewTask == 1){				
 			  $('#myTaskGrid').datagrid({
 				    border:false,
 					iconCls:'icon-save',
@@ -68,7 +75,12 @@
 					columns:[[
 						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
 						{field:'subject',title:'<s:text name="task.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-							   new_format_value = "<a href='editTask.action?id=" + row.id + "'>" + value + "</a>";
+							var updateTask='<%=((User)session.getAttribute("loginUser")).getUpdate_task()%>';
+							if (updateTask == 1){   
+							  new_format_value = "<a href='editTask.action?id=" + row.id + "'>" + value + "</a>";
+							} else{
+							  new_format_value = value;
+							}  
 							   return new_format_value 
 			             }  
 			            },
@@ -77,7 +89,10 @@
 						{field:'due_date',title:'<s:text name="task.due_date.label" />',width:120,align:'center',sortable:'true'}			
 					]]
 				  });
-			  
+			}
+			
+			var viewLead='<%=((User)session.getAttribute("loginUser")).getView_lead()%>';
+			if (viewLead == 1){				
 			  $('#myLeadGrid').datagrid({
 				    border:false,
 					iconCls:'icon-save',
@@ -89,8 +104,13 @@
 					columns:[[
 						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
 						{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-							   new_format_value = "<a href='editLead.action?id=" + row.id + "'>" + value + "</a>";
-							   return new_format_value 
+							var updateLead='<%=((User)session.getAttribute("loginUser")).getUpdate_lead()%>';
+							if (updateLead == 1){   
+							  new_format_value = "<a href='editLead.action?id=" + row.id + "'>" + value + "</a>";
+							} else{
+						      new_format_value = value;
+							} 							  
+							return new_format_value 
 			             }  
 			            },
 						{field:'title',title:'<s:text name="lead.title.label" />',width:80,align:'center',sortable:'true'},
@@ -99,7 +119,10 @@
 						{field:'email',title:'<s:text name="lead.email.label" />',width:80,align:'center',sortable:'true'}			
 					]]
 				  });	
-			  
+			}
+
+			var viewOpportunity='<%=((User)session.getAttribute("loginUser")).getView_opportunity()%>';
+			if (viewOpportunity == 1){				
 			  $('#myOpportunityGrid').datagrid({
 				    border:false,
 					iconCls:'icon-save',
@@ -111,7 +134,12 @@
 					columns:[[
 						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
 						{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-							   new_format_value = "<a href='editOpportunity.action?id=" + row.id + "'>" + value + "</a>";
+								var updateOpportunity='<%=((User)session.getAttribute("loginUser")).getUpdate_opportunity()%>';
+								if (updateOpportunity == 1){   
+									new_format_value = "<a href='editOpportunity.action?id=" + row.id + "'>" + value + "</a>";
+								} else{
+							      new_format_value = value;
+								} 							  
 							   return new_format_value 
 			             }  
 			            },
@@ -120,7 +148,10 @@
 						{field:'opportunity_amount',title:'<s:text name="opportunity.opportunity_amount.label" />',width:80,align:'center',sortable:'true'}		
 					]]
 				  });			  
-			  
+			}
+			
+			var viewMeeting='<%=((User)session.getAttribute("loginUser")).getView_meeting()%>';
+			if (viewMeeting == 1){			
 			  $('#myMeetingGrid').datagrid({
 				    border:false,
 					iconCls:'icon-save',
@@ -132,7 +163,12 @@
 					columns:[[
 						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
 						{field:'subject',title:'<s:text name="meeting.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-							   new_format_value = "<a href='editMeeting.action?id=" + row.id + "'>" + value + "</a>";
+								var updateMeeting='<%=((User)session.getAttribute("loginUser")).getUpdate_meeting()%>';
+								if (updateMeeting == 1){   
+									new_format_value = "<a href='editMeeting.action?id=" + row.id + "'>" + value + "</a>";
+								} else{
+							      new_format_value = value;
+								} 							  
 							   return new_format_value 
 			             }  
 			            },
@@ -142,7 +178,10 @@
 						{field:'location',title:'<s:text name="meeting.location.label" />',width:80,align:'center',sortable:'true'}			
 					]]
 				  });
-			  
+			}
+			
+			var viewCall='<%=((User)session.getAttribute("loginUser")).getView_call()%>';
+			if (viewCall == 1){				
 			  $('#myCallGrid').datagrid({
 				    border:false,
 					iconCls:'icon-save',
@@ -154,7 +193,12 @@
 					columns:[[
 						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
 						{field:'direction.name',title:'<s:text name="call.direction.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-							   new_format_value = "<a href='editCall.action?id=" + row.id + "'>" + value + "</a>";
+								var updateCall='<%=((User)session.getAttribute("loginUser")).getUpdate_call()%>';
+								if (updateCall == 1){   
+									new_format_value = "<a href='editCall.action?id=" + row.id + "'>" + value + "</a>";
+								} else{
+							      new_format_value = value;
+								} 							   
 							   return new_format_value 
 			             }  
 			            },
@@ -163,7 +207,7 @@
 						{field:'start_date',title:'<s:text name="call.start_date.label" />',width:80,align:'center',sortable:'true'}		
 					]]
 				  });				  
-			  
+			}
 		});
 	</script>
 </head>
@@ -181,26 +225,38 @@
 				<div region="center" border="false">
 					<div id="pp" style="position:relative">
 						<div style="width:50%;">
-						   <div title="<s:text name='title.grid.myTasks'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
+						  <s:if test="#request.user.view_task == 1">
+						    <div title="<s:text name='title.grid.myTasks'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                               <table id="myTaskGrid"></table>	
-                           </div>
-						   <div title="<s:text name='title.grid.myLeads'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
+                            </div>
+                          </s:if>
+						  <s:if test="#request.user.view_lead == 1">
+						    <div title="<s:text name='title.grid.myLeads'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                               <table id="myLeadGrid"></table>	
-                           </div>  
-						   <div title="<s:text name='title.grid.myMeetings'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
-                              <table id="myMeetingGrid"></table>	
-                           </div>                                                    
+                            </div>  
+                          </s:if> 
+						  <s:if test="#request.user.view_meeting == 1"> 
+						    <div title="<s:text name='title.grid.myMeetings'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
+                               <table id="myMeetingGrid"></table>	
+                            </div>
+                          </s:if>                                                    
 						</div>
 						<div style="width:50%;">
+						  <s:if test="#request.user.view_account == 1">
 						   <div title="<s:text name='title.grid.myAccounts'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                               <table id="myAccountGrid"></table>	
                            </div>
+                          </s:if> 
+                          <s:if test="#request.user.view_opportunity == 1">
 						   <div title="<s:text name='title.grid.myOpportunities'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                               <table id="myOpportunityGrid"></table>	
                            </div>
+                          </s:if> 
+                          <s:if test="#request.user.view_call == 1">
 						   <div title="<s:text name='title.grid.myCalls'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                               <table id="myCallGrid"></table>	
                            </div>                                                        
+                          </s:if> 
 						</div>
 					</div>
 				</div>			

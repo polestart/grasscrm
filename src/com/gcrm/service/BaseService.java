@@ -47,8 +47,8 @@ public class BaseService<T extends Serializable> implements IBaseService<T> {
      * 
      * @see com.gcrm.service.IBaseService#makePersistent(java.io.Serializable)
      */
-    public void makePersistent(T entity) {
-        baseDao.makePersistent(entity);
+    public T makePersistent(T entity) {
+        return baseDao.makePersistent(entity);
     }
 
     /*

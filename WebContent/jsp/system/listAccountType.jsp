@@ -45,6 +45,14 @@
 				</h2>
 			</div>
 			<div id="feature-content">
+				<table style="" cellspacing="10" cellpadding="0" width="100%">
+				    <s:if test="hasActionErrors()"> 
+						<tr>
+							<td align="left" colspan="4"><font color="red"><s:actionerror /></font></td>
+						</tr>	
+					</s:if>   
+				</table>
+								
 				<table id="tt" title="<s:text name='title.grid.accountType'/>"
 					style="width: 700px; height: 380px" toolbar="#toolbar"
 					pagination="true" rownumbers="true" fitColumns="true"
@@ -63,12 +71,18 @@
 					</thead>
 				</table>
 				<div id="toolbar">
+				  <s:if test="#request.user.create_system == 1">
 					<a href="#" class="easyui-linkbutton" iconCls="icon-add"
 						plain="true" onclick="javascript:$('#tt').edatagrid('addRow')"><s:text name='button.create'/></a>
+				  </s:if>	
+				  <s:if test="#request.user.delete_system == 1">
 					<a id="delete" href="#" class="easyui-linkbutton"
 						iconCls="icon-remove" plain="true"><s:text name='button.delete'/></a>
+				  </s:if>
+				  <s:if test="#request.user.create_system == 1 || #request.user.update_system == 1">	
 					<a href="#" class="easyui-linkbutton" iconCls="icon-save"
 						plain="true" onclick="javascript:$('#tt').edatagrid('saveRow')"><s:text name='button.save'/></a>
+				  </s:if>		
 					<a href="#" class="easyui-linkbutton" iconCls="icon-undo"
 						plain="true" onclick="javascript:$('#tt').edatagrid('cancelRow')"><s:text name='button.cancel'/></a>
 				</div>

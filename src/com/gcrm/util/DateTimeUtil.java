@@ -18,7 +18,6 @@ package com.gcrm.util;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -43,9 +42,7 @@ public class DateTimeUtil {
     public static String getSelectOptions() {
         if (options == null) {
             StringBuilder optionBuider = new StringBuilder();
-            Locale local = Locale.getDefault();
-            ResourceBundle rb = ResourceBundle.getBundle("MessageResources",
-                    local);
+            ResourceBundle rb = CommonUtil.getResourceBundle();
             optionBuider.append(DateTimeUtil.DATE_NONE).append(":;")
                     .append(DateTimeUtil.DATE_TODAY).append(":")
                     .append(rb.getString("date.today")).append(";")

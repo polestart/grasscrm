@@ -19,6 +19,7 @@
         </action>
         
         <action name="deleteAccountType" class="accountTypeAction" method="delete">
+            <result name="input">/jsp/system/listAccountType.jsp</result>
 			<result type="redirect">/jsp/system/listAccountType.jsp</result>
         </action>   
 
@@ -36,6 +37,7 @@
         </action>
         
         <action name="deleteCallStatus" class="callStatusAction" method="delete">
+            <result name="input">/jsp/system/listCallStatus.jsp</result>
 			<result type="redirect">/jsp/system/listCallStatus.jsp</result>
         </action> 
 
@@ -53,6 +55,7 @@
         </action>
         
         <action name="deleteCallDirection" class="callDirectionAction" method="delete">
+            <result name="input">/jsp/system/listCallDirection.jsp</result>
 			<result type="redirect">/jsp/system/listCallDirection.jsp</result>
         </action>
         
@@ -70,6 +73,7 @@
         </action>
         
         <action name="deleteCampaignType" class="campaignTypeAction" method="delete">
+			<result name="input">/jsp/system/listCampaignType.jsp</result>
 			<result type="redirect">/jsp/system/listCampaignType.jsp</result>
         </action> 
         
@@ -87,6 +91,7 @@
         </action>
         
         <action name="deleteCampaignStatus" class="campaignStatusAction" method="delete">
+			<result name="input">/jsp/system/listCampaignStatus.jsp</result>
 			<result type="redirect">/jsp/system/listCampaignStatus.jsp</result>
         </action>  
 
@@ -104,6 +109,7 @@
         </action>
         
         <action name="deleteCaseOrigin" class="caseOriginAction" method="delete">
+			<result name="input">/jsp/system/listCaseOrigin.jsp</result>
 			<result type="redirect">/jsp/system/listCaseOrigin.jsp</result>
         </action> 
        
@@ -121,6 +127,7 @@
         </action>
         
         <action name="deleteCasePriority" class="casePriorityAction" method="delete">
+			<result name="input">/jsp/system/listCasePriority.jsp</result>
 			<result type="redirect">/jsp/system/listCasePriority.jsp</result>
         </action>             
  
@@ -138,6 +145,7 @@
         </action>
         
         <action name="deleteCaseReason" class="caseReasonAction" method="delete">
+			<result name="input">/jsp/system/listCaseReason.jsp</result>
 			<result type="redirect">/jsp/system/listCaseReason.jsp</result>
         </action>  
  
@@ -155,6 +163,7 @@
         </action>
         
         <action name="deleteCaseStatus" class="caseStatusAction" method="delete">
+			<result name="input">/jsp/system/listCaseStatus.jsp</result>
 			<result type="redirect">/jsp/system/listCaseStatus.jsp</result>
         </action>  
  
@@ -172,6 +181,7 @@
         </action>
         
         <action name="deleteCaseType" class="caseTypeAction" method="delete">
+			<result name="input">/jsp/system/listCaseType.jsp</result>
 			<result type="redirect">/jsp/system/listCaseType.jsp</result>
         </action>
                 
@@ -189,6 +199,7 @@
         </action>
         
         <action name="deleteCurrency" class="currencyAction" method="delete">
+			<result name="input">/jsp/system/listCurrency.jsp</result>
 			<result type="redirect">/jsp/system/listCurrency.jsp</result>
         </action>   
 
@@ -206,6 +217,7 @@
         </action>
         
         <action name="deleteDocumentCategory" class="documentCategoryAction" method="delete">
+			<result name="input">/jsp/system/listDocumentCategory.jsp</result>
 			<result type="redirect">/jsp/system/listDocumentCategory.jsp</result>
         </action>  
 
@@ -223,6 +235,7 @@
         </action>
         
         <action name="deleteDocumentStatus" class="documentStatusAction" method="delete">
+			<result name="input">/jsp/system/listDocumentStatus.jsp</result>
 			<result type="redirect">/jsp/system/listDocumentStatus.jsp</result>
         </action> 
 
@@ -240,6 +253,7 @@
         </action>
         
         <action name="deleteDocumentSubCategory" class="documentSubCategoryAction" method="delete">
+			<result name="input">/jsp/system/listDocumentSubCategory.jsp</result>
 			<result type="redirect">/jsp/system/listDocumentSubCategory.jsp</result>
         </action> 
 
@@ -257,6 +271,7 @@
         </action>
         
         <action name="deleteDocumentType" class="documentTypeAction" method="delete">
+			<result name="input">/jsp/system/listDocumentType.jsp</result>
 			<result type="redirect">/jsp/system/listDocumentType.jsp</result>
         </action> 
                                 
@@ -274,6 +289,7 @@
         </action>
         
         <action name="deleteIndustry" class="industryAction" method="delete">
+			<result name="input">/jsp/system/listIndustry.jsp</result>
 			<result type="redirect">/jsp/system/listIndustry.jsp</result>
         </action> 
         
@@ -291,6 +307,7 @@
         </action>
         
         <action name="deleteLeadSource" class="leadSourceAction" method="delete">
+			<result name="input">/jsp/system/listLeadSource.jsp</result>
 			<result type="redirect">/jsp/system/listLeadSource.jsp</result>
         </action> 
 
@@ -308,6 +325,7 @@
         </action>
         
         <action name="deleteLeadStatus" class="leadStatusAction" method="delete">
+			<result name="input">/jsp/system/listLeadStatus.jsp</result>
 			<result type="redirect">/jsp/system/listLeadStatus.jsp</result>
         </action> 
         
@@ -325,6 +343,7 @@
         </action>
         
         <action name="deleteUserStatus" class="userStatusAction" method="delete">
+			<result name="input">/jsp/system/listUserStatus.jsp</result>
 			<result type="redirect">/jsp/system/listUserStatus.jsp</result>
         </action> 
         
@@ -342,6 +361,7 @@
         </action>
         
         <action name="deleteTaskStatus" class="taskStatusAction" method="delete">
+			<result name="input">/jsp/system/listUserStatus.jsp</result>
 			<result type="redirect">/jsp/system/listUserStatus.jsp</result>
         </action> 
         
@@ -359,6 +379,7 @@
         </action>
 
         <action name="deleteTaskPriority" class="taskPriorityAction" method="delete">
+			<result name="input">/jsp/system/listTaskPriority.jsp</result>
 			<result type="redirect">/jsp/system/listTaskPriority.jsp</result>
         </action> 
         
@@ -376,6 +397,7 @@
         </action>        
 
         <action name="deleteTargetListType" class="targetListTypeAction" method="delete">
+			<result name="input">/jsp/system/listTargetListType.jsp</result>
 			<result type="redirect">/jsp/system/listTargetListType.jsp</result>
         </action> 
         
@@ -393,6 +415,7 @@
         </action>          
         
         <action name="deleteReminderOption" class="reminderOptionAction" method="delete">
+			<result name="input">/jsp/system/listReminderOption.jsp</result>
 			<result type="redirect">/jsp/system/listReminderOption.jsp</result>
         </action>  
         
@@ -401,14 +424,14 @@
         </action>
         
         <action name="editEmailSetting" class="emailSettingAction" method="get">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
 			<interceptor-ref name="prepare"/>
    			<interceptor-ref name="defaultStack"/>
 			<result>/jsp/system/emailSetting.jsp</result>
         </action>
                         
         <action name="saveEmailSetting" class="emailSettingAction" method="save">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
 			<interceptor-ref name="prepare"/>
    			<interceptor-ref name="defaultStack"/>
             <result name="input">/jsp/system/emailSetting.jsp.jsp</result>          

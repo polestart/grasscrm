@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -37,13 +36,12 @@ import com.gcrm.domain.DocumentStatus;
 import com.gcrm.domain.DocumentSubCategory;
 import com.gcrm.domain.Opportunity;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.IDocumentService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -89,7 +87,9 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     public String save() throws Exception {
         saveEntity();
         File file = this.getUpload();
-        this.baseService.save(document, file);
+        document = this.baseService.save(document, file);
+        this.setId(document.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -137,12 +137,7 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
             }
             this.getBaseInfo(document);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
         }
         return SUCCESS;
     }
@@ -153,24 +148,27 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<Document> documents = new ArrayList<Document>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            Document documentInstance = this.baseService.getEntityById(
-                    Document.class, id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(document, fieldName);
-                BeanUtil.setFieldValue(documentInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<Document> documents = new ArrayList<Document>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                Document documentInstance = this.baseService.getEntityById(
+                        Document.class, id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil.getFieldValue(document, fieldName);
+                    BeanUtil.setFieldValue(documentInstance, fieldName, value);
+                }
+                documentInstance.setUpdated_by(user);
+                documentInstance.setUpdated_on(new Date());
+                documents.add(documentInstance);
             }
-            documentInstance.setUpdated_by(user);
-            documentInstance.setUpdated_on(new Date());
-            documents.add(documentInstance);
-        }
-        if (documents.size() > 0) {
-            this.baseService.batchUpdate(documents);
+            if (documents.size() > 0) {
+                this.baseService.batchUpdate(documents);
+            }
         }
         return SUCCESS;
     }
@@ -180,7 +178,19 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
      * 
      * @throws ParseException
      */
-    private void saveEntity() throws ParseException {
+    private void saveEntity() throws Exception {
+        if (document.getId() == null) {
+            UserUtil.permissionCheck("create_document");
+        } else {
+            UserUtil.permissionCheck("update_document");
+            Document originalDocument = baseService.getEntityById(
+                    Document.class, document.getId());
+            document.setContacts(originalDocument.getContacts());
+            document.setCases(originalDocument.getCases());
+            document.setAccounts(originalDocument.getAccounts());
+            document.setOpportunities(originalDocument.getOpportunities());
+        }
+
         DocumentStatus status = null;
         if (statusID != null) {
             status = documentStatusService.getEntityById(DocumentStatus.class,
@@ -206,6 +216,11 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
             assignedTo = userService.getEntityById(User.class, assignedToID);
         }
         document.setAssigned_to(assignedTo);
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        document.setOwner(owner);
         Document relatedDocument = null;
         if (relatedDocumentID != null) {
             relatedDocument = baseService.getEntityById(Document.class,
@@ -494,6 +509,7 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToID
      */
+    @Override
     public Integer getAssignedToID() {
         return assignedToID;
     }
@@ -502,6 +518,7 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
      * @param assignedToID
      *            the assignedToID to set
      */
+    @Override
     public void setAssignedToID(Integer assignedToID) {
         this.assignedToID = assignedToID;
     }
@@ -667,6 +684,7 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToText
      */
+    @Override
     public String getAssignedToText() {
         return assignedToText;
     }

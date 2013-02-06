@@ -18,11 +18,15 @@ package com.gcrm.action;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.gcrm.domain.Role;
 import com.gcrm.domain.User;
@@ -30,6 +34,8 @@ import com.gcrm.domain.UserStatus;
 import com.gcrm.security.AuthenticationFilter;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.BeanUtil;
+import com.gcrm.util.CommonUtil;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -47,10 +53,6 @@ public class EditUserAction extends BaseEditAction implements Preparable {
     private List<UserStatus> statuses;
     private Integer statusID = null;
     private Integer reportToID = null;
-    private List<Role> leftRoles;
-    private List<Role> rightRoles;
-    private String[] leftRole;
-    private String[] rightRole;
 
     /**
      * Saves the entity.
@@ -59,7 +61,9 @@ public class EditUserAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
-        getBaseService().makePersistent(user);
+        user = getBaseService().makePersistent(user);
+        this.setId(user.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -79,14 +83,31 @@ public class EditUserAction extends BaseEditAction implements Preparable {
             if (reportTo != null) {
                 reportToID = reportTo.getId();
             }
-            Set<Role> roleSet = user.getRoles();
-            rightRoles = new ArrayList<Role>();
-            for (Role role : roleSet) {
-                rightRoles.add(role);
+            Set<Role> roles = user.getRoles();
+
+            ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+            for (Role role : roles) {
+                SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(
+                        role.getName());
+                authorities.add(grantedAuthority);
+                try {
+                    UserUtil.setAccessValue(role, user);
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to set the Access value");
+                }
             }
 
-            leftRoles.removeAll(rightRoles);
-            ;
+            ResourceBundle rb = CommonUtil.getResourceBundle();
+            Map<Integer, String> scopeMap = new HashMap<Integer, String>();
+            scopeMap.put(0, rb.getString("access.notSet.value"));
+            scopeMap.put(1, rb.getString("access.all.value"));
+            scopeMap.put(2, rb.getString("access.owner.value"));
+            user.setScopeMap(scopeMap);
+            Map<Integer, String> accessMap = new HashMap<Integer, String>();
+            accessMap.put(0, rb.getString("access.notSet.value"));
+            accessMap.put(1, rb.getString("access.enabled.value"));
+            accessMap.put(2, rb.getString("access.disabled.value"));
+            user.setAccessMap(accessMap);
             this.getBaseInfo(user);
         }
         return SUCCESS;
@@ -98,47 +119,42 @@ public class EditUserAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<User> users = new ArrayList<User>();
-        User loginUser = this.getLoginUser();
-        User user = baseService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            User userInstance = this.baseService.getEntityById(User.class, id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(user, fieldName);
-                BeanUtil.setFieldValue(userInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<User> users = new ArrayList<User>();
+            User loginUser = this.getLoginUser();
+            User user = baseService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                User userInstance = this.baseService.getEntityById(User.class,
+                        id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil.getFieldValue(user, fieldName);
+                    BeanUtil.setFieldValue(userInstance, fieldName, value);
+                }
+                userInstance.setUpdated_by(user);
+                userInstance.setUpdated_on(new Date());
+                users.add(userInstance);
             }
-            userInstance.setUpdated_by(user);
-            userInstance.setUpdated_on(new Date());
-            users.add(userInstance);
-        }
-        if (users.size() > 0) {
-            this.baseService.batchUpdate(users);
+            if (users.size() > 0) {
+                this.baseService.batchUpdate(users);
+            }
         }
         return SUCCESS;
     }
 
     /**
      * Saves entity field
+     * 
+     * @throws Exception
      */
-    private void saveEntity() {
+    private void saveEntity() throws Exception {
         UserStatus status = null;
         if (statusID != null) {
             status = userStatusService
                     .getEntityById(UserStatus.class, statusID);
         }
-        if (rightRole != null && rightRole.length > 0) {
-            Set<Role> roleSet = new HashSet<Role>(0);
-            for (int i = 0; i < rightRole.length; i++) {
-                String roleID = rightRole[i];
-                Role role = roleService.getEntityById(Role.class,
-                        Integer.parseInt(roleID));
-                roleSet.add(role);
-            }
-            user.setRoles(roleSet);
-        }
-
         user.setStatus(status);
 
         User reportTo = null;
@@ -148,6 +164,7 @@ public class EditUserAction extends BaseEditAction implements Preparable {
         user.setReport_to(reportTo);
         Md5PasswordEncoder encoder = new Md5PasswordEncoder();
         if (user.getId() != null) {
+            UserUtil.permissionCheck("update_system");
             User originalUser = baseService.getEntityById(User.class,
                     user.getId());
             String oldPassword = originalUser.getPassword();
@@ -155,7 +172,12 @@ public class EditUserAction extends BaseEditAction implements Preparable {
                 user.setPassword(encoder.encodePassword(user.getPassword(),
                         AuthenticationFilter.SALT));
             }
+            user.setRoles(originalUser.getRoles());
+            user.setTargetLists(originalUser.getTargetLists());
+            user.setCalls(originalUser.getCalls());
+            user.setMeetings(originalUser.getMeetings());
         } else {
+            UserUtil.permissionCheck("create_system");
             user.setPassword(encoder.encodePassword(user.getPassword(),
                     AuthenticationFilter.SALT));
         }
@@ -169,7 +191,6 @@ public class EditUserAction extends BaseEditAction implements Preparable {
     public void prepare() throws Exception {
         this.statuses = userStatusService.getAllObjects(UserStatus.class
                 .getSimpleName());
-        this.leftRoles = roleService.getAllObjects(Role.class.getSimpleName());
     }
 
     /**
@@ -275,66 +296,6 @@ public class EditUserAction extends BaseEditAction implements Preparable {
      */
     public void setRoleService(IBaseService<Role> roleService) {
         this.roleService = roleService;
-    }
-
-    /**
-     * @return the leftRoles
-     */
-    public List<Role> getLeftRoles() {
-        return leftRoles;
-    }
-
-    /**
-     * @param leftRoles
-     *            the leftRoles to set
-     */
-    public void setLeftRoles(List<Role> leftRoles) {
-        this.leftRoles = leftRoles;
-    }
-
-    /**
-     * @return the rightRoles
-     */
-    public List<Role> getRightRoles() {
-        return rightRoles;
-    }
-
-    /**
-     * @param rightRoles
-     *            the rightRoles to set
-     */
-    public void setRightRoles(List<Role> rightRoles) {
-        this.rightRoles = rightRoles;
-    }
-
-    /**
-     * @return the leftRole
-     */
-    public String[] getLeftRole() {
-        return leftRole;
-    }
-
-    /**
-     * @param leftRole
-     *            the leftRole to set
-     */
-    public void setLeftRole(String[] leftRole) {
-        this.leftRole = leftRole;
-    }
-
-    /**
-     * @return the rightRole
-     */
-    public String[] getRightRole() {
-        return rightRole;
-    }
-
-    /**
-     * @param rightRole
-     *            the rightRole to set
-     */
-    public void setRightRole(String[] rightRole) {
-        this.rightRole = rightRole;
     }
 
 }

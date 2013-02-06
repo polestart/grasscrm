@@ -15,40 +15,49 @@
  */
 package com.gcrm.util;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Common util
  */
 public class CommonUtil {
 
-	
-	/**
-	 * Confirms if the string is null or empty
-	 * 
-	 * @param str input string
-	 * @return the flat to identify if the string is null or empty
-	 */
-	public static boolean isNullOrEmpty(String str) {
+    /**
+     * Confirms if the string is null or empty
+     * 
+     * @param str
+     *            input string
+     * @return the flat to identify if the string is null or empty
+     */
+    public static boolean isNullOrEmpty(String str) {
 
-		if (str == null || "".equals(str.trim())) {
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Converts string from null to empty
-	 * 
-	 * @param str input string
-	 * @return the converted string
-	 */	
-	public static String fromNullToEmpty(String str) {
+        if (str == null || "".equals(str.trim())) {
+            return true;
+        }
+        return false;
+    }
 
-		if (str == null) {
-			return "";
-		}else{
-			return str;
-		}
-	}
+    /**
+     * Converts string from null to empty
+     * 
+     * @param str
+     *            input string
+     * @return the converted string
+     */
+    public static String fromNullToEmpty(String str) {
+
+        if (str == null) {
+            return "";
+        } else {
+            return str;
+        }
+    }
+
+    public static ResourceBundle getResourceBundle() {
+        Locale local = Locale.getDefault();
+        ResourceBundle rb = ResourceBundle.getBundle("MessageResources", local);
+        return rb;
+    }
 
 }

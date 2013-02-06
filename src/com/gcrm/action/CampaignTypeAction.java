@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 
 import com.gcrm.domain.CampaignType;
-import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -33,85 +33,92 @@ import com.gcrm.vo.SearchResult;
  */
 public class CampaignTypeAction extends BaseListAction {
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private static final long serialVersionUID = -2404576552417042445L;
 
-	private IBaseService<CampaignType> baseService;
-	private CampaignType campaignType;
+    private IBaseService<CampaignType> baseService;
+    private CampaignType campaignType;
 
-	private static final String CLAZZ = CampaignType.class.getSimpleName();
+    private static final String CLAZZ = CampaignType.class.getSimpleName();
 
-	/**
-	 * Gets the list JSON data.
-	 * 
-	 * @return list JSON data
-	 */
-	public String list() throws Exception {
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    @Override
+    public String list() throws Exception {
+        UserUtil.permissionCheck("view_system");
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<CampaignType> result = baseService.getPaginationObjects(
+                CLAZZ, searchCondition);
+        List<CampaignType> campaignTypes = result.getResult();
 
-		SearchCondition searchCondition = getSearchCondition();
-		SearchResult<CampaignType> result = baseService.getPaginationObjects(
-				CLAZZ, searchCondition);
-		List<CampaignType> campaignTypes = result.getResult();
+        long totalRecords = result.getTotalRecords();
 
-		long totalRecords = result.getTotalRecords();
+        // Constructs the JSON data
+        String json = "{\"total\": " + totalRecords + ",\"rows\": [";
+        int size = campaignTypes.size();
+        for (int i = 0; i < size; i++) {
+            CampaignType instance = campaignTypes.get(i);
+            Integer id = instance.getId();
+            String name = instance.getName();
+            int sequence = instance.getSequence();
 
-		// Constructs the JSON data
-		String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-		int size = campaignTypes.size();
-		for (int i = 0; i < size; i++) {
-			CampaignType instance = (CampaignType) campaignTypes.get(i);
-			Integer id = instance.getId();
-			String name = instance.getName();
-			int sequence = instance.getSequence();
+            json += "{\"id\":\"" + id + "\",\"campaignType.id\":\"" + id
+                    + "\",\"campaignType.name\":\"" + name
+                    + "\",\"campaignType.sequence\":\"" + sequence + "\"}";
+            if (i < size - 1) {
+                json += ",";
+            }
+        }
+        json += "]}";
 
-			json += "{\"id\":\"" + id + "\",\"campaignType.id\":\"" + id
-					+ "\",\"campaignType.name\":\"" + name
-					+ "\",\"campaignType.sequence\":\"" + sequence + "\"}";
-			if (i < size - 1) {
-				json += ",";
-			}
-		}
-		json += "]}";
+        // Returns JSON data back to page
+        HttpServletResponse response = ServletActionContext.getResponse();
+        response.getWriter().write(json);
+        return null;
+    }
 
-		// Returns JSON data back to page
-		HttpServletResponse response = ServletActionContext.getResponse();
-		response.getWriter().write(json);
-		return null;
-	}
+    /**
+     * Saves the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String save() throws Exception {
+        if (campaignType.getId() == null) {
+            UserUtil.permissionCheck("create_system");
+        } else {
+            UserUtil.permissionCheck("update_system");
+        }
+        getbaseService().makePersistent(campaignType);
+        return SUCCESS;
+    }
 
-	/**
-	 * Saves the entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String save() throws Exception {
-		getbaseService().makePersistent(campaignType);
-		return SUCCESS;
-	}
+    /**
+     * Deletes the selected entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_system");
+        baseService.batchDeleteEntity(CampaignType.class, this.getSeleteIDs());
+        return SUCCESS;
+    }
 
-	/**
-	 * Deletes the selected entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String delete() throws ServiceException {
-		baseService.batchDeleteEntity(CampaignType.class, this.getSeleteIDs());
-		return SUCCESS;
-	}
+    public IBaseService<CampaignType> getbaseService() {
+        return baseService;
+    }
 
-	public IBaseService<CampaignType> getbaseService() {
-		return baseService;
-	}
+    public void setbaseService(IBaseService<CampaignType> baseService) {
+        this.baseService = baseService;
+    }
 
-	public void setbaseService(IBaseService<CampaignType> baseService) {
-		this.baseService = baseService;
-	}
+    public CampaignType getCampaignType() {
+        return campaignType;
+    }
 
-	public CampaignType getCampaignType() {
-		return campaignType;
-	}
-
-	public void setCampaignType(CampaignType campaignType) {
-		this.campaignType = campaignType;
-	}
+    public void setCampaignType(CampaignType campaignType) {
+        this.campaignType = campaignType;
+    }
 
 }

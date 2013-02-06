@@ -43,10 +43,10 @@ import com.gcrm.domain.Meeting;
 import com.gcrm.domain.MeetingStatus;
 import com.gcrm.domain.ReminderOption;
 import com.gcrm.domain.User;
-import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -74,21 +74,52 @@ public class ListMeetingAction extends BaseListAction {
     @Override
     public String list() throws Exception {
 
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<Meeting> result = baseService.getPaginationObjects(CLAZZ,
+                searchCondition);
+        Iterator<Meeting> meetings = result.getResult().iterator();
+        long totalRecords = result.getTotalRecords();
+        getListJson(meetings, totalRecords, null, false);
+        return null;
+    }
+
+    /**
+     * Gets the list data.
+     * 
+     * @return null
+     */
+    public String listFull() throws Exception {
+        UserUtil.permissionCheck("view_meeting");
+
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("start_date", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("end_date", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        User loginUser = UserUtil.getLoginUser();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
+                loginUser.getScope_meeting(), loginUser);
         SearchResult<Meeting> result = baseService.getPaginationObjects(CLAZZ,
                 searchCondition);
         Iterator<Meeting> meetings = result.getResult().iterator();
-
         long totalRecords = result.getTotalRecords();
+        getListJson(meetings, totalRecords, searchCondition, true);
+        return null;
+    }
+
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    public static void getListJson(Iterator<Meeting> meetings,
+            long totalRecords, SearchCondition searchCondition, boolean isList)
+            throws Exception {
 
         StringBuilder jsonBuilder = new StringBuilder("");
-        jsonBuilder.append(getJsonHeader(totalRecords, searchCondition, true));
+        jsonBuilder
+                .append(getJsonHeader(totalRecords, searchCondition, isList));
 
         String statusName = null;
         String assignedTo = null;
@@ -115,42 +146,55 @@ public class ListMeetingAction extends BaseListAction {
                 endDateString = dateTimeFormat.format(endDate);
             }
             String location = instance.getLocation();
-            User user = instance.getAssigned_to();
-            if (user != null) {
-                assignedTo = CommonUtil.fromNullToEmpty(user.getName());
-            } else {
-                assignedTo = "";
-            }
-            User createdBy = instance.getCreated_by();
-            String createdByName = "";
-            if (createdBy != null) {
-                createdByName = CommonUtil.fromNullToEmpty(createdBy.getName());
-            }
-            User updatedBy = instance.getUpdated_by();
-            String updatedByName = "";
-            if (updatedBy != null) {
-                updatedByName = CommonUtil.fromNullToEmpty(updatedBy.getName());
-            }
-            Date createdOn = instance.getCreated_on();
-            String createdOnName = "";
-            if (createdOn != null) {
-                createdOnName = dateTimeFormat.format(createdOn);
-            }
-            Date updatedOn = instance.getUpdated_on();
-            String updatedOnName = "";
-            if (updatedOn != null) {
-                updatedOnName = dateTimeFormat.format(updatedOn);
-            }
 
-            jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
-                    .append(subject).append("\",\"").append(statusName)
-                    .append("\",\"").append(startDateString).append("\",\"")
-                    .append(endDateString).append("\",\"").append(location)
-                    .append("\",\"").append(assignedTo).append("\",\"")
-                    .append(createdByName).append("\",\"")
-                    .append(updatedByName).append("\",\"")
-                    .append(createdOnName).append("\",\"")
-                    .append(updatedOnName).append("\"]}");
+            if (isList) {
+                User user = instance.getAssigned_to();
+                if (user != null) {
+                    assignedTo = CommonUtil.fromNullToEmpty(user.getName());
+                } else {
+                    assignedTo = "";
+                }
+                User createdBy = instance.getCreated_by();
+                String createdByName = "";
+                if (createdBy != null) {
+                    createdByName = CommonUtil.fromNullToEmpty(createdBy
+                            .getName());
+                }
+                User updatedBy = instance.getUpdated_by();
+                String updatedByName = "";
+                if (updatedBy != null) {
+                    updatedByName = CommonUtil.fromNullToEmpty(updatedBy
+                            .getName());
+                }
+                Date createdOn = instance.getCreated_on();
+                String createdOnName = "";
+                if (createdOn != null) {
+                    createdOnName = dateTimeFormat.format(createdOn);
+                }
+                Date updatedOn = instance.getUpdated_on();
+                String updatedOnName = "";
+                if (updatedOn != null) {
+                    updatedOnName = dateTimeFormat.format(updatedOn);
+                }
+
+                jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
+                        .append(subject).append("\",\"").append(statusName)
+                        .append("\",\"").append(startDateString)
+                        .append("\",\"").append(endDateString).append("\",\"")
+                        .append(location).append("\",\"").append(assignedTo)
+                        .append("\",\"").append(createdByName).append("\",\"")
+                        .append(updatedByName).append("\",\"")
+                        .append(createdOnName).append("\",\"")
+                        .append(updatedOnName).append("\"]}");
+            } else {
+                jsonBuilder.append("{\"id\":\"").append(id)
+                        .append("\",\"subject\":\"").append(subject)
+                        .append("\",\"status.name\":\"").append(statusName)
+                        .append("\",\"start_date\":\"").append(startDate)
+                        .append("\",\"end_date\":\"").append(endDate)
+                        .append("\",\"location\":\"").append(location)
+                        .append("\"}");
+            }
             if (meetings.hasNext()) {
                 jsonBuilder.append(",");
             }
@@ -160,7 +204,6 @@ public class ListMeetingAction extends BaseListAction {
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
         response.getWriter().write(jsonBuilder.toString());
-        return null;
     }
 
     /**
@@ -211,7 +254,8 @@ public class ListMeetingAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_meeting");
         baseService.batchDeleteEntity(Meeting.class, this.getSeleteIDs());
         return SUCCESS;
     }
@@ -221,7 +265,8 @@ public class ListMeetingAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String copy() throws ServiceException {
+    public String copy() throws Exception {
+        UserUtil.permissionCheck("create_meeting");
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -242,6 +287,8 @@ public class ListMeetingAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        UserUtil.permissionCheck("view_meeting");
+
         File file = new File(CLAZZ + ".csv");
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);

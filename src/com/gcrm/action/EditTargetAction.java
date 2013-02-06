@@ -19,17 +19,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
 import com.gcrm.domain.Target;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.BeanUtil;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -56,7 +54,9 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
-        getBaseService().makePersistent(target);
+        target = getBaseService().makePersistent(target);
+        this.setId(target.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -80,12 +80,7 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
             }
             this.getBaseInfo(target);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
         }
         return SUCCESS;
     }
@@ -96,32 +91,46 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<Target> targets = new ArrayList<Target>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            Target targetInstance = this.baseService.getEntityById(
-                    Target.class, id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(target, fieldName);
-                BeanUtil.setFieldValue(targetInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<Target> targets = new ArrayList<Target>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                Target targetInstance = this.baseService.getEntityById(
+                        Target.class, id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil.getFieldValue(target, fieldName);
+                    BeanUtil.setFieldValue(targetInstance, fieldName, value);
+                }
+                targetInstance.setUpdated_by(user);
+                targetInstance.setUpdated_on(new Date());
+                targets.add(targetInstance);
             }
-            targetInstance.setUpdated_by(user);
-            targetInstance.setUpdated_on(new Date());
-            targets.add(targetInstance);
-        }
-        if (targets.size() > 0) {
-            this.baseService.batchUpdate(targets);
+            if (targets.size() > 0) {
+                this.baseService.batchUpdate(targets);
+            }
         }
         return SUCCESS;
     }
 
     /**
      * Saves entity field
+     * 
+     * @throws Exception
      */
-    private void saveEntity() {
+    private void saveEntity() throws Exception {
+        if (target.getId() == null) {
+            UserUtil.permissionCheck("create_target");
+        } else {
+            UserUtil.permissionCheck("update_target");
+            Target originalTarget = baseService.getEntityById(Target.class,
+                    target.getId());
+            target.setTargetLists(originalTarget.getTargetLists());
+        }
+
         Account account = null;
         if (accountID != null) {
             account = accountService.getEntityById(Account.class, accountID);
@@ -133,6 +142,11 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
             assignedTo = userService.getEntityById(User.class, assignedToID);
         }
         target.setAssigned_to(assignedTo);
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        target.setOwner(owner);
 
         if ("TargetList".equals(this.getRelationKey())) {
             TargetList targetList = targetListService.getEntityById(
@@ -143,7 +157,7 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
             }
             targetLists.add(targetList);
         }
-        super.updateBaseInfo(account);
+        super.updateBaseInfo(target);
     }
 
     /**
@@ -232,6 +246,7 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToID
      */
+    @Override
     public Integer getAssignedToID() {
         return assignedToID;
     }
@@ -240,6 +255,7 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
      * @param assignedToID
      *            the assignedToID to set
      */
+    @Override
     public void setAssignedToID(Integer assignedToID) {
         this.assignedToID = assignedToID;
     }
@@ -262,6 +278,7 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToText
      */
+    @Override
     public String getAssignedToText() {
         return assignedToText;
     }
@@ -270,6 +287,7 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
      * @param assignedToText
      *            the assignedToText to set
      */
+    @Override
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
     }

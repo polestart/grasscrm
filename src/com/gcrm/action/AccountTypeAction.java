@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 
 import com.gcrm.domain.AccountType;
-import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -47,7 +47,7 @@ public class AccountTypeAction extends BaseListAction {
      */
     @Override
     public String list() throws Exception {
-
+        UserUtil.permissionCheck("view_system");
         SearchCondition searchCondition = getSearchCondition();
         SearchResult<AccountType> result = baseService.getPaginationObjects(
                 CLAZZ, searchCondition);
@@ -85,6 +85,11 @@ public class AccountTypeAction extends BaseListAction {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
+        if (accountType.getId() == null) {
+            UserUtil.permissionCheck("create_system");
+        } else {
+            UserUtil.permissionCheck("update_system");
+        }
         getbaseService().makePersistent(accountType);
         return SUCCESS;
     }
@@ -94,7 +99,8 @@ public class AccountTypeAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_system");
         baseService.batchDeleteEntity(AccountType.class, this.getSeleteIDs());
         return SUCCESS;
     }

@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 
 import com.gcrm.domain.CallStatus;
-import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -33,86 +33,92 @@ import com.gcrm.vo.SearchResult;
  */
 public class CallStatusAction extends BaseListAction {
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private static final long serialVersionUID = -2404576552417042445L;
 
-	private IBaseService<CallStatus> baseService;
-	private CallStatus callStatus;
+    private IBaseService<CallStatus> baseService;
+    private CallStatus callStatus;
 
-	private static final String CLAZZ = CallStatus.class.getSimpleName();
+    private static final String CLAZZ = CallStatus.class.getSimpleName();
 
-	/**
-	 * Gets the list JSON data.
-	 * 
-	 * @return list JSON data
-	 */
-	public String list() throws Exception {
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    @Override
+    public String list() throws Exception {
+        UserUtil.permissionCheck("view_system");
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<CallStatus> result = baseService.getPaginationObjects(
+                CLAZZ, searchCondition);
+        List<CallStatus> callStatuss = result.getResult();
 
-		SearchCondition searchCondition = getSearchCondition();
-		SearchResult<CallStatus> result = baseService.getPaginationObjects(
-				CLAZZ, searchCondition);
-		List<CallStatus> callStatuss = result.getResult();
+        long totalRecords = result.getTotalRecords();
 
-		long totalRecords = result.getTotalRecords();
+        // Constructs the JSON data
+        String json = "{\"total\": " + totalRecords + ",\"rows\": [";
+        int size = callStatuss.size();
+        for (int i = 0; i < size; i++) {
+            CallStatus instance = callStatuss.get(i);
+            Integer id = instance.getId();
+            String name = instance.getName();
+            int sequence = instance.getSequence();
 
-		// Constructs the JSON data
-		String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-		int size = callStatuss.size();
-		for (int i = 0; i < size; i++) {
-			CallStatus instance = (CallStatus) callStatuss.get(i);
-			Integer id = instance.getId();
-			String name = instance.getName();
-			int sequence = instance.getSequence();
+            json += "{\"id\":\"" + id + "\",\"callStatus.id\":\"" + id
+                    + "\",\"callStatus.name\":\"" + name
+                    + "\",\"callStatus.sequence\":\"" + sequence + "\"}";
+            if (i < size - 1) {
+                json += ",";
+            }
+        }
+        json += "]}";
 
-			json += "{\"id\":\"" + id + "\",\"callStatus.id\":\"" + id
-					+ "\",\"callStatus.name\":\"" + name
-					+ "\",\"callStatus.sequence\":\"" + sequence + "\"}";
-			if (i < size - 1) {
-				json += ",";
-			}
-		}
-		json += "]}";
+        // Returns JSON data back to page
+        HttpServletResponse response = ServletActionContext.getResponse();
+        response.getWriter().write(json);
+        return null;
+    }
 
-		// Returns JSON data back to page
-		HttpServletResponse response = ServletActionContext.getResponse();
-		response.getWriter().write(json);
-		return null;
-	}
+    /**
+     * Saves the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String save() throws Exception {
+        if (callStatus.getId() == null) {
+            UserUtil.permissionCheck("create_system");
+        } else {
+            UserUtil.permissionCheck("update_system");
+        }
+        getbaseService().makePersistent(callStatus);
+        return SUCCESS;
+    }
 
-	/**
-	 * Saves the entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String save() throws Exception {
+    /**
+     * Deletes the selected entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_system");
+        baseService.batchDeleteEntity(CallStatus.class, this.getSeleteIDs());
+        return SUCCESS;
+    }
 
-		getbaseService().makePersistent(callStatus);
-		return SUCCESS;
-	}
+    public IBaseService<CallStatus> getbaseService() {
+        return baseService;
+    }
 
-	/**
-	 * Deletes the selected entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String delete() throws ServiceException {
-		baseService.batchDeleteEntity(CallStatus.class, this.getSeleteIDs());
-		return SUCCESS;
-	}
+    public void setbaseService(IBaseService<CallStatus> baseService) {
+        this.baseService = baseService;
+    }
 
-	public IBaseService<CallStatus> getbaseService() {
-		return baseService;
-	}
+    public CallStatus getCallStatus() {
+        return callStatus;
+    }
 
-	public void setbaseService(IBaseService<CallStatus> baseService) {
-		this.baseService = baseService;
-	}
-
-	public CallStatus getCallStatus() {
-		return callStatus;
-	}
-
-	public void setCallStatus(CallStatus callStatus) {
-		this.callStatus = callStatus;
-	}
+    public void setCallStatus(CallStatus callStatus) {
+        this.callStatus = callStatus;
+    }
 
 }

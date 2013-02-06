@@ -36,7 +36,6 @@ public class BeanUtil {
         Class<?> cls = bean.getClass();
 
         Method[] methods = cls.getDeclaredMethods();
-
         String fieldGetName = getGetFieldName(fieldName);
         if (!checkGetMethod(methods, fieldGetName)) {
             return null;
@@ -47,7 +46,7 @@ public class BeanUtil {
     }
 
     /**
-     * set属性的值到Bean
+     * Sets field value
      * 
      * @param bean
      * @param valMap
@@ -69,7 +68,7 @@ public class BeanUtil {
     }
 
     /**
-     * 判断是否存在某属性的 set方法
+     * Gets matched method
      * 
      * @param methods
      * @param fieldSetMet

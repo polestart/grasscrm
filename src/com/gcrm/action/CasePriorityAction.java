@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 
 import com.gcrm.domain.CasePriority;
-import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -33,85 +33,92 @@ import com.gcrm.vo.SearchResult;
  */
 public class CasePriorityAction extends BaseListAction {
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private static final long serialVersionUID = -2404576552417042445L;
 
-	private IBaseService<CasePriority> baseService;
-	private CasePriority casePriority;
+    private IBaseService<CasePriority> baseService;
+    private CasePriority casePriority;
 
-	private static final String CLAZZ = CasePriority.class.getSimpleName();
+    private static final String CLAZZ = CasePriority.class.getSimpleName();
 
-	/**
-	 * Gets the list JSON data.
-	 * 
-	 * @return list JSON data
-	 */
-	public String list() throws Exception {
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    @Override
+    public String list() throws Exception {
+        UserUtil.permissionCheck("view_system");
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<CasePriority> result = baseService.getPaginationObjects(
+                CLAZZ, searchCondition);
+        List<CasePriority> casePrioritys = result.getResult();
 
-		SearchCondition searchCondition = getSearchCondition();
-		SearchResult<CasePriority> result = baseService.getPaginationObjects(
-				CLAZZ, searchCondition);
-		List<CasePriority> casePrioritys = result.getResult();
+        long totalRecords = result.getTotalRecords();
 
-		long totalRecords = result.getTotalRecords();
+        // Constructs the JSON data
+        String json = "{\"total\": " + totalRecords + ",\"rows\": [";
+        int size = casePrioritys.size();
+        for (int i = 0; i < size; i++) {
+            CasePriority instance = casePrioritys.get(i);
+            Integer id = instance.getId();
+            String name = instance.getName();
+            int sequence = instance.getSequence();
 
-		// Constructs the JSON data
-		String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-		int size = casePrioritys.size();
-		for (int i = 0; i < size; i++) {
-			CasePriority instance = (CasePriority) casePrioritys.get(i);
-			Integer id = instance.getId();
-			String name = instance.getName();
-			int sequence = instance.getSequence();
+            json += "{\"id\":\"" + id + "\",\"casePriority.id\":\"" + id
+                    + "\",\"casePriority.name\":\"" + name
+                    + "\",\"casePriority.sequence\":\"" + sequence + "\"}";
+            if (i < size - 1) {
+                json += ",";
+            }
+        }
+        json += "]}";
 
-			json += "{\"id\":\"" + id + "\",\"casePriority.id\":\"" + id
-					+ "\",\"casePriority.name\":\"" + name
-					+ "\",\"casePriority.sequence\":\"" + sequence + "\"}";
-			if (i < size - 1) {
-				json += ",";
-			}
-		}
-		json += "]}";
+        // Returns JSON data back to page
+        HttpServletResponse response = ServletActionContext.getResponse();
+        response.getWriter().write(json);
+        return null;
+    }
 
-		// Returns JSON data back to page
-		HttpServletResponse response = ServletActionContext.getResponse();
-		response.getWriter().write(json);
-		return null;
-	}
+    /**
+     * Saves the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String save() throws Exception {
+        if (casePriority.getId() == null) {
+            UserUtil.permissionCheck("create_system");
+        } else {
+            UserUtil.permissionCheck("update_system");
+        }
+        getbaseService().makePersistent(casePriority);
+        return SUCCESS;
+    }
 
-	/**
-	 * Saves the entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String save() throws Exception {
-		getbaseService().makePersistent(casePriority);
-		return SUCCESS;
-	}
+    /**
+     * Deletes the selected entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_system");
+        baseService.batchDeleteEntity(CasePriority.class, this.getSeleteIDs());
+        return SUCCESS;
+    }
 
-	/**
-	 * Deletes the selected entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String delete() throws ServiceException {
-		baseService.batchDeleteEntity(CasePriority.class, this.getSeleteIDs());
-		return SUCCESS;
-	}
+    public IBaseService<CasePriority> getbaseService() {
+        return baseService;
+    }
 
-	public IBaseService<CasePriority> getbaseService() {
-		return baseService;
-	}
+    public void setbaseService(IBaseService<CasePriority> baseService) {
+        this.baseService = baseService;
+    }
 
-	public void setbaseService(IBaseService<CasePriority> baseService) {
-		this.baseService = baseService;
-	}
+    public CasePriority getCasePriority() {
+        return casePriority;
+    }
 
-	public CasePriority getCasePriority() {
-		return casePriority;
-	}
-
-	public void setCasePriority(CasePriority casePriority) {
-		this.casePriority = casePriority;
-	}
+    public void setCasePriority(CasePriority casePriority) {
+        this.casePriority = casePriority;
+    }
 
 }

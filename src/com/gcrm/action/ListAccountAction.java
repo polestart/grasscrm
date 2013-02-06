@@ -49,6 +49,7 @@ import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -94,11 +95,14 @@ public class ListAccountAction extends BaseListAction {
      * @return null
      */
     public String listFull() throws Exception {
+        UserUtil.permissionCheck("view_account");
+
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
-
-        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        User loginUser = UserUtil.getLoginUser();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
+                loginUser.getScope_account(), loginUser);
         SearchResult<Account> result = baseService.getPaginationObjects(CLAZZ,
                 searchCondition);
         Iterator<Account> accounts = result.getResult().iterator();
@@ -355,7 +359,8 @@ public class ListAccountAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_account");
         baseService.batchDeleteEntity(Account.class, this.getSeleteIDs());
         return SUCCESS;
     }
@@ -386,7 +391,8 @@ public class ListAccountAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String copy() throws ServiceException {
+    public String copy() throws Exception {
+        UserUtil.permissionCheck("create_account");
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -407,6 +413,8 @@ public class ListAccountAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        UserUtil.permissionCheck("view_account");
+
         File file = new File(CLAZZ + ".csv");
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
@@ -542,6 +550,9 @@ public class ListAccountAction extends BaseListAction {
                     String id = row.get("ID");
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         account.setId(Integer.parseInt(id));
+                        UserUtil.permissionCheck("update_account");
+                    } else {
+                        UserUtil.permissionCheck("create_account");
                     }
                     account.setName(CommonUtil.fromNullToEmpty(row.get("Name")));
                     account.setOffice_phone(CommonUtil.fromNullToEmpty(row

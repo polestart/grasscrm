@@ -55,7 +55,7 @@ public interface IBaseDao<T extends Serializable> {
      * @param entity
      *            entity instance
      */
-    public void makePersistent(T entity);
+    public T makePersistent(T entity);
 
     /**
      * Batch updates entities

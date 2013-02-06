@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 
 import com.gcrm.domain.CallDirection;
-import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -33,85 +33,92 @@ import com.gcrm.vo.SearchResult;
  */
 public class CallDirectionAction extends BaseListAction {
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private static final long serialVersionUID = -2404576552417042445L;
 
-	private IBaseService<CallDirection> baseService;
-	private CallDirection callDirection;
+    private IBaseService<CallDirection> baseService;
+    private CallDirection callDirection;
 
-	private static final String CLAZZ = CallDirection.class.getSimpleName();
+    private static final String CLAZZ = CallDirection.class.getSimpleName();
 
-	/**
-	 * Gets the list JSON data.
-	 * 
-	 * @return list JSON data
-	 */
-	public String list() throws Exception {
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    @Override
+    public String list() throws Exception {
+        UserUtil.permissionCheck("view_system");
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<CallDirection> result = baseService.getPaginationObjects(
+                CLAZZ, searchCondition);
+        List<CallDirection> callDirections = result.getResult();
 
-		SearchCondition searchCondition = getSearchCondition();
-		SearchResult<CallDirection> result = baseService.getPaginationObjects(
-				CLAZZ, searchCondition);
-		List<CallDirection> callDirections = result.getResult();
+        long totalRecords = result.getTotalRecords();
 
-		long totalRecords = result.getTotalRecords();
+        // Constructs the JSON data
+        String json = "{\"total\": " + totalRecords + ",\"rows\": [";
+        int size = callDirections.size();
+        for (int i = 0; i < size; i++) {
+            CallDirection instance = callDirections.get(i);
+            Integer id = instance.getId();
+            String name = instance.getName();
+            int sequence = instance.getSequence();
 
-		// Constructs the JSON data
-		String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-		int size = callDirections.size();
-		for (int i = 0; i < size; i++) {
-			CallDirection instance = (CallDirection) callDirections.get(i);
-			Integer id = instance.getId();
-			String name = instance.getName();
-			int sequence = instance.getSequence();
+            json += "{\"id\":\"" + id + "\",\"callDirection.id\":\"" + id
+                    + "\",\"callDirection.name\":\"" + name
+                    + "\",\"callDirection.sequence\":\"" + sequence + "\"}";
+            if (i < size - 1) {
+                json += ",";
+            }
+        }
+        json += "]}";
 
-			json += "{\"id\":\"" + id + "\",\"callDirection.id\":\"" + id
-					+ "\",\"callDirection.name\":\"" + name
-					+ "\",\"callDirection.sequence\":\"" + sequence + "\"}";
-			if (i < size - 1) {
-				json += ",";
-			}
-		}
-		json += "]}";
+        // Returns JSON data back to page
+        HttpServletResponse response = ServletActionContext.getResponse();
+        response.getWriter().write(json);
+        return null;
+    }
 
-		// Returns JSON data back to page
-		HttpServletResponse response = ServletActionContext.getResponse();
-		response.getWriter().write(json);
-		return null;
-	}
+    /**
+     * Saves the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String save() throws Exception {
+        if (callDirection.getId() == null) {
+            UserUtil.permissionCheck("create_system");
+        } else {
+            UserUtil.permissionCheck("update_system");
+        }
+        getbaseService().makePersistent(callDirection);
+        return SUCCESS;
+    }
 
-	/**
-	 * Saves the entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String save() throws Exception {
-		getbaseService().makePersistent(callDirection);
-		return SUCCESS;
-	}
+    /**
+     * Deletes the selected entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_system");
+        baseService.batchDeleteEntity(CallDirection.class, this.getSeleteIDs());
+        return SUCCESS;
+    }
 
-	/**
-	 * Deletes the selected entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String delete() throws ServiceException {
-		baseService.batchDeleteEntity(CallDirection.class, this.getSeleteIDs());
-		return SUCCESS;
-	}
+    public IBaseService<CallDirection> getbaseService() {
+        return baseService;
+    }
 
-	public IBaseService<CallDirection> getbaseService() {
-		return baseService;
-	}
+    public void setbaseService(IBaseService<CallDirection> baseService) {
+        this.baseService = baseService;
+    }
 
-	public void setbaseService(IBaseService<CallDirection> baseService) {
-		this.baseService = baseService;
-	}
+    public CallDirection getCallDirection() {
+        return callDirection;
+    }
 
-	public CallDirection getCallDirection() {
-		return callDirection;
-	}
-
-	public void setCallDirection(CallDirection callDirection) {
-		this.callDirection = callDirection;
-	}
+    public void setCallDirection(CallDirection callDirection) {
+        this.callDirection = callDirection;
+    }
 
 }

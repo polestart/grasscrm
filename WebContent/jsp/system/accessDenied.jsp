@@ -32,15 +32,6 @@
 			</div>
 			<div id="feature-content">
 			  <h2><s:text name="info.access.denied" /></h2>
-				
-			  <p>
-				<%= request.getAttribute("SPRING_SECURITY_403_EXCEPTION")%>
-			  </p>
-			  <p>
-				<%      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-				        if (auth != null) { %>
-				        Authentication object as a String: <%= auth.toString() %><br /><br />
-				<%      } %>
 			  </p>
 			</div>
 		</div>

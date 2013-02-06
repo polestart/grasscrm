@@ -23,12 +23,14 @@ import com.gcrm.domain.Document;
  * Document service Interface
  */
 public interface IDocumentService extends IBaseService<Document> {
-	/**
-	 * Saves document
-	 * 
-	 * @param document document instance
-	 * @param f file that will be saved in document
-	 */	
-	public void save(Document document, File f) throws Exception;
+    /**
+     * Saves document
+     * 
+     * @param document
+     *            document instance
+     * @param f
+     *            file that will be saved in document
+     */
+    public Document save(Document document, File f) throws Exception;
 
 }

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -30,10 +29,9 @@ import com.gcrm.domain.Document;
 import com.gcrm.domain.Industry;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.BeanUtil;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -56,8 +54,6 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
     private List<Industry> industries;
     private Integer typeID = null;
     private Integer industryID = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
     private Integer campaignID = null;
     private Integer managerID = null;
     private String managerText = null;
@@ -88,7 +84,9 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
             documents.add(document);
         }
 
-        getBaseService().makePersistent(account);
+        account = getBaseService().makePersistent(account);
+        this.setId(account.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -98,32 +96,46 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<Account> accounts = new ArrayList<Account>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            Account accountInstance = this.baseService.getEntityById(
-                    Account.class, id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(account, fieldName);
-                BeanUtil.setFieldValue(accountInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<Account> accounts = new ArrayList<Account>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                Account accountInstance = this.baseService.getEntityById(
+                        Account.class, id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil.getFieldValue(account, fieldName);
+                    BeanUtil.setFieldValue(accountInstance, fieldName, value);
+                }
+                accountInstance.setUpdated_by(user);
+                accountInstance.setUpdated_on(new Date());
+                accounts.add(accountInstance);
             }
-            accountInstance.setUpdated_by(user);
-            accountInstance.setUpdated_on(new Date());
-            accounts.add(accountInstance);
-        }
-        if (accounts.size() > 0) {
-            this.baseService.batchUpdate(accounts);
+            if (accounts.size() > 0) {
+                this.baseService.batchUpdate(accounts);
+            }
         }
         return SUCCESS;
     }
 
     /**
      * Saves entity field
+     * 
+     * @throws Exception
      */
-    private void saveEntity() {
+    private void saveEntity() throws Exception {
+        if (account.getId() == null) {
+            UserUtil.permissionCheck("create_account");
+        } else {
+            UserUtil.permissionCheck("update_account");
+            Account originalAcccount = baseService.getEntityById(Account.class,
+                    account.getId());
+            account.setTargetLists(originalAcccount.getTargetLists());
+            account.setDocuments(originalAcccount.getDocuments());
+        }
         AccountType type = null;
         if (typeID != null) {
             type = accountTypeService.getEntityById(AccountType.class, typeID);
@@ -138,10 +150,17 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
         account.setIndustry(industry);
 
         User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            assignedTo = userService.getEntityById(User.class,
+                    this.getAssignedToID());
         }
         account.setAssigned_to(assignedTo);
+
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        account.setOwner(owner);
 
         Account manager = null;
         if (managerID != null) {
@@ -158,7 +177,9 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
      */
     public String get() throws Exception {
         if (this.getId() != null) {
+            UserUtil.permissionCheck("view_account");
             account = baseService.getEntityById(Account.class, this.getId());
+            UserUtil.scopeCheck(account, "scope_account");
             AccountType type = account.getAccount_type();
             if (type != null) {
                 typeID = type.getId();
@@ -170,8 +191,8 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
 
             User assignedTo = account.getAssigned_to();
             if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
 
             Account manager = account.getManager();
@@ -181,12 +202,7 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
             }
             this.getBaseInfo(account);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
         }
         return SUCCESS;
     }
@@ -339,21 +355,6 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the assignedToID
-     */
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
-    }
-
-    /**
      * @return the campaignID
      */
     public Integer getCampaignID() {
@@ -426,21 +427,6 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
      */
     public void setDocumentService(IBaseService<Document> documentService) {
         this.documentService = documentService;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    public String getAssignedToText() {
-        return assignedToText;
-    }
-
-    /**
-     * @param assignedToText
-     *            the assignedToText to set
-     */
-    public void setAssignedToText(String assignedToText) {
-        this.assignedToText = assignedToText;
     }
 
     /**

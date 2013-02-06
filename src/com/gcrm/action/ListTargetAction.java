@@ -46,6 +46,7 @@ import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -88,12 +89,15 @@ public class ListTargetAction extends BaseListAction {
      * @return null
      */
     public String listFull() throws Exception {
+        UserUtil.permissionCheck("view_target");
 
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        User loginUser = UserUtil.getLoginUser();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
+                loginUser.getScope_target(), loginUser);
         SearchResult<Target> result = baseService.getPaginationObjects(CLAZZ,
                 searchCondition);
         Iterator<Target> targets = result.getResult().iterator();
@@ -267,7 +271,8 @@ public class ListTargetAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_target");
         baseService.batchDeleteEntity(Target.class, this.getSeleteIDs());
         return SUCCESS;
     }
@@ -277,7 +282,8 @@ public class ListTargetAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String copy() throws ServiceException {
+    public String copy() throws Exception {
+        UserUtil.permissionCheck("create_target");
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -298,6 +304,8 @@ public class ListTargetAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        UserUtil.permissionCheck("view_target");
+
         File file = new File(CLAZZ + ".csv");
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);

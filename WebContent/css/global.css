@@ -203,3 +203,31 @@ color: #0046AD;
   cursor:pointer; 
 }
 
+.view-table {
+border-bottom-color:#ABC3D7;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-top-color: #4E8CCF;
+border-top-style: solid;
+border-top-width: 2px;
+border-left-color: #ABC3D7;
+border-left-width: 1px;
+border-left-style: solid;
+border-right-color: #ABC3D7;
+border-right-width: 1px;
+border-right-style: solid;
+}
+
+.view-column {
+border-bottom-color: #ABC3D7;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-left-color: #ABC3D7;
+border-left-width: 1px;
+border-left-style: solid;
+padding-bottom: 5px;
+padding-left: 6px;
+padding-right: 6px;
+padding-top: 5px;
+text-align:center;
+}

@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 
 import com.gcrm.domain.MeetingStatus;
-import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -33,85 +33,92 @@ import com.gcrm.vo.SearchResult;
  */
 public class MeetingStatusAction extends BaseListAction {
 
-	private static final long serialVersionUID = -2404576552417042445L;
+    private static final long serialVersionUID = -2404576552417042445L;
 
-	private IBaseService<MeetingStatus> baseService;
-	private MeetingStatus meetingStatus;
+    private IBaseService<MeetingStatus> baseService;
+    private MeetingStatus meetingStatus;
 
-	private static final String CLAZZ = MeetingStatus.class.getSimpleName();
+    private static final String CLAZZ = MeetingStatus.class.getSimpleName();
 
-	/**
-	 * Gets the list JSON data.
-	 * 
-	 * @return list JSON data
-	 */
-	public String list() throws Exception {
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    @Override
+    public String list() throws Exception {
+        UserUtil.permissionCheck("view_system");
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<MeetingStatus> result = baseService.getPaginationObjects(
+                CLAZZ, searchCondition);
+        List<MeetingStatus> meetingStatuss = result.getResult();
 
-		SearchCondition searchCondition = getSearchCondition();
-		SearchResult<MeetingStatus> result = baseService.getPaginationObjects(
-				CLAZZ, searchCondition);
-		List<MeetingStatus> meetingStatuss = result.getResult();
+        long totalRecords = result.getTotalRecords();
 
-		long totalRecords = result.getTotalRecords();
+        // Constructs the JSON data
+        String json = "{\"total\": " + totalRecords + ",\"rows\": [";
+        int size = meetingStatuss.size();
+        for (int i = 0; i < size; i++) {
+            MeetingStatus instance = meetingStatuss.get(i);
+            Integer id = instance.getId();
+            String name = instance.getName();
+            int sequence = instance.getSequence();
 
-		// Constructs the JSON data
-		String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-		int size = meetingStatuss.size();
-		for (int i = 0; i < size; i++) {
-			MeetingStatus instance = (MeetingStatus) meetingStatuss.get(i);
-			Integer id = instance.getId();
-			String name = instance.getName();
-			int sequence = instance.getSequence();
+            json += "{\"id\":\"" + id + "\",\"meetingStatus.id\":\"" + id
+                    + "\",\"meetingStatus.name\":\"" + name
+                    + "\",\"meetingStatus.sequence\":\"" + sequence + "\"}";
+            if (i < size - 1) {
+                json += ",";
+            }
+        }
+        json += "]}";
 
-			json += "{\"id\":\"" + id + "\",\"meetingStatus.id\":\"" + id
-					+ "\",\"meetingStatus.name\":\"" + name
-					+ "\",\"meetingStatus.sequence\":\"" + sequence + "\"}";
-			if (i < size - 1) {
-				json += ",";
-			}
-		}
-		json += "]}";
+        // Returns JSON data back to page
+        HttpServletResponse response = ServletActionContext.getResponse();
+        response.getWriter().write(json);
+        return null;
+    }
 
-		// Returns JSON data back to page
-		HttpServletResponse response = ServletActionContext.getResponse();
-		response.getWriter().write(json);
-		return null;
-	}
+    /**
+     * Saves the entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String save() throws Exception {
+        if (meetingStatus.getId() == null) {
+            UserUtil.permissionCheck("create_system");
+        } else {
+            UserUtil.permissionCheck("update_system");
+        }
+        getbaseService().makePersistent(meetingStatus);
+        return SUCCESS;
+    }
 
-	/**
-	 * Saves the entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String save() throws Exception {
-		getbaseService().makePersistent(meetingStatus);
-		return SUCCESS;
-	}
+    /**
+     * Deletes the selected entity.
+     * 
+     * @return the SUCCESS result
+     */
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_system");
+        baseService.batchDeleteEntity(MeetingStatus.class, this.getSeleteIDs());
+        return SUCCESS;
+    }
 
-	/**
-	 * Deletes the selected entity.
-	 * 
-	 * @return the SUCCESS result
-	 */
-	public String delete() throws ServiceException {
-		baseService.batchDeleteEntity(MeetingStatus.class, this.getSeleteIDs());
-		return SUCCESS;
-	}
+    public IBaseService<MeetingStatus> getbaseService() {
+        return baseService;
+    }
 
-	public IBaseService<MeetingStatus> getbaseService() {
-		return baseService;
-	}
+    public void setbaseService(IBaseService<MeetingStatus> baseService) {
+        this.baseService = baseService;
+    }
 
-	public void setbaseService(IBaseService<MeetingStatus> baseService) {
-		this.baseService = baseService;
-	}
+    public MeetingStatus getMeetingStatus() {
+        return meetingStatus;
+    }
 
-	public MeetingStatus getMeetingStatus() {
-		return meetingStatus;
-	}
-
-	public void setMeetingStatus(MeetingStatus meetingStatus) {
-		this.meetingStatus = meetingStatus;
-	}
+    public void setMeetingStatus(MeetingStatus meetingStatus) {
+        this.meetingStatus = meetingStatus;
+    }
 
 }

@@ -28,7 +28,9 @@
   <property name="other_country" column="other_country" type="string" />     
   <property name="email" column="email" type="string" />   
   <property name="description" column="description" type="string" />  
-  <property name="not_call" column="not_call" type="boolean" />    
+  <property name="not_call" column="not_call" type="boolean" />   
+  <many-to-one name="owner"
+			class="User" column="owner" cascade="save-update"/>			   
   <many-to-one name="assigned_to"
 			class="User" column="assigned_to" cascade="save-update"/>
   <many-to-one name="updated_by"

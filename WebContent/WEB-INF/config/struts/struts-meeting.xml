@@ -8,6 +8,10 @@
     	  <result name="success" type="json"></result>
         </action>
 
+      	<action name="listMeetingFull" class="listMeetingAction" method="listFull">
+    	  <result name="success" type="json"></result>
+        </action>
+        
     	<action name="listMeetingPage">
     	  <result type="redirect">/jsp/crm/listMeeting.jsp</result>
         </action>
@@ -57,25 +61,38 @@
         </action>
                                 
         <action name="editMeeting" class="editMeetingAction" method="get">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
 			<result>/jsp/crm/editMeeting.jsp</result>
         </action>
                         
         <action name="saveMeeting" class="editMeetingAction" method="save">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editMeeting.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listMeeting.jsp</result>
+    	    <result>/jsp/crm/editMeeting.jsp</result>
         </action>
-                
-        <action name="deleteMeeting" class="ListMeetingAction" method="delete">
+
+        <action name="saveCloseMeeting" class="editMeetingAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editMeeting.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listMeeting.jsp</result>
+        </action>
+                        
+        <action name="deleteMeeting" class="listMeetingAction" method="delete">
+			<result name="input">/jsp/crm/listMeeting.jsp</result>
 			<result type="redirect">/jsp/crm/listMeeting.jsp</result>
         </action>  
         
         <action name="massUpdateMeeting" class="editMeetingAction" method="massUpdate">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editMeeting.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listMeeting.jsp</result>
-        </action>        
+    	    <result>/jsp/crm/editMeeting.jsp</result>
+        </action> 
+        
+        <action name="massUpdateCloseMeeting" class="editMeetingAction" method="massUpdate">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editMeeting.jsp</result>          
+    	    <result type="redirect">/jsp/crm/listMeeting.jsp</result>
+        </action>               
   </package>      
     
 </struts>

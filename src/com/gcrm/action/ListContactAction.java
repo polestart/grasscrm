@@ -54,6 +54,7 @@ import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -104,12 +105,15 @@ public class ListContactAction extends BaseListAction {
      * @return null
      */
     public String listFull() throws Exception {
+        UserUtil.permissionCheck("view_contact");
 
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        User loginUser = UserUtil.getLoginUser();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
+                loginUser.getScope_contact(), loginUser);
         SearchResult<Contact> result = baseService.getPaginationObjects(CLAZZ,
                 searchCondition);
 
@@ -408,7 +412,8 @@ public class ListContactAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_contact");
         baseService.batchDeleteEntity(Contact.class, this.getSeleteIDs());
         return SUCCESS;
     }
@@ -439,7 +444,8 @@ public class ListContactAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String copy() throws ServiceException {
+    public String copy() throws Exception {
+        UserUtil.permissionCheck("create_contact");
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -460,6 +466,8 @@ public class ListContactAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        UserUtil.permissionCheck("view_contact");
+
         File file = new File(CLAZZ + ".csv");
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
@@ -601,6 +609,9 @@ public class ListContactAction extends BaseListAction {
                     String id = row.get("ID");
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         contact.setId(Integer.parseInt(id));
+                        UserUtil.permissionCheck("update_contact");
+                    } else {
+                        UserUtil.permissionCheck("create_contact");
                     }
                     contact.setFirst_name(CommonUtil.fromNullToEmpty(row
                             .get("First Name")));

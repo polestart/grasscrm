@@ -45,6 +45,7 @@ import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -90,13 +91,16 @@ public class ListTaskAction extends BaseListAction {
      * @return null
      */
     public String listFull() throws Exception {
+        UserUtil.permissionCheck("view_task");
 
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("due_date", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        User loginUser = UserUtil.getLoginUser();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
+                loginUser.getScope_task(), loginUser);
         if (!CommonUtil.isNullOrEmpty(moreFilterKey)) {
             String condition = searchCondition.getCondition();
             condition += " and " + moreFilterKey + "=" + moreFilterValue;
@@ -211,7 +215,8 @@ public class ListTaskAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_task");
         baseService.batchDeleteEntity(Task.class, this.getSeleteIDs());
         return SUCCESS;
     }
@@ -245,7 +250,8 @@ public class ListTaskAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String copy() throws ServiceException {
+    public String copy() throws Exception {
+        UserUtil.permissionCheck("create_task");
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -266,6 +272,8 @@ public class ListTaskAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        UserUtil.permissionCheck("view_task");
+
         File file = new File(CLAZZ + ".csv");
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
@@ -308,7 +316,11 @@ public class ListTaskAction extends BaseListAction {
                 }
                 data1.put(header[6],
                         CommonUtil.fromNullToEmpty(task.getRelated_object()));
-                data1.put(header[7], task.getRelated_record());
+                if (task.getRelated_record() != null) {
+                    data1.put(header[7], task.getRelated_record());
+                } else {
+                    data1.put(header[7], "");
+                }
                 if (task.getContact() != null) {
                     data1.put(header[8], task.getContact().getId());
                     data1.put(header[9], task.getContact().getName());

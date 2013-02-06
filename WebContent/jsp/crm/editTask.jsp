@@ -16,16 +16,26 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-	function add() {
+	function save() {
 		var addObjectForm = document.getElementById('addObjectForm');
 		if ($("#seleteIDs").val()!= ""){
-			   addObjectForm.action = "massUpdateTask.action";
+		   addObjectForm.action = "massUpdateTask.action";
 		}else{
-			   addObjectForm.action = "saveTask.action";
-		}					
+		   addObjectForm.action = "saveTask.action";
+		}		
 		addObjectForm.submit();
 	}
 
+	function saveClose() {
+		var addObjectForm = document.getElementById('addObjectForm');
+		if ($("#seleteIDs").val()!= ""){
+		   addObjectForm.action = "massUpdateCloseTask.action";
+		}else{
+		   addObjectForm.action = "saveCloseTask.action";
+		}		
+		addObjectForm.submit();
+	}
+	
 	function cancel() {
 		var addObjectForm = document.getElementById('addObjectForm');
 		addObjectForm.action = "listTaskPage.action";
@@ -60,6 +70,8 @@
 	}
 
 	$(document).ready(function() {
+		$('#ownerID').combogrid('setValue', '<s:property value="ownerID"/>');
+		$('#ownerID').combogrid('setText', '<s:property value="ownerText"/>');			
 		$('#contactID').combogrid('setValue', '<s:property value="contactID"/>');
 		$('#contactID').combogrid('setText', '<s:property value="contactText"/>');		
 		$("#relatedObject ").val('<s:property value="task.related_object"/>');
@@ -87,7 +99,19 @@
 		checkRelatedObject();
 		if ($("#seleteIDs").val()!= ""){
 			  $("input:checkbox[name=massUpdate]").css("display",'block');
-		}		
+		}
+		if ($("#id").val() == ""){
+			  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
+		}
+		if ($("#saveFlag").val() == "true"){
+			$.messager.show({  
+	          title:'<s:text name="message.title" />',  
+	          msg:'<s:text name="message.save" />',  
+	          timeout:5000,  
+	          showType:'slide'  
+	      });  
+			$("#saveFlag").val("");
+	    }			
 	})	
 </script>
 
@@ -102,8 +126,12 @@
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
 				<span> <span style="white-space: nowrap;"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-ok" onclick="add()"
+						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
+				</span>			
+				<span> <span style="white-space: nowrap;"> <a href="#"
+						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
+						plain="true"><s:text name="button.saveClose" /></a>
 				</span> <span style="white-space: nowrap;"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
@@ -135,7 +163,8 @@
 			<div id="feature-content">
 				<s:form id="addObjectForm" validate="true" namespace="/jsp/crm"
 					method="post">
-					<s:hidden name="task.id" value="%{task.id}" />
+					<s:hidden id="id" name="task.id" value="%{task.id}" />
+					<s:hidden id="saveFlag" name="saveFlag"/>
 			        <s:hidden id="seleteIDs" name="seleteIDs" value="%{seleteIDs}" />
 					
 					<table style="" cellspacing="10" cellpadding="0" width="100%">
@@ -173,6 +202,38 @@
 									list="statuses" listKey="id" listValue="name"
 									cssClass="record-value" /></td>
 						</tr>
+						<tr>
+				            <td class="td-mass-update"><input id="massUpdate"
+								name="massUpdate" type="checkbox" class="massUpdate" value="owner"/></td>
+							<td class="td-label"><label class="record-label"><s:text
+										name="entity.owner.label"></s:text>：</label></td>
+							<td class="td-value"><select id="ownerID"
+								class="easyui-combogrid record-value" name="ownerID"
+								style="width: 180;"
+								data-options="  
+					            panelWidth:520,  
+					            idField:'id',  
+					            textField:'name',  
+					            url:'/grass/jsp/system/listUser.action',
+		                        loadMsg: '<s:text name="datagrid.loading" />',
+		                        pagination : true,
+		                        pageSize: 10,
+		                        pageList: [10,30,50],
+				                fit: true,
+					            mode:'remote',
+					            columns:[[  
+					                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
+					                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
+					                {field:'title',title:'<s:text name="user.title.label" />',width:120},  
+					                {field:'department',title:'<s:text name="user.department.label" />',width:100},
+					                {field:'status.name',title:'<s:text name="user.status.label" />',width:100}   
+					            ]]  
+					        ">
+							</select></td>
+						    <td class="td-mass-update"></td>
+							<td class="td-label"></td>
+							<td class="td-value"></td>
+						</tr>						
 					</table>
 
 					<div id="tt" class="easyui-tabs">
@@ -218,7 +279,7 @@
 									<span id="spanAccount"> 
 									  <select
 											id="relatedAccountID" class="easyui-combogrid record-value"
-											name="relatedAccountID" style="width: 250px;"
+											name="relatedAccountID" style="width: 180px;"
 											data-options="  
 							            panelWidth:520,  
 							            idField:'id',  
@@ -243,7 +304,7 @@
 									<span id="spanCase"> 
 									  <select id="relatedCaseID"
 											class="easyui-combogrid record-value" name="relatedCaseID"
-											style="width: 250px;"
+											style="width: 180px;"
 											data-options="  
 						            panelWidth:520,  
 						            idField:'id',  
@@ -269,7 +330,7 @@
 									<span id="spanContact"> 
 									  <select id="relatedContactID"
 											class="easyui-combogrid record-value" name="relatedContactID"
-											style="width: 250px;"
+											style="width: 180px;"
 											data-options="  
 						            panelWidth:520,  
 						            idField:'id',  
@@ -296,7 +357,7 @@
 									<span id="spanLead"> 
 									  <select id="relatedLeadID"
 											class="easyui-combogrid record-value" name="relatedLeadID"
-											style="width: 250px;"
+											style="width: 180px;"
 											data-options="  
 						            panelWidth:520,  
 						            idField:'id',  
@@ -324,7 +385,7 @@
 									<span id="spanOpportunity"> 
 									  <select id="relatedOpportunityID"
 											class="easyui-combogrid record-value" name="relatedOpportunityID"
-											style="width: 250px;"
+											style="width: 180px;"
 											data-options="  
 						            panelWidth:520,  
 						            idField:'id',  
@@ -350,7 +411,7 @@
 									<span id="spanTarget"> 
 									  <select id="relatedTargetID"
 											class="easyui-combogrid record-value" name="relatedTargetID"
-											style="width: 250px;"
+											style="width: 180px;"
 											data-options="  
 						            panelWidth:520,  
 						            idField:'id',  
@@ -377,7 +438,7 @@
 									<span id="spanTask"> 
 									  <select id="relatedTaskID"
 											class="easyui-combogrid record-value" name="relatedTaskID"
-											style="width: 250px;"
+											style="width: 180px;"
 											data-options="  
 						            panelWidth:520,  
 						            idField:'id',  
@@ -410,7 +471,7 @@
 												name="task.contact.label"></s:text>：</label></td>
 									<td class="td-value"><select id="contactID"
 										class="easyui-combogrid record-value" name="contactID"
-										style="width: 250px;"
+										style="width: 180px;"
 										data-options="  
 						            panelWidth:520,  
 						            idField:'id',  
@@ -447,9 +508,9 @@
 										name="massUpdate" type="checkbox" class="massUpdate" value="assigned_to"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.assigned_to.label"></s:text>：</label></td>
-									<td class="td-value" colspan="3"><select id="assignedToID"
+									<td class="td-value"><select id="assignedToID"
 										class="easyui-combogrid record-value" name="assignedToID"
-										style="width: 250px;"
+										style="width: 180px;"
 										data-options="  
 							            panelWidth:520,  
 							            idField:'id',  

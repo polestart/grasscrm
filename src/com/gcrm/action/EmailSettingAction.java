@@ -22,6 +22,7 @@ import org.springframework.mail.SimpleMailMessage;
 import com.gcrm.domain.EmailSetting;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.mail.MailService;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -43,6 +44,7 @@ public class EmailSettingAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String save() throws Exception {
+        UserUtil.permissionCheck("update_system");
         super.updateBaseInfo(emailSetting);
         getBaseService().makePersistent(emailSetting);
         return SUCCESS;
@@ -54,6 +56,7 @@ public class EmailSettingAction extends BaseEditAction implements Preparable {
      * @return the SUCCESS result
      */
     public String get() throws Exception {
+        UserUtil.permissionCheck("view_system");
         List<EmailSetting> emailSettings = baseService
                 .getAllObjects(EmailSetting.class.getSimpleName());
         if (emailSettings != null && emailSettings.size() > 0) {

@@ -37,25 +37,38 @@
         </action>
                     
         <action name="editCampaign" class="editCampaignAction" method="get">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
 			<result>/jsp/crm/editCampaign.jsp</result>
         </action>
                         
         <action name="saveCampaign" class="editCampaignAction" method="save">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editCampaign.jsp</result>          
+    	    <result>/jsp/crm/editCampaign.jsp</result>
+        </action>
+
+        <action name="saveCloseCampaign" class="editCampaignAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editCampaign.jsp</result>          
     	  <result type="redirect">/jsp/crm/listCampaign.jsp</result>
         </action>
-        
+                
         <action name="deleteCampaign" class="listCampaignAction" method="delete">
+			<result name="input">/jsp/crm/listCampaign.jsp</result>
 			<result type="redirect">/jsp/crm/listCampaign.jsp</result>
         </action>  
         
         <action name="massUpdateCampaign" class="editCampaignAction" method="massUpdate">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editCampaign.jsp</result>          
+    	    <result>/jsp/crm/editCampaign.jsp</result>
+        </action> 
+        
+        <action name="massUpdateCloseCampaign" class="editCampaignAction" method="massUpdate">
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editCampaign.jsp</result>          
     	  <result type="redirect">/jsp/crm/listCampaign.jsp</result>
-        </action>          
+        </action>                  
   </package>      
     
 </struts>

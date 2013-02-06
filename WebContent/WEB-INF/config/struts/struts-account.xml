@@ -61,7 +61,7 @@
 
          <action name="deleteAccount" class="listAccountAction" method="delete">
         	<result name="input">/jsp/crm/listAccount.jsp</result>
-			<result>/jsp/crm/listAccount.jsp</result>            	  
+			<result type="redirect">/jsp/crm/listAccount.jsp</result>            	  
         </action>
         
         <action name="removeAccount" class="listAccountAction" method="remove">
@@ -79,21 +79,34 @@
         </action>
                                 
         <action name="editAccount" class="editAccountAction" method="get">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
+			<result name="input">/jsp/crm/editAccount.jsp</result>
 			<result>/jsp/crm/editAccount.jsp</result>
         </action>
 
         <action name="saveAccount" class="editAccountAction" method="save">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editAccount.jsp</result>          
+    	    <result>/jsp/crm/editAccount.jsp</result>
+        </action>
+        
+        <action name="saveCloseAccount" class="editAccountAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editAccount.jsp</result>          
     	  <result type="redirect">/jsp/crm/listAccount.jsp</result>
-        </action>  
+        </action>            
+        
+        <action name="massUpdateCloseAccount" class="editAccountAction" method="massUpdate">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editAccount.jsp</result>          
+    	  <result type="redirect">/jsp/crm/listAccount.jsp</result>
+        </action>
         
         <action name="massUpdateAccount" class="editAccountAction" method="massUpdate">
-			<interceptor-ref name="paramsPrepareParamsStack" /> 
+			<interceptor-ref name="prepareInterceptor" /> 
             <result name="input">/jsp/crm/editAccount.jsp</result>          
-    	  <result type="redirect">/jsp/crm/listAccount.jsp</result>
-        </action>        
+    	    <result>/jsp/crm/editAccount.jsp</result>
+        </action>                
   </package>      
     
 </struts>

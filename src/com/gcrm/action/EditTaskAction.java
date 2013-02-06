@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.gcrm.domain.Account;
 import com.gcrm.domain.Case;
@@ -33,12 +32,11 @@ import com.gcrm.domain.Task;
 import com.gcrm.domain.TaskPriority;
 import com.gcrm.domain.TaskStatus;
 import com.gcrm.domain.User;
-import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
-import com.opensymphony.xwork2.ActionContext;
+import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -93,7 +91,9 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
-        getBaseService().makePersistent(task);
+        task = getBaseService().makePersistent(task);
+        this.setId(task.getId());
+        this.setSaveFlag("true");
         return SUCCESS;
     }
 
@@ -138,12 +138,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
             setRelatedRecord(relatedObject, relatedRecord);
             this.getBaseInfo(task);
         } else {
-            ActionContext context = ActionContext.getContext();
-            Map<String, Object> session = context.getSession();
-            User loginUser = (User) session
-                    .get(AuthenticationSuccessListener.LOGIN_USER);
-            assignedToID = loginUser.getId();
-            assignedToText = loginUser.getName();
+            this.initBaseInfo();
             if (!CommonUtil.isNullOrEmpty(this.getRelationKey())) {
                 task.setRelated_object(this.getRelationKey());
                 setRelatedRecord(this.getRelationKey(),
@@ -199,23 +194,27 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
     public String massUpdate() throws Exception {
         saveEntity();
         String[] fieldNames = this.massUpdate;
-        String[] selectIDArray = this.seleteIDs.split(",");
-        Collection<Task> tasks = new ArrayList<Task>();
-        User loginUser = this.getLoginUser();
-        User user = userService.getEntityById(User.class, loginUser.getId());
-        for (String IDString : selectIDArray) {
-            int id = Integer.parseInt(IDString);
-            Task taskInstance = this.baseService.getEntityById(Task.class, id);
-            for (String fieldName : fieldNames) {
-                Object value = BeanUtil.getFieldValue(task, fieldName);
-                BeanUtil.setFieldValue(taskInstance, fieldName, value);
+        if (fieldNames != null) {
+            String[] selectIDArray = this.seleteIDs.split(",");
+            Collection<Task> tasks = new ArrayList<Task>();
+            User loginUser = this.getLoginUser();
+            User user = userService
+                    .getEntityById(User.class, loginUser.getId());
+            for (String IDString : selectIDArray) {
+                int id = Integer.parseInt(IDString);
+                Task taskInstance = this.baseService.getEntityById(Task.class,
+                        id);
+                for (String fieldName : fieldNames) {
+                    Object value = BeanUtil.getFieldValue(task, fieldName);
+                    BeanUtil.setFieldValue(taskInstance, fieldName, value);
+                }
+                taskInstance.setUpdated_by(user);
+                taskInstance.setUpdated_on(new Date());
+                tasks.add(taskInstance);
             }
-            taskInstance.setUpdated_by(user);
-            taskInstance.setUpdated_on(new Date());
-            tasks.add(taskInstance);
-        }
-        if (tasks.size() > 0) {
-            this.baseService.batchUpdate(tasks);
+            if (tasks.size() > 0) {
+                this.baseService.batchUpdate(tasks);
+            }
         }
         return SUCCESS;
     }
@@ -225,7 +224,13 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      * 
      * @throws ParseException
      */
-    private void saveEntity() throws ParseException {
+    private void saveEntity() throws Exception {
+        if (task.getId() == null) {
+            UserUtil.permissionCheck("create_task");
+        } else {
+            UserUtil.permissionCheck("update_task");
+        }
+
         TaskStatus status = null;
         if (statusID != null) {
             status = taskStatusService
@@ -248,6 +253,11 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
             assignedTo = userService.getEntityById(User.class, assignedToID);
         }
         task.setAssigned_to(assignedTo);
+        User owner = null;
+        if (this.getOwnerID() != null) {
+            owner = userService.getEntityById(User.class, this.getOwnerID());
+        }
+        task.setOwner(owner);
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 Constant.DATE_TIME_FORMAT);
         Date start_date = null;
@@ -459,6 +469,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToID
      */
+    @Override
     public Integer getAssignedToID() {
         return assignedToID;
     }
@@ -467,6 +478,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      * @param assignedToID
      *            the assignedToID to set
      */
+    @Override
     public void setAssignedToID(Integer assignedToID) {
         this.assignedToID = assignedToID;
     }
@@ -715,6 +727,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
     /**
      * @return the assignedToText
      */
+    @Override
     public String getAssignedToText() {
         return assignedToText;
     }
@@ -723,6 +736,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      * @param assignedToText
      *            the assignedToText to set
      */
+    @Override
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
     }

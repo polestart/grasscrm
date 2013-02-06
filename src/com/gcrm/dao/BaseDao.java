@@ -105,9 +105,10 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport
      * 
      * @see com.gcrm.dao.IBaseDao#makePersistent(java.io.Serializable)
      */
-    public void makePersistent(T entity) {
-        getHibernateTemplate().merge(entity);
+    public T makePersistent(T entity) {
+        T result = getHibernateTemplate().merge(entity);
         getHibernateTemplate().flush();
+        return result;
     }
 
     /*

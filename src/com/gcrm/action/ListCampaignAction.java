@@ -41,10 +41,10 @@ import com.gcrm.domain.CampaignStatus;
 import com.gcrm.domain.CampaignType;
 import com.gcrm.domain.Currency;
 import com.gcrm.domain.User;
-import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -88,6 +88,7 @@ public class ListCampaignAction extends BaseListAction {
      * @return null
      */
     public String listFull() throws Exception {
+        UserUtil.permissionCheck("view_campaign");
 
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
         fieldTypeMap.put("start_date", Constant.DATA_TYPE_DATETIME);
@@ -95,7 +96,9 @@ public class ListCampaignAction extends BaseListAction {
         fieldTypeMap.put("created_on", Constant.DATA_TYPE_DATETIME);
         fieldTypeMap.put("updated_on", Constant.DATA_TYPE_DATETIME);
 
-        SearchCondition searchCondition = getSearchCondition(fieldTypeMap);
+        User loginUser = UserUtil.getLoginUser();
+        SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
+                loginUser.getScope_campaign(), loginUser);
         SearchResult<Campaign> result = baseService.getPaginationObjects(CLAZZ,
                 searchCondition);
         Iterator<Campaign> campaigns = result.getResult().iterator();
@@ -219,7 +222,8 @@ public class ListCampaignAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String delete() throws ServiceException {
+    public String delete() throws Exception {
+        UserUtil.permissionCheck("delete_campaign");
         baseService.batchDeleteEntity(Campaign.class, this.getSeleteIDs());
         return SUCCESS;
     }
@@ -229,7 +233,8 @@ public class ListCampaignAction extends BaseListAction {
      * 
      * @return the SUCCESS result
      */
-    public String copy() throws ServiceException {
+    public String copy() throws Exception {
+        UserUtil.permissionCheck("create_campaign");
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -250,6 +255,8 @@ public class ListCampaignAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        UserUtil.permissionCheck("view_campaign");
+
         File file = new File(CLAZZ + ".csv");
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
@@ -362,6 +369,9 @@ public class ListCampaignAction extends BaseListAction {
                     String id = row.get("ID");
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         campaign.setId(Integer.parseInt(id));
+                        UserUtil.permissionCheck("update_campaign");
+                    } else {
+                        UserUtil.permissionCheck("create_campaign");
                     }
                     campaign.setName(CommonUtil.fromNullToEmpty(row.get("Name")));
                     String statusID = row.get("Status ID");

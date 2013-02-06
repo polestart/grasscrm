@@ -35,11 +35,16 @@ public class BaseEditAction extends ActionSupport {
     private String createdOn = "";
     private String updatedBy = "";
     private String updatedOn = "";
+    private Integer ownerID = null;
+    private String ownerText = null;
+    private Integer assignedToID = null;
+    private String assignedToText = null;
     private Integer id;
     private String relationKey;
     private String relationValue;
     protected String seleteIDs = null;
     protected String[] massUpdate = null;
+    private String saveFlag = null;
 
     private static final long serialVersionUID = -2404576552417042445L;
 
@@ -101,6 +106,26 @@ public class BaseEditAction extends ActionSupport {
         if (updatedOn != null) {
             this.setUpdatedOn(dateFormat.format(updatedOn));
         }
+        User owner = entity.getOwner();
+        if (owner != null) {
+            ownerID = owner.getId();
+            ownerText = owner.getName();
+        }
+    }
+
+    /**
+     * Initiates the base information for entity.
+     * 
+     */
+    protected void initBaseInfo() {
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        User loginUser = (User) session
+                .get(AuthenticationSuccessListener.LOGIN_USER);
+        assignedToID = loginUser.getId();
+        assignedToText = loginUser.getName();
+        ownerID = loginUser.getId();
+        ownerText = loginUser.getName();
     }
 
     /**
@@ -236,6 +261,81 @@ public class BaseEditAction extends ActionSupport {
      */
     public void setMassUpdate(String[] massUpdate) {
         this.massUpdate = massUpdate;
+    }
+
+    /**
+     * @return the ownerID
+     */
+    public Integer getOwnerID() {
+        return ownerID;
+    }
+
+    /**
+     * @param ownerID
+     *            the ownerID to set
+     */
+    public void setOwnerID(Integer ownerID) {
+        this.ownerID = ownerID;
+    }
+
+    /**
+     * @return the ownerText
+     */
+    public String getOwnerText() {
+        return ownerText;
+    }
+
+    /**
+     * @param ownerText
+     *            the ownerText to set
+     */
+    public void setOwnerText(String ownerText) {
+        this.ownerText = ownerText;
+    }
+
+    /**
+     * @return the assignedToID
+     */
+    public Integer getAssignedToID() {
+        return assignedToID;
+    }
+
+    /**
+     * @param assignedToID
+     *            the assignedToID to set
+     */
+    public void setAssignedToID(Integer assignedToID) {
+        this.assignedToID = assignedToID;
+    }
+
+    /**
+     * @return the assignedToText
+     */
+    public String getAssignedToText() {
+        return assignedToText;
+    }
+
+    /**
+     * @param assignedToText
+     *            the assignedToText to set
+     */
+    public void setAssignedToText(String assignedToText) {
+        this.assignedToText = assignedToText;
+    }
+
+    /**
+     * @return the saveFlag
+     */
+    public String getSaveFlag() {
+        return saveFlag;
+    }
+
+    /**
+     * @param saveFlag
+     *            the saveFlag to set
+     */
+    public void setSaveFlag(String saveFlag) {
+        this.saveFlag = saveFlag;
     }
 
 }
