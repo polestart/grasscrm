@@ -16,30 +16,16 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-	function save() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		if ($("#seleteIDs").val()!= ""){
-		   addObjectForm.action = "massUpdateCampaign.action";
-		}else{
-		   addObjectForm.action = "saveCampaign.action";
-		}		
-		addObjectForm.submit();
+    function save() {
+        baseSave("Campaign");
 	}
 
 	function saveClose() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		if ($("#seleteIDs").val()!= ""){
-		   addObjectForm.action = "massUpdateCloseCampaign.action";
-		}else{
-		   addObjectForm.action = "saveCloseCampaign.action";
-		}		
-		addObjectForm.submit();
+		baseSaveClose("Campaign");
 	}
 	
 	function cancel() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		addObjectForm.action = "listCampaignPage.action";
-		addObjectForm.submit();
+		baseCancel("Campaign");
 	}
 
 	$(document).ready(function() {
@@ -77,14 +63,14 @@
 
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
 				</span>			
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
 				</span>
@@ -92,13 +78,13 @@
 			</div>
 
 			<div id="feature-title">
-				<s:if test="campaign!=null">
+				<s:if test="campaign!=null && campaign.id!=null">
 					<h2>
 						<s:text name="title.updateCampaign" />
 					</h2>
 				</s:if>
 				<s:else>
-				  <s:if test="seleteIDs!=null">
+				  <s:if test="seleteIDs!=null && seleteIDs!= ''">
 					<h2>
 						<s:text name="title.massUpdateCampaign" />
 					</h2>

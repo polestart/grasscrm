@@ -16,32 +16,18 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-	function save() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		if ($("#seleteIDs").val()!= ""){
-		   addObjectForm.action = "massUpdateOpportunity.action";
-		}else{
-		   addObjectForm.action = "saveOpportunity.action";
-		}		
-		addObjectForm.submit();
+    function save() {
+        baseSave("Opportunity");
 	}
 
 	function saveClose() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		if ($("#seleteIDs").val()!= ""){
-		   addObjectForm.action = "massUpdateCloseOpportunity.action";
-		}else{
-		   addObjectForm.action = "saveCloseOpportunity.action";
-		}		
-		addObjectForm.submit();
+		baseSaveClose("Opportunity");
 	}
 	
 	function cancel() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		addObjectForm.action = "listOpportunityPage.action";
-		addObjectForm.submit();
+		baseCancel("Opportunity");
 	}
-
+	
 	$(document).ready(function() {
 		$('#accountID').combogrid('setValue', '<s:property value="accountID"/>');
 		$('#accountID').combogrid('setText', '<s:property value="accountText"/>');	
@@ -81,14 +67,14 @@
 
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
 				</span>			
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
 				</span>
@@ -96,13 +82,13 @@
 			</div>
 
 			<div id="feature-title">
-				<s:if test="account!=null">
+				<s:if test="opportunity!=null && opportunity.id!=null">
 					<h2>
 						<s:text name="title.updateOpportunity" />
 					</h2>
 				</s:if>
 				<s:else>
-				  <s:if test="seleteIDs!=null">
+				  <s:if test="seleteIDs!=null && seleteIDs!= ''">
 					<h2>
 						<s:text name="title.massUpdateOpportunity" />
 					</h2>

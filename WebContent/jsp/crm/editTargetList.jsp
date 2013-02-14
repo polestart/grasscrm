@@ -16,30 +16,16 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-	function save() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		if ($("#seleteIDs").val()!= ""){
-		   addObjectForm.action = "massUpdateTargetList.action";
-		}else{
-		   addObjectForm.action = "saveTargetList.action";
-		}		
-		addObjectForm.submit();
+    function save() {
+        baseSave("TargetList");
 	}
 
 	function saveClose() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		if ($("#seleteIDs").val()!= ""){
-		   addObjectForm.action = "massUpdateCloseTargetList.action";
-		}else{
-		   addObjectForm.action = "saveCloseTargetList.action";
-		}		
-		addObjectForm.submit();
+		baseSaveClose("TargetList");
 	}
 	
 	function cancel() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		addObjectForm.action = "listTargetListPage.action";
-		addObjectForm.submit();
+		baseCancel("TargetList");
 	}
 
 	$(document).ready(function() {
@@ -76,14 +62,14 @@
 
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
 				</span>			
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
 				</span>
@@ -91,13 +77,13 @@
 			</div>
 
 			<div id="feature-title">
-				<s:if test="targetList!=null">
+				<s:if test="targetList!=null && targetList.id!=null">
 					<h2>
 						<s:text name="title.updateTargetList" />
 					</h2>
 				</s:if>
 				<s:else>
-				  <s:if test="seleteIDs!=null">
+				  <s:if test="seleteIDs!=null && seleteIDs!= ''">
 					<h2>
 						<s:text name="title.massUpdateTargetList" />
 					</h2>

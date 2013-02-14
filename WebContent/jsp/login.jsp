@@ -30,7 +30,7 @@
 				</c:if>
 			</div>
 			<div id="darkbanner" class="banner320">
-				<h2>Login System</h2>
+				<h2><s:text name='login.system.label'/></h2>
 			</div>
 			<div id="darkbannerwrap"></div>
 			<form name="f" action="<c:url value='/j_spring_security_check'/>"
@@ -47,6 +47,13 @@
 							<input class="logininput ui-keyboard-input ui-widget-content ui-corner-all" name="j_password" id="j_password" type="password" onkeypress="keypress();"/>
 						</span>
 					</p>
+					<p>
+						<label class="loginlabel" for="j_language"> <s:text name='login.language.label'/>:</label> <span>
+							<select class="loginselect ui-widget-content ui-corner-all" id="j_language" name="j_language" onchange="switchLanguage(this.value)">
+                               <option selected="true" value="en_US">English (US)</option>
+                               <option value="zh_CN">简体中文</option></select>
+						</span>
+					</p>					
 					<button id="loginbtn" type="button" class="positive" name="Submit"
 						type="submit" onclick="f.submit();">
 						<img src="<s:url value="/images/key.png"/>" alt="Announcement" /><s:text name='login.button.label'/>
@@ -68,6 +75,18 @@
 					$(this).css("border-color", "#D9D6C4");
 			})
 			document.f.j_username.focus();
+			var URLParams = new Array();
+			var aParams = document.location.search.substr(1).split('&');
+			for (i=0; i < aParams.length ; i++){
+			   var aParam = aParams[i].split('=');
+			   URLParams[aParam[0]] = aParam[1];
+			}
+			locale=URLParams["request_locale"];
+			if (locale != null && locale == "zh_CN"){
+				$("#j_language").val("zh_CN");
+			} else {
+				$("#j_language").val("en_US");
+			}
 		});
 
 		function keypressTab(){
@@ -82,6 +101,11 @@
 			if(ev == 13){
 				f.submit();
 			}
+		}
+		
+		function switchLanguage(language){
+			f.action="/grass/jsp/login.jsp?request_locale="+language;
+			f.submit();
 		}		
 	</script>
 </body>

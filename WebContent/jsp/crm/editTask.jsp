@@ -16,30 +16,16 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-	function save() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		if ($("#seleteIDs").val()!= ""){
-		   addObjectForm.action = "massUpdateTask.action";
-		}else{
-		   addObjectForm.action = "saveTask.action";
-		}		
-		addObjectForm.submit();
+    function save() {
+        baseSave("Task");
 	}
 
 	function saveClose() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		if ($("#seleteIDs").val()!= ""){
-		   addObjectForm.action = "massUpdateCloseTask.action";
-		}else{
-		   addObjectForm.action = "saveCloseTask.action";
-		}		
-		addObjectForm.submit();
+		baseSaveClose("Task");
 	}
 	
 	function cancel() {
-		var addObjectForm = document.getElementById('addObjectForm');
-		addObjectForm.action = "listTaskPage.action";
-		addObjectForm.submit();
+		baseCancel("Task");
 	}
 
 	function checkRelatedObject() {
@@ -125,14 +111,14 @@
 
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
 				</span>			
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
 				</span>
@@ -140,13 +126,13 @@
 			</div>
 
 			<div id="feature-title">
-				<s:if test="task!=null">
+				<s:if test="task!=null && task.id!=null">
 					<h2>
 						<s:text name="title.updateTask" />
 					</h2>
 				</s:if>
 				<s:else>
-				  <s:if test="seleteIDs!=null">
+				  <s:if test="seleteIDs!=null && seleteIDs!= ''">
 					<h2>
 						<s:text name="title.massUpdateTask" />
 					</h2>

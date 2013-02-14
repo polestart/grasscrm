@@ -37,7 +37,6 @@ public class AuthenticationSuccessListener implements
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication
                     .getPrincipal();
             se.getSession().setAttribute(LOGIN_USER, userDetails.getUser());
-
         }
     }
 

@@ -15,6 +15,9 @@
  */
 package com.gcrm.security;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,58 +29,72 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.gcrm.domain.User;
+import com.gcrm.util.CommonUtil;
 import com.gcrm.util.security.UserUtil;
 
 /**
  * Authentication filter
  */
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-	public static final String USERNAME = "j_username";
-	public static final String PASSWORD = "j_password";
-	public static final String SALT = "Grass";
+    public static final String USERNAME = "j_username";
+    public static final String PASSWORD = "j_password";
+    public static final String LANGUAGE = "j_language";
+    public static final String SALT = "Grass";
 
-	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request,
-			HttpServletResponse response) throws AuthenticationException {
-		if (!request.getMethod().equals("POST")) {
-			throw new AuthenticationServiceException(
-					"Authentication method not supported: "
-							+ request.getMethod());
-		}
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request,
+            HttpServletResponse response) throws AuthenticationException {
+        if (!request.getMethod().equals("POST")) {
+            throw new AuthenticationServiceException(
+                    "Authentication method not supported: "
+                            + request.getMethod());
+        }
 
-		String username = obtainUsername(request);
-		String password = obtainPassword(request);
+        String username = obtainUsername(request);
+        String password = obtainPassword(request);
 
-		// Validates username and password
-		username = username.trim();
+        // Validates username and password
+        username = username.trim();
 
-		User user = UserUtil.getUser(username);
-		Md5PasswordEncoder encoder = new Md5PasswordEncoder();
-		password = encoder.encodePassword(password, AuthenticationFilter.SALT);
-		if (user == null || !user.getPassword().equals(password)) {
-			throw new AuthenticationServiceException(
-					"password or username is notEquals");
-		}
+        String localValue = obtainLanguage(request);
+        String[] locals = localValue.split("_");
+        Locale locale = new Locale(locals[0], locals[1]);
+        request.getSession().setAttribute("WW_TRANS_I18N_LOCALE", locale);
+        request.getSession().setAttribute("locale", localValue);
+        Locale.setDefault(locale);
 
-		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
-				username, password);
+        User user = UserUtil.getUser(username);
+        Md5PasswordEncoder encoder = new Md5PasswordEncoder();
+        password = encoder.encodePassword(password, AuthenticationFilter.SALT);
+        if (user == null || !user.getPassword().equals(password)) {
+            ResourceBundle rb = CommonUtil.getResourceBundle();
+            String errorMessage = rb.getString("error.login.denied");
+            throw new AuthenticationServiceException(errorMessage);
+        }
 
-		setDetails(request, authRequest);
-		
-		// return authRequest;
-		return this.getAuthenticationManager().authenticate(authRequest);
-	}
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
+                username, password);
+        setDetails(request, authRequest);
 
-	@Override
-	protected String obtainUsername(HttpServletRequest request) {
-		Object obj = request.getParameter(USERNAME);
-		return null == obj ? "" : obj.toString();
-	}
+        // return authRequest;
+        return this.getAuthenticationManager().authenticate(authRequest);
+    }
 
-	@Override
-	protected String obtainPassword(HttpServletRequest request) {
-		Object obj = request.getParameter(PASSWORD);
-		return null == obj ? "" : obj.toString();
-	}
+    @Override
+    protected String obtainUsername(HttpServletRequest request) {
+        Object obj = request.getParameter(USERNAME);
+        return null == obj ? "" : obj.toString();
+    }
+
+    @Override
+    protected String obtainPassword(HttpServletRequest request) {
+        Object obj = request.getParameter(PASSWORD);
+        return null == obj ? "" : obj.toString();
+    }
+
+    protected String obtainLanguage(HttpServletRequest request) {
+        Object obj = request.getParameter(LANGUAGE);
+        return null == obj ? "" : obj.toString();
+    }
 
 }

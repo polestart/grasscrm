@@ -1033,6 +1033,15 @@ body#login .logininput{
 	padding: 3px;
 	font: 16px 'Lucida Grande', arial, sans-serif;
 }
+
+body#login .loginselect{
+	height: 25px;
+	width: 152px;
+	margin-bottom: 15px;
+	padding: 3px;
+	font: 12px 'Lucida Grande', arial, sans-serif;
+}
+
 body#login .form button{
     display:block;
     float:left;

@@ -38,4 +38,37 @@ function openwindow2(url, name, iWidth,iHeight) {
 							+ ',toolbar=no,menubar=no,scrollbars=no,resizeable=no,location=no,status=no');
 }
 
+function disableBtn(){
+	$('#save_accept_btn').linkbutton('disable');
+	$('#save_go_btn').linkbutton('disable');
+	$('#cancel_btn').linkbutton('disable');
+}
 
+function baseSave(name){
+	disableBtn();
+	var addObjectForm = document.getElementById('addObjectForm');
+	if ($("#seleteIDs").val()!= ""){
+	   addObjectForm.action = 'massUpdate' + name + '.action';
+	}else{
+	   addObjectForm.action = 'save' + name + '.action';
+	}		
+	addObjectForm.submit();
+}
+
+function baseSaveClose(name){
+	disableBtn();
+	var addObjectForm = document.getElementById('addObjectForm');
+	if ($("#seleteIDs").val()!= ""){
+	   addObjectForm.action = 'massUpdateClose' + name + '.action';
+	}else{
+	   addObjectForm.action = 'saveClose' + name + '.action';
+	}		
+	addObjectForm.submit();
+}
+
+function baseCancel(name){
+	disableBtn();
+	var addObjectForm = document.getElementById('addObjectForm');
+	addObjectForm.action = 'list' + name + 'Page.action';
+	addObjectForm.submit();
+}

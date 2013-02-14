@@ -5,6 +5,10 @@
 <struts>
      <package namespace="/jsp/crm" name="account" extends="default">
      
+	    <action name="totalfilter" class="totalfilterAction" method="execute">  
+	        <result name="url" >${url}</result>           
+	    </action>  
+	         
          <action name="homePage" class="homeAction" method="load">
     	  <result name="success">/jsp/crm/home.jsp</result>
         </action>

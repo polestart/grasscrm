@@ -113,7 +113,10 @@
     <!-- Actions -->
     <bean id="homeAction" class="com.gcrm.action.HomeAction" scope="prototype">   
     </bean>
-        
+   
+    <bean id="totalfilterAction" class="com.gcrm.action.TotalFilter" scope="prototype">   
+    </bean>
+            
     <bean id="listAccountAction" class="com.gcrm.action.ListAccountAction" scope="prototype">   
         <property name="baseService" ref="baseService" />
         <property name="accountTypeService" ref="baseService" /> 

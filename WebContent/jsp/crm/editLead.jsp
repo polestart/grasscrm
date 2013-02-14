@@ -16,35 +16,23 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-		function save() {
-			var addObjectForm = document.getElementById('addObjectForm');
-			if ($("#seleteIDs").val()!= ""){
-			   addObjectForm.action = "massUpdateLead.action";
-			}else{
-			   addObjectForm.action = "saveLead.action";
-			}		
-			addObjectForm.submit();
-		}
+    function save() {
+    	$('#convert_btn').linkbutton('disable');
+        baseSave("Lead");
+	}
 
-		function saveClose() {
-			var addObjectForm = document.getElementById('addObjectForm');
-			if ($("#seleteIDs").val()!= ""){
-			   addObjectForm.action = "massUpdateCloseLead.action";
-			}else{
-			   addObjectForm.action = "saveCloseLead.action";
-			}		
-			addObjectForm.submit();
-		}
-		
-	  function cancel(){
-		var addObjectForm = document.getElementById('addObjectForm');
-		addObjectForm.action = "listLeadPage.action";
-		addObjectForm.submit();
-	  }
+	function saveClose() {
+		$('#convert_btn').linkbutton('disable');
+		baseSaveClose("Lead");
+	}
+	
+	function cancel() {
+		baseCancel("Lead");
+	}
 	
 	  function convert(){
 		   var leadID = document.getElementById('id').value;
-		   openwindow('/crm/convertLead.jsp?id=' + leadID,'Convert Lead" />');
+		   openwindow2('/crm/convertLead.jsp?id=' + leadID,'Convert Lead',400,300);
 	  }
 	  
 	  function copyAddress(){
@@ -106,19 +94,17 @@
 
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
-			    <b style="white-space:nowrap;color:#444;"><s:text name="title.action" />:&nbsp;&nbsp;</b>
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
 				</span>			
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
-				</span>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				</span><span style="white-space: nowrap;"> <a id="convert_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-edit" onclick="convert()"
 						plain="true"><s:text name="button.convert" /></a>
 				</span>				
@@ -126,13 +112,13 @@
 			</div>
 
 			<div id="feature-title">
-				<s:if test="lead!=null">
+				<s:if test="lead!=null && lead.id!=null">
 					<h2>
 						<s:text name="title.updateLead" />
 					</h2>
 				</s:if>
 				<s:else>
-				  <s:if test="seleteIDs!=null">
+				  <s:if test="seleteIDs!=null && seleteIDs!= ''">
 					<h2>
 						<s:text name="title.massUpdateLead" />
 					</h2>

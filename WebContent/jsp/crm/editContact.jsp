@@ -16,33 +16,19 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-		function save() {
-			var addObjectForm = document.getElementById('addObjectForm');
-			if ($("#seleteIDs").val()!= ""){
-			   addObjectForm.action = "massUpdateContact.action";
-			}else{
-			   addObjectForm.action = "saveContact.action";
-			}		
-			addObjectForm.submit();
-		}
+    function save() {
+        baseSave("Contact");
+	}
+
+	function saveClose() {
+		baseSaveClose("Contact");
+	}
 	
-		function saveClose() {
-			var addObjectForm = document.getElementById('addObjectForm');
-			if ($("#seleteIDs").val()!= ""){
-			   addObjectForm.action = "massUpdateCloseContact.action";
-			}else{
-			   addObjectForm.action = "saveCloseContact.action";
-			}		
-			addObjectForm.submit();
-		}
-		
-	  function cancel(){
-		var addObjectForm = document.getElementById('addObjectForm');
-		addObjectForm.action = "listContactPage.action";
-		addObjectForm.submit();
-	  }
+	function cancel() {
+		baseCancel("Contact");
+	}
 	  
-	  function copyAddress(){
+	function copyAddress(){
 		if ($('#copy_checkbox').attr('checked')) { 
 			$("input[name='contact.other_address']").attr("value",$("input[name='contact.mailing_address']").val());	
 			$("input[name='contact.other_address']").attr("disabled","disabled"); 
@@ -61,9 +47,9 @@
 			$("input[name='contact.other_postal_code']").removeAttr("disabled"); 
 			$("input[name='contact.other_country']").removeAttr("disabled"); 	
 		}	
-      }
+    }
 	  
-	  $(document).ready(function(){
+	$(document).ready(function(){
 		$('#reportToID').combogrid('setValue', '<s:property value="reportToID"/>');	
 		$('#reportToID').combogrid('setText', '<s:property value="reportToText"/>');
 		$('#campaignID').combogrid('setValue', '<s:property value="campaignID"/>');
@@ -153,14 +139,14 @@
 
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
 				</span>			
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
 				</span>
@@ -168,13 +154,13 @@
 			</div>
 
 			<div id="feature-title">
-				<s:if test="contact!=null">
+				<s:if test="contact!=null && contact.id!=null">
 					<h2>
 						<s:text name="title.updateContact" />
 					</h2>
 				</s:if>
 				<s:else>
-				  <s:if test="seleteIDs!=null">
+				  <s:if test="seleteIDs!=null && seleteIDs!= ''">
 					<h2>
 						<s:text name="title.massUpdateContact" />
 					</h2>

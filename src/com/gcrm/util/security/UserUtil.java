@@ -17,6 +17,7 @@ package com.gcrm.util.security;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,7 @@ import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IUserService;
 import com.gcrm.util.BeanUtil;
+import com.gcrm.util.CommonUtil;
 import com.gcrm.util.spring.SpringContextUtil;
 import com.opensymphony.xwork2.ActionContext;
 
@@ -113,7 +115,9 @@ public class UserUtil {
         User loginUser = UserUtil.getLoginUser();
         Integer value = (Integer) BeanUtil.getFieldValue(loginUser, fieldName);
         if (value != Role.ALL_OR_ENABLED) {
-            throw new AccessDeniedException(" no permission access！");
+            ResourceBundle rb = CommonUtil.getResourceBundle();
+            String errorMessage = rb.getString("access.nopermission");
+            throw new AccessDeniedException(errorMessage);
         }
     }
 
@@ -124,8 +128,10 @@ public class UserUtil {
         if (value == Role.OWNER_OR_DISABLED) {
             if (loginUser.getId().intValue() != entity.getOwner().getId()
                     .intValue()) {
-                throw new AccessDeniedException(
-                        " no permission access this record！");
+                ResourceBundle rb = CommonUtil.getResourceBundle();
+                String errorMessage = rb
+                        .getString("access.nopermission.record");
+                throw new AccessDeniedException(errorMessage);
             }
         }
     }

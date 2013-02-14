@@ -16,14 +16,15 @@
   <link rel="stylesheet" type="text/css" href="../../themes/icon.css"/>  
   
   <script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>  
-  <script type="text/javascript" src="../../js/datagrid.js"></script> 
+  <script type="text/javascript" src="../../js/datagrid-<%=(String)session.getAttribute("locale")%>.js"></script> 
   <script type="text/javascript" src="../../js/global.js"></script>
   <script type="text/javascript" src="../../js/jquery-ui-1.9.2.custom.min.js"></script>
-  <script type="text/javascript" src="../../js/i18n/grid.locale-en.js"></script>
   <script type="text/javascript" src="../../js/ui.multiselect.js"></script>
   <script type="text/javascript" src="../../js/jquery.jqGrid.min.js"></script>
   <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script> 
-  
+  <script type="text/javascript" src="../../js/i18n/grid.locale-<%=(String)session.getAttribute("locale")%>.js"></script>
+  <script type="text/javascript" src="../../js/locale/easyui-lang-<%=(String)session.getAttribute("locale")%>.js"></script>
+
   <script type="text/javascript">
     $(document).ready(function(){
 	  $("#delete").click(function() {	
@@ -140,18 +141,18 @@
 		       <a href="javascript:void(0)" id="mtmt" class="easyui-menubutton" data-options="menu:'#mtm1',iconCls:'icon-more'"><s:text name='menu.toolbar.more.title'/></a>
 		       	<div id="mtm1" style="width:150px;">
 				  <s:if test="#request.user.create_contact == 1 || #request.user.update_contact == 1">
-					<div onClick="openwindow('/crm/uploadContact.jsp','<s:text name="title.import.contact" />')"><s:text name='menu.item.import.title'/></div>
+					<div data-options="iconCls:'icon-import'" onClick="openwindow('/crm/uploadContact.jsp','<s:text name="title.import.contact" />')"><s:text name='menu.item.import.title'/></div>
 				  </s:if>	  
 				  <s:if test="#request.user.view_contact == 1">
-					<div id="export"><s:text name='menu.item.export.title'/></div>
+					<div data-options="iconCls:'icon-export'" id="export"><s:text name='menu.item.export.title'/></div>
 				  </s:if>	
 				  <s:if test="#request.user.update_contact == 1">
-					<div id="massUpdate">
+					<div data-options="iconCls:'icon-update'" id="massUpdate">
 					  <s:text name='menu.item.massupdate.title' />
 					</div>
 				  </s:if>
 				  <s:if test="#request.user.create_contact == 1">
-					<div id="copy"><s:text name='menu.item.copy.title'/></div>
+					<div data-options="iconCls:'icon-copy'" id="copy"><s:text name='menu.item.copy.title'/></div>
 				  </s:if>
 				</div>
 		     </span>		     		     

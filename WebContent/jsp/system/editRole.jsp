@@ -17,18 +17,21 @@
 
 <script type="text/javascript">
 	function save() {
+		disableBtn();
 		var addObjectForm = document.getElementById('addObjectForm');
 		addObjectForm.action = "saveRole.action";
 		addObjectForm.submit();
 	}
 
 	function saveClose() {
+		disableBtn();
 		var addObjectForm = document.getElementById('addObjectForm');
 		addObjectForm.action = "saveCloseRole.action";
 		addObjectForm.submit();
 	}
 	
-	function cancel() {		
+	function cancel() {
+		disableBtn();
 		var addObjectForm = document.getElementById('addObjectForm');
 		addObjectForm.action = "listRolePage.action";
 		addObjectForm.submit();
@@ -76,14 +79,14 @@
 
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
 				</span>			
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
 				</span>
@@ -91,7 +94,7 @@
 			</div>
 
 			<div id="feature-title">
-				<s:if test="role!=null">
+				<s:if test="role!=null && role.id!=null">
 					<h2>
 						<s:text name="title.updateRole" />
 					</h2>

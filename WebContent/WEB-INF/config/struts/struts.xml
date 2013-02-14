@@ -9,7 +9,6 @@
 	<constant name="struts.devMode" value="true" />
 	<constant name="struts.il8n.reload" value="true"/>
 	<constant name="struts.ui.theme" value="simple"/>
-	<constant name="struts.locale" value="zh_CN" />
     <include file="struts-default.xml"/>
     <include file="/config/struts/struts-account.xml"/>
     <include file="/config/struts/struts-call.xml"/>
@@ -46,7 +45,8 @@
         </default-interceptor-ref>
         <global-results>
            <result name="accessDenied">/jsp/403.jsp</result>
-        </global-results>        
+        </global-results> 
+                             
     </package>
           
 </struts>

@@ -14,8 +14,9 @@
 <script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.edatagrid.js"></script>
+<script type="text/javascript" src="../../js/locale/easyui-lang-<%=(String)session.getAttribute("locale")%>.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
-<script type="text/javascript" src="../../js/datagrid.js"></script>
+<script type="text/javascript" src="../../js/datagrid-<%=(String)session.getAttribute("locale")%>.js"></script> 
 
 <script type="text/javascript">
 	$(function() {
@@ -62,21 +63,21 @@
 						    <th data-options="field:'ck',checkbox:true"></th>
 							<th field="id" width="1" hidden="true"><s:text
 									name='entity.id.label' /></th>							
-							<th field="currency.id" width="10"><s:text
+							<th field="currency.id" width="20"><s:text
 									name='entity.id.label' /></th>
 							<th field="currency.name" width="50"
 								editor="{type:'validatebox',options:{required:true}}"><s:text
 									name='entity.name.label' /></th>
 							<th field="currency.code" width="50" editor="{type:'text'}"><s:text
-									name='entity.code.label' /></th>
+									name='currency.code.label' /></th>
 							<th field="currency.rate" width="50"
 								editor="{type:'numberbox',options:{required:true}}"><s:text
-									name='entity.rate.label' /></th>
+									name='currency.rate.label' /></th>
 							<th field="currency.symbol" width="50"
 								editor="{type:'text',options:{required: true,missingMessage: 'please input'}}"><s:text
-									name='entity.symbol.label' /></th>
+									name='currency.symbol.label' /></th>
 							<th field="currency.status" width="50" editor="{type:'text'}"><s:text
-									name='entity.status.label' /></th>
+									name='currency.status.label' /></th>
 						</tr>
 					</thead>
 				</table>

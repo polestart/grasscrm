@@ -14,8 +14,10 @@
 <script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.edatagrid.js"></script>
+<script type="text/javascript" src="../../js/locale/easyui-lang-<%=(String)session.getAttribute("locale")%>.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
-<script type="text/javascript" src="../../js/datagrid.js"></script>
+<script type="text/javascript" src="../../js/datagrid-<%=(String)session.getAttribute("locale")%>.js"></script> 
+
 
 <script type="text/javascript">
 	$(function() {

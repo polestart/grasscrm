@@ -7,6 +7,18 @@
 .icon-edit{
 	background:url('icons/pencil.png') no-repeat;
 }
+.icon-copy{
+	background:url('icons/copy.png') no-repeat;
+}
+.icon-update{
+	background:url('icons/update.png') no-repeat;
+}
+.icon-import{
+	background:url('icons/import.png') no-repeat;
+}
+.icon-export{
+	background:url('icons/export.png') no-repeat;
+}
 .icon-remove{
 	background:url('icons/edit_remove.png') no-repeat;
 }

@@ -63,14 +63,18 @@ public class CurrencyAction extends BaseListAction {
             Integer id = instance.getId();
             String name = instance.getName();
             String code = instance.getCode();
-            double rate = instance.getRate();
+            Double rate = instance.getRate();
+            String rateS = "";
+            if (rate != null) {
+                rateS = String.valueOf(rate);
+            }
             String symbol = instance.getSymbol();
             String status = instance.getStatus();
 
             json += "{\"id\":\"" + id + "\",\"currency.id\":\"" + id
                     + "\",\"currency.name\":\"" + name
                     + "\",\"currency.code\":\"" + code
-                    + "\",\"currency.rate\":\"" + rate
+                    + "\",\"currency.rate\":\"" + rateS
                     + "\",\"currency.symbol\":\"" + symbol
                     + "\",\"currency.status\":\"" + status + "\"}";
             if (i < size - 1) {

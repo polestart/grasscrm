@@ -11,10 +11,10 @@
     </a>
   </div>
   <div id="right-side">
-	Welcome,
+	<s:text name="info.welcome" />,
 	<strong>
 	   <security:authentication property="principal.username"/>
 	</strong>
-	 <a id="logout_link" href="<c:url value="/j_spring_security_logout"/>">[Log Out]</a>	
+	 <a id="logout_link" href="<c:url value="/j_spring_security_logout"/>">[<s:text name="link.logout" />]</a>	
    </div>
 </div>

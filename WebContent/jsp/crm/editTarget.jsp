@@ -16,31 +16,17 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-function save() {
-	var addObjectForm = document.getElementById('addObjectForm');
-	if ($("#seleteIDs").val()!= ""){
-	   addObjectForm.action = "massUpdateTarget.action";
-	}else{
-	   addObjectForm.action = "saveTarget.action";
-	}		
-	addObjectForm.submit();
-}
+    function save() {
+        baseSave("Target");
+	}
 
-function saveClose() {
-	var addObjectForm = document.getElementById('addObjectForm');
-	if ($("#seleteIDs").val()!= ""){
-	   addObjectForm.action = "massUpdateCloseTarget.action";
-	}else{
-	   addObjectForm.action = "saveCloseTarget.action";
-	}		
-	addObjectForm.submit();
-}
-
-function cancel(){
-	var addObjectForm = document.getElementById('addObjectForm');
-	addObjectForm.action = "listTargetPage.action";
-	addObjectForm.submit();
-}
+	function saveClose() {
+		baseSaveClose("Target");
+	}
+	
+	function cancel() {
+		baseCancel("Target");
+	}
 
 function copyAddress(){
 	if ($('#copy_checkbox').attr('checked')) { 
@@ -98,14 +84,14 @@ $(document).ready(function(){
 
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
-				</span>
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				</span>			
+				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
 				</span>
@@ -113,13 +99,13 @@ $(document).ready(function(){
 			</div>
 
 			<div id="feature-title">
-				<s:if test="target!=null">
+				<s:if test="target!=null && target.id!=null">
 					<h2>
 						<s:text name="title.updateTarget" />
 					</h2>
 				</s:if>
 				<s:else>
-				  <s:if test="seleteIDs!=null">
+				  <s:if test="seleteIDs!=null && seleteIDs!= ''">
 					<h2>
 						<s:text name="title.massUpdateTarget" />
 					</h2>

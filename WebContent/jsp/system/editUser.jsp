@@ -13,35 +13,22 @@
 
 <script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../../js/locale/easyui-lang-<%=(String)session.getAttribute("locale")%>.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
-<script type="text/javascript" src="../../js/datagrid.js"></script> 
+<script type="text/javascript" src="../../js/datagrid-<%=(String)session.getAttribute("locale")%>.js"></script> 
 
 <script type="text/javascript">
-		function save() {
-			var addObjectForm = document.getElementById('addObjectForm');
-			if ($("#seleteIDs").val()!= ""){
-			   addObjectForm.action = "massUpdateUser.action";
-			}else{
-			   addObjectForm.action = "saveUser.action";
-			}		
-			addObjectForm.submit();
-		}
+    function save() {
+        baseSave("User");
+	}
 
-		function saveClose() {
-			var addObjectForm = document.getElementById('addObjectForm');
-			if ($("#seleteIDs").val()!= ""){
-			   addObjectForm.action = "massUpdateCloseUser.action";
-			}else{
-			   addObjectForm.action = "saveCloseUser.action";
-			}		
-			addObjectForm.submit();
-		}
-		
-	  function cancel(){
-		var addObjectForm = document.getElementById('addObjectForm');
-		addObjectForm.action = "listUserPage.action";
-		addObjectForm.submit();
-	  }
+	function saveClose() {
+		baseSaveClose("User");
+	}
+	
+	function cancel() {
+		baseCancel("User");
+	}
 	
 	  function copyAddress(){
 		if ($('#copy_checkbox').attr('checked')) { 
@@ -119,14 +106,14 @@
 
 		<div id="feature">
 			<div id="shortcuts" class="headerList">
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
 						plain="true"><s:text name="button.save" /></a>
 				</span>			
-				<span> <span style="white-space: nowrap;"> <a href="#"
+				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
-				</span> <span style="white-space: nowrap;"> <a href="#"
+				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
 				</span>
@@ -140,7 +127,7 @@
 					</h2>
 				</s:if>
 				<s:else>
-				  <s:if test="seleteIDs!=null">
+				  <s:if test="seleteIDs!=null && seleteIDs!= ''">
 					<h2>
 						<s:text name="title.massUpdateUser" />
 					</h2>
