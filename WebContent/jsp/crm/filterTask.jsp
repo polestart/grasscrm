@@ -33,13 +33,13 @@
 		columns:[[
 			{field:'ck',checkbox:true},		  		
 			{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-			{field:'subject',title:'<s:text name="task.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+			{field:'subject',title:'<s:text name="entity.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 				   new_format_value = "<a href='editTask.action?id=" + row.id + "'>" + value + "</a>";
 				   return new_format_value 
              }  
             },
-			{field:'contact.name',title:'<s:text name="task.contact.label" />',width:80,align:'center',sortable:'true'},
-			{field:'related_object',title:'<s:text name="task.related_object.label" />',width:80,align:'center',sortable:'true'},
+			{field:'contact.name',title:'<s:text name="entity.contact.label" />',width:80,align:'center',sortable:'true'},
+			{field:'related_object',title:'<s:text name="entity.related_object.label" />',width:80,align:'center',sortable:'true'},
 			{field:'due_date',title:'<s:text name="task.due_date.label" />',width:80,align:'center',sortable:'true'},			
 			{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 		]],

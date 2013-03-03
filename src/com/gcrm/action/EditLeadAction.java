@@ -31,6 +31,7 @@ import com.gcrm.domain.LeadSource;
 import com.gcrm.domain.LeadStatus;
 import com.gcrm.domain.Meeting;
 import com.gcrm.domain.Opportunity;
+import com.gcrm.domain.Salutation;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
@@ -51,6 +52,7 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
     private IBaseService<Account> accountService;
     private IBaseService<LeadStatus> leadStatusService;
     private IBaseService<LeadSource> leadSourceService;
+    private IBaseService<Salutation> salutationService;
     private IBaseService<User> userService;
     private IBaseService<Campaign> campaignService;
     private IBaseService<Contact> contactService;
@@ -61,10 +63,12 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
     private Lead lead;
     private List<LeadStatus> leadStatuses;
     private List<LeadSource> leadSources;
+    private List<Salutation> salutations;
     private Integer accountID = null;
     private String accountText = null;
     private Integer leadStatusID = null;
     private Integer leadSourceID = null;
+    private Integer salutationID = null;
     private Integer campaignID = null;
     private String campaignText = null;
     private Integer assignedToID = null;
@@ -108,6 +112,11 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
             LeadSource leadSource = lead.getLead_source();
             if (leadSource != null) {
                 leadSourceID = leadSource.getId();
+            }
+
+            Salutation salutation = lead.getSalutation();
+            if (salutation != null) {
+                salutationID = salutation.getId();
             }
 
             Campaign campaign = lead.getCampaign();
@@ -197,6 +206,13 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
         }
         lead.setLead_source(leadSource);
 
+        Salutation salutation = null;
+        if (salutationID != null) {
+            salutation = salutationService.getEntityById(Salutation.class,
+                    salutationID);
+        }
+        lead.setSalutation(salutation);
+
         User user = null;
         if (assignedToID != null) {
             user = userService.getEntityById(User.class, assignedToID);
@@ -269,6 +285,8 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
         this.leadStatuses = leadStatusService.getAllObjects(LeadStatus.class
                 .getSimpleName());
         this.leadSources = leadSourceService.getAllObjects(LeadSource.class
+                .getSimpleName());
+        this.salutations = salutationService.getAllObjects(Salutation.class
                 .getSimpleName());
     }
 
@@ -661,6 +679,51 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      */
     public void setBaseService(ILeadService baseService) {
         this.baseService = baseService;
+    }
+
+    /**
+     * @return the salutationService
+     */
+    public IBaseService<Salutation> getSalutationService() {
+        return salutationService;
+    }
+
+    /**
+     * @param salutationService
+     *            the salutationService to set
+     */
+    public void setSalutationService(IBaseService<Salutation> salutationService) {
+        this.salutationService = salutationService;
+    }
+
+    /**
+     * @return the salutations
+     */
+    public List<Salutation> getSalutations() {
+        return salutations;
+    }
+
+    /**
+     * @param salutations
+     *            the salutations to set
+     */
+    public void setSalutations(List<Salutation> salutations) {
+        this.salutations = salutations;
+    }
+
+    /**
+     * @return the salutationID
+     */
+    public Integer getSalutationID() {
+        return salutationID;
+    }
+
+    /**
+     * @param salutationID
+     *            the salutationID to set
+     */
+    public void setSalutationID(Integer salutationID) {
+        this.salutationID = salutationID;
     }
 
 }

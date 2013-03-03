@@ -57,6 +57,7 @@ public class ExceptionInterceptor implements Interceptor {
             result = action.invoke();
         } catch (Exception e) {
             result = Action.INPUT;
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
             ActionSupport actionSupport = (ActionSupport) action.getAction();
             String errorMessage = e.getMessage();

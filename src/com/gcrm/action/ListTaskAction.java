@@ -273,16 +273,28 @@ public class ListTaskAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_task");
-
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.task.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Subject",
-                    "Status ID", "Status Name", "Start Date", "Due Date",
-                    "Related Object", "Related Record ID", "Contact ID",
-                    "Contact Name", "Priority ID", "Priority Name",
-                    "Description", "Assigned To ID", "Assigned To Name" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("entity.subject.label"),
+                    getText("entity.status_id.label"),
+                    getText("entity.status_name.label"),
+                    getText("entity.start_date.label"),
+                    getText("task.due_date.label"),
+                    getText("entity.related_object.label"),
+                    getText("entity.related_record_id.label"),
+                    getText("entity.contact_id.label"),
+                    getText("entity.contact_name.label"),
+                    getText("entity.priority_id.label"),
+                    getText("entity.priority_name.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label"),
+                    getText("entity.assigned_to_id.label"),
+                    getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -337,12 +349,14 @@ public class ListTaskAction extends BaseListAction {
                 }
                 data1.put(header[12],
                         CommonUtil.fromNullToEmpty(task.getDescription()));
+                data1.put(header[13],
+                        CommonUtil.fromNullToEmpty(task.getNotes()));
                 if (task.getAssigned_to() != null) {
-                    data1.put(header[13], task.getAssigned_to().getId());
-                    data1.put(header[14], task.getAssigned_to().getName());
+                    data1.put(header[14], task.getAssigned_to().getId());
+                    data1.put(header[15], task.getAssigned_to().getName());
                 } else {
-                    data1.put(header[13], "");
                     data1.put(header[14], "");
+                    data1.put(header[15], "");
                 }
                 writer.write(data1, header);
             }
@@ -353,7 +367,7 @@ public class ListTaskAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -382,13 +396,14 @@ public class ListTaskAction extends BaseListAction {
 
                 Task task = new Task();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         task.setId(Integer.parseInt(id));
                     }
                     task.setSubject(CommonUtil.fromNullToEmpty(row
-                            .get("Subject")));
-                    String statusID = row.get("Status ID");
+                            .get(getText("entity.subject.label"))));
+                    String statusID = row
+                            .get(getText("entity.status_id.label"));
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         task.setStatus(null);
                     } else {
@@ -398,14 +413,15 @@ public class ListTaskAction extends BaseListAction {
                     }
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
                             Constant.DATE_TIME_FORMAT);
-                    String startDateS = row.get("Start Date");
+                    String startDateS = row
+                            .get(getText("entity.start_date.label"));
                     if (startDateS != null) {
                         Date startDate = dateFormat.parse(startDateS);
                         task.setStart_date(startDate);
                     } else {
                         task.setStart_date(null);
                     }
-                    String dueDateS = row.get("Due Date");
+                    String dueDateS = row.get(getText("task.due_date.label"));
                     if (dueDateS != null) {
                         Date dueDate = dateFormat.parse(dueDateS);
                         task.setDue_date(dueDate);
@@ -413,14 +429,16 @@ public class ListTaskAction extends BaseListAction {
                         task.setDue_date(null);
                     }
                     task.setRelated_object(CommonUtil.fromNullToEmpty(row
-                            .get("Related Object")));
-                    String relatedRecord = row.get("Related Record ID");
+                            .get(getText("entity.related_object.label"))));
+                    String relatedRecord = row
+                            .get(getText("entity.related_record_id.label"));
                     if (CommonUtil.isNullOrEmpty(relatedRecord)) {
                         task.setRelated_record(0);
                     } else {
                         task.setRelated_record(Integer.parseInt(relatedRecord));
                     }
-                    String contactID = row.get("Contact ID");
+                    String contactID = row
+                            .get(getText("entity.contact_id.label"));
                     if (CommonUtil.isNullOrEmpty(contactID)) {
                         task.setContact(null);
                     } else {
@@ -428,7 +446,8 @@ public class ListTaskAction extends BaseListAction {
                                 Contact.class, Integer.parseInt(contactID));
                         task.setContact(contact);
                     }
-                    String priorityID = row.get("Priority ID");
+                    String priorityID = row
+                            .get(getText("entity.priority_id.label"));
                     if (CommonUtil.isNullOrEmpty(priorityID)) {
                         task.setPriority(null);
                     } else {
@@ -438,8 +457,11 @@ public class ListTaskAction extends BaseListAction {
                         task.setPriority(priority);
                     }
                     task.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
-                    String assignedToID = row.get("Assigned To ID");
+                            .get(getText("entity.description.label"))));
+                    task.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         task.setAssigned_to(null);
                     } else {

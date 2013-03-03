@@ -84,6 +84,18 @@ public interface IBaseService<T extends Serializable> {
     public T getEntityById(Class<T> entityClass, Integer id);
 
     /**
+     * Finds records according to name
+     * 
+     * @param clazz
+     *            class name
+     * @param name
+     *            entity name
+     * @return entity instance
+     * @throws Exception
+     */
+    public T findByName(String clazz, String name);
+
+    /**
      * Gets object count
      * 
      * @param clazz

@@ -399,18 +399,34 @@ public class ListOpportunityAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_opportunity");
-
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.opportunity.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Name", "Account ID",
-                    "Account Name", "Currency ID", "Currency Name",
-                    "Expect Close Date", "Opportunity Amount", "Type ID",
-                    "Type Name", "Sales Stage ID", "Sales Stage Name",
-                    "Lead Source ID", "Lead Source Name", "Probability",
-                    "Campaign ID", "Campaign Name", "Next Step", "Description",
-                    "Assigned To ID", "Assigned To Name" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("entity.name.label"),
+                    getText("entity.account_id.label"),
+                    getText("entity.account_name.label"),
+                    getText("entity.currency_id.label"),
+                    getText("entity.currency_name.label"),
+                    getText("opportunity.expect_close_date.label"),
+                    getText("opportunity.opportunity_amount.label"),
+                    getText("entity.type_id.label"),
+                    getText("entity.type_name.label"),
+                    getText("entity.salesStage_id.label"),
+                    getText("entity.salesStage_name.label"),
+                    getText("entity.leadSource_id.label"),
+                    getText("entity.leadSource_name.label"),
+                    getText("opportunity.probability.label"),
+                    getText("entity.campaign_id.label"),
+                    getText("entity.campaign_name.label"),
+                    getText("opportunity.next_step.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label"),
+                    getText("entity.assigned_to_id.label"),
+                    getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -481,13 +497,15 @@ public class ListOpportunityAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(opportunity.getNext_step()));
                 data1.put(header[18], CommonUtil.fromNullToEmpty(opportunity
                         .getDescription()));
+                data1.put(header[19],
+                        CommonUtil.fromNullToEmpty(opportunity.getNotes()));
                 if (opportunity.getAssigned_to() != null) {
-                    data1.put(header[19], opportunity.getAssigned_to().getId());
-                    data1.put(header[20], opportunity.getAssigned_to()
+                    data1.put(header[20], opportunity.getAssigned_to().getId());
+                    data1.put(header[21], opportunity.getAssigned_to()
                             .getName());
                 } else {
-                    data1.put(header[19], "");
                     data1.put(header[20], "");
+                    data1.put(header[21], "");
                 }
                 writer.write(data1, header);
             }
@@ -498,7 +516,7 @@ public class ListOpportunityAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -527,13 +545,14 @@ public class ListOpportunityAction extends BaseListAction {
 
                 Opportunity opportunity = new Opportunity();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         opportunity.setId(Integer.parseInt(id));
                     }
                     opportunity.setName(CommonUtil.fromNullToEmpty(row
-                            .get("Name")));
-                    String accountID = row.get("Account ID");
+                            .get(getText("entity.name.label"))));
+                    String accountID = row
+                            .get(getText("entity.account_id.label"));
                     if (CommonUtil.isNullOrEmpty(accountID)) {
                         opportunity.setAccount(null);
                     } else {
@@ -541,7 +560,8 @@ public class ListOpportunityAction extends BaseListAction {
                                 Account.class, Integer.parseInt(accountID));
                         opportunity.setAccount(account);
                     }
-                    String currencyID = row.get("Currency ID");
+                    String currencyID = row
+                            .get(getText("entity.currency_id.label"));
                     if (CommonUtil.isNullOrEmpty(currencyID)) {
                         opportunity.setCurrency(null);
                     } else {
@@ -551,7 +571,8 @@ public class ListOpportunityAction extends BaseListAction {
                     }
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
                             Constant.DATE_EDIT_FORMAT);
-                    String expectCloseDateS = row.get("currencyID");
+                    String expectCloseDateS = row
+                            .get(getText("opportunity.expect_close_date.label"));
 
                     if (expectCloseDateS != null) {
                         Date expectCloseDate = dateFormat
@@ -560,9 +581,10 @@ public class ListOpportunityAction extends BaseListAction {
                     } else {
                         opportunity.setExpect_close_date(null);
                     }
-                    opportunity.setOpportunity_amount(CommonUtil
-                            .fromNullToEmpty(row.get("Opportunity Amount")));
-                    String typeID = row.get("Type ID");
+                    opportunity
+                            .setOpportunity_amount(CommonUtil.fromNullToEmpty(row
+                                    .get(getText("opportunity.opportunity_amount.label"))));
+                    String typeID = row.get(getText("entity.type_id.label"));
                     if (CommonUtil.isNullOrEmpty(typeID)) {
                         opportunity.setType(null);
                     } else {
@@ -571,7 +593,8 @@ public class ListOpportunityAction extends BaseListAction {
                                         Integer.parseInt(typeID));
                         opportunity.setType(opportunityType);
                     }
-                    String salesStageID = row.get("Sales Stage ID");
+                    String salesStageID = row
+                            .get(getText("entity.salesStage_id.label"));
                     if (CommonUtil.isNullOrEmpty(salesStageID)) {
                         opportunity.setSales_stage(null);
                     } else {
@@ -580,7 +603,8 @@ public class ListOpportunityAction extends BaseListAction {
                                         Integer.parseInt(salesStageID));
                         opportunity.setSales_stage(salesStage);
                     }
-                    String leadSourceID = row.get("Lead Source ID");
+                    String leadSourceID = row
+                            .get(getText("entity.leadSource_id.label"));
                     if (CommonUtil.isNullOrEmpty(leadSourceID)) {
                         opportunity.setLead_source(null);
                     } else {
@@ -589,14 +613,16 @@ public class ListOpportunityAction extends BaseListAction {
                                         Integer.parseInt(leadSourceID));
                         opportunity.setLead_source(leadSource);
                     }
-                    String probability = row.get("Probability");
+                    String probability = row
+                            .get(getText("opportunity.probability.label"));
                     if (CommonUtil.isNullOrEmpty(probability)) {
                         opportunity.setProbability(0);
                     } else {
                         opportunity.setProbability(Double
                                 .parseDouble(probability));
                     }
-                    String campaignID = row.get("Campaign ID");
+                    String campaignID = row
+                            .get(getText("entity.campaign_id.label"));
                     if (CommonUtil.isNullOrEmpty(campaignID)) {
                         opportunity.setCampaign(null);
                     } else {
@@ -605,10 +631,13 @@ public class ListOpportunityAction extends BaseListAction {
                         opportunity.setCampaign(campaign);
                     }
                     opportunity.setNext_step(CommonUtil.fromNullToEmpty(row
-                            .get("Next Step")));
+                            .get(getText("opportunity.next_step.label"))));
                     opportunity.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
-                    String assignedToID = row.get("Assigned To ID");
+                            .get(getText("entity.description.label"))));
+                    opportunity.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         opportunity.setAssigned_to(null);
                     } else {

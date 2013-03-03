@@ -14,6 +14,7 @@
 <script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
+<script type="text/javascript" src="../../js/locale/easyui-lang-<%=(String)session.getAttribute("locale")%>.js"></script>
 
 <script type="text/javascript">
     function save() {
@@ -41,6 +42,9 @@
 		}
 		if ($("#id").val() == ""){
 			  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
+			  if ($("#seleteIDs").val() == ""){
+				     $("#addObjectForm").form('validate');
+			  }			  
 		}
 		if ($("#saveFlag").val() == "true"){
 			$.messager.show({  
@@ -129,7 +133,7 @@
 						    <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="subject"/></td>
 							<td class="td-label"><label class="record-label"><s:text
-										name="case.subject.label"></s:text>：</label></td>
+										name="entity.subject.label"></s:text>：</label></td>
 							<td class="td-value"><input name="caseInstance.subject"
 								class="easyui-validatebox record-value"
 								data-options="required:true"
@@ -145,7 +149,7 @@
 					            panelWidth:520,  
 					            idField:'id',  
 					            textField:'name',  
-					            url:'/grass/jsp/system/listUser.action',
+					            url:'<s:url action="listUser" namespace="/jsp/system"/>',
 		                        loadMsg: '<s:text name="datagrid.loading" />',
 		                        pagination : true,
 		                        pageSize: 10,
@@ -155,9 +159,9 @@
 					            columns:[[  
 					                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
 					                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
-					                {field:'title',title:'<s:text name="user.title.label" />',width:120},  
-					                {field:'department',title:'<s:text name="user.department.label" />',width:100},
-					                {field:'status.name',title:'<s:text name="user.status.label" />',width:100}   
+					                {field:'title',title:'<s:text name="entity.title.label" />',width:120},  
+					                {field:'department',title:'<s:text name="entity.department.label" />',width:100},
+					                {field:'status.name',title:'<s:text name="entity.status.label" />',width:100}   
 					            ]]  
 					        ">
 							</select></td>
@@ -171,13 +175,13 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 									    	    name="massUpdate" type="checkbox" class="massUpdate" value="priority"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="case.priority.label"></s:text>：</label></td>
+												name="entity.priority.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="priorityID"
 											list="casePriorities" listKey="id" listValue="name" cssClass="record-value"/></td>
 						            <td class="td-mass-update"><input id="massUpdate"
 									    	    name="massUpdate" type="checkbox" class="massUpdate" value="status"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="case.status.label"></s:text>：</label></td>
+												name="entity.status.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="statusID"
 											list="statuses" listKey="id" listValue="name" cssClass="record-value"/></td>
 								</tr>
@@ -204,8 +208,8 @@
 						            columns:[[  
 							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
 							                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
-							                {field:'office_phone',title:'<s:text name="account.office_phone.label" />',width:120},  
-							                {field:'email',title:'<s:text name="account.email.label" />',width:100},
+							                {field:'office_phone',title:'<s:text name="entity.office_phone.label" />',width:120},  
+							                {field:'email',title:'<s:text name="entity.email.label" />',width:100},
 							                {field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:100} 
 						            ]]  
 						        ">
@@ -250,7 +254,7 @@
 							            panelWidth:520,  
 							            idField:'id',  
 							            textField:'name',  
-							            url:'/grass/jsp/system/listUser.action',
+							            url:'<s:url action="listUser" namespace="/jsp/system"/>',
 							            loadMsg: '<s:text name="datagrid.loading" />',
 							            pagination : true,
 							            pageSize: 10,
@@ -260,9 +264,9 @@
 							            columns:[[  
 							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
 							                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
-							                {field:'title',title:'<s:text name="user.title.label" />',width:120},  
-							                {field:'department',title:'<s:text name="user.department.label" />',width:100},
-							                {field:'status.name',title:'<s:text name="user.status.label" />',width:100} 
+							                {field:'title',title:'<s:text name="entity.title.label" />',width:120},  
+							                {field:'department',title:'<s:text name="entity.department.label" />',width:100},
+							                {field:'status.name',title:'<s:text name="entity.status.label" />',width:100} 
 							            ]]  
 						        ">
 									</select></td>
@@ -271,6 +275,9 @@
 						</div>
 
 						<div title="<s:text name='tab.details'/>" style="padding: 10px;">
+							<div class="section-header">
+								<span><s:text name="span.description" /></span>
+							</div>						
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
 						            <td class="td-mass-update"><input id="massUpdate"
@@ -281,10 +288,21 @@
 									<td class="td-value" valign="top"><s:textarea
 											name="caseInstance.description" rows="20" cssStyle="width:450px;"
 											cssClass="record-value" /></td>
-						            <td class="td-mass-update"></td>
-									<td class="td-label"></td>
-									<td class="td-value"></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+										name="massUpdate" type="checkbox" class="massUpdate" value="notes"/></td>
+									<td class="td-label" valign="top"><label
+										class="record-label"><s:text
+												name="entity.notes.label"></s:text>：</label></td>
+									<td class="td-value" valign="top"><s:textarea
+											name="caseInstance.notes" rows="20" cssStyle="width:450px;"
+											cssClass="record-value" /></td>
 								</tr>
+							</table>
+
+							<div class="section-header">
+								<span><s:text name="span.system_info" /></span>
+							</div>
+							<table style="" cellspacing="10" cellpadding="0" width="100%">									
 								<tr>
 						            <td class="td-mass-update"></td>
 									<td class="td-label"><label class="record-label"><s:text

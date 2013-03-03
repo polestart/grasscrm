@@ -35,6 +35,7 @@ public class User extends BaseEntity implements Serializable {
     private String smtp_username;
     private String smtp_password;
     private String description;
+    private String notes;
     private Set<Role> roles = new HashSet<Role>(0);
     private Set<TargetList> targetLists = new HashSet<TargetList>(0);
     private Set<Call> calls = new HashSet<Call>(0);
@@ -2034,6 +2035,21 @@ public class User extends BaseEntity implements Serializable {
      */
     public String getDelete_system_text() {
         return this.accessMap.get(delete_system);
+    }
+
+    /**
+     * @return the notes
+     */
+    public String getNotes() {
+        return notes;
+    }
+
+    /**
+     * @param notes
+     *            the notes to set
+     */
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
 }

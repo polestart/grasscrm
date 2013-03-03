@@ -90,6 +90,16 @@ public class BaseService<T extends Serializable> implements IBaseService<T> {
     /*
      * (non-Javadoc)
      * 
+     * @see com.gcrm.dao.IBaseDao#findByName(java.lang.String, java.lang.String)
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public T findByName(String clazz, String name) {
+        return baseDao.findByName(clazz, name);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.gcrm.service.IBaseService#getObjectsCount(java.lang.String)
      */
     public long getObjectsCount(String clazz) {

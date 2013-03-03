@@ -9,21 +9,20 @@
 	<constant name="struts.devMode" value="true" />
 	<constant name="struts.il8n.reload" value="true"/>
 	<constant name="struts.ui.theme" value="simple"/>
-    <include file="struts-default.xml"/>
-    <include file="/config/struts/struts-account.xml"/>
-    <include file="/config/struts/struts-call.xml"/>
-    <include file="/config/struts/struts-campaign.xml"/>
-    <include file="/config/struts/struts-case.xml"/>
-    <include file="/config/struts/struts-contact.xml"/>
-    <include file="/config/struts/struts-document.xml"/>
-    <include file="/config/struts/struts-lead.xml"/>
-    <include file="/config/struts/struts-meeting.xml"/>
-    <include file="/config/struts/struts-opportunity.xml"/>
-    <include file="/config/struts/struts-security.xml"/>
-    <include file="/config/struts/struts-system.xml"/>
-    <include file="/config/struts/struts-target.xml"/>
-    <include file="/config/struts/struts-targetList.xml"/>
-    <include file="/config/struts/struts-task.xml"/>
+    <include file="../config/struts/struts-account.xml"/>
+    <include file="../config/struts/struts-call.xml"/>
+    <include file="../config/struts/struts-campaign.xml"/>
+    <include file="../config/struts/struts-case.xml"/>
+    <include file="../config/struts/struts-contact.xml"/>
+    <include file="../config/struts/struts-document.xml"/>
+    <include file="../config/struts/struts-lead.xml"/>
+    <include file="../config/struts/struts-meeting.xml"/>
+    <include file="../config/struts/struts-opportunity.xml"/>
+    <include file="../config/struts/struts-security.xml"/>
+    <include file="../config/struts/struts-system.xml"/>
+    <include file="../config/struts/struts-target.xml"/>
+    <include file="../config/struts/struts-targetList.xml"/>
+    <include file="../config/struts/struts-task.xml"/>
 
     <package name="default" extends="struts-default,json-default">
         <interceptors>

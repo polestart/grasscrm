@@ -34,6 +34,7 @@
   <property name="smtp_username" column="smtp_username" type="string" />  
   <property name="smtp_password" column="smtp_password" type="string" />  
   <property name="description" column="description" type="string" />
+  <property name="notes" column="notes" type="string" />  
   <set cascade="all" name="roles" table="users_role">   
      <key column="user_id" />   
      <many-to-many class="com.gcrm.domain.Role"  column="role_id" />

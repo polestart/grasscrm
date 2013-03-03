@@ -48,6 +48,7 @@ import com.gcrm.domain.Lead;
 import com.gcrm.domain.LeadSource;
 import com.gcrm.domain.Meeting;
 import com.gcrm.domain.Opportunity;
+import com.gcrm.domain.Salutation;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.exception.ServiceException;
@@ -69,6 +70,7 @@ public class ListContactAction extends BaseListAction {
     private IBaseService<Contact> baseService;
     private IBaseService<Account> accountService;
     private IBaseService<LeadSource> leadSourceService;
+    private IBaseService<Salutation> salutationService;
     private IBaseService<User> userService;
     private IBaseService<Campaign> campaignService;
     private IBaseService<Opportunity> opportunityService;
@@ -467,22 +469,48 @@ public class ListContactAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_contact");
-
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.contact.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "First Name",
-                    "Last Name", "Office Phone", "Title", "Mobile",
-                    "Department", "Fax", "Account ID", "Account Name",
-                    "Web Site", "Primary Address", "Primary City",
-                    "Primary State", "Primary Postal Code", "Primary Country",
-                    "Other Address", "Other City", "Other State",
-                    "Other Postal Code", "Other Country", "Email",
-                    "Description", "Report To ID", "Report To Name",
-                    "Sync Outlook", "Do Not Call", "Lead Source ID",
-                    "Lead Source Name", "Campaign ID", "Campaign Nae",
-                    "Assigned To ID", "Assigned To Name" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("entity.salutation_id.label"),
+                    getText("entity.salutation_name.label"),
+                    getText("entity.first_name.label"),
+                    getText("entity.last_name.label"),
+                    getText("entity.office_phone.label"),
+                    getText("entity.title.label"),
+                    getText("entity.mobile.label"),
+                    getText("contact.skype_id.label"),
+                    getText("entity.department.label"),
+                    getText("entity.fax.label"),
+                    getText("entity.account_id.label"),
+                    getText("entity.account_name.label"),
+                    getText("entity.website.label"),
+                    getText("entity.primary_street.label"),
+                    getText("entity.primary_city.label"),
+                    getText("entity.primary_state.label"),
+                    getText("entity.primary_postal_code.label"),
+                    getText("entity.primary_country.label"),
+                    getText("entity.other_street.label"),
+                    getText("entity.other_city.label"),
+                    getText("entity.other_state.label"),
+                    getText("entity.other_postal_code.label"),
+                    getText("entity.other_country.label"),
+                    getText("entity.email.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label"),
+                    getText("contact.report_to_id.label"),
+                    getText("contact.report_to_name.label"),
+                    getText("entity.not_call.label"),
+                    getText("entity.leadSource_id.label"),
+                    getText("entity.leadSource_name.label"),
+                    getText("entity.campaign_id.label"),
+                    getText("entity.campaign_name.label"),
+                    getText("entity.assigned_to_id.label"),
+                    getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -491,82 +519,92 @@ public class ListContactAction extends BaseListAction {
                         Integer.parseInt(id));
                 final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
                 data1.put(header[0], contact.getId());
-                data1.put(header[1],
-                        CommonUtil.fromNullToEmpty(contact.getFirst_name()));
-                data1.put(header[2],
-                        CommonUtil.fromNullToEmpty(contact.getLast_name()));
+                if (contact.getSalutation() != null) {
+                    data1.put(header[1], contact.getSalutation().getId());
+                    data1.put(header[2], contact.getSalutation().getName());
+                } else {
+                    data1.put(header[1], "");
+                    data1.put(header[2], "");
+                }
                 data1.put(header[3],
-                        CommonUtil.fromNullToEmpty(contact.getOffice_phone()));
+                        CommonUtil.fromNullToEmpty(contact.getFirst_name()));
                 data1.put(header[4],
-                        CommonUtil.fromNullToEmpty(contact.getTitle()));
+                        CommonUtil.fromNullToEmpty(contact.getLast_name()));
                 data1.put(header[5],
-                        CommonUtil.fromNullToEmpty(contact.getMobile()));
+                        CommonUtil.fromNullToEmpty(contact.getOffice_phone()));
                 data1.put(header[6],
-                        CommonUtil.fromNullToEmpty(contact.getDepartment()));
+                        CommonUtil.fromNullToEmpty(contact.getTitle()));
                 data1.put(header[7],
+                        CommonUtil.fromNullToEmpty(contact.getMobile()));
+                data1.put(header[8],
+                        CommonUtil.fromNullToEmpty(contact.getSkype_id()));
+                data1.put(header[9],
+                        CommonUtil.fromNullToEmpty(contact.getDepartment()));
+                data1.put(header[10],
                         CommonUtil.fromNullToEmpty(contact.getFax()));
                 if (contact.getAccount() != null) {
-                    data1.put(header[8], contact.getAccount().getId());
-                    data1.put(header[9], contact.getAccount().getName());
+                    data1.put(header[11], contact.getAccount().getId());
+                    data1.put(header[12], contact.getAccount().getName());
                 } else {
-                    data1.put(header[8], "");
-                    data1.put(header[9], "");
+                    data1.put(header[11], "");
+                    data1.put(header[12], "");
                 }
-                data1.put(header[10],
-                        CommonUtil.fromNullToEmpty(contact.getWebsite()));
-                data1.put(header[11], CommonUtil.fromNullToEmpty(contact
-                        .getMailing_address()));
-                data1.put(header[12],
-                        CommonUtil.fromNullToEmpty(contact.getMailing_city()));
                 data1.put(header[13],
-                        CommonUtil.fromNullToEmpty(contact.getMailing_state()));
-                data1.put(header[14], CommonUtil.fromNullToEmpty(contact
-                        .getMailing_postal_code()));
-                data1.put(header[15], CommonUtil.fromNullToEmpty(contact
-                        .getMailing_country()));
+                        CommonUtil.fromNullToEmpty(contact.getWebsite()));
+                data1.put(header[14],
+                        CommonUtil.fromNullToEmpty(contact.getPrimary_street()));
+                data1.put(header[15],
+                        CommonUtil.fromNullToEmpty(contact.getPrimary_city()));
                 data1.put(header[16],
-                        CommonUtil.fromNullToEmpty(contact.getOther_address()));
-                data1.put(header[17],
-                        CommonUtil.fromNullToEmpty(contact.getOther_city()));
-                data1.put(header[18],
-                        CommonUtil.fromNullToEmpty(contact.getOther_state()));
-                data1.put(header[19], CommonUtil.fromNullToEmpty(contact
-                        .getOther_postal_code()));
+                        CommonUtil.fromNullToEmpty(contact.getPrimary_state()));
+                data1.put(header[17], CommonUtil.fromNullToEmpty(contact
+                        .getPrimary_postal_code()));
+                data1.put(header[18], CommonUtil.fromNullToEmpty(contact
+                        .getPrimary_country()));
+                data1.put(header[19],
+                        CommonUtil.fromNullToEmpty(contact.getOther_street()));
                 data1.put(header[20],
-                        CommonUtil.fromNullToEmpty(contact.getOther_country()));
+                        CommonUtil.fromNullToEmpty(contact.getOther_city()));
                 data1.put(header[21],
+                        CommonUtil.fromNullToEmpty(contact.getOther_state()));
+                data1.put(header[22], CommonUtil.fromNullToEmpty(contact
+                        .getOther_postal_code()));
+                data1.put(header[23],
+                        CommonUtil.fromNullToEmpty(contact.getOther_country()));
+                data1.put(header[24],
                         CommonUtil.fromNullToEmpty(contact.getEmail()));
-                data1.put(header[22],
+                data1.put(header[25],
                         CommonUtil.fromNullToEmpty(contact.getDescription()));
+                data1.put(header[26],
+                        CommonUtil.fromNullToEmpty(contact.getNotes()));
                 if (contact.getReport_to() != null) {
-                    data1.put(header[23], contact.getReport_to().getId());
-                    data1.put(header[24], contact.getReport_to().getName());
-                } else {
-                    data1.put(header[23], "");
-                    data1.put(header[24], "");
-                }
-                data1.put(header[25], contact.isSync_outlook());
-                data1.put(header[26], contact.isNot_call());
-                if (contact.getLeadSource() != null) {
-                    data1.put(header[27], contact.getLeadSource().getId());
-                    data1.put(header[28], contact.getLeadSource().getName());
+                    data1.put(header[27], contact.getReport_to().getId());
+                    data1.put(header[28], contact.getReport_to().getName());
                 } else {
                     data1.put(header[27], "");
                     data1.put(header[28], "");
                 }
-                if (contact.getCampaign() != null) {
-                    data1.put(header[29], contact.getCampaign().getId());
-                    data1.put(header[30], contact.getCampaign().getName());
+                data1.put(header[29], contact.isNot_call());
+                if (contact.getLeadSource() != null) {
+                    data1.put(header[30], contact.getLeadSource().getId());
+                    data1.put(header[31], contact.getLeadSource().getName());
                 } else {
-                    data1.put(header[29], "");
                     data1.put(header[30], "");
+                    data1.put(header[31], "");
+                }
+                if (contact.getCampaign() != null) {
+                    data1.put(header[32], contact.getCampaign().getId());
+                    data1.put(header[33], contact.getCampaign().getName());
+                } else {
+                    data1.put(header[32], "");
+                    data1.put(header[33], "");
                 }
                 if (contact.getAssigned_to() != null) {
-                    data1.put(header[31], contact.getAssigned_to().getId());
-                    data1.put(header[32], contact.getAssigned_to().getName());
+                    data1.put(header[34], contact.getAssigned_to().getId());
+                    data1.put(header[35], contact.getAssigned_to().getName());
                 } else {
-                    data1.put(header[31], "");
-                    data1.put(header[32], "");
+                    data1.put(header[34], "");
+                    data1.put(header[35], "");
                 }
                 writer.write(data1, header);
             }
@@ -577,7 +615,7 @@ public class ListContactAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -606,27 +644,41 @@ public class ListContactAction extends BaseListAction {
 
                 Contact contact = new Contact();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         contact.setId(Integer.parseInt(id));
                         UserUtil.permissionCheck("update_contact");
                     } else {
                         UserUtil.permissionCheck("create_contact");
                     }
+                    String salutationID = row
+                            .get(getText("entity.salutation_id.label"));
+                    if (CommonUtil.isNullOrEmpty(salutationID)) {
+                        contact.setSalutation(null);
+                    } else {
+                        Salutation salutation = salutationService
+                                .getEntityById(Salutation.class,
+                                        Integer.parseInt(salutationID));
+                        contact.setSalutation(salutation);
+                    }
                     contact.setFirst_name(CommonUtil.fromNullToEmpty(row
-                            .get("First Name")));
+                            .get(getText("entity.first_name.label"))));
                     contact.setLast_name(CommonUtil.fromNullToEmpty(row
-                            .get("Last Name")));
+                            .get(getText("entity.last_name.label"))));
                     contact.setOffice_phone(CommonUtil.fromNullToEmpty(row
-                            .get("Office Phone")));
+                            .get(getText("entity.office_phone.label"))));
                     contact.setTitle(CommonUtil.fromNullToEmpty(row
-                            .get("Title")));
+                            .get(getText("entity.title.label"))));
                     contact.setMobile(CommonUtil.fromNullToEmpty(row
-                            .get("Mobile")));
+                            .get(getText("entity.mobile.label"))));
+                    contact.setSkype_id(CommonUtil.fromNullToEmpty(row
+                            .get(getText("contact.skype_id.label"))));
                     contact.setDepartment(CommonUtil.fromNullToEmpty(row
-                            .get("Department")));
-                    contact.setFax(CommonUtil.fromNullToEmpty(row.get("Fax")));
-                    String accountID = row.get("Account ID");
+                            .get(getText("entity.department.label"))));
+                    contact.setFax(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.fax.label"))));
+                    String accountID = row
+                            .get(getText("entity.account_id.label"));
                     if (CommonUtil.isNullOrEmpty(accountID)) {
                         contact.setAccount(null);
                     } else {
@@ -635,34 +687,35 @@ public class ListContactAction extends BaseListAction {
                         contact.setAccount(account);
                     }
                     contact.setWebsite(CommonUtil.fromNullToEmpty(row
-                            .get("Web Site")));
-                    contact.setMailing_address(CommonUtil.fromNullToEmpty(row
-                            .get("Mailing Address")));
-                    contact.setMailing_city(CommonUtil.fromNullToEmpty(row
-                            .get("Mailing City")));
-                    contact.setMailing_state(CommonUtil.fromNullToEmpty(row
-                            .get("Mailing State")));
-                    contact.setMailing_postal_code(CommonUtil
-                            .fromNullToEmpty(row.get("Mailing Postal Code")));
-                    contact.setMailing_country(CommonUtil.fromNullToEmpty(row
-                            .get("Mailing Country")));
-                    contact.setOther_address(CommonUtil.fromNullToEmpty(row
-                            .get("Other Address")));
+                            .get(getText("entity.website.label"))));
+                    contact.setPrimary_street(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.primary_street.label"))));
+                    contact.setPrimary_city(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.primary_city.label"))));
+                    contact.setPrimary_state(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.primary_state.label"))));
+                    contact.setPrimary_postal_code(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.primary_postal_code.label"))));
+                    contact.setPrimary_country(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.primary_country.label"))));
+                    contact.setOther_street(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.other_street.label"))));
                     contact.setOther_city(CommonUtil.fromNullToEmpty(row
-                            .get("Other City")));
+                            .get(getText("entity.other_city.label"))));
                     contact.setOther_state(CommonUtil.fromNullToEmpty(row
-                            .get("Other State")));
+                            .get(getText("entity.other_state.label"))));
                     contact.setOther_postal_code(CommonUtil.fromNullToEmpty(row
-                            .get("Other Postal Code")));
+                            .get(getText("entity.other_postal_code.label"))));
                     contact.setOther_country(CommonUtil.fromNullToEmpty(row
-                            .get("Other Country")));
+                            .get(getText("entity.other_country.label"))));
                     contact.setEmail(CommonUtil.fromNullToEmpty(row
-                            .get("Email")));
-                    contact.setEmail(CommonUtil.fromNullToEmpty(row
-                            .get("Email")));
+                            .get(getText("entity.email.label"))));
                     contact.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
-                    String reportToID = row.get("Report To ID");
+                            .get(getText("entity.description.label"))));
+                    contact.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
+                    String reportToID = row
+                            .get(getText("contact.report_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(reportToID)) {
                         contact.setReport_to(null);
                     } else {
@@ -670,21 +723,16 @@ public class ListContactAction extends BaseListAction {
                                 Contact.class, Integer.parseInt(reportToID));
                         contact.setReport_to(reportTo);
                     }
-                    String syncOutlook = row.get("Sync Outlook");
-                    if (CommonUtil.isNullOrEmpty(syncOutlook)) {
-                        contact.setSync_outlook(false);
-                    } else {
-                        contact.setSync_outlook(Boolean
-                                .parseBoolean(syncOutlook));
-                    }
-                    String doNotCall = row.get("Do Not Call");
+                    String doNotCall = row
+                            .get(getText("entity.not_call.label"));
                     if (CommonUtil.isNullOrEmpty(doNotCall)) {
                         contact.setNot_call(false);
                     } else {
                         contact.setNot_call(Boolean.parseBoolean(doNotCall));
                     }
 
-                    String leadSourceID = row.get("Lead Source ID");
+                    String leadSourceID = row
+                            .get(getText("entity.leadSource_id.label"));
                     if (CommonUtil.isNullOrEmpty(leadSourceID)) {
                         contact.setLeadSource(null);
                     } else {
@@ -693,7 +741,8 @@ public class ListContactAction extends BaseListAction {
                                         Integer.parseInt(leadSourceID));
                         contact.setLeadSource(leadSource);
                     }
-                    String campaignID = row.get("Campaign ID");
+                    String campaignID = row
+                            .get(getText("entity.campaign_id.label"));
                     if (CommonUtil.isNullOrEmpty(campaignID)) {
                         contact.setCampaign(null);
                     } else {
@@ -701,7 +750,8 @@ public class ListContactAction extends BaseListAction {
                                 Campaign.class, Integer.parseInt(campaignID));
                         contact.setCampaign(campaign);
                     }
-                    String assignedToID = row.get("Assigned To ID");
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         contact.setAssigned_to(null);
                     } else {
@@ -919,6 +969,21 @@ public class ListContactAction extends BaseListAction {
      */
     public void setCaseService(IBaseService<Case> caseService) {
         this.caseService = caseService;
+    }
+
+    /**
+     * @return the salutationService
+     */
+    public IBaseService<Salutation> getSalutationService() {
+        return salutationService;
+    }
+
+    /**
+     * @param salutationService
+     *            the salutationService to set
+     */
+    public void setSalutationService(IBaseService<Salutation> salutationService) {
+        this.salutationService = salutationService;
     }
 
 }

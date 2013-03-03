@@ -9,29 +9,34 @@ import com.gcrm.util.CommonUtil;
 public class Target extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 8250950813769457555L;
+    public final static String STATUS_CONVERTED = "converted";
 
+    private Salutation salutation;
     private String first_name;
     private String last_name;
     private String office_phone;
+    private String company;
     private String title;
     private String mobile;
     private String department;
     private String fax;
     private Account account;
-    private String primary_address;
+    private String primary_street;
     private String primary_city;
     private String primary_state;
     private String primary_postal_code;
     private String primary_country;
-    private String other_address;
+    private String other_street;
     private String other_city;
     private String other_state;
     private String other_postal_code;
     private String other_country;
     private String email;
     private String description;
+    private String notes;
     private boolean not_call;
     private User assigned_to;
+    private Integer lead_id;
     private Set<TargetList> targetLists = new HashSet<TargetList>(0);
 
     @Override
@@ -181,18 +186,18 @@ public class Target extends BaseEntity implements Serializable {
     }
 
     /**
-     * @return the primary_address
+     * @return the primary_street
      */
-    public String getPrimary_address() {
-        return primary_address;
+    public String getPrimary_street() {
+        return primary_street;
     }
 
     /**
-     * @param primary_address
-     *            the primary_address to set
+     * @param primary_street
+     *            the primary_street to set
      */
-    public void setPrimary_address(String primary_address) {
-        this.primary_address = primary_address;
+    public void setPrimary_street(String primary_street) {
+        this.primary_street = primary_street;
     }
 
     /**
@@ -256,18 +261,18 @@ public class Target extends BaseEntity implements Serializable {
     }
 
     /**
-     * @return the other_address
+     * @return the other_street
      */
-    public String getOther_address() {
-        return other_address;
+    public String getOther_street() {
+        return other_street;
     }
 
     /**
-     * @param other_address
-     *            the other_address to set
+     * @param other_street
+     *            the other_street to set
      */
-    public void setOther_address(String other_address) {
-        this.other_address = other_address;
+    public void setOther_street(String other_street) {
+        this.other_street = other_street;
     }
 
     /**
@@ -410,6 +415,66 @@ public class Target extends BaseEntity implements Serializable {
      */
     public void setTargetLists(Set<TargetList> targetLists) {
         this.targetLists = targetLists;
+    }
+
+    /**
+     * @return the salutation
+     */
+    public Salutation getSalutation() {
+        return salutation;
+    }
+
+    /**
+     * @param salutation
+     *            the salutation to set
+     */
+    public void setSalutation(Salutation salutation) {
+        this.salutation = salutation;
+    }
+
+    /**
+     * @return the company
+     */
+    public String getCompany() {
+        return company;
+    }
+
+    /**
+     * @param company
+     *            the company to set
+     */
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    /**
+     * @return the notes
+     */
+    public String getNotes() {
+        return notes;
+    }
+
+    /**
+     * @param notes
+     *            the notes to set
+     */
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    /**
+     * @return the lead_id
+     */
+    public Integer getLead_id() {
+        return lead_id;
+    }
+
+    /**
+     * @param lead_id
+     *            the lead_id to set
+     */
+    public void setLead_id(Integer lead_id) {
+        this.lead_id = lead_id;
     }
 
 }

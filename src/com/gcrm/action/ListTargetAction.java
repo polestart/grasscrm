@@ -39,6 +39,7 @@ import org.supercsv.io.ICsvMapWriter;
 import org.supercsv.prefs.CsvPreference;
 
 import com.gcrm.domain.Account;
+import com.gcrm.domain.Salutation;
 import com.gcrm.domain.Target;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
@@ -61,6 +62,7 @@ public class ListTargetAction extends BaseListAction {
     private IBaseService<Target> baseService;
     private IBaseService<Account> accountService;
     private IBaseService<User> userService;
+    private IBaseService<Salutation> salutationService;
     private IBaseService<TargetList> targetListService;
     private Target target;
 
@@ -305,19 +307,41 @@ public class ListTargetAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_target");
-
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.target.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "First Name",
-                    "Last Name", "Office Phone", "Title", "Mobile",
-                    "Department", "Fax", "Account ID", "Account Name",
-                    "Primary Address", "Primary City", "Primary State",
-                    "Primary Postal Code", "Primary Country", "Other Address",
-                    "Other City", "Other State", "Other Postal Code",
-                    "Other Country", "Email", "Description", "Do Not Call",
-                    "Assigned To ID", "Assigned To Name" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("entity.salutation_id.label"),
+                    getText("entity.salutation_name.label"),
+                    getText("entity.first_name.label"),
+                    getText("entity.last_name.label"),
+                    getText("entity.office_phone.label"),
+                    getText("entity.company.label"),
+                    getText("entity.title.label"),
+                    getText("entity.mobile.label"),
+                    getText("entity.department.label"),
+                    getText("entity.fax.label"),
+                    getText("entity.account_id.label"),
+                    getText("entity.account_name.label"),
+                    getText("entity.primary_street.label"),
+                    getText("entity.primary_city.label"),
+                    getText("entity.primary_state.label"),
+                    getText("entity.primary_postal_code.label"),
+                    getText("entity.primary_country.label"),
+                    getText("entity.other_street.label"),
+                    getText("entity.other_city.label"),
+                    getText("entity.other_state.label"),
+                    getText("entity.other_postal_code.label"),
+                    getText("entity.other_country.label"),
+                    getText("entity.email.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label"),
+                    getText("entity.not_call.label"),
+                    getText("entity.assigned_to_id.label"),
+                    getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -326,69 +350,81 @@ public class ListTargetAction extends BaseListAction {
                         Integer.parseInt(id));
                 final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
                 data1.put(header[0], target.getId());
-                data1.put(header[1],
-                        CommonUtil.fromNullToEmpty(target.getFirst_name()));
-                data1.put(header[2],
-                        CommonUtil.fromNullToEmpty(target.getLast_name()));
+                if (target.getSalutation() != null) {
+                    data1.put(header[1], target.getSalutation().getId());
+                    data1.put(header[2], target.getSalutation().getName());
+                } else {
+                    data1.put(header[1], "");
+                    data1.put(header[2], "");
+                }
                 data1.put(header[3],
-                        CommonUtil.fromNullToEmpty(target.getOffice_phone()));
+                        CommonUtil.fromNullToEmpty(target.getFirst_name()));
                 data1.put(header[4],
-                        CommonUtil.fromNullToEmpty(target.getTitle()));
+                        CommonUtil.fromNullToEmpty(target.getLast_name()));
                 data1.put(header[5],
-                        CommonUtil.fromNullToEmpty(target.getMobile()));
+                        CommonUtil.fromNullToEmpty(target.getOffice_phone()));
                 data1.put(header[6],
-                        CommonUtil.fromNullToEmpty(target.getDepartment()));
+                        CommonUtil.fromNullToEmpty(target.getCompany()));
                 data1.put(header[7],
+                        CommonUtil.fromNullToEmpty(target.getTitle()));
+                data1.put(header[8],
+                        CommonUtil.fromNullToEmpty(target.getMobile()));
+                data1.put(header[9],
+                        CommonUtil.fromNullToEmpty(target.getDepartment()));
+                data1.put(header[10],
                         CommonUtil.fromNullToEmpty(target.getFax()));
                 if (target.getAccount() != null) {
-                    data1.put(header[8], target.getAccount().getId());
-                    data1.put(header[9], target.getAccount().getName());
+                    data1.put(header[11], target.getAccount().getId());
+                    data1.put(header[12], target.getAccount().getName());
                 } else {
-                    data1.put(header[8], "");
-                    data1.put(header[9], "");
+                    data1.put(header[11], "");
+                    data1.put(header[12], "");
                 }
-                data1.put(header[10],
-                        CommonUtil.fromNullToEmpty(target.getPrimary_address()));
-                data1.put(header[11],
-                        CommonUtil.fromNullToEmpty(target.getPrimary_city()));
-                data1.put(header[12],
-                        CommonUtil.fromNullToEmpty(target.getPrimary_state()));
-                data1.put(header[13], CommonUtil.fromNullToEmpty(target
-                        .getPrimary_postal_code()));
+                data1.put(header[13],
+                        CommonUtil.fromNullToEmpty(target.getPrimary_street()));
                 data1.put(header[14],
-                        CommonUtil.fromNullToEmpty(target.getPrimary_country()));
+                        CommonUtil.fromNullToEmpty(target.getPrimary_city()));
                 data1.put(header[15],
-                        CommonUtil.fromNullToEmpty(target.getOther_address()));
-                data1.put(header[16],
-                        CommonUtil.fromNullToEmpty(target.getOther_city()));
+                        CommonUtil.fromNullToEmpty(target.getPrimary_state()));
+                data1.put(header[16], CommonUtil.fromNullToEmpty(target
+                        .getPrimary_postal_code()));
                 data1.put(header[17],
-                        CommonUtil.fromNullToEmpty(target.getOther_state()));
-                data1.put(header[18], CommonUtil.fromNullToEmpty(target
-                        .getOther_postal_code()));
+                        CommonUtil.fromNullToEmpty(target.getPrimary_country()));
+                data1.put(header[18],
+                        CommonUtil.fromNullToEmpty(target.getOther_street()));
                 data1.put(header[19],
-                        CommonUtil.fromNullToEmpty(target.getOther_country()));
+                        CommonUtil.fromNullToEmpty(target.getOther_city()));
                 data1.put(header[20],
+                        CommonUtil.fromNullToEmpty(target.getOther_state()));
+                data1.put(header[21], CommonUtil.fromNullToEmpty(target
+                        .getOther_postal_code()));
+                data1.put(header[22],
+                        CommonUtil.fromNullToEmpty(target.getOther_country()));
+                data1.put(header[23],
                         CommonUtil.fromNullToEmpty(target.getEmail()));
-                data1.put(header[21],
+                data1.put(header[24],
                         CommonUtil.fromNullToEmpty(target.getDescription()));
-                data1.put(header[22], target.isNot_call());
+                data1.put(header[25],
+                        CommonUtil.fromNullToEmpty(target.getNotes()));
+                data1.put(header[26], target.isNot_call());
                 if (target.getAssigned_to() != null) {
-                    data1.put(header[23], target.getAssigned_to().getId());
-                    data1.put(header[24], target.getAssigned_to().getName());
+                    data1.put(header[27], target.getAssigned_to().getId());
+                    data1.put(header[28], target.getAssigned_to().getName());
                 } else {
-                    data1.put(header[23], "");
-                    data1.put(header[24], "");
+                    data1.put(header[27], "");
+                    data1.put(header[28], "");
                 }
                 writer.write(data1, header);
             }
         } catch (Exception e) {
+
             throw e;
         } finally {
             writer.close();
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -417,23 +453,38 @@ public class ListTargetAction extends BaseListAction {
 
                 Target target = new Target();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         target.setId(Integer.parseInt(id));
                     }
+                    String salutationID = row
+                            .get(getText("entity.salutation_id.label"));
+                    if (CommonUtil.isNullOrEmpty(salutationID)) {
+                        target.setSalutation(null);
+                    } else {
+                        Salutation salutation = salutationService
+                                .getEntityById(Salutation.class,
+                                        Integer.parseInt(salutationID));
+                        target.setSalutation(salutation);
+                    }
                     target.setFirst_name(CommonUtil.fromNullToEmpty(row
-                            .get("First Name")));
+                            .get(getText("entity.first_name.label"))));
                     target.setLast_name(CommonUtil.fromNullToEmpty(row
-                            .get("Last Name")));
+                            .get(getText("entity.last_name.label"))));
                     target.setOffice_phone(CommonUtil.fromNullToEmpty(row
-                            .get("Office Phone")));
-                    target.setTitle(CommonUtil.fromNullToEmpty(row.get("Title")));
+                            .get(getText("entity.office_phone.label"))));
+                    target.setCompany(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.company.label"))));
+                    target.setTitle(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.title.label"))));
                     target.setMobile(CommonUtil.fromNullToEmpty(row
-                            .get("Mobile")));
+                            .get(getText("entity.mobile.label"))));
                     target.setDepartment(CommonUtil.fromNullToEmpty(row
-                            .get("Department")));
-                    target.setFax(CommonUtil.fromNullToEmpty(row.get("Fax")));
-                    String accountID = row.get("Account ID");
+                            .get(getText("entity.department.label"))));
+                    target.setFax(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.fax.label"))));
+                    String accountID = row
+                            .get(getText("entity.account_id.label"));
                     if (CommonUtil.isNullOrEmpty(accountID)) {
                         target.setAccount(null);
                     } else {
@@ -441,37 +492,41 @@ public class ListTargetAction extends BaseListAction {
                                 Account.class, Integer.parseInt(accountID));
                         target.setAccount(account);
                     }
-                    target.setPrimary_address(CommonUtil.fromNullToEmpty(row
-                            .get("Primary Address")));
+                    target.setPrimary_street(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.primary_street.label"))));
                     target.setPrimary_city(CommonUtil.fromNullToEmpty(row
-                            .get("Primary City")));
+                            .get(getText("entity.primary_city.label"))));
                     target.setPrimary_state(CommonUtil.fromNullToEmpty(row
-                            .get("Primary State")));
-                    target.setPrimary_postal_code(CommonUtil
-                            .fromNullToEmpty(row.get("Primary Postal Code")));
+                            .get(getText("entity.primary_state.label"))));
+                    target.setPrimary_postal_code(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.primary_postal_code.label"))));
                     target.setPrimary_country(CommonUtil.fromNullToEmpty(row
-                            .get("Primary Country")));
-                    target.setOther_address(CommonUtil.fromNullToEmpty(row
-                            .get("Other Address")));
+                            .get(getText("entity.primary_country.label"))));
+                    target.setOther_street(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.other_street.label"))));
                     target.setOther_city(CommonUtil.fromNullToEmpty(row
-                            .get("Other City")));
+                            .get(getText("entity.other_city.label"))));
                     target.setOther_state(CommonUtil.fromNullToEmpty(row
-                            .get("Other State")));
+                            .get(getText("entity.other_state.label"))));
                     target.setOther_postal_code(CommonUtil.fromNullToEmpty(row
-                            .get("Other Postal Code")));
+                            .get(getText("entity.other_postal_code.label"))));
                     target.setOther_country(CommonUtil.fromNullToEmpty(row
-                            .get("Other Country")));
-                    target.setEmail(CommonUtil.fromNullToEmpty(row.get("Email")));
-                    target.setEmail(CommonUtil.fromNullToEmpty(row.get("Email")));
+                            .get(getText("entity.other_country.label"))));
+                    target.setEmail(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.email.label"))));
                     target.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
-                    String doNotCall = row.get("Do Not Call");
+                            .get(getText("entity.description.label"))));
+                    target.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
+                    String doNotCall = row
+                            .get(getText("entity.not_call.label"));
                     if (CommonUtil.isNullOrEmpty(doNotCall)) {
                         target.setNot_call(false);
                     } else {
                         target.setNot_call(Boolean.parseBoolean(doNotCall));
                     }
-                    String assignedToID = row.get("Assigned To ID");
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         target.setAssigned_to(null);
                     } else {
@@ -583,6 +638,21 @@ public class ListTargetAction extends BaseListAction {
      */
     public void setTargetListService(IBaseService<TargetList> targetListService) {
         this.targetListService = targetListService;
+    }
+
+    /**
+     * @return the salutationService
+     */
+    public IBaseService<Salutation> getSalutationService() {
+        return salutationService;
+    }
+
+    /**
+     * @param salutationService
+     *            the salutationService to set
+     */
+    public void setSalutationService(IBaseService<Salutation> salutationService) {
+        this.salutationService = salutationService;
     }
 
 }

@@ -20,6 +20,7 @@
   <many-to-one name="sub_category"
 			class="DocumentSubCategory" column="sub_category" cascade="save-update"/>	
   <property name="description" column="description" type="string" /> 
+  <property name="notes" column="notes" type="string" />  
   <many-to-one name="related_document"
 			class="Document" column="related_document" cascade="save-update"/>	
   <many-to-one name="owner"

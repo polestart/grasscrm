@@ -288,18 +288,31 @@ public class ListMeetingAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_meeting");
-
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.meeting.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Subject",
-                    "Status ID", "Status Name", "Start Date", "End Date",
-                    "Related Object", "Related Record ID", "Location",
-                    "Reminder Way Popup", "Reminder Option Popup ID",
-                    "Reminder Option Popup Name", "Reminder Way Email",
-                    "Reminder Option Email ID", "Reminder Option Email Name",
-                    "Description", "Assigned To ID", "Assigned To Name" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("entity.subject.label"),
+                    getText("entity.status_id.label"),
+                    getText("entity.status_name.label"),
+                    getText("entity.start_date.label"),
+                    getText("entity.end_date.label"),
+                    getText("entity.related_object.label"),
+                    getText("entity.related_record_id.label"),
+                    getText("meeting.location.label"),
+                    getText("entity.reminder_pop.label"),
+                    getText("entity.reminder_option_pop_id.label"),
+                    getText("entity.reminder_option_pop_name.label"),
+                    getText("entity.reminder_email.label"),
+                    getText("entity.reminder_option_email_id.label"),
+                    getText("entity.reminder_option_email_name.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label"),
+                    getText("entity.assigned_to_id.label"),
+                    getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -363,12 +376,14 @@ public class ListMeetingAction extends BaseListAction {
                 }
                 data1.put(header[15],
                         CommonUtil.fromNullToEmpty(meeting.getDescription()));
+                data1.put(header[16],
+                        CommonUtil.fromNullToEmpty(meeting.getDescription()));
                 if (meeting.getAssigned_to() != null) {
-                    data1.put(header[16], meeting.getAssigned_to().getId());
-                    data1.put(header[17], meeting.getAssigned_to().getName());
+                    data1.put(header[17], meeting.getAssigned_to().getId());
+                    data1.put(header[18], meeting.getAssigned_to().getName());
                 } else {
-                    data1.put(header[16], "");
                     data1.put(header[17], "");
+                    data1.put(header[18], "");
                 }
                 writer.write(data1, header);
             }
@@ -379,7 +394,7 @@ public class ListMeetingAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -407,13 +422,14 @@ public class ListMeetingAction extends BaseListAction {
                 }
                 Meeting meeting = new Meeting();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         meeting.setId(Integer.parseInt(id));
                     }
                     meeting.setSubject(CommonUtil.fromNullToEmpty(row
-                            .get("Subject")));
-                    String statusID = row.get("Status ID");
+                            .get(getText("entity.subject.label"))));
+                    String statusID = row
+                            .get(getText("entity.status_id.label"));
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         meeting.setStatus(null);
                     } else {
@@ -424,14 +440,15 @@ public class ListMeetingAction extends BaseListAction {
                     }
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
                             Constant.DATE_TIME_FORMAT);
-                    String startDateS = row.get("Start Date");
+                    String startDateS = row
+                            .get(getText("entity.start_date.label"));
                     if (startDateS != null) {
                         Date startDate = dateFormat.parse(startDateS);
                         meeting.setStart_date(startDate);
                     } else {
                         meeting.setStart_date(null);
                     }
-                    String endDateS = row.get("End Date");
+                    String endDateS = row.get(getText("entity.end_date.label"));
                     if (endDateS != null) {
                         Date endDate = dateFormat.parse(endDateS);
                         meeting.setEnd_date(endDate);
@@ -439,8 +456,9 @@ public class ListMeetingAction extends BaseListAction {
                         meeting.setEnd_date(null);
                     }
                     meeting.setRelated_object(CommonUtil.fromNullToEmpty(row
-                            .get("Related Object")));
-                    String relatedRecord = row.get("Related Record ID");
+                            .get(getText("entity.related_object.label"))));
+                    String relatedRecord = row
+                            .get(getText("entity.related_record_id.label"));
                     if (CommonUtil.isNullOrEmpty(relatedRecord)) {
                         meeting.setRelated_record(0);
                     } else {
@@ -448,8 +466,9 @@ public class ListMeetingAction extends BaseListAction {
                                 .parseInt(relatedRecord));
                     }
                     meeting.setLocation(CommonUtil.fromNullToEmpty(row
-                            .get("Location")));
-                    String reminderWayPop = row.get("Reminder Way Popup");
+                            .get(getText("meeting.location.label"))));
+                    String reminderWayPop = row
+                            .get(getText("entity.reminder_pop.label"));
                     if (CommonUtil.isNullOrEmpty(reminderWayPop)) {
                         meeting.setReminder_pop(false);
                     } else {
@@ -457,7 +476,7 @@ public class ListMeetingAction extends BaseListAction {
                                 .parseBoolean(reminderWayPop));
                     }
                     String reminderOptionPopID = row
-                            .get("Reminder Option Popup ID");
+                            .get(getText("entity.reminder_option_pop_id.label"));
                     if (CommonUtil.isNullOrEmpty(reminderOptionPopID)) {
                         meeting.setReminder_option_pop(null);
                     } else {
@@ -466,7 +485,8 @@ public class ListMeetingAction extends BaseListAction {
                                         Integer.parseInt(reminderOptionPopID));
                         meeting.setReminder_option_pop(reminderOption);
                     }
-                    String reminderWayEmail = row.get("Reminder Way Email");
+                    String reminderWayEmail = row
+                            .get(getText("entity.reminder_email.label"));
                     if (CommonUtil.isNullOrEmpty(reminderWayEmail)) {
                         meeting.setReminder_email(false);
                     } else {
@@ -474,7 +494,7 @@ public class ListMeetingAction extends BaseListAction {
                                 .parseBoolean(reminderWayEmail));
                     }
                     String reminderOptionEmailID = row
-                            .get("Reminder Option Email ID");
+                            .get(getText("entity.reminder_option_email_id.label"));
                     if (CommonUtil.isNullOrEmpty(reminderOptionEmailID)) {
                         meeting.setReminder_option_email(null);
                     } else {
@@ -484,8 +504,11 @@ public class ListMeetingAction extends BaseListAction {
                         meeting.setReminder_option_email(reminderOption);
                     }
                     meeting.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
-                    String assignedToID = row.get("Assigned To ID");
+                            .get(getText("entity.description.label"))));
+                    meeting.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         meeting.setAssigned_to(null);
                     } else {

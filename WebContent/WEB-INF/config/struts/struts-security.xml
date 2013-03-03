@@ -31,7 +31,7 @@
          <action name="exportUser" class="listUserAction">
             <interceptor-ref name="defaultStack"/>
             <result name="success" type="stream">
-                <param name="contentType">APPLICATION/OCTET-STREAM</param>
+                <param name="contentType">application/x-msdownload;charset=ISO8859-1</param>
                 <param name="inputName">inputStream</param>
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
                 <param name="bufferSize">4096</param>
@@ -101,7 +101,7 @@
          <action name="exportRole" class="listRoleAction">
             <interceptor-ref name="defaultStack"/>
             <result name="success" type="stream">
-                <param name="contentType">APPLICATION/OCTET-STREAM</param>
+                <param name="contentType">application/x-msdownload;charset=ISO8859-1</param>
                 <param name="inputName">inputStream</param>
                 <param name="contentDisposition">attachment;filename="${fileName}"</param>
                 <param name="bufferSize">4096</param>

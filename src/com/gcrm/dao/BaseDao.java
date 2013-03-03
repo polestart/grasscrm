@@ -26,7 +26,6 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import com.gcrm.exception.DaoException;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -65,16 +64,11 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport
      * @throws Exception
      */
     @SuppressWarnings("rawtypes")
-    private List findByParam(String hql, Object paramValue) throws DaoException {
+    private List findByParam(String hql, Object paramValue) {
 
         List objects = null;
 
-        try {
-            objects = getHibernateTemplate().find(hql, paramValue);
-        } catch (Exception e) {
-            throw new DaoException(
-                    "Failed to find records by hql with parameters!", e);
-        }
+        objects = getHibernateTemplate().find(hql, paramValue);
         return objects;
     }
 
@@ -84,18 +78,14 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport
      * @see com.gcrm.dao.IBaseDao#findByName(java.lang.String, java.lang.String)
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public T findByName(String clazz, String name) throws DaoException {
+    public T findByName(String clazz, String name) {
         String hql = INIT_HQL + clazz + " where name = ?";
         T object = null;
         List result = null;
 
-        try {
-            result = findByParam(hql, name);
-            if (result != null && result.size() > 0) {
-                object = (T) result.get(0);
-            }
-        } catch (Exception e) {
-            throw new DaoException("按id查找对象时失败!", e);
+        result = findByParam(hql, name);
+        if (result != null && result.size() > 0) {
+            object = (T) result.get(0);
         }
         return object;
     }

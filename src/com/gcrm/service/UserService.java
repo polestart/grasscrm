@@ -16,7 +16,6 @@
 package com.gcrm.service;
 
 import com.gcrm.domain.User;
-import com.gcrm.exception.DaoException;
 import com.gcrm.exception.ServiceException;
 
 /**
@@ -24,17 +23,17 @@ import com.gcrm.exception.ServiceException;
  */
 public class UserService extends BaseService<User> implements IUserService {
 
-	/* (non-Javadoc)
-	 * @see com.gcrm.service.IUserService#findByName(java.lang.String)
-	 */
-	public User findByName(String userName) throws ServiceException{
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.gcrm.service.IUserService#findByName(java.lang.String)
+     */
+    public User findByName(String userName) throws ServiceException {
         User user;
-		try {
-			user = this.getBaseDao().findByName(User.class.getSimpleName(), userName);
-		} catch (DaoException e) {
-			throw new ServiceException(e);
-		}
-		return user;
-	}	
+        user = this.getBaseDao().findByName(User.class.getSimpleName(),
+                userName);
+
+        return user;
+    }
 
 }

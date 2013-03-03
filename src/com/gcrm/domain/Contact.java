@@ -10,6 +10,7 @@ public class Contact extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 8250950813769457555L;
 
+    private Salutation salutation;
     private String first_name;
     private String last_name;
     private String office_phone;
@@ -17,22 +18,23 @@ public class Contact extends BaseEntity implements Serializable {
     private String mobile;
     private String department;
     private String fax;
+    private String skype_id;
     private Account account;
     private String website;
-    private String mailing_address;
-    private String mailing_city;
-    private String mailing_state;
-    private String mailing_postal_code;
-    private String mailing_country;
-    private String other_address;
+    private String primary_street;
+    private String primary_city;
+    private String primary_state;
+    private String primary_postal_code;
+    private String primary_country;
+    private String other_street;
     private String other_city;
     private String other_state;
     private String other_postal_code;
     private String other_country;
     private String email;
     private String description;
+    private String notes;
     private Contact report_to;
-    private boolean sync_outlook;
     private boolean not_call;
     private LeadSource leadSource;
     private Campaign campaign;
@@ -192,18 +194,18 @@ public class Contact extends BaseEntity implements Serializable {
     }
 
     /**
-     * @return the other_address
+     * @return the other_street
      */
-    public String getOther_address() {
-        return other_address;
+    public String getOther_street() {
+        return other_street;
     }
 
     /**
-     * @param other_address
-     *            the other_address to set
+     * @param other_street
+     *            the other_street to set
      */
-    public void setOther_address(String other_address) {
-        this.other_address = other_address;
+    public void setOther_street(String other_street) {
+        this.other_street = other_street;
     }
 
     /**
@@ -309,21 +311,6 @@ public class Contact extends BaseEntity implements Serializable {
      */
     public void setReport_to(Contact report_to) {
         this.report_to = report_to;
-    }
-
-    /**
-     * @return the sync_outlook
-     */
-    public boolean isSync_outlook() {
-        return sync_outlook;
-    }
-
-    /**
-     * @param sync_outlook
-     *            the sync_outlook to set
-     */
-    public void setSync_outlook(boolean sync_outlook) {
-        this.sync_outlook = sync_outlook;
     }
 
     /**
@@ -514,78 +501,123 @@ public class Contact extends BaseEntity implements Serializable {
     }
 
     /**
-     * @return the mailing_address
+     * @return the primary_street
      */
-    public String getMailing_address() {
-        return mailing_address;
+    public String getPrimary_street() {
+        return primary_street;
     }
 
     /**
-     * @param mailing_address
-     *            the mailing_address to set
+     * @param primary_street
+     *            the primary_street to set
      */
-    public void setMailing_address(String mailing_address) {
-        this.mailing_address = mailing_address;
+    public void setPrimary_street(String primary_street) {
+        this.primary_street = primary_street;
     }
 
     /**
-     * @return the mailing_city
+     * @return the primary_city
      */
-    public String getMailing_city() {
-        return mailing_city;
+    public String getPrimary_city() {
+        return primary_city;
     }
 
     /**
-     * @param mailing_city
-     *            the mailing_city to set
+     * @param primary_city
+     *            the primary_city to set
      */
-    public void setMailing_city(String mailing_city) {
-        this.mailing_city = mailing_city;
+    public void setPrimary_city(String primary_city) {
+        this.primary_city = primary_city;
     }
 
     /**
-     * @return the mailing_state
+     * @return the primary_state
      */
-    public String getMailing_state() {
-        return mailing_state;
+    public String getPrimary_state() {
+        return primary_state;
     }
 
     /**
-     * @param mailing_state
-     *            the mailing_state to set
+     * @param primary_state
+     *            the primary_state to set
      */
-    public void setMailing_state(String mailing_state) {
-        this.mailing_state = mailing_state;
+    public void setPrimary_state(String primary_state) {
+        this.primary_state = primary_state;
     }
 
     /**
-     * @return the mailing_postal_code
+     * @return the primary_postal_code
      */
-    public String getMailing_postal_code() {
-        return mailing_postal_code;
+    public String getPrimary_postal_code() {
+        return primary_postal_code;
     }
 
     /**
-     * @param mailing_postal_code
-     *            the mailing_postal_code to set
+     * @param primary_postal_code
+     *            the primary_postal_code to set
      */
-    public void setMailing_postal_code(String mailing_postal_code) {
-        this.mailing_postal_code = mailing_postal_code;
+    public void setPrimary_postal_code(String primary_postal_code) {
+        this.primary_postal_code = primary_postal_code;
     }
 
     /**
-     * @return the mailing_country
+     * @return the primary_country
      */
-    public String getMailing_country() {
-        return mailing_country;
+    public String getPrimary_country() {
+        return primary_country;
     }
 
     /**
-     * @param mailing_country
-     *            the mailing_country to set
+     * @param primary_country
+     *            the primary_country to set
      */
-    public void setMailing_country(String mailing_country) {
-        this.mailing_country = mailing_country;
+    public void setPrimary_country(String primary_country) {
+        this.primary_country = primary_country;
+    }
+
+    /**
+     * @return the salutation
+     */
+    public Salutation getSalutation() {
+        return salutation;
+    }
+
+    /**
+     * @param salutation
+     *            the salutation to set
+     */
+    public void setSalutation(Salutation salutation) {
+        this.salutation = salutation;
+    }
+
+    /**
+     * @return the notes
+     */
+    public String getNotes() {
+        return notes;
+    }
+
+    /**
+     * @param notes
+     *            the notes to set
+     */
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    /**
+     * @return the skype_id
+     */
+    public String getSkype_id() {
+        return skype_id;
+    }
+
+    /**
+     * @param skype_id
+     *            the skype_id to set
+     */
+    public void setSkype_id(String skype_id) {
+        this.skype_id = skype_id;
     }
 
 }

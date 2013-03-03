@@ -38,10 +38,10 @@
 					   return new_format_value 
 	             }  
 	            },
-				{field:'title',title:'<s:text name="contact.title.label" />',width:80,align:'center',sortable:'true'},
+				{field:'title',title:'<s:text name="entity.title.label" />',width:80,align:'center',sortable:'true'},
 				{field:'accountName',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
-				{field:'email',title:'<s:text name="contact.email.label" />',width:80,align:'center',sortable:'true'},
-				{field:'officePhone',title:'<s:text name="contact.office_phone.label" />',width:80,align:'center',sortable:'true'},
+				{field:'email',title:'<s:text name="entity.email.label" />',width:80,align:'center',sortable:'true'},
+				{field:'officePhone',title:'<s:text name="entity.office_phone.label" />',width:80,align:'center',sortable:'true'},
 				{field:'user_name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 		]],
 	  });
@@ -76,7 +76,7 @@
 							selected: true 
 						},{label: '<s:text name="entity.name.label" />',
 							value: 'name'
-						},{label: '<s:text name="contact.email.label" />',
+						},{label: '<s:text name="entity.email.label" />',
 							value: 'email'
 						}]" />	
 

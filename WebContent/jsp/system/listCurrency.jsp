@@ -77,7 +77,7 @@
 								editor="{type:'text',options:{required: true,missingMessage: 'please input'}}"><s:text
 									name='currency.symbol.label' /></th>
 							<th field="currency.status" width="50" editor="{type:'text'}"><s:text
-									name='currency.status.label' /></th>
+									name='entity.status.label' /></th>
 						</tr>
 					</thead>
 				</table>

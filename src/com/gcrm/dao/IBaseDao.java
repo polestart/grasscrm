@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-import com.gcrm.exception.DaoException;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -47,7 +46,7 @@ public interface IBaseDao<T extends Serializable> {
      * @return entity instance
      * @throws Exception
      */
-    public T findByName(String clazz, String name) throws DaoException;
+    public T findByName(String clazz, String name);
 
     /**
      * Persists entity

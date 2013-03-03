@@ -48,7 +48,7 @@
 			mtype: 'POST',
 			height: "auto",
 		   	colNames:['<s:text name="entity.id.label" />','<s:text name="entity.name.label" />',
-		  		   	'<s:text name="targetList.type.label" />','<s:text name="entity.description.label" />',
+		  		   	'<s:text name="entity.type.label" />','<s:text name="entity.description.label" />',
 		  		   	'<s:text name="entity.assigned_to.label" />','<s:text name="entity.createdBy.label" />',
 		  		   	'<s:text name="entity.updatedBy.label" />','<s:text name="entity.createdOn.label" />',
 		  		   	'<s:text name="entity.updatedOn.label" />'],

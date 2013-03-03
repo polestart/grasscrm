@@ -140,6 +140,7 @@
   <property column="delete_system" generated="never" insert="true"
    lazy="false" name="delete_system" type="int" update="true"/>           
   <property name="description" column="description" type="string" />
+  <property name="notes" column="notes" type="string" />  
   <many-to-one name="owner"
 			class="User" column="owner" cascade="save-update"/>			        
   <many-to-one name="created_by"

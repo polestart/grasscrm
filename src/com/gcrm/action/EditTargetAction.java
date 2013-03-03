@@ -19,13 +19,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
+import com.gcrm.domain.Lead;
+import com.gcrm.domain.Salutation;
 import com.gcrm.domain.Target;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.ITargetService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
@@ -38,12 +42,17 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
 
     private static final long serialVersionUID = -2404576552417042445L;
 
-    private IBaseService<Target> baseService;
+    private ITargetService baseService;
     private IBaseService<Account> accountService;
+    private IBaseService<Lead> leadService;
     private IBaseService<User> userService;
     private IBaseService<TargetList> targetListService;
+    private IBaseService<Salutation> salutationService;
+    private List<Salutation> salutations;
     private Target target;
+    private Lead lead;
     private Integer accountID = null;
+    private Integer salutationID = null;
     private Integer assignedToID = null;
     private String assignedToText = null;
 
@@ -71,6 +80,22 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
             Account account = target.getAccount();
             if (account != null) {
                 accountID = account.getId();
+            }
+
+            Salutation salutation = target.getSalutation();
+            if (salutation != null) {
+                salutationID = salutation.getId();
+            }
+
+            Integer leadID = target.getLead_id();
+            if (leadID != null) {
+                try {
+                    lead = this.getLeadService().getEntityById(Lead.class,
+                            leadID);
+                } catch (Exception e) {
+                    // in case the converted lead is deleted
+                    lead = null;
+                }
             }
 
             User assignedTo = target.getAssigned_to();
@@ -137,6 +162,13 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
         }
         target.setAccount(account);
 
+        Salutation salutation = null;
+        if (salutationID != null) {
+            salutation = salutationService.getEntityById(Salutation.class,
+                    salutationID);
+        }
+        target.setSalutation(salutation);
+
         User assignedTo = null;
         if (assignedToID != null) {
             assignedTo = userService.getEntityById(User.class, assignedToID);
@@ -161,26 +193,24 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
     }
 
     /**
+     * Converts the lead
+     * 
+     * @return the SUCCESS result
+     */
+    public String convert() throws Exception {
+
+        this.getBaseService().convert(this.getTarget().getId());
+        this.setSaveFlag(Target.STATUS_CONVERTED);
+        return SUCCESS;
+    }
+
+    /**
      * Prepares the list
      * 
      */
     public void prepare() throws Exception {
-
-    }
-
-    /**
-     * @return the baseService
-     */
-    public IBaseService<Target> getBaseService() {
-        return baseService;
-    }
-
-    /**
-     * @param baseService
-     *            the baseService to set
-     */
-    public void setBaseService(IBaseService<Target> baseService) {
-        this.baseService = baseService;
+        this.salutations = salutationService.getAllObjects(Salutation.class
+                .getSimpleName());
     }
 
     /**
@@ -290,6 +320,96 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
     @Override
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
+    }
+
+    /**
+     * @return the salutationService
+     */
+    public IBaseService<Salutation> getSalutationService() {
+        return salutationService;
+    }
+
+    /**
+     * @param salutationService
+     *            the salutationService to set
+     */
+    public void setSalutationService(IBaseService<Salutation> salutationService) {
+        this.salutationService = salutationService;
+    }
+
+    /**
+     * @return the salutations
+     */
+    public List<Salutation> getSalutations() {
+        return salutations;
+    }
+
+    /**
+     * @param salutations
+     *            the salutations to set
+     */
+    public void setSalutations(List<Salutation> salutations) {
+        this.salutations = salutations;
+    }
+
+    /**
+     * @return the salutationID
+     */
+    public Integer getSalutationID() {
+        return salutationID;
+    }
+
+    /**
+     * @param salutationID
+     *            the salutationID to set
+     */
+    public void setSalutationID(Integer salutationID) {
+        this.salutationID = salutationID;
+    }
+
+    /**
+     * @return the leadService
+     */
+    public IBaseService<Lead> getLeadService() {
+        return leadService;
+    }
+
+    /**
+     * @param leadService
+     *            the leadService to set
+     */
+    public void setLeadService(IBaseService<Lead> leadService) {
+        this.leadService = leadService;
+    }
+
+    /**
+     * @return the baseService
+     */
+    public ITargetService getBaseService() {
+        return baseService;
+    }
+
+    /**
+     * @param baseService
+     *            the baseService to set
+     */
+    public void setBaseService(ITargetService baseService) {
+        this.baseService = baseService;
+    }
+
+    /**
+     * @return the lead
+     */
+    public Lead getLead() {
+        return lead;
+    }
+
+    /**
+     * @param lead
+     *            the lead to set
+     */
+    public void setLead(Lead lead) {
+        this.lead = lead;
     }
 
 }

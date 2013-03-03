@@ -1,12 +1,10 @@
 function openPage(href) {
-	href = "/grass/jsp" + href
 	window.open(href, "_self");
 }
 
-function openPopupPage(href) {
-	href = "/grass/jsp" + href
-	window.open(href, "_blank",
-			"height=300,width=500,scrollbars=no,location=no");
+function openPage2(href) {
+	href = "/grass/jsp" + href;
+	window.open(href, "_self");
 }
 
 function openwindow(url, name) {

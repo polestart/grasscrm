@@ -21,7 +21,8 @@
 			class="ReminderOption" column="reminder_option_pop" cascade="save-update"/>
   <many-to-one name="reminder_option_email"
 			class="ReminderOption" column="reminder_option_email" cascade="save-update"/>  			  
-  <property name="description" column="description" type="string" />    
+  <property name="description" column="description" type="string" />  
+  <property name="notes" column="notes" type="string" />      
   <many-to-one name="assigned_to"
 			class="User" column="assigned_to" cascade="save-update"/>
   <many-to-one name="owner"

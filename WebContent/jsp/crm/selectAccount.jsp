@@ -40,8 +40,8 @@
 		            },
 					{field:'bill_city',title:'<s:text name="account.bill_city.label" />',width:80,align:'center',sortable:'true'},
 					{field:'bill_country',title:'<s:text name="account.billing_country.label" />',width:80,align:'right',sortable:'true'},
-					{field:'office_phone',title:'<s:text name="account.office_phone.label" />',width:80,align:'center',sortable:'true'},
-					{field:'email',title:'<s:text name="account.email.label" />',width:80,align:'center',sortable:'true'},
+					{field:'office_phone',title:'<s:text name="entity.office_phone.label" />',width:80,align:'center',sortable:'true'},
+					{field:'email',title:'<s:text name="entity.email.label" />',width:80,align:'center',sortable:'true'},
 					{field:'user_name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 				]],
 	  });

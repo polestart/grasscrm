@@ -31,6 +31,7 @@ import com.gcrm.domain.Document;
 import com.gcrm.domain.LeadSource;
 import com.gcrm.domain.Meeting;
 import com.gcrm.domain.Opportunity;
+import com.gcrm.domain.Salutation;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
@@ -49,6 +50,7 @@ public class EditContactAction extends BaseEditAction implements Preparable {
     private IBaseService<Contact> baseService;
     private IBaseService<Account> accountService;
     private IBaseService<LeadSource> leadSourceService;
+    private IBaseService<Salutation> salutationService;
     private IBaseService<User> userService;
     private IBaseService<Campaign> campaignService;
     private IBaseService<Opportunity> opportunityService;
@@ -59,11 +61,13 @@ public class EditContactAction extends BaseEditAction implements Preparable {
     private IBaseService<Meeting> meetingService;
     private Contact contact;
     private List<LeadSource> leadSources;
+    private List<Salutation> salutations;
     private Integer accountID = null;
     private String accountText = null;
     private Integer reportToID = null;
     private String reportToText = null;
     private Integer leadSourceID = null;
+    private Integer salutationID = null;
     private Integer campaignID = null;
     private String campaignText = null;
     private Integer assignedToID = null;
@@ -105,6 +109,11 @@ public class EditContactAction extends BaseEditAction implements Preparable {
             LeadSource leadSource = contact.getLeadSource();
             if (leadSource != null) {
                 leadSourceID = leadSource.getId();
+            }
+
+            Salutation salutation = contact.getSalutation();
+            if (salutation != null) {
+                salutationID = salutation.getId();
             }
 
             Campaign campaign = contact.getCampaign();
@@ -195,6 +204,13 @@ public class EditContactAction extends BaseEditAction implements Preparable {
         }
         contact.setLeadSource(leadSource);
 
+        Salutation salutation = null;
+        if (salutationID != null) {
+            salutation = salutationService.getEntityById(Salutation.class,
+                    salutationID);
+        }
+        contact.setSalutation(salutation);
+
         User user = null;
         if (assignedToID != null) {
             user = userService.getEntityById(User.class, assignedToID);
@@ -273,6 +289,8 @@ public class EditContactAction extends BaseEditAction implements Preparable {
      */
     public void prepare() throws Exception {
         this.leadSources = leadSourceService.getAllObjects(LeadSource.class
+                .getSimpleName());
+        this.salutations = salutationService.getAllObjects(Salutation.class
                 .getSimpleName());
     }
 
@@ -584,6 +602,51 @@ public class EditContactAction extends BaseEditAction implements Preparable {
     @Override
     public String getAssignedToText() {
         return assignedToText;
+    }
+
+    /**
+     * @return the salutationService
+     */
+    public IBaseService<Salutation> getSalutationService() {
+        return salutationService;
+    }
+
+    /**
+     * @param salutationService
+     *            the salutationService to set
+     */
+    public void setSalutationService(IBaseService<Salutation> salutationService) {
+        this.salutationService = salutationService;
+    }
+
+    /**
+     * @return the salutations
+     */
+    public List<Salutation> getSalutations() {
+        return salutations;
+    }
+
+    /**
+     * @param salutations
+     *            the salutations to set
+     */
+    public void setSalutations(List<Salutation> salutations) {
+        this.salutations = salutations;
+    }
+
+    /**
+     * @return the salutationID
+     */
+    public Integer getSalutationID() {
+        return salutationID;
+    }
+
+    /**
+     * @param salutationID
+     *            the salutationID to set
+     */
+    public void setSalutationID(Integer salutationID) {
+        this.salutationID = salutationID;
     }
 
 }

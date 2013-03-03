@@ -11,6 +11,7 @@ public class Role extends BaseEntity implements Serializable {
     public static final int OWNER_OR_DISABLED = 2;
     private String name;
     private String description;
+    private String notes;
     private Integer scope_account;
     private Integer view_account;
     private Integer create_account;
@@ -1129,5 +1130,20 @@ public class Role extends BaseEntity implements Serializable {
      */
     public void setDelete_system(Integer delete_system) {
         this.delete_system = delete_system;
+    }
+
+    /**
+     * @return the notes
+     */
+    public String getNotes() {
+        return notes;
+    }
+
+    /**
+     * @param notes
+     *            the notes to set
+     */
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

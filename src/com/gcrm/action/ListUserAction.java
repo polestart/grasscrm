@@ -322,19 +322,40 @@ public class ListUserAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_system");
-
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.user.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "User Name",
-                    "First Name", "Last Name", "Status ID", "Status Name",
-                    "Title", "Email", "Mobile", "Phone", "Fax", "Department",
-                    "Report To ID", "Report To Name", "Mailing Street",
-                    "Mailing City", "Mailing State", "Mailing Postal Code",
-                    "Mailing Country", "Other Street", "Other City",
-                    "Other State", "Other Postal Code", "Other Country", "Age",
-                    "Smtp Username", "Smtp Password", "Description" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("user.name.label"),
+                    getText("entity.first_name.label"),
+                    getText("entity.last_name.label"),
+                    getText("entity.status_id.label"),
+                    getText("entity.status_name.label"),
+                    getText("entity.title.label"),
+                    getText("entity.email.label"),
+                    getText("entity.mobile.label"),
+                    getText("user.phone.label"), getText("entity.fax.label"),
+                    getText("entity.department.label"),
+                    getText("user.report_to_id.label"),
+                    getText("user.report_to_name.label"),
+                    getText("entity.mailing_street.label"),
+                    getText("entity.mailing_city.label"),
+                    getText("entity.mailing_state.label"),
+                    getText("entity.mailing_postal_code.label"),
+                    getText("entity.mailing_country.label"),
+                    getText("entity.other_street.label"),
+                    getText("entity.other_city.label"),
+                    getText("entity.other_state.label"),
+                    getText("entity.other_postal_code.label"),
+                    getText("entity.other_country.label"),
+                    getText("user.age.label"),
+                    getText("user.smtp_username.label"),
+                    getText("user.smtp_password.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -393,13 +414,19 @@ public class ListUserAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(user.getOther_postal_code()));
                 data1.put(header[23],
                         CommonUtil.fromNullToEmpty(user.getOther_country()));
-                data1.put(header[24], user.getAge());
+                int age = 0;
+                if (user.getAge() != null) {
+                    age = user.getAge();
+                }
+                data1.put(header[24], age);
                 data1.put(header[25],
                         CommonUtil.fromNullToEmpty(user.getSmtp_username()));
                 data1.put(header[26],
                         CommonUtil.fromNullToEmpty(user.getSmtp_password()));
                 data1.put(header[27],
                         CommonUtil.fromNullToEmpty(user.getDescription()));
+                data1.put(header[28],
+                        CommonUtil.fromNullToEmpty(user.getNotes()));
                 writer.write(data1, header);
             }
         } catch (Exception e) {
@@ -409,7 +436,7 @@ public class ListUserAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -438,17 +465,18 @@ public class ListUserAction extends BaseListAction {
 
                 User user = new User();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         user.setId(Integer.parseInt(id));
                     }
                     user.setName(CommonUtil.fromNullToEmpty(row
-                            .get("User Name")));
+                            .get(getText("user.name.label"))));
                     user.setFirst_name(CommonUtil.fromNullToEmpty(row
-                            .get("First Name")));
+                            .get(getText("entity.first_name.label"))));
                     user.setLast_name(CommonUtil.fromNullToEmpty(row
-                            .get("Last Name")));
-                    String statusID = row.get("Status ID");
+                            .get(getText("entity.last_name.label"))));
+                    String statusID = row
+                            .get(getText("entity.status_id.label"));
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         user.setStatus(null);
                     } else {
@@ -457,14 +485,20 @@ public class ListUserAction extends BaseListAction {
                                         Integer.parseInt(statusID));
                         user.setStatus(userStatus);
                     }
-                    user.setTitle(CommonUtil.fromNullToEmpty(row.get("Title")));
-                    user.setEmail(CommonUtil.fromNullToEmpty(row.get("Email")));
-                    user.setMobile(CommonUtil.fromNullToEmpty(row.get("Mobile")));
-                    user.setPhone(CommonUtil.fromNullToEmpty(row.get("Phone")));
-                    user.setFax(CommonUtil.fromNullToEmpty(row.get("Fax")));
+                    user.setTitle(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.title.label"))));
+                    user.setEmail(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.email.label"))));
+                    user.setMobile(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.mobile.label"))));
+                    user.setPhone(CommonUtil.fromNullToEmpty(row
+                            .get(getText("user.phone.label"))));
+                    user.setFax(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.fax.label"))));
                     user.setDepartment(CommonUtil.fromNullToEmpty(row
-                            .get("Department")));
-                    String reportToID = row.get("Report To ID");
+                            .get(getText("entity.department.label"))));
+                    String reportToID = row
+                            .get(getText("user.report_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(reportToID)) {
                         user.setReport_to(null);
                     } else {
@@ -473,37 +507,39 @@ public class ListUserAction extends BaseListAction {
                         user.setReport_to(reportTo);
                     }
                     user.setMail_street(CommonUtil.fromNullToEmpty(row
-                            .get("Mailing Street")));
+                            .get(getText("entity.mailing_street.label"))));
                     user.setMail_city(CommonUtil.fromNullToEmpty(row
-                            .get("Mailing City")));
+                            .get(getText("entity.mailing_city.label"))));
                     user.setMail_state(CommonUtil.fromNullToEmpty(row
-                            .get("Mailing State")));
+                            .get(getText("entity.mailing_state.label"))));
                     user.setMail_postal_code(CommonUtil.fromNullToEmpty(row
-                            .get("Mailing Postal Code")));
+                            .get(getText("entity.mailing_postal_code.label"))));
                     user.setMail_country(CommonUtil.fromNullToEmpty(row
-                            .get("Mailing Country")));
+                            .get(getText("entity.mailing_country.label"))));
                     user.setOther_street(CommonUtil.fromNullToEmpty(row
-                            .get("Other Street")));
+                            .get(getText("entity.other_street.label"))));
                     user.setOther_city(CommonUtil.fromNullToEmpty(row
-                            .get("Other City")));
+                            .get(getText("entity.other_city.label"))));
                     user.setOther_state(CommonUtil.fromNullToEmpty(row
-                            .get("Other State")));
+                            .get(getText("entity.other_state.label"))));
                     user.setOther_postal_code(CommonUtil.fromNullToEmpty(row
-                            .get("Other Postal Code")));
+                            .get(getText("entity.other_postal_code.label"))));
                     user.setOther_country(CommonUtil.fromNullToEmpty(row
-                            .get("Other Country")));
-                    String age = row.get("Age");
+                            .get(getText("entity.other_country.label"))));
+                    String age = row.get(getText("user.age.label"));
                     if (CommonUtil.isNullOrEmpty(age)) {
                         user.setAge(0);
                     } else {
                         user.setAge(Integer.parseInt(age));
                     }
                     user.setSmtp_username(CommonUtil.fromNullToEmpty(row
-                            .get("Smtp Username")));
+                            .get(getText("user.smtp_username.label"))));
                     user.setSmtp_password(CommonUtil.fromNullToEmpty(row
-                            .get("Smtp Password")));
+                            .get(getText("user.smtp_password.label"))));
                     user.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
+                            .get(getText("entity.description.label"))));
+                    user.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
                     baseService.makePersistent(user);
                     successfulNum++;
                 } catch (Exception e) {

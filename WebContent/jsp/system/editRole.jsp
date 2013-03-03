@@ -14,6 +14,7 @@
 <script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
+<script type="text/javascript" src="../../js/locale/easyui-lang-<%=(String)session.getAttribute("locale")%>.js"></script>
 
 <script type="text/javascript">
 	function save() {
@@ -42,6 +43,7 @@
 		$('#ownerID').combogrid('setText', '<s:property value="ownerText"/>');			
 		if ($("#id").val() == ""){
 		  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
+		  $("#addObjectForm").form('validate');
 		}
 		if ($("#saveFlag").val() == "true"){
 			$.messager.show({  
@@ -145,7 +147,7 @@
 					            panelWidth:520,  
 					            idField:'id',  
 					            textField:'name',  
-					            url:'/grass/jsp/system/listUser.action',
+					            url:'<s:url action="listUser" namespace="/jsp/system"/>',
 		                        loadMsg: '<s:text name="datagrid.loading" />',
 		                        pagination : true,
 		                        pageSize: 10,
@@ -155,9 +157,9 @@
 					            columns:[[  
 					                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
 					                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
-					                {field:'title',title:'<s:text name="user.title.label" />',width:120},  
-					                {field:'department',title:'<s:text name="user.department.label" />',width:100},
-					                {field:'status.name',title:'<s:text name="user.status.label" />',width:100}   
+					                {field:'title',title:'<s:text name="entity.title.label" />',width:120},  
+					                {field:'department',title:'<s:text name="entity.department.label" />',width:100},
+					                {field:'status.name',title:'<s:text name="entity.status.label" />',width:100}   
 					            ]]  
 					        ">
 							</select></td>
@@ -184,7 +186,7 @@
                                    <th class="view-column"><s:text name="access.delete.head"/></th>
                                 </tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.account.label"/></td>
+								    <td class="view-column"><s:text name="entity.account.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_account" name="role.scope_account" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -202,7 +204,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.call.label"/></td>
+								    <td class="view-column"><s:text name="entity.call.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_call" name="role.scope_call" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -220,7 +222,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.campaign.label"/></td>
+								    <td class="view-column"><s:text name="entity.campaign.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_campaign" name="role.scope_campaign" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -238,7 +240,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.case.label"/></td>
+								    <td class="view-column"><s:text name="entity.case.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_case" name="role.scope_case" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -256,7 +258,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.contact.label"/></td>
+								    <td class="view-column"><s:text name="entity.contact.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_contact" name="role.scope_contact" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -274,7 +276,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.document.label"/></td>
+								    <td class="view-column"><s:text name="entity.document.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_document" name="role.scope_document" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -292,7 +294,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.lead.label"/></td>
+								    <td class="view-column"><s:text name="entity.lead.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_lead" name="role.scope_lead" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -310,7 +312,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.meeting.label"/></td>
+								    <td class="view-column"><s:text name="entity.meeting.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_meeting" name="role.scope_meeting" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -328,7 +330,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.opportunity.label"/></td>
+								    <td class="view-column"><s:text name="entity.opportunity.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_opportunity" name="role.scope_opportunity" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -346,7 +348,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.target.label"/></td>
+								    <td class="view-column"><s:text name="entity.target.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_target" name="role.scope_target" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -364,7 +366,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.targetList.label"/></td>
+								    <td class="view-column"><s:text name="entity.targetList.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_targetList" name="role.scope_targetList" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -382,7 +384,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.task.label"/></td>
+								    <td class="view-column"><s:text name="entity.task.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_task" name="role.scope_task" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -400,7 +402,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.system.label"/></td>
+								    <td class="view-column"><s:text name="entity.system.label"/></td>
 									<td class="view-column">
 										<s:select id="scope_system" name="role.scope_system" list="scopeMap" style="width:100px;"/>  
 									</td>
@@ -420,6 +422,9 @@
 							</table>							
 						</div>
 						<div title="<s:text name='tab.details'/>" style="padding: 10px;">
+							<div class="section-header">
+								<span><s:text name="span.description" /></span>
+							</div>							
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
 									<td class="td-label" valign="top"><label
@@ -428,9 +433,19 @@
 									<td class="td-value" valign="top"><s:textarea
 											name="role.description" rows="20" cssStyle="width:450px;"
 											cssClass="record-value" /></td>
-									<td class="td-label"></td>
-									<td class="td-value"></td>
+									<td class="td-label" valign="top"><label
+										class="record-label"><s:text
+												name="entity.notes.label"></s:text>：</label></td>
+									<td class="td-value" valign="top"><s:textarea
+											name="role.notes" rows="20" cssStyle="width:450px;"
+											cssClass="record-value" /></td>
 								</tr>
+							</table>
+
+							<div class="section-header">
+								<span><s:text name="span.system_info" /></span>
+							</div>
+							<table style="" cellspacing="10" cellpadding="0" width="100%">								
 								<tr>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.createdBy.label"></s:text>：</label></td>

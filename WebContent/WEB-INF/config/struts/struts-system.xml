@@ -328,7 +328,43 @@
 			<result name="input">/jsp/system/listLeadStatus.jsp</result>
 			<result type="redirect">/jsp/system/listLeadStatus.jsp</result>
         </action> 
+
+    	<action name="listSalesStage" class="salesStageAction" method="list">
+    	  <result name="success" type="json"></result>
+        </action>
+
+    	<action name="listSalesStagePage">
+    	  <result type="redirect">/jsp/system/listSalesStage.jsp</result>
+        </action>
+                
+        <action name="saveSalesStage" class="salesStageAction" method="save">
+    	  <result name="input">/jsp/system/listSalesStage.jsp</result>
+    	  <result type="redirect">/jsp/system/listSalesStage.jsp</result>
+        </action>
         
+        <action name="deleteSalesStage" class="salesStageAction" method="delete">
+			<result name="input">/jsp/system/listSalesStage.jsp</result>
+			<result type="redirect">/jsp/system/listSalesStage.jsp</result>
+        </action>
+
+    	<action name="listSolutation" class="salutationAction" method="list">
+    	  <result name="success" type="json"></result>
+        </action>
+
+    	<action name="listSolutationPage">
+    	  <result type="redirect">/jsp/system/listSolutation.jsp</result>
+        </action>
+                
+        <action name="saveSolutation" class="salutationAction" method="save">
+    	  <result name="input">/jsp/system/listSolutation.jsp</result>
+    	  <result type="redirect">/jsp/system/listSolutation.jsp</result>
+        </action>
+        
+        <action name="deleteSolutation" class="salutationAction" method="delete">
+			<result name="input">/jsp/system/listSolutation.jsp</result>
+			<result type="redirect">/jsp/system/listSolutation.jsp</result>
+        </action>
+                
     	<action name="listUserStatus" class="userStatusAction" method="list">
     	  <result name="success" type="json"></result>
         </action>

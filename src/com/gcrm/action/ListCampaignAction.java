@@ -256,17 +256,36 @@ public class ListCampaignAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_campaign");
-
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.campaign.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Name", "Status ID",
-                    "Status Name", "Type ID", "Type Name", "Start Date",
-                    "End Date", "Currency ID", "Currency Name", "Impressions",
-                    "Budget", "Expected Cost", "Actual Cost",
-                    "Expected Revenue", "Objective", "Description",
-                    "Assigned To ID", "Assigned To Name" };
+            final String[] header = new String[] {
+                    getText("entity.id.label"),
+                    getText("entity.name.label"),
+                    getText("entity.status_id.label"),
+                    getText("entity.status_name.label"),
+                    getText("entity.type_id.label"),
+                    getText("entity.type_name.label"),
+                    getText("entity.start_date.label"),
+                    getText("entity.end_date.label"),
+                    getText("entity.currency_id.label"),
+                    getText("entity.currency_name.label"),
+                    getText("campaign.impressions.label"),
+                    getText("campaign.budget.label"),
+                    getText("campaign.expected_cost.label"),
+                    getText("campaign.actual_cost.label"),
+                    getText("campaign.expected_revenue.label"),
+                    getText("campaign.expected_respone.label"),
+                    getText("campaign.objective.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label"),
+                    getText("entity.assigned_to.label") + " "
+                            + getText("entity.id.label"),
+                    getText("entity.assigned_to.label") + " "
+                            + getText("entity.name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -317,16 +336,19 @@ public class ListCampaignAction extends BaseListAction {
                 data1.put(header[12], campaign.getExpected_cost());
                 data1.put(header[13], campaign.getActual_cost());
                 data1.put(header[14], campaign.getExpected_revenue());
-                data1.put(header[15],
-                        CommonUtil.fromNullToEmpty(campaign.getObjective()));
+                data1.put(header[15], campaign.getExpected_respone());
                 data1.put(header[16],
+                        CommonUtil.fromNullToEmpty(campaign.getObjective()));
+                data1.put(header[17],
                         CommonUtil.fromNullToEmpty(campaign.getDescription()));
+                data1.put(header[18],
+                        CommonUtil.fromNullToEmpty(campaign.getNotes()));
                 if (campaign.getAssigned_to() != null) {
-                    data1.put(header[17], campaign.getAssigned_to().getId());
-                    data1.put(header[18], campaign.getAssigned_to().getName());
+                    data1.put(header[19], campaign.getAssigned_to().getId());
+                    data1.put(header[20], campaign.getAssigned_to().getName());
                 } else {
-                    data1.put(header[17], "");
-                    data1.put(header[18], "");
+                    data1.put(header[19], "");
+                    data1.put(header[20], "");
                 }
                 writer.write(data1, header);
             }
@@ -337,7 +359,7 @@ public class ListCampaignAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -366,15 +388,17 @@ public class ListCampaignAction extends BaseListAction {
 
                 Campaign campaign = new Campaign();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         campaign.setId(Integer.parseInt(id));
                         UserUtil.permissionCheck("update_campaign");
                     } else {
                         UserUtil.permissionCheck("create_campaign");
                     }
-                    campaign.setName(CommonUtil.fromNullToEmpty(row.get("Name")));
-                    String statusID = row.get("Status ID");
+                    campaign.setName(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.name.label"))));
+                    String statusID = row
+                            .get(getText("entity.status_id.label"));
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         campaign.setStatus(null);
                     } else {
@@ -383,7 +407,7 @@ public class ListCampaignAction extends BaseListAction {
                                         Integer.parseInt(statusID));
                         campaign.setStatus(status);
                     }
-                    String typeID = row.get("Type ID");
+                    String typeID = row.get(getText("entity.type_id.label"));
                     if (CommonUtil.isNullOrEmpty(typeID)) {
                         campaign.setType(null);
                     } else {
@@ -393,21 +417,23 @@ public class ListCampaignAction extends BaseListAction {
                     }
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
                             Constant.DATE_EDIT_FORMAT);
-                    String startDateS = row.get("Start Date");
+                    String startDateS = row
+                            .get(getText("entity.start_date.label"));
                     if (startDateS != null) {
                         Date startDate = dateFormat.parse(startDateS);
                         campaign.setStart_date(startDate);
                     } else {
                         campaign.setStart_date(null);
                     }
-                    String endDateS = row.get("End Date");
+                    String endDateS = row.get(getText("entity.end_date.label"));
                     if (startDateS != null) {
                         Date endDate = dateFormat.parse(endDateS);
                         campaign.setEnd_date(endDate);
                     } else {
                         campaign.setEnd_date(null);
                     }
-                    String currencyID = row.get("Currency ID");
+                    String currencyID = row
+                            .get(getText("entity.currency_id.label"));
                     if (CommonUtil.isNullOrEmpty(currencyID)) {
                         campaign.setCurrency(null);
                     } else {
@@ -415,43 +441,59 @@ public class ListCampaignAction extends BaseListAction {
                                 Currency.class, Integer.parseInt(currencyID));
                         campaign.setCurrency(currency);
                     }
-                    String impressions = row.get("Impressions");
+                    String impressions = row
+                            .get(getText("campaign.impressions.label"));
                     if (CommonUtil.isNullOrEmpty(impressions)) {
                         campaign.setImpressions(0);
                     } else {
                         campaign.setImpressions(Double.parseDouble(impressions));
                     }
-                    String budget = row.get("Budget");
+                    String budget = row.get(getText("campaign.budget.label"));
                     if (CommonUtil.isNullOrEmpty(budget)) {
                         campaign.setBudget(0);
                     } else {
                         campaign.setBudget(Double.parseDouble(budget));
                     }
-                    String expectedCost = row.get("Expected Cost");
+                    String expectedCost = row
+                            .get(getText("campaign.expected_cost.label"));
                     if (CommonUtil.isNullOrEmpty(expectedCost)) {
                         campaign.setExpected_cost(0);
                     } else {
                         campaign.setExpected_cost(Double
                                 .parseDouble(expectedCost));
                     }
-                    String actualCost = row.get("Actual Cost");
+                    String actualCost = row
+                            .get(getText("campaign.actual_cost.label "));
                     if (CommonUtil.isNullOrEmpty(actualCost)) {
                         campaign.setActual_cost(0);
                     } else {
                         campaign.setActual_cost(Double.parseDouble(actualCost));
                     }
-                    String expectedRevenue = row.get("Expected Revenue");
+                    String expectedRevenue = row
+                            .get(getText("campaign.expected_revenue.label"));
                     if (CommonUtil.isNullOrEmpty(expectedRevenue)) {
                         campaign.setExpected_revenue(0);
                     } else {
                         campaign.setExpected_revenue(Double
                                 .parseDouble(expectedRevenue));
                     }
+                    String expectedRespone = row
+                            .get(getText("campaign.expected_respone.label"));
+                    if (CommonUtil.isNullOrEmpty(expectedRespone)) {
+                        campaign.setExpected_respone(0);
+                    } else {
+                        campaign.setExpected_respone(Double
+                                .parseDouble(expectedRespone));
+                    }
+
                     campaign.setObjective(CommonUtil.fromNullToEmpty(row
-                            .get("Objective")));
+                            .get(getText("campaign.objective.label"))));
                     campaign.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
-                    String assignedToID = row.get("Assigned To ID");
+                            .get(getText("entity.description.label"))));
+                    campaign.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         campaign.setAssigned_to(null);
                     } else {

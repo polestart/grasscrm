@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -210,12 +211,18 @@ public class ListRoleAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_system");
-
-        File file = new File(CLAZZ + ".csv");
+        ResourceBundle rb = CommonUtil.getResourceBundle();
+        String fileName = rb.getString("entity.role.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Name", "Description" };
+            final String[] header = new String[] {
+                    rb.getString("entity.id.label"),
+                    rb.getString("entity.name.label"),
+                    rb.getString("entity.description.label"),
+                    rb.getString("entity.notes.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -227,6 +234,8 @@ public class ListRoleAction extends BaseListAction {
                 data1.put(header[1], CommonUtil.fromNullToEmpty(role.getName()));
                 data1.put(header[2],
                         CommonUtil.fromNullToEmpty(role.getDescription()));
+                data1.put(header[3],
+                        CommonUtil.fromNullToEmpty(role.getNotes()));
                 writer.write(data1, header);
             }
         } catch (Exception e) {
@@ -236,7 +245,7 @@ public class ListRoleAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -249,6 +258,7 @@ public class ListRoleAction extends BaseListAction {
         File file = this.getUpload();
         CsvListReader reader = new CsvListReader(new FileReader(file),
                 CsvPreference.EXCEL_PREFERENCE);
+        ResourceBundle rb = CommonUtil.getResourceBundle();
         int failedNum = 0;
         int successfulNum = 0;
         try {
@@ -265,13 +275,16 @@ public class ListRoleAction extends BaseListAction {
 
                 Role role = new Role();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(rb.getString("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         role.setId(Integer.parseInt(id));
                     }
-                    role.setName(CommonUtil.fromNullToEmpty(row.get("Name")));
-                    role.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
+                    role.setName(CommonUtil.fromNullToEmpty(row.get(rb
+                            .getString("entity.name.label"))));
+                    role.setDescription(CommonUtil.fromNullToEmpty(row.get(rb
+                            .getString("entity.description.label"))));
+                    role.setNotes(CommonUtil.fromNullToEmpty(row.get(rb
+                            .getString("entity.notes.label"))));
                     baseService.makePersistent(role);
                     successfulNum++;
                 } catch (Exception e) {

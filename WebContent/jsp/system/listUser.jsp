@@ -48,8 +48,8 @@
 			mtype: 'POST',
 			height: "auto",
 		   	colNames:['<s:text name="entity.id.label" />','<s:text name="entity.name.label" />',
-		  		   	'<s:text name="user.title.label" />','<s:text name="user.department.label" />',
-		  		   	'<s:text name="user.status.label" />','<s:text name="entity.createdBy.label" />',
+		  		   	'<s:text name="entity.title.label" />','<s:text name="entity.department.label" />',
+		  		   	'<s:text name="entity.status.label" />','<s:text name="entity.createdBy.label" />',
 		  		  '<s:text name="entity.updatedBy.label" />','<s:text name="entity.createdOn.label" />',
 		  		'<s:text name="entity.updatedOn.label" />'],
 		   	colModel:[

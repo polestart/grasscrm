@@ -249,14 +249,20 @@ public class ListTargetListAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_targetList");
-
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.targetList.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Name", "Type ID",
-                    "Type Name", "Description", "Assigned To ID",
-                    "Assigned To Name" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("entity.name.label"),
+                    getText("entity.type_id.label"),
+                    getText("entity.type_name.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label"),
+                    getText("entity.assigned_to_id.label"),
+                    getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -276,12 +282,14 @@ public class ListTargetListAction extends BaseListAction {
                 }
                 data1.put(header[4],
                         CommonUtil.fromNullToEmpty(targetList.getDescription()));
+                data1.put(header[5],
+                        CommonUtil.fromNullToEmpty(targetList.getNotes()));
                 if (targetList.getAssigned_to() != null) {
-                    data1.put(header[5], targetList.getAssigned_to().getId());
-                    data1.put(header[6], targetList.getAssigned_to().getName());
+                    data1.put(header[6], targetList.getAssigned_to().getId());
+                    data1.put(header[7], targetList.getAssigned_to().getName());
                 } else {
-                    data1.put(header[5], "");
                     data1.put(header[6], "");
+                    data1.put(header[7], "");
                 }
                 writer.write(data1, header);
             }
@@ -292,7 +300,7 @@ public class ListTargetListAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -321,13 +329,13 @@ public class ListTargetListAction extends BaseListAction {
 
                 TargetList targetList = new TargetList();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         targetList.setId(Integer.parseInt(id));
                     }
                     targetList.setName(CommonUtil.fromNullToEmpty(row
-                            .get("Name")));
-                    String typeID = row.get("Type ID");
+                            .get(getText("entity.name.label"))));
+                    String typeID = row.get(getText("entity.type_id.label"));
                     if (CommonUtil.isNullOrEmpty(typeID)) {
                         targetList.setType(null);
                     } else {
@@ -337,8 +345,11 @@ public class ListTargetListAction extends BaseListAction {
                         targetList.setType(type);
                     }
                     targetList.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
-                    String assignedToID = row.get("Assigned To ID");
+                            .get(getText("entity.description.label"))));
+                    targetList.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         targetList.setAssigned_to(null);
                     } else {

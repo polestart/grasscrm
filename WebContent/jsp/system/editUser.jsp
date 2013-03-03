@@ -16,6 +16,7 @@
 <script type="text/javascript" src="../../js/locale/easyui-lang-<%=(String)session.getAttribute("locale")%>.js"></script>
 <script type="text/javascript" src="../../js/global.js"></script>
 <script type="text/javascript" src="../../js/datagrid-<%=(String)session.getAttribute("locale")%>.js"></script> 
+<script type="text/javascript" src="../../js/locale/easyui-lang-<%=(String)session.getAttribute("locale")%>.js"></script>
 
 <script type="text/javascript">
     function save() {
@@ -59,6 +60,9 @@
 		}	
 		if ($("#id").val() == ""){
 			  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
+			  if ($("#seleteIDs").val() == ""){
+				     $("#addObjectForm").form('validate');
+			  }			  
 		}
 		if ($("#saveFlag").val() == "true"){
 			$.messager.show({  
@@ -186,7 +190,7 @@
 						    <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="status"/></td>
 							<td class="td-label"><label class="record-label"><s:text
-										name="user.status.label"></s:text>：</label></td>
+										name="entity.status.label"></s:text>：</label></td>
 							<td class="td-value"><s:select name="statusID" list="statuses"
 									listKey="id" listValue="name" cssClass="record-value" /></td>
 						    <td class="td-mass-update"><input id="massUpdate"
@@ -210,7 +214,7 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="title"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.title.label"></s:text>：</label></td>
+												name="entity.title.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="user.title" cssClass="record-value" /></td>
 								</tr>
@@ -218,7 +222,7 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="department"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.department.label"></s:text>：</label></td>
+												name="entity.department.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield name="user.department"
 											cssClass="record-value" /></td>
 						            <td class="td-mass-update"><input id="massUpdate"
@@ -241,9 +245,9 @@
 							            columns:[[  
 							                {field:'id',title:'<s:text name="entity.id.label" />',width:60},  
 							                {field:'name',title:'<s:text name="entity.name.label" />',width:100},  
-							                {field:'title',title:'<s:text name="user.title.label" />',width:120},  
-							                {field:'department',title:'<s:text name="user.department.label" />',width:100},
-							                {field:'status.name',title:'<s:text name="user.status.label" />',width:100}   
+							                {field:'title',title:'<s:text name="entity.title.label" />',width:120},  
+							                {field:'department',title:'<s:text name="entity.department.label" />',width:100},
+							                {field:'status.name',title:'<s:text name="entity.status.label" />',width:100}   
 							            ]]  
 							        ">
 									</select></td>
@@ -284,13 +288,13 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="email"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.email.label"></s:text>：</label></td>
+												name="entity.email.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield name="user.email"
 											cssClass="record-value" /></td>
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="mobile"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.mobile.label"></s:text>：</label></td>
+												name="entity.mobile.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="user.mobile" cssClass="record-value" /></td>
 								</tr>
@@ -304,7 +308,7 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="fax"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.fax.label"></s:text>：</label></td>
+												name="entity.fax.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield name="user.fax"
 											cssClass="record-value" /></td>
 								</tr>
@@ -318,13 +322,13 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="mail_street"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.mail_street.label"></s:text>：</label></td>
+												name="entity.street.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="user.mail_street" cssClass="record-value" /></td>
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="mail_city"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.mail_city.label"></s:text>：</label></td>
+												name="entity.city.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield name="user.mail_city"
 											cssClass="record-value" /></td>
 								</tr>
@@ -332,13 +336,13 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="mail_state"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.mail_state.label"></s:text>：</label></td>
+												name="entity.state.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="user.mail_state" cssClass="record-value" /></td>
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="mail_postal_code"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.mail_postal_code.label"></s:text>：</label></td>
+												name="entity.postal_code.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="user.mail_postal_code" cssClass="record-value" /></td>
 								</tr>
@@ -346,7 +350,7 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="mail_country"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.mail_country.label"></s:text>：</label></td>
+												name="entity.country.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="user.mail_country" cssClass="record-value" /></td>
 						            <td class="td-mass-update"></td>
@@ -363,13 +367,13 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="other_street"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.other_street.label"></s:text>：</label></td>
+												name="entity.street.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="user.other_street" cssClass="record-value" /></td>
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="other_city"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.other_city.label"></s:text>：</label></td>
+												name="entity.city.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield name="user.other_city"
 											cssClass="record-value" /></td>
 								</tr>
@@ -377,13 +381,13 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="other_state"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.other_state.label"></s:text>：</label></td>
+												name="entity.state.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="user.other_state" cssClass="record-value" /></td>
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="other_postal_code"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.other_postal_code.label"></s:text>：</label></td>
+												name="entity.postal_code.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="user.other_postal_code" cssClass="record-value" /></td>
 								</tr>
@@ -391,7 +395,7 @@
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="other_country"/></td>
 									<td class="td-label"><label class="record-label"><s:text
-												name="user.other_country.label"></s:text>：</label></td>
+												name="entity.country.label"></s:text>：</label></td>
 									<td class="td-value"><s:textfield
 											name="user.other_country" cssClass="record-value" /></td>
 						            <td class="td-mass-update"></td>
@@ -406,6 +410,9 @@
 
 						<div title="<s:text name='tab.details'/>"
 							style="padding: 10px;">
+							<div class="section-header">
+								<span><s:text name="span.description" /></span>
+							</div>								
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
 						            <td class="td-mass-update"><input id="massUpdate"
@@ -416,9 +423,14 @@
 									<td class="td-value" valign="top"><s:textarea
 											name="user.description" rows="20" cssStyle="width:450px;"
 											cssClass="record-value" /></td>
-						            <td class="td-mass-update"></td>
-									<td class="td-label"></td>
-									<td class="td-value"></td>
+						            <td class="td-mass-update"><input id="massUpdate"
+										name="massUpdate" type="checkbox" class="massUpdate" value="notes"/></td>
+									<td class="td-label" valign="top"><label
+										class="record-label"><s:text
+												name="entity.notes.label"></s:text>：</label></td>
+									<td class="td-value" valign="top"><s:textarea
+											name="user.notes" rows="20" cssStyle="width:450px;"
+											cssClass="record-value" /></td>
 								</tr>
 								<tr>
 						            <td class="td-mass-update"></td>
@@ -469,7 +481,7 @@
                                    <th class="view-column"><s:text name="access.delete.head"/></th>
                                 </tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.account.label"/></td>
+								    <td class="view-column"><s:text name="entity.account.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_account_text" />
 									</td>
@@ -487,7 +499,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.call.label"/></td>
+								    <td class="view-column"><s:text name="entity.call.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_call_text" />
 									</td>
@@ -505,7 +517,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.campaign.label"/></td>
+								    <td class="view-column"><s:text name="entity.campaign.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_campaign_text" />
 									</td>
@@ -523,7 +535,7 @@
 									</td>
 								</tr>
 																																																<tr>
-								    <td class="view-column"><s:text name="access.case.label"/></td>
+								    <td class="view-column"><s:text name="entity.case.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_case_text" />
 									</td>
@@ -541,7 +553,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.contact.label"/></td>
+								    <td class="view-column"><s:text name="entity.contact.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_contact_text" />
 									</td>
@@ -559,7 +571,7 @@
 									</td>
 								</tr>
 																								<tr>
-								    <td class="view-column"><s:text name="access.document.label"/></td>
+								    <td class="view-column"><s:text name="entity.document.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_document_text" />
 									</td>
@@ -577,7 +589,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.lead.label"/></td>
+								    <td class="view-column"><s:text name="entity.lead.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_lead_text" />
 									</td>
@@ -595,7 +607,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.meeting.label"/></td>
+								    <td class="view-column"><s:text name="entity.meeting.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_meeting_text" />
 									</td>
@@ -613,7 +625,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.opportunity.label"/></td>
+								    <td class="view-column"><s:text name="entity.opportunity.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_opportunity_text" />
 									</td>
@@ -631,7 +643,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.target.label"/></td>
+								    <td class="view-column"><s:text name="entity.target.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_target_text" />
 									</td>
@@ -649,7 +661,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.targetList.label"/></td>
+								    <td class="view-column"><s:text name="entity.targetList.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_targetList_text" />
 									</td>
@@ -667,7 +679,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.task.label"/></td>
+								    <td class="view-column"><s:text name="entity.task.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_task_text" />
 									</td>
@@ -685,7 +697,7 @@
 									</td>
 								</tr>
 								<tr>
-								    <td class="view-column"><s:text name="access.system.label"/></td>
+								    <td class="view-column"><s:text name="entity.system.label"/></td>
 									<td class="view-column">
 										<s:property value="user.scope_system_text" />
 									</td>

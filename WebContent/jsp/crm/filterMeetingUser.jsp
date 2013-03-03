@@ -37,9 +37,9 @@
 						   return new_format_value 
 		             }  
 		            },
-					{field:'title',title:'<s:text name="user.title.label" />',width:80,align:'center',sortable:'true'},
-					{field:'department',title:'<s:text name="user.department.label" />',width:80,align:'right',sortable:'true'},
-					{field:'status.name',title:'<s:text name="user.status.label" />',width:80,align:'center',sortable:'true'}
+					{field:'title',title:'<s:text name="entity.title.label" />',width:80,align:'center',sortable:'true'},
+					{field:'department',title:'<s:text name="entity.department.label" />',width:80,align:'right',sortable:'true'},
+					{field:'status.name',title:'<s:text name="entity.status.label" />',width:80,align:'center',sortable:'true'}
 				]],
 	  });
 		

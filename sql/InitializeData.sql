@@ -283,6 +283,19 @@ WITH (
 ALTER TABLE reminderoption
   OWNER TO postgres;
   
+CREATE TABLE salutation
+(
+  id integer NOT NULL,
+  name character varying(50) NOT NULL,
+  sequence integer,
+  CONSTRAINT salutation_pkey PRIMARY KEY (id )
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE salutation
+  OWNER TO postgres; 
+    
 CREATE TABLE userstatus
 (
   id integer NOT NULL,
@@ -711,6 +724,13 @@ INSERT INTO salesstage(id, name, sequence) VALUES (nextval('hibernate_sequence')
 INSERT INTO salesstage(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Negotiation/Review', 9);
 INSERT INTO salesstage(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Closed Won', 10);
 INSERT INTO salesstage(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Closed Lost', 11);
+
+INSERT INTO salutation(id, name, sequence) VALUES (nextval('hibernate_sequence'),'--None--', 1);
+INSERT INTO salutation(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Mr.', 2);
+INSERT INTO salutation(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Ms.', 3);
+INSERT INTO salutation(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Mrs.', 4);
+INSERT INTO salutation(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Dr.', 5);
+INSERT INTO salutation(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Prof.', 6);
 
 INSERT INTO taskpriority(id, name, sequence) VALUES (nextval('hibernate_sequence'),'High', 1);
 INSERT INTO taskpriority(id, name, sequence) VALUES (nextval('hibernate_sequence'),'Medium', 2);

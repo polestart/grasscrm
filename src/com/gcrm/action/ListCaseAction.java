@@ -387,17 +387,29 @@ public class ListCaseAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_case");
-
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.case.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Priority ID",
-                    "Priority Name", "Status ID", "Status Name",
-                    "Case Type ID", "Case Type Name", "Case Origin ID",
-                    "Case Origin Name", "Case Reason ID", "Case Reason Name",
-                    "Subject", "Description", "Resolution", "Assigned To ID",
-                    "Assigned To Name" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("entity.priority_id.label"),
+                    getText("entity.priority_name.label"),
+                    getText("entity.status_id.label"),
+                    getText("entity.status_name.label"),
+                    getText("case.type_id.label"),
+                    getText("case.type_name.label"),
+                    getText("case.origin_id.label"),
+                    getText("case.origin_name.label"),
+                    getText("case.reason_id.label"),
+                    getText("case.reason_name.label"),
+                    getText("entity.subject.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label"),
+                    getText("case.resolution.label"),
+                    getText("entity.assigned_to_id.label"),
+                    getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -445,15 +457,17 @@ public class ListCaseAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(caseInstance.getSubject()));
                 data1.put(header[12], CommonUtil.fromNullToEmpty(caseInstance
                         .getDescription()));
-                data1.put(header[13], CommonUtil.fromNullToEmpty(caseInstance
+                data1.put(header[13],
+                        CommonUtil.fromNullToEmpty(caseInstance.getNotes()));
+                data1.put(header[14], CommonUtil.fromNullToEmpty(caseInstance
                         .getResolution()));
                 if (caseInstance.getAssigned_to() != null) {
-                    data1.put(header[14], caseInstance.getAssigned_to().getId());
-                    data1.put(header[15], caseInstance.getAssigned_to()
+                    data1.put(header[15], caseInstance.getAssigned_to().getId());
+                    data1.put(header[16], caseInstance.getAssigned_to()
                             .getName());
                 } else {
-                    data1.put(header[14], "");
                     data1.put(header[15], "");
+                    data1.put(header[16], "");
                 }
                 writer.write(data1, header);
             }
@@ -464,7 +478,7 @@ public class ListCaseAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -492,14 +506,15 @@ public class ListCaseAction extends BaseListAction {
                 }
                 Case caseInstance = new Case();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         caseInstance.setId(Integer.parseInt(id));
                         UserUtil.permissionCheck("update_case");
                     } else {
                         UserUtil.permissionCheck("create_case");
                     }
-                    String priorityID = row.get("Priority ID");
+                    String priorityID = row
+                            .get(getText("entity.priority_id.label"));
                     if (CommonUtil.isNullOrEmpty(priorityID)) {
                         caseInstance.setPriority(null);
                     } else {
@@ -508,7 +523,8 @@ public class ListCaseAction extends BaseListAction {
                                         Integer.parseInt(priorityID));
                         caseInstance.setPriority(priority);
                     }
-                    String statusID = row.get("Status ID");
+                    String statusID = row
+                            .get(getText("entity.status_id.label"));
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         caseInstance.setStatus(null);
                     } else {
@@ -516,7 +532,7 @@ public class ListCaseAction extends BaseListAction {
                                 CaseStatus.class, Integer.parseInt(statusID));
                         caseInstance.setStatus(status);
                     }
-                    String typeID = row.get("Case Type ID");
+                    String typeID = row.get(getText("case.type_id.label"));
                     if (CommonUtil.isNullOrEmpty(typeID)) {
                         caseInstance.setType(null);
                     } else {
@@ -524,7 +540,7 @@ public class ListCaseAction extends BaseListAction {
                                 CaseType.class, Integer.parseInt(typeID));
                         caseInstance.setType(type);
                     }
-                    String originID = row.get("Case Origin ID");
+                    String originID = row.get(getText("case.origin_id.label"));
                     if (CommonUtil.isNullOrEmpty(originID)) {
                         caseInstance.setOrigin(null);
                     } else {
@@ -532,7 +548,7 @@ public class ListCaseAction extends BaseListAction {
                                 CaseOrigin.class, Integer.parseInt(originID));
                         caseInstance.setOrigin(origin);
                     }
-                    String reasonID = row.get("Case Reason ID");
+                    String reasonID = row.get(getText("case.reason_id.label"));
                     if (CommonUtil.isNullOrEmpty(reasonID)) {
                         caseInstance.setReason(null);
                     } else {
@@ -541,12 +557,15 @@ public class ListCaseAction extends BaseListAction {
                         caseInstance.setReason(reason);
                     }
                     caseInstance.setSubject(CommonUtil.fromNullToEmpty(row
-                            .get("Subject")));
+                            .get(getText("entity.subject.label"))));
                     caseInstance.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
+                            .get(getText("entity.description.label"))));
+                    caseInstance.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
                     caseInstance.setResolution(CommonUtil.fromNullToEmpty(row
-                            .get("Resolution")));
-                    String assignedToID = row.get("Assigned To ID");
+                            .get(getText("case.resolution.label"))));
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         caseInstance.setAssigned_to(null);
                     } else {

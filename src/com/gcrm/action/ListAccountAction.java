@@ -218,16 +218,16 @@ public class ListAccountAction extends BaseListAction {
                 if (updatedOn != null) {
                     updatedOnName = dateFormat.format(updatedOn);
                 }
-                jsonBuilder.append(",\"").append(billCity).append("\",\"")
-                        .append(billStreet).append("\",\"").append(billCountry)
-                        .append("\",\"").append(billState).append("\",\"")
+                jsonBuilder.append(",\"").append(billStreet).append("\",\"")
+                        .append(billCity).append("\",\"").append(billState)
+                        .append("\",\"").append(billCountry).append("\",\"")
                         .append(billPostalCode).append("\",\"")
                         .append(assignedTo).append("\",\"").append(website)
                         .append("\",\"").append(fax).append("\",\"")
                         .append(shipStreet).append("\",\"").append(shipCity)
                         .append("\",\"").append(shipState).append("\",\"")
-                        .append(shipPostalCode).append("\",\"")
                         .append(shipCountry).append("\",\"")
+                        .append(shipPostalCode).append("\",\"")
                         .append(accountTypeName).append("\",\"")
                         .append(industryName).append("\",\"")
                         .append(annualRevenue).append("\",\"")
@@ -415,20 +415,44 @@ public class ListAccountAction extends BaseListAction {
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_account");
 
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.account.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Name",
-                    "Office Phone", "Web Site", "Fax", "Billing Street",
-                    "Billing City", "Billing State", "Billing Postal Code",
-                    "Billing Country", "Shipping Street", "Shipping City",
-                    "Shipping State", "Shipping Postal Code",
-                    "Shipping Country", "Email", "Description", "Type ID",
-                    "Type Name", "Industry ID", "Industry Name",
-                    "Annual Revenue", "Employees", "Sic Code", "Ticket Symbol",
-                    "Manager ID", "Manager Name", "Ownship", "Rating",
-                    "Assigned To ID", "Assigned To Name" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("entity.name.label"),
+                    getText("entity.office_phone.label"),
+                    getText("entity.website.label"),
+                    getText("entity.fax.label"),
+                    getText("entity.billing_street.label"),
+                    getText("entity.billing_city.label"),
+                    getText("entity.billing_state.label"),
+                    getText("entity.billing_postal_code.label"),
+                    getText("entity.billing_country.label"),
+                    getText("entity.shipping_street.label"),
+                    getText("entity.shipping_city.label"),
+                    getText("entity.shipping_state.label"),
+                    getText("entity.shipping_postal_code.label"),
+                    getText("entity.shipping_country.label"),
+                    getText("entity.email.label"),
+                    getText("entity.description.label"),
+                    getText("account.type_id.label"),
+                    getText("account.type_name.label"),
+                    getText("entity.industry_id.label"),
+                    getText("entity.industry_name.label"),
+                    getText("account.annual_revenue.label"),
+                    getText("account.market_value.label"),
+                    getText("account.employees.label"),
+                    getText("account.sic_code.label"),
+                    getText("account.ticket_symbol.label"),
+                    getText("account.manager_id.label"),
+                    getText("account.manager_name.label"),
+                    getText("account.ownship.label"),
+                    getText("account.rating.label"),
+                    getText("entity.assigned_to_id.label"),
+                    getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -486,28 +510,30 @@ public class ListAccountAction extends BaseListAction {
                 data1.put(header[21],
                         CommonUtil.fromNullToEmpty(account.getAnnual_revenue()));
                 data1.put(header[22],
-                        CommonUtil.fromNullToEmpty(account.getEmployees()));
+                        CommonUtil.fromNullToEmpty(account.getMarket_value()));
                 data1.put(header[23],
-                        CommonUtil.fromNullToEmpty(account.getSic_code()));
+                        CommonUtil.fromNullToEmpty(account.getEmployees()));
                 data1.put(header[24],
+                        CommonUtil.fromNullToEmpty(account.getSic_code()));
+                data1.put(header[25],
                         CommonUtil.fromNullToEmpty(account.getTicket_symbol()));
                 if (account.getManager() != null) {
-                    data1.put(header[25], account.getManager().getId());
-                    data1.put(header[25], account.getManager().getName());
+                    data1.put(header[26], account.getManager().getId());
+                    data1.put(header[27], account.getManager().getName());
                 } else {
-                    data1.put(header[25], "");
                     data1.put(header[26], "");
+                    data1.put(header[27], "");
                 }
-                data1.put(header[27],
-                        CommonUtil.fromNullToEmpty(account.getOwnship()));
                 data1.put(header[28],
+                        CommonUtil.fromNullToEmpty(account.getOwnship()));
+                data1.put(header[29],
                         CommonUtil.fromNullToEmpty(account.getRating()));
                 if (account.getAssigned_to() != null) {
-                    data1.put(header[29], account.getAssigned_to().getId());
-                    data1.put(header[30], account.getAssigned_to().getName());
+                    data1.put(header[30], account.getAssigned_to().getId());
+                    data1.put(header[31], account.getAssigned_to().getName());
                 } else {
-                    data1.put(header[29], "");
                     data1.put(header[30], "");
+                    data1.put(header[31], "");
                 }
                 writer.write(data1, header);
             }
@@ -518,7 +544,7 @@ public class ListAccountAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -547,44 +573,46 @@ public class ListAccountAction extends BaseListAction {
 
                 Account account = new Account();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         account.setId(Integer.parseInt(id));
                         UserUtil.permissionCheck("update_account");
                     } else {
                         UserUtil.permissionCheck("create_account");
                     }
-                    account.setName(CommonUtil.fromNullToEmpty(row.get("Name")));
+                    account.setName(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.name.label"))));
                     account.setOffice_phone(CommonUtil.fromNullToEmpty(row
-                            .get("Office Phone")));
+                            .get(getText("entity.office_phone.label"))));
                     account.setWebsite(CommonUtil.fromNullToEmpty(row
-                            .get("Web Site")));
-                    account.setFax(CommonUtil.fromNullToEmpty(row.get("Fax")));
+                            .get(getText("entity.website.label"))));
+                    account.setFax(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.fax.label"))));
                     account.setBill_street(CommonUtil.fromNullToEmpty(row
-                            .get("Billing Street")));
+                            .get(getText("entity.billing_street.label"))));
                     account.setBill_city(CommonUtil.fromNullToEmpty(row
-                            .get("Billing City")));
+                            .get(getText("entity.billing_city.label"))));
                     account.setBill_state(CommonUtil.fromNullToEmpty(row
-                            .get("Billing State")));
+                            .get(getText("entity.billing_state.label"))));
                     account.setBill_postal_code(CommonUtil.fromNullToEmpty(row
-                            .get("Billing Postal Code")));
+                            .get(getText("entity.billing_postal_code.label"))));
                     account.setBill_country(CommonUtil.fromNullToEmpty(row
-                            .get("Billing Country")));
+                            .get(getText("entity.billing_country.label"))));
                     account.setShip_street(CommonUtil.fromNullToEmpty(row
-                            .get("Shipping Street")));
+                            .get(getText("entity.shipping_street.label"))));
                     account.setShip_city(CommonUtil.fromNullToEmpty(row
-                            .get("Shipping City")));
+                            .get(getText("entity.shipping_city.label"))));
                     account.setShip_state(CommonUtil.fromNullToEmpty(row
-                            .get("Shipping State")));
+                            .get(getText("entity.shipping_state.label"))));
                     account.setShip_postal_code(CommonUtil.fromNullToEmpty(row
-                            .get("Shipping Postal Code")));
+                            .get(getText("entity.shipping_postal_code.label"))));
                     account.setShip_country(CommonUtil.fromNullToEmpty(row
-                            .get("Shipping Country")));
+                            .get(getText("entity.shipping_country.label"))));
                     account.setEmail(CommonUtil.fromNullToEmpty(row
-                            .get("Email")));
+                            .get(getText("entity.email.label"))));
                     account.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
-                    String typeID = row.get("Type ID");
+                            .get(getText("entity.description.label"))));
+                    String typeID = row.get(getText("account.type_id.label"));
                     if (CommonUtil.isNullOrEmpty(typeID)) {
                         account.setAccount_type(null);
                     } else {
@@ -593,7 +621,8 @@ public class ListAccountAction extends BaseListAction {
                                         Integer.parseInt(typeID));
                         account.setAccount_type(accountType);
                     }
-                    String industryID = row.get("Industry ID");
+                    String industryID = row
+                            .get(getText("entity.industry_id.label"));
                     if (CommonUtil.isNullOrEmpty(industryID)) {
                         account.setIndustry(null);
                     } else {
@@ -602,14 +631,17 @@ public class ListAccountAction extends BaseListAction {
                         account.setIndustry(industry);
                     }
                     account.setAnnual_revenue(CommonUtil.fromNullToEmpty(row
-                            .get("Annual Revenue")));
+                            .get(getText("account.annual_revenue.label"))));
+                    account.setMarket_value(CommonUtil.fromNullToEmpty(row
+                            .get(getText("account.market_value.label"))));
                     account.setEmployees(CommonUtil.fromNullToEmpty(row
-                            .get("Employees")));
+                            .get(getText("account.employees.label"))));
                     account.setSic_code(CommonUtil.fromNullToEmpty(row
-                            .get("Sic Code")));
+                            .get(getText("account.sic_code.label"))));
                     account.setTicket_symbol(CommonUtil.fromNullToEmpty(row
-                            .get("Ticket Symbol")));
-                    String managerID = row.get("Manager ID");
+                            .get(getText("account.ticket_symbol.label"))));
+                    String managerID = row
+                            .get(getText("account.manager_id.label"));
                     if (CommonUtil.isNullOrEmpty(managerID)) {
                         account.setManager(null);
                     } else {
@@ -618,10 +650,11 @@ public class ListAccountAction extends BaseListAction {
                         account.setManager(manager);
                     }
                     account.setOwnship(CommonUtil.fromNullToEmpty(row
-                            .get("Ownship")));
+                            .get(getText("account.ownship.label"))));
                     account.setRating(CommonUtil.fromNullToEmpty(row
-                            .get("Rating")));
-                    String assignedToID = row.get("Assigned To ID");
+                            .get(getText("account.rating.label"))));
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         account.setAssigned_to(null);
                     } else {

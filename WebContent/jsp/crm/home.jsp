@@ -58,8 +58,8 @@
 							return new_format_value 
 			             }  
 			            },
-						{field:'office_phone',title:'<s:text name="account.office_phone.label" />',width:80,align:'center',sortable:'true'},
-						{field:'email',title:'<s:text name="account.email.label" />',width:80,align:'center',sortable:'true'}								
+						{field:'office_phone',title:'<s:text name="entity.office_phone.label" />',width:80,align:'center',sortable:'true'},
+						{field:'email',title:'<s:text name="entity.email.label" />',width:80,align:'center',sortable:'true'}								
 					]]
 				  });			
 			}
@@ -75,7 +75,7 @@
 					url:'listTask.action?_search=true&filter_key=assigned_to.id&filter_op==&filter_value=<s:property value="userID" />',
 					columns:[[
 						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-						{field:'subject',title:'<s:text name="task.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+						{field:'subject',title:'<s:text name="entity.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 							var updateTask='<%=((User)session.getAttribute("loginUser")).getUpdate_task()%>';
 							if (updateTask == 1){   
 							  new_format_value = "<a href='editTask.action?id=" + row.id + "'>" + value + "</a>";
@@ -85,8 +85,8 @@
 							   return new_format_value 
 			             }  
 			            },
-						{field:'contact',title:'<s:text name="task.contact.label" />',width:80,align:'center',sortable:'true'},
-						{field:'related_object',title:'<s:text name="task.related_object.label" />',width:80,align:'center',sortable:'true'},
+						{field:'contact',title:'<s:text name="entity.contact.label" />',width:80,align:'center',sortable:'true'},
+						{field:'related_object',title:'<s:text name="entity.related_object.label" />',width:80,align:'center',sortable:'true'},
 						{field:'due_date',title:'<s:text name="task.due_date.label" />',width:120,align:'center',sortable:'true'}			
 					]]
 				  });
@@ -114,10 +114,10 @@
 							return new_format_value 
 			             }  
 			            },
-						{field:'title',title:'<s:text name="lead.title.label" />',width:80,align:'center',sortable:'true'},
+						{field:'title',title:'<s:text name="entity.title.label" />',width:80,align:'center',sortable:'true'},
 						{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
-						{field:'office_phone',title:'<s:text name="lead.office_phone.label" />',width:80,align:'center',sortable:'true'},
-						{field:'email',title:'<s:text name="lead.email.label" />',width:80,align:'center',sortable:'true'}			
+						{field:'office_phone',title:'<s:text name="entity.office_phone.label" />',width:80,align:'center',sortable:'true'},
+						{field:'email',title:'<s:text name="entity.email.label" />',width:80,align:'center',sortable:'true'}			
 					]]
 				  });	
 			}
@@ -145,7 +145,7 @@
 			             }  
 			            },
 						{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'center',sortable:'true'},
-						{field:'sales_stage.name',title:'<s:text name="opportunity.salesStage.label" />',width:80,align:'right',sortable:'true'},
+						{field:'sales_stage.name',title:'<s:text name="menu.salesStage.title" />',width:80,align:'right',sortable:'true'},
 						{field:'opportunity_amount',title:'<s:text name="opportunity.opportunity_amount.label" />',width:80,align:'center',sortable:'true'}		
 					]]
 				  });			  
@@ -163,7 +163,7 @@
 					url:'listMeeting.action?_search=true&filter_key=assigned_to.id&filter_op==&filter_value=<s:property value="userID" />',
 					columns:[[
 						{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-						{field:'subject',title:'<s:text name="meeting.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+						{field:'subject',title:'<s:text name="entity.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 								var updateMeeting='<%=((User)session.getAttribute("loginUser")).getUpdate_meeting()%>';
 								if (updateMeeting == 1){   
 									new_format_value = "<a href='editMeeting.action?id=" + row.id + "'>" + value + "</a>";
@@ -173,9 +173,9 @@
 							   return new_format_value 
 			             }  
 			            },
-						{field:'status.name',title:'<s:text name="meeting.status.label" />',width:80,align:'center',sortable:'true'},
-						{field:'start_date',title:'<s:text name="meeting.start_date.label" />',width:80,align:'right',sortable:'true'},
-						{field:'end_date',title:'<s:text name="meeting.end_date.label" />',width:80,align:'center',sortable:'true'},
+						{field:'status.name',title:'<s:text name="entity.status.label" />',width:80,align:'center',sortable:'true'},
+						{field:'start_date',title:'<s:text name="entity.start_date.label" />',width:80,align:'right',sortable:'true'},
+						{field:'end_date',title:'<s:text name="entity.end_date.label" />',width:80,align:'center',sortable:'true'},
 						{field:'location',title:'<s:text name="meeting.location.label" />',width:80,align:'center',sortable:'true'}			
 					]]
 				  });
@@ -203,9 +203,9 @@
 							   return new_format_value 
 			             }  
 			            },
-						{field:'subject',title:'<s:text name="call.subject.label" />',width:80,align:'center',sortable:'true'},
-						{field:'status.name',title:'<s:text name="call.status.label" />',width:80,align:'right',sortable:'true'},
-						{field:'start_date',title:'<s:text name="call.start_date.label" />',width:80,align:'center',sortable:'true'}		
+						{field:'subject',title:'<s:text name="entity.subject.label" />',width:80,align:'center',sortable:'true'},
+						{field:'status.name',title:'<s:text name="entity.status.label" />',width:80,align:'right',sortable:'true'},
+						{field:'start_date',title:'<s:text name="entity.start_date.label" />',width:80,align:'center',sortable:'true'}		
 					]]
 				  });				  
 			}

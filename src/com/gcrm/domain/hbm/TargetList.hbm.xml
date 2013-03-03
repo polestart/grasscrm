@@ -13,6 +13,7 @@
   <property name="description" column="description" type="string" />  
   <many-to-one name="assigned_to"
 			class="User" column="assigned_to" cascade="save-update"/>
+  <property name="notes" column="notes" type="string" /> 			
   <many-to-one name="updated_by"
 			class="User" column="updated_by" cascade="save-update"/>
   <property name="created_on" column="created_on" type="java.util.Date" />

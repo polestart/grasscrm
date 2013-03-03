@@ -289,17 +289,29 @@ public class ListCallAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_call");
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.call.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "Subject",
-                    "Direction ID", "Direction Name", "Status ID",
-                    "Status Name", "Start Date", "Reminder Way Popup",
-                    "Reminder Option Popup ID", "Reminder Option Popup Name",
-                    "Reminder Way Email", "Reminder Option Email ID",
-                    "Reminder Option Email Name", "Description",
-                    "Assigned To ID", "Assigned To Name" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("entity.subject.label"),
+                    getText("call.direction_id.label"),
+                    getText("call.direction_name.label"),
+                    getText("entity.status_id.label"),
+                    getText("entity.status_name.label"),
+                    getText("entity.start_date.label"),
+                    getText("entity.reminder_pop.label"),
+                    getText("entity.reminder_option_pop_id.label"),
+                    getText("entity.reminder_option_pop_name.label"),
+                    getText("entity.reminder_email.label"),
+                    getText("entity.reminder_option_email_id.label"),
+                    getText("entity.reminder_option_email_name.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label"),
+                    getText("entity.assigned_to_id.label"),
+                    getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -353,12 +365,14 @@ public class ListCallAction extends BaseListAction {
                 }
                 data1.put(header[13],
                         CommonUtil.fromNullToEmpty(call.getDescription()));
+                data1.put(header[14],
+                        CommonUtil.fromNullToEmpty(call.getNotes()));
                 if (call.getAssigned_to() != null) {
-                    data1.put(header[14], call.getAssigned_to().getId());
-                    data1.put(header[15], call.getAssigned_to().getName());
+                    data1.put(header[15], call.getAssigned_to().getId());
+                    data1.put(header[16], call.getAssigned_to().getName());
                 } else {
-                    data1.put(header[14], "");
                     data1.put(header[15], "");
+                    data1.put(header[16], "");
                 }
                 writer.write(data1, header);
             }
@@ -369,7 +383,7 @@ public class ListCallAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -398,7 +412,7 @@ public class ListCallAction extends BaseListAction {
 
                 Call call = new Call();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         call.setId(Integer.parseInt(id));
                         UserUtil.permissionCheck("update_call");
@@ -406,8 +420,9 @@ public class ListCallAction extends BaseListAction {
                         UserUtil.permissionCheck("create_call");
                     }
                     call.setSubject(CommonUtil.fromNullToEmpty(row
-                            .get("Subject")));
-                    String directionID = row.get("Direction ID");
+                            .get(getText("entity.subject.label"))));
+                    String directionID = row
+                            .get(getText("call.direction_id.label"));
                     if (CommonUtil.isNullOrEmpty(directionID)) {
                         call.setDirection(null);
                     } else {
@@ -416,7 +431,8 @@ public class ListCallAction extends BaseListAction {
                                         Integer.parseInt(directionID));
                         call.setDirection(callDirection);
                     }
-                    String statusID = row.get("Status ID");
+                    String statusID = row
+                            .get(getText("entity.status_id.label"));
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         call.setStatus(null);
                     } else {
@@ -426,14 +442,16 @@ public class ListCallAction extends BaseListAction {
                     }
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
                             Constant.DATE_TIME_FORMAT);
-                    String startDateS = row.get("Start Date");
+                    String startDateS = row
+                            .get(getText("entity.start_date.label"));
                     if (startDateS != null) {
                         Date startDate = dateFormat.parse(startDateS);
                         call.setStart_date(startDate);
                     } else {
                         call.setStart_date(null);
                     }
-                    String reminderWayPop = row.get("Reminder Way Popup");
+                    String reminderWayPop = row
+                            .get(getText("entity.reminder_pop.label"));
                     if (CommonUtil.isNullOrEmpty(reminderWayPop)) {
                         call.setReminder_pop(false);
                     } else {
@@ -441,7 +459,7 @@ public class ListCallAction extends BaseListAction {
                                 .parseBoolean(reminderWayPop));
                     }
                     String reminderOptionPopID = row
-                            .get("Reminder Option Popup ID");
+                            .get(getText("entity.reminder_option_pop_id.label"));
                     if (CommonUtil.isNullOrEmpty(reminderOptionPopID)) {
                         call.setReminder_option_pop(null);
                     } else {
@@ -450,7 +468,8 @@ public class ListCallAction extends BaseListAction {
                                         Integer.parseInt(reminderOptionPopID));
                         call.setReminder_option_pop(reminderOption);
                     }
-                    String reminderWayEmail = row.get("Reminder Way Email");
+                    String reminderWayEmail = row
+                            .get(getText("entity.reminder_email.label"));
                     if (CommonUtil.isNullOrEmpty(reminderWayEmail)) {
                         call.setReminder_email(false);
                     } else {
@@ -458,7 +477,7 @@ public class ListCallAction extends BaseListAction {
                                 .parseBoolean(reminderWayEmail));
                     }
                     String reminderOptionEmailID = row
-                            .get("Reminder Option Email ID");
+                            .get(getText("entity.reminder_option_email_id.label"));
                     if (CommonUtil.isNullOrEmpty(reminderOptionEmailID)) {
                         call.setReminder_option_email(null);
                     } else {
@@ -468,8 +487,11 @@ public class ListCallAction extends BaseListAction {
                         call.setReminder_option_email(reminderOption);
                     }
                     call.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
-                    String assignedToID = row.get("Assigned To ID");
+                            .get(getText("entity.description.label"))));
+                    call.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         call.setAssigned_to(null);
                     } else {

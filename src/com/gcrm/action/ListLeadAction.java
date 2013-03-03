@@ -47,6 +47,7 @@ import com.gcrm.domain.LeadSource;
 import com.gcrm.domain.LeadStatus;
 import com.gcrm.domain.Meeting;
 import com.gcrm.domain.Opportunity;
+import com.gcrm.domain.Salutation;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.exception.ServiceException;
@@ -69,6 +70,7 @@ public class ListLeadAction extends BaseListAction {
     private IBaseService<Account> accountService;
     private IBaseService<LeadStatus> leadStatusService;
     private IBaseService<LeadSource> leadSourceService;
+    private IBaseService<Salutation> salutationService;
     private IBaseService<User> userService;
     private IBaseService<Campaign> campaignService;
     private IBaseService<Contact> contactService;
@@ -391,23 +393,51 @@ public class ListLeadAction extends BaseListAction {
      */
     public InputStream getInputStream() throws Exception {
         UserUtil.permissionCheck("view_lead");
-
-        File file = new File(CLAZZ + ".csv");
+        String fileName = getText("entity.lead.label") + ".csv";
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        File file = new File(fileName);
         ICsvMapWriter writer = new CsvMapWriter(new FileWriter(file),
                 CsvPreference.EXCEL_PREFERENCE);
         try {
-            final String[] header = new String[] { "ID", "First Name",
-                    "Last Name", "Office Phone", "Title", "Mobile",
-                    "Department", "Fax", "Account ID", "Account Name",
-                    "Primary Address", "Primary City", "Primary State",
-                    "Primary Postal Code", "Primary Country", "Other Address",
-                    "Other City", "Other State", "Other Postal Code",
-                    "Other Country", "Email", "Description", "Status ID",
-                    "Status Name", "Status Description", "Lead Source ID",
-                    "Lead Source Name", "Lead Source Description",
-                    "Opportunity Amount", "Referred By", "Campaign ID",
-                    "Campaign Name", "Do Not Call", "Assigned To ID",
-                    "Assigned To Name" };
+            final String[] header = new String[] { getText("entity.id.label"),
+                    getText("entity.salutation_id.label"),
+                    getText("entity.salutation_name.label"),
+                    getText("entity.first_name.label"),
+                    getText("entity.last_name.label"),
+                    getText("entity.office_phone.label"),
+                    getText("entity.company.label"),
+                    getText("entity.title.label"),
+                    getText("entity.mobile.label"),
+                    getText("entity.department.label"),
+                    getText("entity.fax.label"),
+                    getText("entity.account_id.label"),
+                    getText("entity.account_name.label"),
+                    getText("entity.primary_street.label"),
+                    getText("entity.primary_city.label"),
+                    getText("entity.primary_state.label"),
+                    getText("entity.primary_postal_code.label"),
+                    getText("entity.primary_country.label"),
+                    getText("entity.other_street.label"),
+                    getText("entity.other_city.label"),
+                    getText("entity.other_state.label"),
+                    getText("entity.other_postal_code.label"),
+                    getText("entity.other_country.label"),
+                    getText("entity.email.label"),
+                    getText("entity.description.label"),
+                    getText("entity.notes.label"),
+                    getText("entity.status_id.label"),
+                    getText("lead.status_name.label"),
+                    getText("lead.status_description.label"),
+                    getText("entity.leadSource_id.label"),
+                    getText("entity.leadSource_name.label"),
+                    getText("lead.lead_source_description.label"),
+                    getText("lead.opportunity_amount.label"),
+                    getText("lead.referred_by.label"),
+                    getText("entity.campaign_id.label"),
+                    getText("entity.campaign_name.label"),
+                    getText("entity.not_call.label"),
+                    getText("entity.assigned_to_id.label"),
+                    getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
@@ -416,87 +446,98 @@ public class ListLeadAction extends BaseListAction {
                         Integer.parseInt(id));
                 final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
                 data1.put(header[0], lead.getId());
-                data1.put(header[1],
-                        CommonUtil.fromNullToEmpty(lead.getFirst_name()));
-                data1.put(header[2],
-                        CommonUtil.fromNullToEmpty(lead.getLast_name()));
-                data1.put(header[3],
-                        CommonUtil.fromNullToEmpty(lead.getOffice_phone()));
-                data1.put(header[4],
-                        CommonUtil.fromNullToEmpty(lead.getTitle()));
-                data1.put(header[5],
-                        CommonUtil.fromNullToEmpty(lead.getMobile()));
-                data1.put(header[6],
-                        CommonUtil.fromNullToEmpty(lead.getDepartment()));
-                data1.put(header[7], CommonUtil.fromNullToEmpty(lead.getFax()));
-                if (lead.getAccount() != null) {
-                    data1.put(header[8], lead.getAccount().getId());
-                    data1.put(header[9], lead.getAccount().getName());
+                if (lead.getSalutation() != null) {
+                    data1.put(header[1], lead.getSalutation().getId());
+                    data1.put(header[2], lead.getSalutation().getName());
                 } else {
-                    data1.put(header[8], "");
-                    data1.put(header[9], "");
+                    data1.put(header[1], "");
+                    data1.put(header[2], "");
                 }
-                data1.put(header[10],
-                        CommonUtil.fromNullToEmpty(lead.getPrimary_address()));
-                data1.put(header[11],
-                        CommonUtil.fromNullToEmpty(lead.getPrimary_city()));
-                data1.put(header[12],
-                        CommonUtil.fromNullToEmpty(lead.getPrimary_state()));
-                data1.put(header[13], CommonUtil.fromNullToEmpty(lead
-                        .getPrimary_postal_code()));
-                data1.put(header[14],
-                        CommonUtil.fromNullToEmpty(lead.getPrimary_country()));
-                data1.put(header[15],
-                        CommonUtil.fromNullToEmpty(lead.getOther_address()));
-                data1.put(header[16],
-                        CommonUtil.fromNullToEmpty(lead.getOther_city()));
-                data1.put(header[17],
-                        CommonUtil.fromNullToEmpty(lead.getOther_state()));
-                data1.put(header[18],
-                        CommonUtil.fromNullToEmpty(lead.getOther_postal_code()));
-                data1.put(header[19],
-                        CommonUtil.fromNullToEmpty(lead.getOther_country()));
-                data1.put(header[20],
-                        CommonUtil.fromNullToEmpty(lead.getEmail()));
-                data1.put(header[21],
-                        CommonUtil.fromNullToEmpty(lead.getDescription()));
-                if (lead.getStatus() != null) {
-                    data1.put(header[22], lead.getStatus().getId());
-                    data1.put(header[23], lead.getStatus().getName());
+                data1.put(header[3],
+                        CommonUtil.fromNullToEmpty(lead.getFirst_name()));
+                data1.put(header[4],
+                        CommonUtil.fromNullToEmpty(lead.getLast_name()));
+                data1.put(header[5],
+                        CommonUtil.fromNullToEmpty(lead.getOffice_phone()));
+                data1.put(header[6],
+                        CommonUtil.fromNullToEmpty(lead.getCompany()));
+                data1.put(header[7],
+                        CommonUtil.fromNullToEmpty(lead.getTitle()));
+                data1.put(header[8],
+                        CommonUtil.fromNullToEmpty(lead.getMobile()));
+                data1.put(header[9],
+                        CommonUtil.fromNullToEmpty(lead.getDepartment()));
+                data1.put(header[10], CommonUtil.fromNullToEmpty(lead.getFax()));
+                if (lead.getAccount() != null) {
+                    data1.put(header[11], lead.getAccount().getId());
+                    data1.put(header[12], lead.getAccount().getName());
                 } else {
-                    data1.put(header[22], "");
-                    data1.put(header[23], "");
+                    data1.put(header[11], "");
+                    data1.put(header[12], "");
+                }
+                data1.put(header[13],
+                        CommonUtil.fromNullToEmpty(lead.getPrimary_street()));
+                data1.put(header[14],
+                        CommonUtil.fromNullToEmpty(lead.getPrimary_city()));
+                data1.put(header[15],
+                        CommonUtil.fromNullToEmpty(lead.getPrimary_state()));
+                data1.put(header[16], CommonUtil.fromNullToEmpty(lead
+                        .getPrimary_postal_code()));
+                data1.put(header[17],
+                        CommonUtil.fromNullToEmpty(lead.getPrimary_country()));
+                data1.put(header[18],
+                        CommonUtil.fromNullToEmpty(lead.getOther_street()));
+                data1.put(header[19],
+                        CommonUtil.fromNullToEmpty(lead.getOther_city()));
+                data1.put(header[20],
+                        CommonUtil.fromNullToEmpty(lead.getOther_state()));
+                data1.put(header[21],
+                        CommonUtil.fromNullToEmpty(lead.getOther_postal_code()));
+                data1.put(header[22],
+                        CommonUtil.fromNullToEmpty(lead.getOther_country()));
+                data1.put(header[23],
+                        CommonUtil.fromNullToEmpty(lead.getEmail()));
+                data1.put(header[24],
+                        CommonUtil.fromNullToEmpty(lead.getDescription()));
+                data1.put(header[25],
+                        CommonUtil.fromNullToEmpty(lead.getNotes()));
+                if (lead.getStatus() != null) {
+                    data1.put(header[26], lead.getStatus().getId());
+                    data1.put(header[27], lead.getStatus().getName());
+                } else {
+                    data1.put(header[26], "");
+                    data1.put(header[27], "");
 
                 }
-                data1.put(header[24], CommonUtil.fromNullToEmpty(lead
+                data1.put(header[28], CommonUtil.fromNullToEmpty(lead
                         .getStatus_description()));
                 if (lead.getLead_source() != null) {
-                    data1.put(header[25], lead.getLead_source().getId());
-                    data1.put(header[26], lead.getLead_source().getName());
+                    data1.put(header[29], lead.getLead_source().getId());
+                    data1.put(header[30], lead.getLead_source().getName());
                 } else {
-                    data1.put(header[25], "");
-                    data1.put(header[26], "");
+                    data1.put(header[29], "");
+                    data1.put(header[30], "");
                 }
-                data1.put(header[27], CommonUtil.fromNullToEmpty(lead
+                data1.put(header[31], CommonUtil.fromNullToEmpty(lead
                         .getLead_source_description()));
-                data1.put(header[28], CommonUtil.fromNullToEmpty(lead
+                data1.put(header[32], CommonUtil.fromNullToEmpty(lead
                         .getOpportunity_amount()));
-                data1.put(header[29],
+                data1.put(header[33],
                         CommonUtil.fromNullToEmpty(lead.getReferred_by()));
                 if (lead.getCampaign() != null) {
-                    data1.put(header[30], lead.getCampaign().getId());
-                    data1.put(header[31], lead.getCampaign().getName());
+                    data1.put(header[34], lead.getCampaign().getId());
+                    data1.put(header[35], lead.getCampaign().getName());
                 } else {
-                    data1.put(header[30], "");
-                    data1.put(header[31], "");
-                }
-                data1.put(header[32], lead.isNot_call());
-                if (lead.getAssigned_to() != null) {
-                    data1.put(header[33], lead.getAssigned_to().getId());
-                    data1.put(header[34], lead.getAssigned_to().getName());
-                } else {
-                    data1.put(header[33], "");
                     data1.put(header[34], "");
+                    data1.put(header[35], "");
+                }
+                data1.put(header[36], lead.isNot_call());
+                if (lead.getAssigned_to() != null) {
+                    data1.put(header[37], lead.getAssigned_to().getId());
+                    data1.put(header[38], lead.getAssigned_to().getName());
+                } else {
+                    data1.put(header[37], "");
+                    data1.put(header[38], "");
                 }
                 writer.write(data1, header);
             }
@@ -507,7 +548,7 @@ public class ListLeadAction extends BaseListAction {
         }
 
         InputStream in = new FileInputStream(file);
-        this.setFileName(CLAZZ + ".csv");
+        this.setFileName(fileName);
         return in;
     }
 
@@ -536,22 +577,38 @@ public class ListLeadAction extends BaseListAction {
 
                 Lead lead = new Lead();
                 try {
-                    String id = row.get("ID");
+                    String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
                         lead.setId(Integer.parseInt(id));
                     }
+                    String salutationID = row
+                            .get(getText("entity.salutation_id.label"));
+                    if (CommonUtil.isNullOrEmpty(salutationID)) {
+                        lead.setSalutation(null);
+                    } else {
+                        Salutation salutation = salutationService
+                                .getEntityById(Salutation.class,
+                                        Integer.parseInt(salutationID));
+                        lead.setSalutation(salutation);
+                    }
                     lead.setFirst_name(CommonUtil.fromNullToEmpty(row
-                            .get("First Name")));
+                            .get(getText("entity.first_name.label"))));
                     lead.setLast_name(CommonUtil.fromNullToEmpty(row
-                            .get("Last Name")));
+                            .get(getText("entity.last_name.label"))));
                     lead.setOffice_phone(CommonUtil.fromNullToEmpty(row
-                            .get("Office Phone")));
-                    lead.setTitle(CommonUtil.fromNullToEmpty(row.get("Title")));
-                    lead.setMobile(CommonUtil.fromNullToEmpty(row.get("Mobile")));
+                            .get(getText("entity.office_phone.label"))));
+                    lead.setCompany(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.company.label"))));
+                    lead.setTitle(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.title.label"))));
+                    lead.setMobile(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.mobile.label"))));
                     lead.setDepartment(CommonUtil.fromNullToEmpty(row
-                            .get("Department")));
-                    lead.setFax(CommonUtil.fromNullToEmpty(row.get("Fax")));
-                    String accountID = row.get("Account ID");
+                            .get(getText("entity.department.label"))));
+                    lead.setFax(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.fax.label"))));
+                    String accountID = row
+                            .get(getText("entity.account_id.label"));
                     if (CommonUtil.isNullOrEmpty(accountID)) {
                         lead.setAccount(null);
                     } else {
@@ -559,30 +616,34 @@ public class ListLeadAction extends BaseListAction {
                                 Account.class, Integer.parseInt(accountID));
                         lead.setAccount(account);
                     }
-                    lead.setPrimary_address(CommonUtil.fromNullToEmpty(row
-                            .get("Primary Address")));
+                    lead.setPrimary_street(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.primary_street.label"))));
                     lead.setPrimary_city(CommonUtil.fromNullToEmpty(row
-                            .get("Primary City")));
+                            .get(getText("entity.primary_city.label"))));
                     lead.setPrimary_state(CommonUtil.fromNullToEmpty(row
-                            .get("Primary State")));
+                            .get(getText("entity.primary_state.label"))));
                     lead.setPrimary_postal_code(CommonUtil.fromNullToEmpty(row
-                            .get("Primary Postal Code")));
+                            .get(getText("entity.primary_postal_code.label"))));
                     lead.setPrimary_country(CommonUtil.fromNullToEmpty(row
-                            .get("Primary Country")));
-                    lead.setOther_address(CommonUtil.fromNullToEmpty(row
-                            .get("Other Address")));
+                            .get(getText("entity.primary_country.label"))));
+                    lead.setOther_street(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.other_street.label"))));
                     lead.setOther_city(CommonUtil.fromNullToEmpty(row
-                            .get("Other City")));
+                            .get(getText("entity.other_city.label"))));
                     lead.setOther_state(CommonUtil.fromNullToEmpty(row
-                            .get("Other State")));
+                            .get(getText("entity.other_state.label"))));
                     lead.setOther_postal_code(CommonUtil.fromNullToEmpty(row
-                            .get("Other Postal Code")));
+                            .get(getText("entity.other_postal_code.label"))));
                     lead.setOther_country(CommonUtil.fromNullToEmpty(row
-                            .get("Other Country")));
-                    lead.setEmail(CommonUtil.fromNullToEmpty(row.get("Email")));
+                            .get(getText("entity.other_country.label"))));
+                    lead.setEmail(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.email.label"))));
                     lead.setDescription(CommonUtil.fromNullToEmpty(row
-                            .get("Description")));
-                    String statusID = row.get("Status ID");
+                            .get(getText("entity.description.label"))));
+                    lead.setNotes(CommonUtil.fromNullToEmpty(row
+                            .get(getText("entity.notes.label"))));
+                    String statusID = row
+                            .get(getText("entity.status_id.label"));
                     if (CommonUtil.isNullOrEmpty(statusID)) {
                         lead.setStatus(null);
                     } else {
@@ -592,8 +653,9 @@ public class ListLeadAction extends BaseListAction {
                         lead.setStatus(leadStatus);
                     }
                     lead.setStatus_description(CommonUtil.fromNullToEmpty(row
-                            .get("Status Description")));
-                    String leadSourceID = row.get("Lead Source ID");
+                            .get(getText("lead.status_description.label"))));
+                    String leadSourceID = row
+                            .get(getText("entity.leadSource_id.label"));
                     if (CommonUtil.isNullOrEmpty(leadSourceID)) {
                         lead.setLead_source(null);
                     } else {
@@ -602,13 +664,14 @@ public class ListLeadAction extends BaseListAction {
                                         Integer.parseInt(leadSourceID));
                         lead.setLead_source(leadSource);
                     }
-                    lead.setLead_source_description(CommonUtil
-                            .fromNullToEmpty(row.get("Lead Source Description")));
+                    lead.setLead_source_description(CommonUtil.fromNullToEmpty(row
+                            .get(getText("lead.lead_source_description.label"))));
                     lead.setOpportunity_amount(CommonUtil.fromNullToEmpty(row
-                            .get("Opportunity Amount")));
+                            .get(getText("lead.opportunity_amount.label"))));
                     lead.setReferred_by(CommonUtil.fromNullToEmpty(row
-                            .get("Referred By")));
-                    String campaignID = row.get("Campaign ID");
+                            .get(getText("lead.referred_by.label"))));
+                    String campaignID = row
+                            .get(getText("entity.campaign_id.label"));
                     if (CommonUtil.isNullOrEmpty(campaignID)) {
                         lead.setCampaign(null);
                     } else {
@@ -616,13 +679,15 @@ public class ListLeadAction extends BaseListAction {
                                 Campaign.class, Integer.parseInt(campaignID));
                         lead.setCampaign(campaign);
                     }
-                    String doNotCall = row.get("Do Not Call");
+                    String doNotCall = row
+                            .get(getText("entity.not_call.label"));
                     if (CommonUtil.isNullOrEmpty(doNotCall)) {
                         lead.setNot_call(false);
                     } else {
                         lead.setNot_call(Boolean.parseBoolean(doNotCall));
                     }
-                    String assignedToID = row.get("Assigned To ID");
+                    String assignedToID = row
+                            .get(getText("entity.assigned_to_id.label"));
                     if (CommonUtil.isNullOrEmpty(assignedToID)) {
                         lead.setAssigned_to(null);
                     } else {
@@ -840,6 +905,21 @@ public class ListLeadAction extends BaseListAction {
      */
     public void setMeetingService(IBaseService<Meeting> meetingService) {
         this.meetingService = meetingService;
+    }
+
+    /**
+     * @return the salutationService
+     */
+    public IBaseService<Salutation> getSalutationService() {
+        return salutationService;
+    }
+
+    /**
+     * @param salutationService
+     *            the salutationService to set
+     */
+    public void setSalutationService(IBaseService<Salutation> salutationService) {
+        this.salutationService = salutationService;
     }
 
 }

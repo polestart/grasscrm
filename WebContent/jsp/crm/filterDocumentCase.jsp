@@ -32,14 +32,14 @@
 		columns:[[
 				{field:'ck',checkbox:true},
 				{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-				{field:'subject',title:'<s:text name="case.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+				{field:'subject',title:'<s:text name="entity.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 					   new_format_value = "<a href='editCase.action?id=" + row.id + "' target='_blank'>" + value + "</a>";
 					   return new_format_value 
 	             }  
 	            },
 				{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'center',sortable:'true'},
-				{field:'priority.name',title:'<s:text name="case.priority.label" />',width:80,align:'right',sortable:'true'},
-				{field:'status.name',title:'<s:text name="case.status.label" />',width:80,align:'center',sortable:'true'},
+				{field:'priority.name',title:'<s:text name="entity.priority.label" />',width:80,align:'right',sortable:'true'},
+				{field:'status.name',title:'<s:text name="entity.status.label" />',width:80,align:'center',sortable:'true'},
 				{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 				]],
 	  });

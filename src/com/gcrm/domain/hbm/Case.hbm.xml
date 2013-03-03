@@ -20,7 +20,8 @@
   <many-to-one name="reason"
 			class="CaseReason" column="reason" cascade="save-update"/>									
   <property name="subject" column="subject" type="string" not-null="true"/> 
-  <property name="description" column="description" type="string" />   
+  <property name="description" column="description" type="string" />  
+  <property name="notes" column="notes" type="string" />    
   <property name="resolution" column="resolution" type="string" /> 
   <many-to-one name="owner"
 			class="User" column="owner" cascade="save-update"/>			   

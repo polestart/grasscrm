@@ -48,8 +48,8 @@
 			mtype: 'POST',
 			height: "auto",
 		   	colNames:['<s:text name="entity.id.label" />','<s:text name="call.direction.label" />',
-		  		   	'<s:text name="call.subject.label" />','<s:text name="call.status.label" />',
-		  		   	'<s:text name="call.start_date.label" />','<s:text name="entity.assigned_to.label" />',
+		  		   	'<s:text name="entity.subject.label" />','<s:text name="entity.status.label" />',
+		  		   	'<s:text name="entity.start_date.label" />','<s:text name="entity.assigned_to.label" />',
 		  		   	'<s:text name="entity.createdBy.label" />','<s:text name="entity.updatedBy.label" />',
 		  		   	'<s:text name="entity.createdOn.label" />','<s:text name="entity.updatedOn.label" />'],
 		   	colModel:[

@@ -76,7 +76,7 @@
 							selected: true 
 						},{label: '<s:text name="entity.name.label" />',
 							value: 'name'
-						},{label: '<s:text name="contact.email.label" />',
+						},{label: '<s:text name="entity.email.label" />',
 							value: 'email'
 						}]" />	
 
