@@ -57,7 +57,7 @@
 				<table id="tt" title="<s:text name='title.grid.currency'/>"
 					style="width: 700px; height: 380px" toolbar="#toolbar"
 					pagination="true" rownumbers="true" fitColumns="true"
-					singleSelect="true">
+					singleSelect="false">
 					<thead>
 						<tr>
 						    <th data-options="field:'ck',checkbox:true"></th>

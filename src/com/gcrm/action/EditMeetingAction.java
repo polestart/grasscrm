@@ -70,8 +70,6 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
     private Integer reminderOptionEmailID = null;
     private String startDate = null;
     private String endDate = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
     private Integer relatedAccountID = null;
     private String relatedAccountText = null;
     private Integer relatedCaseID = null;
@@ -123,8 +121,8 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
             }
             User assignedTo = meeting.getAssigned_to();
             if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
             Date start_date = meeting.getStart_date();
             SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -258,8 +256,9 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
         }
         meeting.setReminder_option_email(reminderOptionEmail);
         User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            assignedTo = userService.getEntityById(User.class,
+                    this.getAssignedToID());
         }
         meeting.setAssigned_to(assignedTo);
         User owner = null;
@@ -434,23 +433,6 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the assignedToID
-     */
-    @Override
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    @Override
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
-    }
-
-    /**
      * @return the reminderOptionPopID
      */
     public Integer getReminderOptionPopID() {
@@ -583,23 +565,6 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
      */
     public void setRelatedTaskID(Integer relatedTaskID) {
         this.relatedTaskID = relatedTaskID;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    @Override
-    public String getAssignedToText() {
-        return assignedToText;
-    }
-
-    /**
-     * @param assignedToText
-     *            the assignedToText to set
-     */
-    @Override
-    public void setAssignedToText(String assignedToText) {
-        this.assignedToText = assignedToText;
     }
 
     /**

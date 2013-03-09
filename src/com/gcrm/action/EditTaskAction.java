@@ -68,8 +68,6 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
     private Integer priorityID = null;
     private Integer contactID = null;
     private String contactText = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
     private Integer relatedAccountID = null;
     private String relatedAccountText = null;
     private Integer relatedCaseID = null;
@@ -123,8 +121,8 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
             }
             User assignedTo = task.getAssigned_to();
             if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
             Date start_date = task.getStart_date();
             SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -252,8 +250,9 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
         }
         task.setContact(contact);
         User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            assignedTo = userService.getEntityById(User.class,
+                    this.getAssignedToID());
         }
         task.setAssigned_to(assignedTo);
         User owner = null;
@@ -439,23 +438,6 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      */
     public void setContactID(Integer contactID) {
         this.contactID = contactID;
-    }
-
-    /**
-     * @return the assignedToID
-     */
-    @Override
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    @Override
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
     }
 
     /**
@@ -697,23 +679,6 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      */
     public void setContactText(String contactText) {
         this.contactText = contactText;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    @Override
-    public String getAssignedToText() {
-        return assignedToText;
-    }
-
-    /**
-     * @param assignedToText
-     *            the assignedToText to set
-     */
-    @Override
-    public void setAssignedToText(String assignedToText) {
-        this.assignedToText = assignedToText;
     }
 
     /**

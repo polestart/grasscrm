@@ -73,8 +73,6 @@ public class EditContactAction extends BaseEditAction implements Preparable {
     private Integer salutationID = null;
     private Integer campaignID = null;
     private String campaignText = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
 
     /**
      * Saves the entity.
@@ -126,8 +124,8 @@ public class EditContactAction extends BaseEditAction implements Preparable {
             }
             User assignedTo = contact.getAssigned_to();
             if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
             this.getBaseInfo(contact);
         } else {
@@ -215,8 +213,9 @@ public class EditContactAction extends BaseEditAction implements Preparable {
         contact.setSalutation(salutation);
 
         User user = null;
-        if (assignedToID != null) {
-            user = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            user = userService
+                    .getEntityById(User.class, this.getAssignedToID());
         }
         contact.setAssigned_to(user);
 
@@ -421,23 +420,6 @@ public class EditContactAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the assignedToID
-     */
-    @Override
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    @Override
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
-    }
-
-    /**
      * @return the leadSource
      */
     public List<LeadSource> getLeadSources() {
@@ -585,14 +567,6 @@ public class EditContactAction extends BaseEditAction implements Preparable {
      */
     public String getCampaignText() {
         return campaignText;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    @Override
-    public String getAssignedToText() {
-        return assignedToText;
     }
 
     /**

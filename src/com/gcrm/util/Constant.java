@@ -15,10 +15,9 @@
  */
 package com.gcrm.util;
 
-
 public class Constant {
 
-    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DATE_FORMAT = "MM/dd/yyyy";
     public static final String DATE_EDIT_FORMAT = "M/d/yyyy";
     public static final String DATE_TIME_FORMAT = "M/d/yyyy hh:mm:ss";
     public static final String BOOLEAN_TRUE = "true";

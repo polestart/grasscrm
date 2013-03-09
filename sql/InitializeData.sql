@@ -716,7 +716,7 @@ INSERT INTO industry(id, name, label_en_us, label_zh_cn, sequence) VALUES (nextv
 INSERT INTO industry(id, name, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Not For Profit', 'Not For Profit', '非盈利机构', 24);
 INSERT INTO industry(id, name, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Recreation', 'Recreation', '娱乐', 25);
 INSERT INTO industry(id, name, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Retail', 'Retail', '零售', 26);
-INSERT INTO industry(id, name, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Shipping', 'Shipping', '海云', 27);
+INSERT INTO industry(id, name, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Shipping', 'Shipping', '海运', 27);
 INSERT INTO industry(id, name, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Technology', 'Technology', '技术', 28);
 INSERT INTO industry(id, name, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Telecommunications', 'Telecommunications', '电讯', 29);
 INSERT INTO industry(id, name, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Transportation', 'Transportation', '运输', 30);

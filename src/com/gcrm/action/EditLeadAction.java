@@ -74,8 +74,6 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
     private Integer salutationID = null;
     private Integer campaignID = null;
     private String campaignText = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
     private boolean accountCheck;
     private boolean contactCheck;
     private boolean opportunityCheck;
@@ -127,10 +125,10 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
                 campaignID = campaign.getId();
                 campaignText = campaign.getName();
             }
-            User user = lead.getAssigned_to();
-            if (user != null) {
-                assignedToID = user.getId();
-                assignedToText = user.getName();
+            User assignedTo = lead.getAssigned_to();
+            if (assignedTo != null) {
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
             this.getBaseInfo(lead);
         } else {
@@ -216,11 +214,12 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
         }
         lead.setSalutation(salutation);
 
-        User user = null;
-        if (assignedToID != null) {
-            user = userService.getEntityById(User.class, assignedToID);
+        User assignedTo = null;
+        if (this.getAssignedToID() != null) {
+            assignedTo = userService.getEntityById(User.class,
+                    this.getAssignedToID());
         }
-        lead.setAssigned_to(user);
+        lead.setAssigned_to(assignedTo);
 
         User owner = null;
         if (this.getOwnerID() != null) {
@@ -410,23 +409,6 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      */
     public void setCampaignID(Integer campaignID) {
         this.campaignID = campaignID;
-    }
-
-    /**
-     * @return the assignedToID
-     */
-    @Override
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    @Override
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
     }
 
     /**
@@ -623,23 +605,6 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      */
     public void setCampaignText(String campaignText) {
         this.campaignText = campaignText;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    @Override
-    public String getAssignedToText() {
-        return assignedToText;
-    }
-
-    /**
-     * @param assignedToText
-     *            the assignedToText to set
-     */
-    @Override
-    public void setAssignedToText(String assignedToText) {
-        this.assignedToText = assignedToText;
     }
 
     /**

@@ -56,8 +56,6 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
     private Lead lead;
     private Integer accountID = null;
     private Integer salutationID = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
 
     /**
      * Saves the entity.
@@ -103,8 +101,8 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
 
             User assignedTo = target.getAssigned_to();
             if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
             this.getBaseInfo(target);
         } else {
@@ -173,8 +171,9 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
         target.setSalutation(salutation);
 
         User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            assignedTo = userService.getEntityById(User.class,
+                    this.getAssignedToID());
         }
         target.setAssigned_to(assignedTo);
         User owner = null;
@@ -280,23 +279,6 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the assignedToID
-     */
-    @Override
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    @Override
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
-    }
-
-    /**
      * @return the targetListService
      */
     public IBaseService<TargetList> getTargetListService() {
@@ -309,23 +291,6 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
      */
     public void setTargetListService(IBaseService<TargetList> targetListService) {
         this.targetListService = targetListService;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    @Override
-    public String getAssignedToText() {
-        return assignedToText;
-    }
-
-    /**
-     * @param assignedToText
-     *            the assignedToText to set
-     */
-    @Override
-    public void setAssignedToText(String assignedToText) {
-        this.assignedToText = assignedToText;
     }
 
     /**

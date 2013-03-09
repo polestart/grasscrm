@@ -57,8 +57,6 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
     private Integer statusID = null;
     private Integer typeID = null;
     private Integer currencyID = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
     private String startDate = null;
     private String endDate = null;
 
@@ -97,8 +95,8 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
             }
             User assignedTo = campaign.getAssigned_to();
             if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
             Date start_date = campaign.getStart_date();
             SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -178,8 +176,9 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
         }
         campaign.setCurrency(currency);
         User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            assignedTo = userService.getEntityById(User.class,
+                    this.getAssignedToID());
         }
         campaign.setAssigned_to(assignedTo);
         User owner = null;
@@ -391,40 +390,6 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
      */
     public void setCurrencies(List<Currency> currencies) {
         this.currencies = currencies;
-    }
-
-    /**
-     * @return the assignedToID
-     */
-    @Override
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    @Override
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    @Override
-    public String getAssignedToText() {
-        return assignedToText;
-    }
-
-    /**
-     * @param assignedToText
-     *            the assignedToText to set
-     */
-    @Override
-    public void setAssignedToText(String assignedToText) {
-        this.assignedToText = assignedToText;
     }
 
     /**

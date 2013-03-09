@@ -197,6 +197,12 @@
 						</tr>
 
 						<tr>
+						    <td class="td-mass-update"><input id="massUpdate"
+										name="massUpdate" type="checkbox" class="massUpdate" value="title"/></td>
+							<td class="td-label"><label class="record-label"><s:text
+										name="entity.title.label"></s:text>：</label></td>
+							<td class="td-value"><s:textfield name="lead.title"
+									cssClass="record-value" /></td>						
 				            <td class="td-mass-update"><input id="massUpdate"
 								name="massUpdate" type="checkbox" class="massUpdate" value="owner"/></td>
 							<td class="td-label"><label class="record-label"><s:text
@@ -224,9 +230,6 @@
 					            ]]  
 					        ">
 							</select></td>
-						    <td class="td-mass-update"></td>							
-							<td class="td-label"></td>
-							<td class="td-value"></td>						
 						</tr>
 					</table>
 

@@ -73,8 +73,6 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     private Integer subCategoryID = null;
     private Integer relatedDocumentID = null;
     private String relatedDocumentText = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
     private String publishDateS = null;
     private String expirationDateS = null;
     private File upload;
@@ -120,8 +118,8 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
 
             User assignedTo = document.getAssigned_to();
             if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
             Document relatedDocument = document.getRelated_document();
             if (relatedDocument != null) {
@@ -215,8 +213,9 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
         }
         document.setSub_category(subCategory);
         User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            assignedTo = userService.getEntityById(User.class,
+                    this.getAssignedToID());
         }
         document.setAssigned_to(assignedTo);
         User owner = null;
@@ -465,23 +464,6 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the assignedToID
-     */
-    @Override
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    @Override
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
-    }
-
-    /**
      * @return the publishDate
      */
     public String getPublishDateS() {
@@ -637,14 +619,6 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
      */
     public String getRelatedDocumentText() {
         return relatedDocumentText;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    @Override
-    public String getAssignedToText() {
-        return assignedToText;
     }
 
     /**

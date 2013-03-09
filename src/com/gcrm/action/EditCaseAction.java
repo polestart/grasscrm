@@ -71,8 +71,6 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     private Integer reasonID = null;
     private Integer accountID = null;
     private String accountText = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
 
     /**
      * Saves the entity.
@@ -122,8 +120,8 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
             }
             User assignedTo = caseInstance.getAssigned_to();
             if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
             this.getBaseInfo(caseInstance);
         } else {
@@ -216,8 +214,9 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
         caseInstance.setAccount(account);
 
         User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            assignedTo = userService.getEntityById(User.class,
+                    this.getAssignedToID());
         }
         caseInstance.setAssigned_to(assignedTo);
 
@@ -433,23 +432,6 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the assignedToID
-     */
-    @Override
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    @Override
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
-    }
-
-    /**
      * @return the documentService
      */
     public IBaseService<Document> getDocumentService() {
@@ -552,23 +534,6 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      */
     public void setAccountText(String accountText) {
         this.accountText = accountText;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    @Override
-    public String getAssignedToText() {
-        return assignedToText;
-    }
-
-    /**
-     * @param assignedToText
-     *            the assignedToText to set
-     */
-    @Override
-    public void setAssignedToText(String assignedToText) {
-        this.assignedToText = assignedToText;
     }
 
     /**

@@ -279,7 +279,7 @@
 						            panelWidth:520,  
 						            idField:'id',  
 						            textField:'name',  
-						            url:'listUser.action',
+						            url:'<s:url action="listUser" namespace="/jsp/system"/>',
 						            loadMsg: '<s:text name="datagrid.loading" />',
 						            pagination : true,
 						            pageSize: 10,

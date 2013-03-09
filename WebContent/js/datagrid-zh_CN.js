@@ -181,7 +181,7 @@
 		}
 		else {
 		    var url = url + rows; 
-		    url = "/grass/jsp" + url;
+		    url = getWebPath() + "/jsp" + url;
 			window.open(url,"_self"); 						
 				
 		}
@@ -196,7 +196,7 @@
 		}
 		else {
 		    var url = url + rows; 
-		    url = "/grass/jsp" + url;
+		    url = getWebPath() + "/jsp" + url;
 			window.open(url,"_self"); 						
 				
 		}
@@ -211,7 +211,7 @@
 		}
 		else {
 		    var url = url + rows; 
-		    url = "/grass/jsp" + url;
+		    url = getWebPath() + "/jsp" + url;
 			window.open(url,"_self"); 						
 				
 		}

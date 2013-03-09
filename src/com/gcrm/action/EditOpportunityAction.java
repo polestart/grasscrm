@@ -75,8 +75,6 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
     private Integer sourceID = null;
     private Integer campaignID = null;
     private String campaignText = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
     private String expectCloseDate = null;
 
     /**
@@ -125,8 +123,8 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
             }
             User assignedTo = opportunity.getAssigned_to();
             if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
 
             Campaign campaign = opportunity.getCampaign();
@@ -233,8 +231,9 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
         opportunity.setLead_source(leadSource);
 
         User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            assignedTo = userService.getEntityById(User.class,
+                    this.getAssignedToID());
         }
         opportunity.setAssigned_to(assignedTo);
 
@@ -553,23 +552,6 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
     }
 
     /**
-     * @return the assignedToID
-     */
-    @Override
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    @Override
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
-    }
-
-    /**
      * @return the contactService
      */
     public IBaseService<Contact> getContactService() {
@@ -611,14 +593,6 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
      */
     public String getCampaignText() {
         return campaignText;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    @Override
-    public String getAssignedToText() {
-        return assignedToText;
     }
 
     /**

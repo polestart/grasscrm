@@ -45,8 +45,6 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     private TargetList targetList;
     private List<TargetListType> targetListTypes;
     private Integer typeID = null;
-    private Integer assignedToID = null;
-    private String assignedToText = null;
 
     /**
      * Saves the entity.
@@ -77,8 +75,8 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
 
             User assignedTo = targetList.getAssigned_to();
             if (assignedTo != null) {
-                assignedToID = assignedTo.getId();
-                assignedToText = assignedTo.getName();
+                this.setAssignedToID(assignedTo.getId());
+                this.setAssignedToText(assignedTo.getName());
             }
             this.getBaseInfo(targetList);
         } else {
@@ -146,8 +144,9 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
         targetList.setType(type);
 
         User assignedTo = null;
-        if (assignedToID != null) {
-            assignedTo = userService.getEntityById(User.class, assignedToID);
+        if (this.getAssignedToID() != null) {
+            assignedTo = userService.getEntityById(User.class,
+                    this.getAssignedToID());
         }
         targetList.setAssigned_to(assignedTo);
 
@@ -203,23 +202,6 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the assignedToID
-     */
-    @Override
-    public Integer getAssignedToID() {
-        return assignedToID;
-    }
-
-    /**
-     * @param assignedToID
-     *            the assignedToID to set
-     */
-    @Override
-    public void setAssignedToID(Integer assignedToID) {
-        this.assignedToID = assignedToID;
-    }
-
-    /**
      * @return the typeID
      */
     public Integer getTypeID() {
@@ -262,23 +244,6 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
      */
     public void setTargetList(TargetList targetList) {
         this.targetList = targetList;
-    }
-
-    /**
-     * @return the assignedToText
-     */
-    @Override
-    public String getAssignedToText() {
-        return assignedToText;
-    }
-
-    /**
-     * @param assignedToText
-     *            the assignedToText to set
-     */
-    @Override
-    public void setAssignedToText(String assignedToText) {
-        this.assignedToText = assignedToText;
     }
 
     /**
