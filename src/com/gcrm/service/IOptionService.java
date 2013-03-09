@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.gcrm.action;
+package com.gcrm.service;
 
-import com.gcrm.domain.LeadStatus;
+import java.util.List;
+
+import com.gcrm.domain.OptionBase;
 
 /**
- * Manages the Lead Status dropdown list
- * 
+ * Option service Interface
  */
-public class LeadStatusAction extends OptionAction<LeadStatus> {
+public interface IOptionService<T extends OptionBase> extends IBaseService<T> {
 
-    private static final long serialVersionUID = -2404576552417042445L;
+    public List<T> getOptions(String clazz, String local) throws Exception;
 
-    @Override
-    protected Class<LeadStatus> getEntityClass() {
-        return LeadStatus.class;
-    }
+    public T getOptionById(Class<T> entityClass, Integer id, String local);
 
 }

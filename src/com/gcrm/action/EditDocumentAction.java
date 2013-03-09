@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -38,10 +39,12 @@ import com.gcrm.domain.Opportunity;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.IDocumentService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -53,9 +56,9 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IDocumentService baseService;
-    private IBaseService<DocumentStatus> documentStatusService;
-    private IBaseService<DocumentCategory> documentCategoryService;
-    private IBaseService<DocumentSubCategory> documentSubCategoryService;
+    private IOptionService<DocumentStatus> documentStatusService;
+    private IOptionService<DocumentCategory> documentCategoryService;
+    private IOptionService<DocumentSubCategory> documentSubCategoryService;
     private IBaseService<Account> accountService;
     private IBaseService<Contact> contactService;
     private IBaseService<Opportunity> opportunityService;
@@ -284,12 +287,15 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.statuses = documentStatusService
-                .getAllObjects(DocumentStatus.class.getSimpleName());
-        this.categories = documentCategoryService
-                .getAllObjects(DocumentCategory.class.getSimpleName());
-        this.subCategories = documentSubCategoryService
-                .getAllObjects(DocumentSubCategory.class.getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.statuses = documentStatusService.getOptions(
+                DocumentStatus.class.getSimpleName(), local);
+        this.categories = documentCategoryService.getOptions(
+                DocumentCategory.class.getSimpleName(), local);
+        this.subCategories = documentSubCategoryService.getOptions(
+                DocumentSubCategory.class.getSimpleName(), local);
     }
 
     /**
@@ -321,54 +327,6 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
      */
     public void setBaseService(IDocumentService baseService) {
         this.baseService = baseService;
-    }
-
-    /**
-     * @return the documentStatusService
-     */
-    public IBaseService<DocumentStatus> getDocumentStatusService() {
-        return documentStatusService;
-    }
-
-    /**
-     * @param documentStatusService
-     *            the documentStatusService to set
-     */
-    public void setDocumentStatusService(
-            IBaseService<DocumentStatus> documentStatusService) {
-        this.documentStatusService = documentStatusService;
-    }
-
-    /**
-     * @return the documentCategoryService
-     */
-    public IBaseService<DocumentCategory> getDocumentCategoryService() {
-        return documentCategoryService;
-    }
-
-    /**
-     * @param documentCategoryService
-     *            the documentCategoryService to set
-     */
-    public void setDocumentCategoryService(
-            IBaseService<DocumentCategory> documentCategoryService) {
-        this.documentCategoryService = documentCategoryService;
-    }
-
-    /**
-     * @return the documentSubCategoryService
-     */
-    public IBaseService<DocumentSubCategory> getDocumentSubCategoryService() {
-        return documentSubCategoryService;
-    }
-
-    /**
-     * @param documentSubCategoryService
-     *            the documentSubCategoryService to set
-     */
-    public void setDocumentSubCategoryService(
-            IBaseService<DocumentSubCategory> documentSubCategoryService) {
-        this.documentSubCategoryService = documentSubCategoryService;
     }
 
     /**
@@ -687,5 +645,53 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     @Override
     public String getAssignedToText() {
         return assignedToText;
+    }
+
+    /**
+     * @return the documentStatusService
+     */
+    public IOptionService<DocumentStatus> getDocumentStatusService() {
+        return documentStatusService;
+    }
+
+    /**
+     * @param documentStatusService
+     *            the documentStatusService to set
+     */
+    public void setDocumentStatusService(
+            IOptionService<DocumentStatus> documentStatusService) {
+        this.documentStatusService = documentStatusService;
+    }
+
+    /**
+     * @return the documentCategoryService
+     */
+    public IOptionService<DocumentCategory> getDocumentCategoryService() {
+        return documentCategoryService;
+    }
+
+    /**
+     * @param documentCategoryService
+     *            the documentCategoryService to set
+     */
+    public void setDocumentCategoryService(
+            IOptionService<DocumentCategory> documentCategoryService) {
+        this.documentCategoryService = documentCategoryService;
+    }
+
+    /**
+     * @return the documentSubCategoryService
+     */
+    public IOptionService<DocumentSubCategory> getDocumentSubCategoryService() {
+        return documentSubCategoryService;
+    }
+
+    /**
+     * @param documentSubCategoryService
+     *            the documentSubCategoryService to set
+     */
+    public void setDocumentSubCategoryService(
+            IOptionService<DocumentSubCategory> documentSubCategoryService) {
+        this.documentSubCategoryService = documentSubCategoryService;
     }
 }

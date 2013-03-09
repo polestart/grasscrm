@@ -13,6 +13,7 @@
 <link href="<s:url value="/css/redmond/jquery-ui-1.9.2.custom.css"/>" type="text/css" rel="stylesheet" />
 <script src="<s:url value="/js/jquery-1.8.3.min.js"/>"></script>
 <script src="<s:url value="/js/jquery-ui-1.9.2.custom.min.js"/>"></script>
+<script src="<s:url value="/js/global.js"/>"></script>
 </head>
 <body id="login" onload="document.f.j_username.focus();">
 	<div id="wrappertop"></div>
@@ -104,7 +105,7 @@
 		}
 		
 		function switchLanguage(language){
-			f.action="/grass/jsp/login.jsp?request_locale="+language;
+			f.action= getWebPath() + "/jsp/login.jsp?request_locale="+language;
 			f.submit();
 		}		
 	</script>

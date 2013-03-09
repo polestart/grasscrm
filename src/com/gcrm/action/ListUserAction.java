@@ -131,10 +131,7 @@ public class ListUserAction extends BaseListAction {
             String department = CommonUtil.fromNullToEmpty(instance
                     .getDepartment());
             UserStatus status = instance.getStatus();
-            String statusName = "";
-            if (status != null && status.getName() != null) {
-                statusName = status.getName();
-            }
+            String statusName = CommonUtil.getOptionLabel(status);
 
             if (isList) {
                 User createdBy = instance.getCreated_by();
@@ -185,6 +182,7 @@ public class ListUserAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -369,13 +367,13 @@ public class ListUserAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(user.getFirst_name()));
                 data1.put(header[3],
                         CommonUtil.fromNullToEmpty(user.getLast_name()));
-                if (user.getStatus() != null) {
-                    data1.put(header[4], user.getStatus().getId());
-                    data1.put(header[5], user.getStatus().getName());
+                UserStatus userStatus = user.getStatus();
+                if (userStatus != null) {
+                    data1.put(header[4], userStatus.getId());
                 } else {
                     data1.put(header[4], "");
-                    data1.put(header[5], "");
                 }
+                data1.put(header[5], CommonUtil.getOptionLabel(userStatus));
                 data1.put(header[6],
                         CommonUtil.fromNullToEmpty(user.getTitle()));
                 data1.put(header[7],

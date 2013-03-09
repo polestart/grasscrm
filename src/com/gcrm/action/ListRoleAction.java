@@ -169,6 +169,7 @@ public class ListRoleAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 

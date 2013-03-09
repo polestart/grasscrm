@@ -165,18 +165,6 @@ public class ListAccountAction extends BaseListAction {
                         .getShip_postal_code());
                 String shipCountry = CommonUtil.fromNullToEmpty(instance
                         .getShip_country());
-                AccountType accountType = instance.getAccount_type();
-                String accountTypeName = "";
-                if (accountType != null) {
-                    accountTypeName = CommonUtil.fromNullToEmpty(accountType
-                            .getName());
-                }
-                Industry industry = instance.getIndustry();
-                String industryName = "";
-                if (industry != null) {
-                    industryName = CommonUtil.fromNullToEmpty(industry
-                            .getName());
-                }
                 String annualRevenue = CommonUtil.fromNullToEmpty(instance
                         .getAnnual_revenue());
                 String employees = CommonUtil.fromNullToEmpty(instance
@@ -228,8 +216,6 @@ public class ListAccountAction extends BaseListAction {
                         .append("\",\"").append(shipState).append("\",\"")
                         .append(shipCountry).append("\",\"")
                         .append(shipPostalCode).append("\",\"")
-                        .append(accountTypeName).append("\",\"")
-                        .append(industryName).append("\",\"")
                         .append(annualRevenue).append("\",\"")
                         .append(employees).append("\",\"").append(sicCode)
                         .append("\",\"").append(ticketSymbol).append("\",\"")
@@ -255,6 +241,7 @@ public class ListAccountAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -493,20 +480,20 @@ public class ListAccountAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(account.getEmail()));
                 data1.put(header[16],
                         CommonUtil.fromNullToEmpty(account.getDescription()));
-                if (account.getAccount_type() != null) {
-                    data1.put(header[17], account.getAccount_type().getId());
-                    data1.put(header[18], account.getAccount_type().getName());
+                AccountType accountType = account.getAccount_type();
+                if (accountType != null) {
+                    data1.put(header[17], accountType.getId());
                 } else {
                     data1.put(header[17], "");
-                    data1.put(header[18], "");
                 }
-                if (account.getIndustry() != null) {
-                    data1.put(header[19], account.getIndustry().getId());
-                    data1.put(header[20], account.getIndustry().getName());
+                data1.put(header[18], CommonUtil.getOptionLabel(accountType));
+                Industry industry = account.getIndustry();
+                if (industry != null) {
+                    data1.put(header[19], industry.getId());
                 } else {
                     data1.put(header[19], "");
-                    data1.put(header[20], "");
                 }
+                data1.put(header[20], CommonUtil.getOptionLabel(industry));
                 data1.put(header[21],
                         CommonUtil.fromNullToEmpty(account.getAnnual_revenue()));
                 data1.put(header[22],

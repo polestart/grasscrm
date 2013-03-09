@@ -146,17 +146,9 @@ public class ListCaseAction extends BaseListAction {
                 accountName = "";
             }
             CasePriority casePriority = instance.getPriority();
-            if (casePriority != null) {
-                priorityName = casePriority.getName();
-            } else {
-                priorityName = "";
-            }
+            priorityName = CommonUtil.getOptionLabel(casePriority);
             CaseStatus caseStatus = instance.getStatus();
-            if (caseStatus != null) {
-                statusName = caseStatus.getName();
-            } else {
-                statusName = "";
-            }
+            statusName = CommonUtil.getOptionLabel(caseStatus);
             User user = instance.getAssigned_to();
             if (user != null) {
                 assignedTo = user.getName();
@@ -214,6 +206,7 @@ public class ListCaseAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -418,41 +411,41 @@ public class ListCaseAction extends BaseListAction {
                         Integer.parseInt(id));
                 final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
                 data1.put(header[0], caseInstance.getId());
-                if (caseInstance.getPriority() != null) {
-                    data1.put(header[1], caseInstance.getPriority().getId());
-                    data1.put(header[2], caseInstance.getPriority().getName());
+                CasePriority casePriority = caseInstance.getPriority();
+                if (casePriority != null) {
+                    data1.put(header[1], casePriority.getId());
                 } else {
                     data1.put(header[1], "");
-                    data1.put(header[2], "");
                 }
-                if (caseInstance.getStatus() != null) {
-                    data1.put(header[3], caseInstance.getStatus().getId());
-                    data1.put(header[4], caseInstance.getStatus().getName());
+                data1.put(header[2], CommonUtil.getOptionLabel(casePriority));
+                CaseStatus caseStatus = caseInstance.getStatus();
+                if (caseStatus != null) {
+                    data1.put(header[3], caseStatus.getId());
                 } else {
                     data1.put(header[3], "");
-                    data1.put(header[4], "");
                 }
-                if (caseInstance.getType() != null) {
-                    data1.put(header[5], caseInstance.getType().getId());
-                    data1.put(header[6], caseInstance.getType().getName());
+                data1.put(header[4], CommonUtil.getOptionLabel(caseStatus));
+                CaseType caseType = caseInstance.getType();
+                if (caseType != null) {
+                    data1.put(header[5], caseType.getId());
                 } else {
                     data1.put(header[5], "");
-                    data1.put(header[6], "");
                 }
-                if (caseInstance.getOrigin() != null) {
-                    data1.put(header[7], caseInstance.getOrigin().getId());
-                    data1.put(header[8], caseInstance.getOrigin().getName());
+                data1.put(header[6], CommonUtil.getOptionLabel(caseType));
+                CaseOrigin caseOrigin = caseInstance.getOrigin();
+                if (caseOrigin != null) {
+                    data1.put(header[7], caseOrigin.getId());
                 } else {
                     data1.put(header[7], "");
-                    data1.put(header[8], "");
                 }
-                if (caseInstance.getReason() != null) {
-                    data1.put(header[9], caseInstance.getReason().getId());
-                    data1.put(header[10], caseInstance.getReason().getName());
+                data1.put(header[8], CommonUtil.getOptionLabel(caseOrigin));
+                CaseReason caseReason = caseInstance.getReason();
+                if (caseReason != null) {
+                    data1.put(header[9], caseReason.getId());
                 } else {
                     data1.put(header[9], "");
-                    data1.put(header[10], "");
                 }
+                data1.put(header[10], CommonUtil.getOptionLabel(caseReason));
                 data1.put(header[11],
                         CommonUtil.fromNullToEmpty(caseInstance.getSubject()));
                 data1.put(header[12], CommonUtil.fromNullToEmpty(caseInstance

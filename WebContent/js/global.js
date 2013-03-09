@@ -1,10 +1,22 @@
+function getWebPath(){
+    var strFullPath=window.document.location.href;
+    var strPath=window.document.location.pathname;
+    var pos=strFullPath.indexOf(strPath);
+    var prePath=strFullPath.substring(0,pos);
+    var postPath=strPath.substring(0,strPath.substr(1).indexOf('/')+1);
+    return(prePath+postPath);
+ }
+
+
 function openPage(href) {
+	href = getWebPath() + "/jsp" + href;
 	window.open(href, "_self");
 }
 
-function openPage2(href) {
-	href = "/grass/jsp" + href;
-	window.open(href, "_self");
+function openPopupPage(href) {
+	href = getWebPath() + "/jsp" + href
+	window.open(href, "_blank",
+			"height=300,width=500,scrollbars=no,location=no");
 }
 
 function openwindow(url, name) {
@@ -16,7 +28,7 @@ function openwindow2(url, name, iWidth,iHeight) {
 	var name;
 	var iTop = (window.screen.height-iHeight)/2;
 	var iLeft = (window.screen.width-iWidth)/2;
-	url = "/grass/jsp" + url;
+	url = getWebPath() + "/jsp" + url;
 	window
 			.open(
 					url,

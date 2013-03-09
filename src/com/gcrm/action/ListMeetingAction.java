@@ -128,11 +128,7 @@ public class ListMeetingAction extends BaseListAction {
             int id = instance.getId();
             String subject = CommonUtil.fromNullToEmpty(instance.getSubject());
             MeetingStatus status = instance.getStatus();
-            if (status != null) {
-                statusName = CommonUtil.fromNullToEmpty(status.getName());
-            } else {
-                statusName = "";
-            }
+            statusName = CommonUtil.getOptionLabel(status);
             SimpleDateFormat dateTimeFormat = new SimpleDateFormat(
                     Constant.DATE_TIME_FORMAT);
             Date startDate = instance.getStart_date();
@@ -203,6 +199,7 @@ public class ListMeetingAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -323,13 +320,13 @@ public class ListMeetingAction extends BaseListAction {
                 data1.put(header[0], meeting.getId());
                 data1.put(header[1],
                         CommonUtil.fromNullToEmpty(meeting.getSubject()));
-                if (meeting.getStatus() != null) {
-                    data1.put(header[2], meeting.getStatus().getId());
-                    data1.put(header[3], meeting.getStatus().getName());
+                MeetingStatus meetingStatus = meeting.getStatus();
+                if (meetingStatus != null) {
+                    data1.put(header[2], meetingStatus.getId());
                 } else {
                     data1.put(header[2], "");
-                    data1.put(header[3], "");
                 }
+                data1.put(header[3], CommonUtil.getOptionLabel(meetingStatus));
                 SimpleDateFormat dateFormat = new SimpleDateFormat(
                         Constant.DATE_TIME_FORMAT);
                 Date startDate = meeting.getStart_date();
@@ -355,25 +352,25 @@ public class ListMeetingAction extends BaseListAction {
                 data1.put(header[8],
                         CommonUtil.fromNullToEmpty(meeting.getLocation()));
                 data1.put(header[9], meeting.isReminder_pop());
-                if (meeting.getReminder_option_pop() != null) {
-                    data1.put(header[10], meeting.getReminder_option_pop()
-                            .getId());
-                    data1.put(header[11], meeting.getReminder_option_pop()
-                            .getName());
+                ReminderOption reminderOptionPop = meeting
+                        .getReminder_option_pop();
+                if (reminderOptionPop != null) {
+                    data1.put(header[10], reminderOptionPop.getId());
                 } else {
                     data1.put(header[10], "");
-                    data1.put(header[11], "");
                 }
+                data1.put(header[11],
+                        CommonUtil.getOptionLabel(reminderOptionPop));
                 data1.put(header[12], meeting.isReminder_email());
-                if (meeting.getReminder_option_email() != null) {
-                    data1.put(header[13], meeting.getReminder_option_email()
-                            .getId());
-                    data1.put(header[14], meeting.getReminder_option_email()
-                            .getName());
+                ReminderOption reminderOptionEmail = meeting
+                        .getReminder_option_email();
+                if (reminderOptionEmail != null) {
+                    data1.put(header[13], reminderOptionEmail.getId());
                 } else {
                     data1.put(header[13], "");
-                    data1.put(header[14], "");
                 }
+                data1.put(header[14],
+                        CommonUtil.getOptionLabel(reminderOptionEmail));
                 data1.put(header[15],
                         CommonUtil.fromNullToEmpty(meeting.getDescription()));
                 data1.put(header[16],

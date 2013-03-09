@@ -136,11 +136,7 @@ public class ListDocumentAction extends BaseListAction {
                 publishDateS = "";
             }
             DocumentCategory category = instance.getCategory();
-            if (category != null) {
-                categoryName = category.getName();
-            } else {
-                categoryName = "";
-            }
+            categoryName = CommonUtil.getOptionLabel(category);
             User user = instance.getAssigned_to();
             if (user != null) {
                 assignedTo = user.getName();
@@ -197,6 +193,7 @@ public class ListDocumentAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 

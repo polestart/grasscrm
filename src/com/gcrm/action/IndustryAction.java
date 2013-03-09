@@ -15,110 +15,19 @@
  */
 package com.gcrm.action;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts2.ServletActionContext;
-
 import com.gcrm.domain.Industry;
-import com.gcrm.service.IBaseService;
-import com.gcrm.util.security.UserUtil;
-import com.gcrm.vo.SearchCondition;
-import com.gcrm.vo.SearchResult;
 
 /**
  * Manages the Industry dropdown list
  * 
  */
-public class IndustryAction extends BaseListAction {
+public class IndustryAction extends OptionAction<Industry> {
 
     private static final long serialVersionUID = -2404576552417042445L;
 
-    private IBaseService<Industry> baseService;
-    private Industry industry;
-
-    private static final String CLAZZ = Industry.class.getSimpleName();
-
-    /**
-     * Gets the list JSON data.
-     * 
-     * @return list JSON data
-     */
     @Override
-    public String list() throws Exception {
-        UserUtil.permissionCheck("view_system");
-        SearchCondition searchCondition = getSearchCondition();
-        SearchResult<Industry> result = baseService.getPaginationObjects(CLAZZ,
-                searchCondition);
-        List<Industry> industrys = result.getResult();
-
-        long totalRecords = result.getTotalRecords();
-
-        // Constructs the JSON data
-        String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-        int size = industrys.size();
-        for (int i = 0; i < size; i++) {
-            Industry instance = industrys.get(i);
-            Integer id = instance.getId();
-            String name = instance.getName();
-            int sequence = instance.getSequence();
-
-            json += "{\"id\":\"" + id + "\",\"industry.id\":\"" + id
-                    + "\",\"industry.name\":\"" + name
-                    + "\",\"industry.sequence\":\"" + sequence + "\"}";
-            if (i < size - 1) {
-                json += ",";
-            }
-        }
-        json += "]}";
-
-        // Returns JSON data back to page
-        HttpServletResponse response = ServletActionContext.getResponse();
-        response.getWriter().write(json);
-        return null;
-    }
-
-    /**
-     * Saves the entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String save() throws Exception {
-        if (industry.getId() == null) {
-            UserUtil.permissionCheck("create_system");
-        } else {
-            UserUtil.permissionCheck("update_system");
-        }
-        getbaseService().makePersistent(industry);
-        return SUCCESS;
-    }
-
-    /**
-     * Deletes the selected entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String delete() throws Exception {
-        UserUtil.permissionCheck("delete_system");
-        baseService.batchDeleteEntity(Industry.class, this.getSeleteIDs());
-        return SUCCESS;
-    }
-
-    public IBaseService<Industry> getbaseService() {
-        return baseService;
-    }
-
-    public void setbaseService(IBaseService<Industry> baseService) {
-        this.baseService = baseService;
-    }
-
-    public Industry getIndustry() {
-        return industry;
-    }
-
-    public void setIndustry(Industry industry) {
-        this.industry = industry;
+    protected Class<Industry> getEntityClass() {
+        return Industry.class;
     }
 
 }

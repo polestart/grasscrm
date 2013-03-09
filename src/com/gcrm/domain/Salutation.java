@@ -1,65 +1,11 @@
 package com.gcrm.domain;
 
-import java.io.Serializable;
 
-public class Salutation implements Serializable {
+public class Salutation extends OptionBase {
 
-	private static final long serialVersionUID = 8250950813769457556L;
-
-	private Integer id;
-	private String name;
-	private Integer sequence;
-
-	/**
-	 * @return the id
-	 */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the sequence
-	 */
-	public Integer getSequence() {
-		return sequence;
-	}
-
-	/**
-	 * @param sequence
-	 *            the sequence to set
-	 */
-	public void setSequence(Integer sequence) {
-		this.sequence = sequence;
-	}
-
-	/**
-	 * @return the serialversionuid
-	 */
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+    /**
+     * serialVersionUID: explain what the field does
+     */
+    private static final long serialVersionUID = 1L;
 
 }

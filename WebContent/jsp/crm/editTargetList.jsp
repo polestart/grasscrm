@@ -173,7 +173,7 @@
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.type.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="typeID"
-											list="targetListTypes" listKey="id" listValue="name"
+											list="targetListTypes" listKey="id" listValue="label"
 											cssClass="record-value" /></td>
 						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="assigned_to"/></td>

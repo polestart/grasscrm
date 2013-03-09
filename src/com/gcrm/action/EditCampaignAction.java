@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.gcrm.domain.Campaign;
 import com.gcrm.domain.CampaignStatus;
@@ -28,10 +29,12 @@ import com.gcrm.domain.CampaignType;
 import com.gcrm.domain.Currency;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -43,8 +46,8 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<Campaign> baseService;
-    private IBaseService<CampaignType> campaignTypeService;
-    private IBaseService<CampaignStatus> campaignStatusService;
+    private IOptionService<CampaignType> campaignTypeService;
+    private IOptionService<CampaignStatus> campaignStatusService;
     private IBaseService<Currency> currencyService;
     private IBaseService<User> userService;
     private Campaign campaign;
@@ -204,10 +207,13 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.statuses = campaignStatusService
-                .getAllObjects(CampaignStatus.class.getSimpleName());
-        this.types = campaignTypeService.getAllObjects(CampaignType.class
-                .getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.statuses = campaignStatusService.getOptions(
+                CampaignStatus.class.getSimpleName(), local);
+        this.types = campaignTypeService.getOptions(
+                CampaignType.class.getSimpleName(), local);
         this.currencies = currencyService.getAllObjects(Currency.class
                 .getSimpleName());
     }
@@ -236,33 +242,10 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the campaignTypeService
-     */
-    public IBaseService<CampaignType> getCampaignTypeService() {
-        return campaignTypeService;
-    }
-
-    /**
      * @return the statuses
      */
     public List<CampaignStatus> getStatuses() {
         return statuses;
-    }
-
-    /**
-     * @return the campaignStatusService
-     */
-    public IBaseService<CampaignStatus> getCampaignStatusService() {
-        return campaignStatusService;
-    }
-
-    /**
-     * @param campaignStatusService
-     *            the campaignStatusService to set
-     */
-    public void setCampaignStatusService(
-            IBaseService<CampaignStatus> campaignStatusService) {
-        this.campaignStatusService = campaignStatusService;
     }
 
     /**
@@ -387,15 +370,6 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @param campaignTypeService
-     *            the campaignTypeService to set
-     */
-    public void setCampaignTypeService(
-            IBaseService<CampaignType> campaignTypeService) {
-        this.campaignTypeService = campaignTypeService;
-    }
-
-    /**
      * @param types
      *            the types to set
      */
@@ -452,4 +426,37 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
     }
+
+    /**
+     * @return the campaignStatusService
+     */
+    public IOptionService<CampaignStatus> getCampaignStatusService() {
+        return campaignStatusService;
+    }
+
+    /**
+     * @param campaignStatusService
+     *            the campaignStatusService to set
+     */
+    public void setCampaignStatusService(
+            IOptionService<CampaignStatus> campaignStatusService) {
+        this.campaignStatusService = campaignStatusService;
+    }
+
+    /**
+     * @return the campaignTypeService
+     */
+    public IOptionService<CampaignType> getCampaignTypeService() {
+        return campaignTypeService;
+    }
+
+    /**
+     * @param campaignTypeService
+     *            the campaignTypeService to set
+     */
+    public void setCampaignTypeService(
+            IOptionService<CampaignType> campaignTypeService) {
+        this.campaignTypeService = campaignTypeService;
+    }
+
 }

@@ -53,6 +53,18 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport
         return objects;
     }
 
+    @SuppressWarnings("unchecked")
+    public List<T> getAllSortedObjects(String clazz, String sortColumn,
+            String order) {
+
+        String hql = INIT_HQL + clazz + " order by " + sortColumn + " " + order;
+        List<T> objects = null;
+
+        objects = getHibernateTemplate().find(hql);
+
+        return objects;
+    }
+
     /**
      * Finds records by hql with parameters
      * 

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -35,10 +36,12 @@ import com.gcrm.domain.OpportunityType;
 import com.gcrm.domain.SalesStage;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -52,9 +55,9 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
     private IBaseService<Opportunity> baseService;
     private IBaseService<Account> accountService;
     private IBaseService<Currency> currencyService;
-    private IBaseService<OpportunityType> opportunityTypeService;
-    private IBaseService<SalesStage> salesStageService;
-    private IBaseService<LeadSource> leadSourceService;
+    private IOptionService<OpportunityType> opportunityTypeService;
+    private IOptionService<SalesStage> salesStageService;
+    private IOptionService<LeadSource> leadSourceService;
     private IBaseService<Campaign> campaignService;
     private IBaseService<Contact> contactService;
     private IBaseService<Document> documentService;
@@ -281,14 +284,17 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
      * 
      */
     public void prepare() throws Exception {
-        this.types = opportunityTypeService.getAllObjects(OpportunityType.class
-                .getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.types = opportunityTypeService.getOptions(
+                OpportunityType.class.getSimpleName(), local);
         this.currencies = currencyService.getAllObjects(Currency.class
                 .getSimpleName());
-        this.salesStages = salesStageService.getAllObjects(SalesStage.class
-                .getSimpleName());
-        this.sources = leadSourceService.getAllObjects(LeadSource.class
-                .getSimpleName());
+        this.salesStages = salesStageService.getOptions(
+                SalesStage.class.getSimpleName(), local);
+        this.sources = leadSourceService.getOptions(
+                LeadSource.class.getSimpleName(), local);
     }
 
     /**
@@ -334,52 +340,6 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
      */
     public void setCurrencyService(IBaseService<Currency> currencyService) {
         this.currencyService = currencyService;
-    }
-
-    /**
-     * @return the opportunityTypeService
-     */
-    public IBaseService<OpportunityType> getOpportunityTypeService() {
-        return opportunityTypeService;
-    }
-
-    /**
-     * @param opportunityTypeService
-     *            the opportunityTypeService to set
-     */
-    public void setOpportunityTypeService(
-            IBaseService<OpportunityType> opportunityTypeService) {
-        this.opportunityTypeService = opportunityTypeService;
-    }
-
-    /**
-     * @return the salesStageService
-     */
-    public IBaseService<SalesStage> getSalesStageService() {
-        return salesStageService;
-    }
-
-    /**
-     * @param salesStageService
-     *            the salesStageService to set
-     */
-    public void setSalesStageService(IBaseService<SalesStage> salesStageService) {
-        this.salesStageService = salesStageService;
-    }
-
-    /**
-     * @return the leadSourceService
-     */
-    public IBaseService<LeadSource> getLeadSourceService() {
-        return leadSourceService;
-    }
-
-    /**
-     * @param leadSourceService
-     *            the leadSourceService to set
-     */
-    public void setLeadSourceService(IBaseService<LeadSource> leadSourceService) {
-        this.leadSourceService = leadSourceService;
     }
 
     /**
@@ -659,6 +619,54 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
     @Override
     public String getAssignedToText() {
         return assignedToText;
+    }
+
+    /**
+     * @return the opportunityTypeService
+     */
+    public IOptionService<OpportunityType> getOpportunityTypeService() {
+        return opportunityTypeService;
+    }
+
+    /**
+     * @param opportunityTypeService
+     *            the opportunityTypeService to set
+     */
+    public void setOpportunityTypeService(
+            IOptionService<OpportunityType> opportunityTypeService) {
+        this.opportunityTypeService = opportunityTypeService;
+    }
+
+    /**
+     * @return the salesStageService
+     */
+    public IOptionService<SalesStage> getSalesStageService() {
+        return salesStageService;
+    }
+
+    /**
+     * @param salesStageService
+     *            the salesStageService to set
+     */
+    public void setSalesStageService(
+            IOptionService<SalesStage> salesStageService) {
+        this.salesStageService = salesStageService;
+    }
+
+    /**
+     * @return the leadSourceService
+     */
+    public IOptionService<LeadSource> getLeadSourceService() {
+        return leadSourceService;
+    }
+
+    /**
+     * @param leadSourceService
+     *            the leadSourceService to set
+     */
+    public void setLeadSourceService(
+            IOptionService<LeadSource> leadSourceService) {
+        this.leadSourceService = leadSourceService;
     }
 
 }

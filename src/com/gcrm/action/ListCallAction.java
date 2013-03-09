@@ -127,18 +127,10 @@ public class ListCallAction extends BaseListAction {
             Call instance = calls.next();
             int id = instance.getId();
             CallDirection direction = instance.getDirection();
-            if (direction != null) {
-                directionName = CommonUtil.fromNullToEmpty(direction.getName());
-            } else {
-                directionName = "";
-            }
+            directionName = CommonUtil.getOptionLabel(direction);
             String subject = CommonUtil.fromNullToEmpty(instance.getSubject());
             CallStatus status = instance.getStatus();
-            if (status != null) {
-                statusName = CommonUtil.fromNullToEmpty(status.getName());
-            } else {
-                statusName = "";
-            }
+            statusName = CommonUtil.getOptionLabel(status);
             SimpleDateFormat dateFormat = new SimpleDateFormat(
                     Constant.DATE_TIME_FORMAT);
             Date startDate = instance.getStart_date();
@@ -204,6 +196,7 @@ public class ListCallAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -322,20 +315,20 @@ public class ListCallAction extends BaseListAction {
                 data1.put(header[0], call.getId());
                 data1.put(header[1],
                         CommonUtil.fromNullToEmpty(call.getSubject()));
-                if (call.getDirection() != null) {
-                    data1.put(header[2], call.getDirection().getId());
-                    data1.put(header[3], call.getDirection().getName());
+                CallDirection callDirection = call.getDirection();
+                if (callDirection != null) {
+                    data1.put(header[2], callDirection.getId());
                 } else {
                     data1.put(header[2], "");
-                    data1.put(header[3], "");
                 }
+                data1.put(header[3], CommonUtil.getOptionLabel(callDirection));
+                CallStatus callStatus = call.getStatus();
                 if (call.getStatus() != null) {
-                    data1.put(header[4], call.getStatus().getId());
-                    data1.put(header[5], call.getStatus().getName());
+                    data1.put(header[4], callStatus.getId());
                 } else {
                     data1.put(header[4], "");
-                    data1.put(header[5], "");
                 }
+                data1.put(header[5], CommonUtil.getOptionLabel(callStatus));
                 SimpleDateFormat dateFormat = new SimpleDateFormat(
                         Constant.DATE_TIME_FORMAT);
                 Date startDate = call.getStart_date();
@@ -345,24 +338,25 @@ public class ListCallAction extends BaseListAction {
                     data1.put(header[6], "");
                 }
                 data1.put(header[7], call.isReminder_pop());
-                if (call.getReminder_option_pop() != null) {
-                    data1.put(header[8], call.getReminder_option_pop().getId());
-                    data1.put(header[9], call.getReminder_option_pop()
-                            .getName());
+                ReminderOption reminderOptionPop = call
+                        .getReminder_option_pop();
+                if (reminderOptionPop != null) {
+                    data1.put(header[8], reminderOptionPop.getId());
                 } else {
                     data1.put(header[8], "");
-                    data1.put(header[9], "");
                 }
+                data1.put(header[9],
+                        CommonUtil.getOptionLabel(reminderOptionPop));
                 data1.put(header[10], call.isReminder_email());
-                if (call.getReminder_option_email() != null) {
-                    data1.put(header[11], call.getReminder_option_email()
-                            .getId());
-                    data1.put(header[12], call.getReminder_option_email()
-                            .getName());
+                ReminderOption reminderOptionEmail = call
+                        .getReminder_option_email();
+                if (reminderOptionEmail != null) {
+                    data1.put(header[11], reminderOptionEmail.getId());
                 } else {
                     data1.put(header[11], "");
-                    data1.put(header[12], "");
                 }
+                data1.put(header[12],
+                        CommonUtil.getOptionLabel(reminderOptionEmail));
                 data1.put(header[13],
                         CommonUtil.fromNullToEmpty(call.getDescription()));
                 data1.put(header[14],

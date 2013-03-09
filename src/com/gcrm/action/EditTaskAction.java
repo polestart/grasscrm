@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.gcrm.domain.Account;
 import com.gcrm.domain.Case;
@@ -33,10 +34,12 @@ import com.gcrm.domain.TaskPriority;
 import com.gcrm.domain.TaskStatus;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -48,9 +51,9 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<Task> baseService;
-    private IBaseService<TaskStatus> taskStatusService;
+    private IOptionService<TaskStatus> taskStatusService;
     private IBaseService<Contact> contactService;
-    private IBaseService<TaskPriority> taskPriorityService;
+    private IOptionService<TaskPriority> taskPriorityService;
     private IBaseService<User> userService;
     private IBaseService<Account> accountService;
     private IBaseService<Case> caseService;
@@ -294,10 +297,13 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.statuses = taskStatusService.getAllObjects(TaskStatus.class
-                .getSimpleName());
-        this.priorities = taskPriorityService.getAllObjects(TaskPriority.class
-                .getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.statuses = taskStatusService.getOptions(
+                TaskStatus.class.getSimpleName(), local);
+        this.priorities = taskPriorityService.getOptions(
+                TaskPriority.class.getSimpleName(), local);
     }
 
     /**
@@ -316,21 +322,6 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the taskStatusService
-     */
-    public IBaseService<TaskStatus> getTaskStatusService() {
-        return taskStatusService;
-    }
-
-    /**
-     * @param taskStatusService
-     *            the taskStatusService to set
-     */
-    public void setTaskStatusService(IBaseService<TaskStatus> taskStatusService) {
-        this.taskStatusService = taskStatusService;
-    }
-
-    /**
      * @return the contactService
      */
     public IBaseService<Contact> getContactService() {
@@ -343,22 +334,6 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      */
     public void setContactService(IBaseService<Contact> contactService) {
         this.contactService = contactService;
-    }
-
-    /**
-     * @return the taskPriorityService
-     */
-    public IBaseService<TaskPriority> getTaskPriorityService() {
-        return taskPriorityService;
-    }
-
-    /**
-     * @param taskPriorityService
-     *            the taskPriorityService to set
-     */
-    public void setTaskPriorityService(
-            IBaseService<TaskPriority> taskPriorityService) {
-        this.taskPriorityService = taskPriorityService;
     }
 
     /**
@@ -844,6 +819,38 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      */
     public void setRelatedTaskText(String relatedTaskText) {
         this.relatedTaskText = relatedTaskText;
+    }
+
+    /**
+     * @return the taskStatusService
+     */
+    public IOptionService<TaskStatus> getTaskStatusService() {
+        return taskStatusService;
+    }
+
+    /**
+     * @param taskStatusService
+     *            the taskStatusService to set
+     */
+    public void setTaskStatusService(
+            IOptionService<TaskStatus> taskStatusService) {
+        this.taskStatusService = taskStatusService;
+    }
+
+    /**
+     * @return the taskPriorityService
+     */
+    public IOptionService<TaskPriority> getTaskPriorityService() {
+        return taskPriorityService;
+    }
+
+    /**
+     * @param taskPriorityService
+     *            the taskPriorityService to set
+     */
+    public void setTaskPriorityService(
+            IOptionService<TaskPriority> taskPriorityService) {
+        this.taskPriorityService = taskPriorityService;
     }
 
 }

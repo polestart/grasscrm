@@ -211,6 +211,7 @@ public class ListLeadAction extends BaseListAction {
 
         // Returns JSON data back to pagee
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -426,7 +427,7 @@ public class ListLeadAction extends BaseListAction {
                     getText("entity.description.label"),
                     getText("entity.notes.label"),
                     getText("entity.status_id.label"),
-                    getText("lead.status_name.label"),
+                    getText("entity.status_name.label"),
                     getText("lead.status_description.label"),
                     getText("entity.leadSource_id.label"),
                     getText("entity.leadSource_name.label"),
@@ -446,13 +447,13 @@ public class ListLeadAction extends BaseListAction {
                         Integer.parseInt(id));
                 final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
                 data1.put(header[0], lead.getId());
-                if (lead.getSalutation() != null) {
-                    data1.put(header[1], lead.getSalutation().getId());
-                    data1.put(header[2], lead.getSalutation().getName());
+                Salutation salutation = lead.getSalutation();
+                if (salutation != null) {
+                    data1.put(header[1], salutation.getId());
                 } else {
                     data1.put(header[1], "");
-                    data1.put(header[2], "");
                 }
+                data1.put(header[2], CommonUtil.getOptionLabel(salutation));
                 data1.put(header[3],
                         CommonUtil.fromNullToEmpty(lead.getFirst_name()));
                 data1.put(header[4],
@@ -501,23 +502,22 @@ public class ListLeadAction extends BaseListAction {
                         CommonUtil.fromNullToEmpty(lead.getDescription()));
                 data1.put(header[25],
                         CommonUtil.fromNullToEmpty(lead.getNotes()));
-                if (lead.getStatus() != null) {
-                    data1.put(header[26], lead.getStatus().getId());
-                    data1.put(header[27], lead.getStatus().getName());
+                LeadStatus leadStatus = lead.getStatus();
+                if (leadStatus != null) {
+                    data1.put(header[26], leadStatus.getId());
                 } else {
                     data1.put(header[26], "");
-                    data1.put(header[27], "");
-
                 }
+                data1.put(header[27], CommonUtil.getOptionLabel(leadStatus));
                 data1.put(header[28], CommonUtil.fromNullToEmpty(lead
                         .getStatus_description()));
-                if (lead.getLead_source() != null) {
-                    data1.put(header[29], lead.getLead_source().getId());
-                    data1.put(header[30], lead.getLead_source().getName());
+                LeadSource leadSource = lead.getLead_source();
+                if (leadSource != null) {
+                    data1.put(header[29], leadSource.getId());
                 } else {
                     data1.put(header[29], "");
-                    data1.put(header[30], "");
                 }
+                data1.put(header[30], CommonUtil.getOptionLabel(leadSource));
                 data1.put(header[31], CommonUtil.fromNullToEmpty(lead
                         .getLead_source_description()));
                 data1.put(header[32], CommonUtil.fromNullToEmpty(lead

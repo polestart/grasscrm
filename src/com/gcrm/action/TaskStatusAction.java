@@ -15,110 +15,19 @@
  */
 package com.gcrm.action;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts2.ServletActionContext;
-
 import com.gcrm.domain.TaskStatus;
-import com.gcrm.service.IBaseService;
-import com.gcrm.util.security.UserUtil;
-import com.gcrm.vo.SearchCondition;
-import com.gcrm.vo.SearchResult;
 
 /**
  * Manages the Task Status dropdown list
  * 
  */
-public class TaskStatusAction extends BaseListAction {
+public class TaskStatusAction extends OptionAction<TaskStatus> {
 
     private static final long serialVersionUID = -2404576552417042445L;
 
-    private IBaseService<TaskStatus> baseService;
-    private TaskStatus taskStatus;
-
-    private static final String CLAZZ = TaskStatus.class.getSimpleName();
-
-    /**
-     * Gets the list JSON data.
-     * 
-     * @return list JSON data
-     */
     @Override
-    public String list() throws Exception {
-        UserUtil.permissionCheck("view_system");
-        SearchCondition searchCondition = getSearchCondition();
-        SearchResult<TaskStatus> result = baseService.getPaginationObjects(
-                CLAZZ, searchCondition);
-        List<TaskStatus> taskStatuss = result.getResult();
-
-        long totalRecords = result.getTotalRecords();
-
-        // Constructs the JSON data
-        String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-        int size = taskStatuss.size();
-        for (int i = 0; i < size; i++) {
-            TaskStatus instance = taskStatuss.get(i);
-            Integer id = instance.getId();
-            String name = instance.getName();
-            int sequence = instance.getSequence();
-
-            json += "{\"id\":\"" + id + "\",\"taskStatus.id\":\"" + id
-                    + "\",\"taskStatus.name\":\"" + name
-                    + "\",\"taskStatus.sequence\":\"" + sequence + "\"}";
-            if (i < size - 1) {
-                json += ",";
-            }
-        }
-        json += "]}";
-
-        // Returns JSON data back to page
-        HttpServletResponse response = ServletActionContext.getResponse();
-        response.getWriter().write(json);
-        return null;
-    }
-
-    /**
-     * Saves the entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String save() throws Exception {
-        if (taskStatus.getId() == null) {
-            UserUtil.permissionCheck("create_system");
-        } else {
-            UserUtil.permissionCheck("update_system");
-        }
-        getbaseService().makePersistent(taskStatus);
-        return SUCCESS;
-    }
-
-    /**
-     * Deletes the selected entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String delete() throws Exception {
-        UserUtil.permissionCheck("delete_system");
-        baseService.batchDeleteEntity(TaskStatus.class, this.getSeleteIDs());
-        return SUCCESS;
-    }
-
-    public IBaseService<TaskStatus> getbaseService() {
-        return baseService;
-    }
-
-    public void setbaseService(IBaseService<TaskStatus> baseService) {
-        this.baseService = baseService;
-    }
-
-    public TaskStatus getTaskStatus() {
-        return taskStatus;
-    }
-
-    public void setTaskStatus(TaskStatus taskStatus) {
-        this.taskStatus = taskStatus;
+    protected Class<TaskStatus> getEntityClass() {
+        return TaskStatus.class;
     }
 
 }

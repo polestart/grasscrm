@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -30,8 +31,10 @@ import com.gcrm.domain.Industry;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -43,8 +46,8 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<Account> baseService;
-    private IBaseService<AccountType> accountTypeService;
-    private IBaseService<Industry> industryService;
+    private IOptionService<AccountType> accountTypeService;
+    private IOptionService<Industry> industryService;
     private IBaseService<User> userService;
     private IBaseService<Campaign> campaignService;
     private IBaseService<TargetList> targetListService;
@@ -212,10 +215,13 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.types = accountTypeService.getAllObjects(AccountType.class
-                .getSimpleName());
-        this.industries = industryService.getAllObjects(Industry.class
-                .getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.types = accountTypeService.getOptions(
+                AccountType.class.getSimpleName(), local);
+        this.industries = industryService.getOptions(
+                Industry.class.getSimpleName(), local);
     }
 
     /**
@@ -236,7 +242,7 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
     /**
      * @return the accountTypeService
      */
-    public IBaseService<AccountType> getAccountTypeService() {
+    public IOptionService<AccountType> getAccountTypeService() {
         return accountTypeService;
     }
 
@@ -245,23 +251,8 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
      *            the accountTypeService to set
      */
     public void setAccountTypeService(
-            IBaseService<AccountType> accountTypeService) {
+            IOptionService<AccountType> accountTypeService) {
         this.accountTypeService = accountTypeService;
-    }
-
-    /**
-     * @return the industryService
-     */
-    public IBaseService<Industry> getIndustryService() {
-        return industryService;
-    }
-
-    /**
-     * @param industryService
-     *            the industryService to set
-     */
-    public void setIndustryService(IBaseService<Industry> industryService) {
-        this.industryService = industryService;
     }
 
     /**
@@ -442,6 +433,21 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
      */
     public void setManagerText(String managerText) {
         this.managerText = managerText;
+    }
+
+    /**
+     * @return the industryService
+     */
+    public IOptionService<Industry> getIndustryService() {
+        return industryService;
+    }
+
+    /**
+     * @param industryService
+     *            the industryService to set
+     */
+    public void setIndustryService(IOptionService<Industry> industryService) {
+        this.industryService = industryService;
     }
 
 }

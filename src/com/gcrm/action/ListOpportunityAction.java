@@ -146,11 +146,7 @@ public class ListOpportunityAction extends BaseListAction {
                 accountName = "";
             }
             SalesStage salesStage = instance.getSales_stage();
-            if (salesStage != null) {
-                stageName = CommonUtil.fromNullToEmpty(salesStage.getName());
-            } else {
-                stageName = "";
-            }
+            stageName = CommonUtil.getOptionLabel(salesStage);
             String amount = CommonUtil.fromNullToEmpty(instance
                     .getOpportunity_amount());
             User user = instance.getAssigned_to();
@@ -214,6 +210,7 @@ public class ListOpportunityAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -461,29 +458,27 @@ public class ListOpportunityAction extends BaseListAction {
                 }
                 data1.put(header[7], CommonUtil.fromNullToEmpty(opportunity
                         .getOpportunity_amount()));
-                if (opportunity.getType() != null) {
-                    data1.put(header[8], opportunity.getType().getId());
-                    data1.put(header[9], opportunity.getType().getName());
+                OpportunityType opportunityType = opportunity.getType();
+                if (opportunityType != null) {
+                    data1.put(header[8], opportunityType.getId());
                 } else {
                     data1.put(header[8], "");
-                    data1.put(header[9], "");
                 }
-                if (opportunity.getSales_stage() != null) {
-                    data1.put(header[10], opportunity.getSales_stage().getId());
-                    data1.put(header[11], opportunity.getSales_stage()
-                            .getName());
+                data1.put(header[9], CommonUtil.getOptionLabel(opportunityType));
+                SalesStage salesStage = opportunity.getSales_stage();
+                if (salesStage != null) {
+                    data1.put(header[10], salesStage.getId());
                 } else {
                     data1.put(header[10], "");
-                    data1.put(header[11], "");
                 }
-                if (opportunity.getLead_source() != null) {
-                    data1.put(header[12], opportunity.getLead_source().getId());
-                    data1.put(header[13], opportunity.getLead_source()
-                            .getName());
+                data1.put(header[11], CommonUtil.getOptionLabel(salesStage));
+                LeadSource leadSource = opportunity.getLead_source();
+                if (leadSource != null) {
+                    data1.put(header[12], leadSource.getId());
                 } else {
                     data1.put(header[12], "");
-                    data1.put(header[13], "");
                 }
+                data1.put(header[13], CommonUtil.getOptionLabel(leadSource));
                 data1.put(header[14], opportunity.getProbability());
 
                 if (opportunity.getCampaign() != null) {

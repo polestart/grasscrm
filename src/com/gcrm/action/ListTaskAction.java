@@ -207,6 +207,7 @@ public class ListTaskAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -305,13 +306,13 @@ public class ListTaskAction extends BaseListAction {
                 data1.put(header[0], task.getId());
                 data1.put(header[1],
                         CommonUtil.fromNullToEmpty(task.getSubject()));
-                if (task.getStatus() != null) {
-                    data1.put(header[2], task.getStatus().getId());
-                    data1.put(header[3], task.getStatus().getName());
+                TaskStatus taskStatus = task.getStatus();
+                if (taskStatus != null) {
+                    data1.put(header[2], taskStatus.getId());
                 } else {
                     data1.put(header[2], "");
-                    data1.put(header[3], "");
                 }
+                data1.put(header[3], CommonUtil.getOptionLabel(taskStatus));
                 SimpleDateFormat dateFormat = new SimpleDateFormat(
                         Constant.DATE_TIME_FORMAT);
                 Date startDate = task.getStart_date();
@@ -340,13 +341,13 @@ public class ListTaskAction extends BaseListAction {
                     data1.put(header[8], "");
                     data1.put(header[9], "");
                 }
-                if (task.getPriority() != null) {
-                    data1.put(header[10], task.getPriority().getId());
-                    data1.put(header[11], task.getPriority().getName());
+                TaskPriority taskPriority = task.getPriority();
+                if (taskPriority != null) {
+                    data1.put(header[10], taskPriority.getId());
                 } else {
                     data1.put(header[10], "");
-                    data1.put(header[11], "");
                 }
+                data1.put(header[11], CommonUtil.getOptionLabel(taskPriority));
                 data1.put(header[12],
                         CommonUtil.fromNullToEmpty(task.getDescription()));
                 data1.put(header[13],

@@ -19,13 +19,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.TargetListType;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -37,7 +40,7 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<TargetList> baseService;
-    private IBaseService<TargetListType> targetListTypeService;
+    private IOptionService<TargetListType> targetListTypeService;
     private IBaseService<User> userService;
     private TargetList targetList;
     private List<TargetListType> targetListTypes;
@@ -162,8 +165,11 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.targetListTypes = targetListTypeService
-                .getAllObjects(TargetListType.class.getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.targetListTypes = targetListTypeService.getOptions(
+                TargetListType.class.getSimpleName(), local);
     }
 
     /**
@@ -229,22 +235,6 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the targetListTypeService
-     */
-    public IBaseService<TargetListType> getTargetListTypeService() {
-        return targetListTypeService;
-    }
-
-    /**
-     * @param targetListTypeService
-     *            the targetListTypeService to set
-     */
-    public void setTargetListTypeService(
-            IBaseService<TargetListType> targetListTypeService) {
-        this.targetListTypeService = targetListTypeService;
-    }
-
-    /**
      * @return the targetListTypes
      */
     public List<TargetListType> getTargetListTypes() {
@@ -289,6 +279,22 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     @Override
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
+    }
+
+    /**
+     * @return the targetListTypeService
+     */
+    public IOptionService<TargetListType> getTargetListTypeService() {
+        return targetListTypeService;
+    }
+
+    /**
+     * @param targetListTypeService
+     *            the targetListTypeService to set
+     */
+    public void setTargetListTypeService(
+            IOptionService<TargetListType> targetListTypeService) {
+        this.targetListTypeService = targetListTypeService;
     }
 
 }

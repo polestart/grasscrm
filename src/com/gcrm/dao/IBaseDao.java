@@ -106,4 +106,6 @@ public interface IBaseDao<T extends Serializable> {
     public SearchResult<T> getPaginationObjects(final String clazz,
             final SearchCondition searchCondition);
 
+    public List<T> getAllSortedObjects(String clazz, String sortColumn,
+            String order);
 }

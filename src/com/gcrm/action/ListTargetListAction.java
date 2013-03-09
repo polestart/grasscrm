@@ -98,11 +98,7 @@ public class ListTargetListAction extends BaseListAction {
             int id = instance.getId();
             String name = CommonUtil.fromNullToEmpty(instance.getName());
             TargetListType type = instance.getType();
-            if (type != null) {
-                typeName = CommonUtil.fromNullToEmpty(type.getName());
-            } else {
-                typeName = "";
-            }
+            typeName = CommonUtil.getOptionLabel(type);
             String description = CommonUtil.fromNullToEmpty(instance
                     .getDescription());
             User user = instance.getAssigned_to();
@@ -149,6 +145,7 @@ public class ListTargetListAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
         return null;
     }
@@ -273,13 +270,13 @@ public class ListTargetListAction extends BaseListAction {
                 data1.put(header[0], targetList.getId());
                 data1.put(header[1],
                         CommonUtil.fromNullToEmpty(targetList.getName()));
-                if (targetList.getType() != null) {
-                    data1.put(header[2], targetList.getType().getId());
-                    data1.put(header[3], targetList.getType().getName());
+                TargetListType targetListType = targetList.getType();
+                if (targetListType != null) {
+                    data1.put(header[2], targetListType.getId());
                 } else {
                     data1.put(header[2], "");
-                    data1.put(header[3], "");
                 }
+                data1.put(header[3], CommonUtil.getOptionLabel(targetListType));
                 data1.put(header[4],
                         CommonUtil.fromNullToEmpty(targetList.getDescription()));
                 data1.put(header[5],

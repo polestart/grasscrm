@@ -177,13 +177,13 @@
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.priority.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="priorityID"
-											list="casePriorities" listKey="id" listValue="name" cssClass="record-value"/></td>
+											list="casePriorities" listKey="id" listValue="label" cssClass="record-value"/></td>
 						            <td class="td-mass-update"><input id="massUpdate"
 									    	    name="massUpdate" type="checkbox" class="massUpdate" value="status"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.status.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="statusID"
-											list="statuses" listKey="id" listValue="name" cssClass="record-value"/></td>
+											list="statuses" listKey="id" listValue="label" cssClass="record-value"/></td>
 								</tr>
 
 								<tr>
@@ -219,7 +219,7 @@
 									<td class="td-label"><label class="record-label"><s:text
 												name="case.type.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="typeID"
-											list="caseTypes" listKey="id" listValue="name" cssClass="record-value"/></td>
+											list="caseTypes" listKey="id" listValue="label" cssClass="record-value"/></td>
 								</tr>
 
 								<tr>
@@ -228,13 +228,13 @@
 									<td class="td-label"><label class="record-label"><s:text
 												name="case.origin.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="originID"
-											list="caseOrigins" listKey="id" listValue="name" cssClass="record-value"/></td>
+											list="caseOrigins" listKey="id" listValue="label" cssClass="record-value"/></td>
 						            <td class="td-mass-update"><input id="massUpdate"
 									    	    name="massUpdate" type="checkbox" class="massUpdate" value="reason"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="case.reason.label"></s:text>：</label></td>
 									<td class="td-value"><s:select name="reasonID"
-											list="caseReasons" listKey="id" listValue="name" cssClass="record-value"/></td>
+											list="caseReasons" listKey="id" listValue="label" cssClass="record-value"/></td>
 								</tr>
 
 								<tr>

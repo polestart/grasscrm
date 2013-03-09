@@ -198,6 +198,7 @@ public class ListTargetAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -350,13 +351,13 @@ public class ListTargetAction extends BaseListAction {
                         Integer.parseInt(id));
                 final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
                 data1.put(header[0], target.getId());
-                if (target.getSalutation() != null) {
-                    data1.put(header[1], target.getSalutation().getId());
-                    data1.put(header[2], target.getSalutation().getName());
+                Salutation salutation = target.getSalutation();
+                if (salutation != null) {
+                    data1.put(header[1], salutation.getId());
                 } else {
                     data1.put(header[1], "");
-                    data1.put(header[2], "");
                 }
+                data1.put(header[2], CommonUtil.getOptionLabel(salutation));
                 data1.put(header[3],
                         CommonUtil.fromNullToEmpty(target.getFirst_name()));
                 data1.put(header[4],

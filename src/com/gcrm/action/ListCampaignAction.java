@@ -129,17 +129,9 @@ public class ListCampaignAction extends BaseListAction {
             int id = instance.getId();
             String name = CommonUtil.fromNullToEmpty(instance.getName());
             CampaignStatus status = instance.getStatus();
-            if (status != null) {
-                statusName = CommonUtil.fromNullToEmpty(status.getName());
-            } else {
-                statusName = "";
-            }
+            statusName = CommonUtil.getOptionLabel(status);
             CampaignType type = instance.getType();
-            if (type != null) {
-                typeName = CommonUtil.fromNullToEmpty(type.getName());
-            } else {
-                typeName = "";
-            }
+            typeName = CommonUtil.getOptionLabel(type);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(
                     Constant.DATE_FORMAT);
@@ -214,6 +206,7 @@ public class ListCampaignAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -296,20 +289,20 @@ public class ListCampaignAction extends BaseListAction {
                 data1.put(header[0], campaign.getId());
                 data1.put(header[1],
                         CommonUtil.fromNullToEmpty(campaign.getName()));
-                if (campaign.getStatus() != null) {
-                    data1.put(header[2], campaign.getStatus().getId());
-                    data1.put(header[3], campaign.getStatus().getName());
+                CampaignStatus campaignStatus = campaign.getStatus();
+                if (campaignStatus != null) {
+                    data1.put(header[2], campaignStatus.getId());
                 } else {
                     data1.put(header[2], "");
-                    data1.put(header[3], "");
                 }
-                if (campaign.getType() != null) {
-                    data1.put(header[4], campaign.getType().getId());
-                    data1.put(header[5], campaign.getType().getName());
+                data1.put(header[3], CommonUtil.getOptionLabel(campaignStatus));
+                CampaignType campaignType = campaign.getType();
+                if (campaignType != null) {
+                    data1.put(header[4], campaignType.getId());
                 } else {
                     data1.put(header[4], "");
-                    data1.put(header[5], "");
                 }
+                data1.put(header[5], CommonUtil.getOptionLabel(campaignType));
                 SimpleDateFormat dateFormat = new SimpleDateFormat(
                         Constant.DATE_EDIT_FORMAT);
                 Date startDate = campaign.getStart_date();

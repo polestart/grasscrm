@@ -16,7 +16,11 @@
 package com.gcrm.util;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
+
+import com.gcrm.domain.OptionBase;
+import com.opensymphony.xwork2.ActionContext;
 
 /**
  * Common util
@@ -60,4 +64,27 @@ public class CommonUtil {
         return rb;
     }
 
+    public static String lowerCaseString(String value) {
+        char[] chars = new char[1];
+        chars[0] = value.charAt(0);
+        String temp = new String(chars);
+        value = value.replaceFirst(temp, temp.toLowerCase());
+        return value;
+    }
+
+    public static String getOptionLabel(OptionBase option) {
+        if (option == null) {
+            return "";
+        }
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        String label = null;
+        if ("en_US".equals(local)) {
+            label = option.getLabel_en_US();
+        } else {
+            label = option.getLabel_zh_CN();
+        }
+        return CommonUtil.fromNullToEmpty(label);
+    }
 }

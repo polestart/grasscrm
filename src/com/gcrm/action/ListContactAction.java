@@ -214,6 +214,7 @@ public class ListContactAction extends BaseListAction {
 
         // Returns JSON data back to page
         HttpServletResponse response = ServletActionContext.getResponse();
+        response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
     }
 
@@ -519,13 +520,13 @@ public class ListContactAction extends BaseListAction {
                         Integer.parseInt(id));
                 final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
                 data1.put(header[0], contact.getId());
-                if (contact.getSalutation() != null) {
-                    data1.put(header[1], contact.getSalutation().getId());
-                    data1.put(header[2], contact.getSalutation().getName());
+                Salutation salutation = contact.getSalutation();
+                if (salutation != null) {
+                    data1.put(header[1], salutation.getId());
                 } else {
                     data1.put(header[1], "");
-                    data1.put(header[2], "");
                 }
+                data1.put(header[2], CommonUtil.getOptionLabel(salutation));
                 data1.put(header[3],
                         CommonUtil.fromNullToEmpty(contact.getFirst_name()));
                 data1.put(header[4],
@@ -585,13 +586,13 @@ public class ListContactAction extends BaseListAction {
                     data1.put(header[28], "");
                 }
                 data1.put(header[29], contact.isNot_call());
-                if (contact.getLeadSource() != null) {
-                    data1.put(header[30], contact.getLeadSource().getId());
-                    data1.put(header[31], contact.getLeadSource().getName());
+                LeadSource leadSource = contact.getLeadSource();
+                if (leadSource != null) {
+                    data1.put(header[30], leadSource.getId());
                 } else {
                     data1.put(header[30], "");
-                    data1.put(header[31], "");
                 }
+                data1.put(header[31], CommonUtil.getOptionLabel(leadSource));
                 if (contact.getCampaign() != null) {
                     data1.put(header[32], contact.getCampaign().getId());
                     data1.put(header[33], contact.getCampaign().getName());

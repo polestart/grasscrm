@@ -192,7 +192,7 @@
 							<td class="td-label"><label class="record-label"><s:text
 										name="entity.status.label"></s:text>：</label></td>
 							<td class="td-value"><s:select name="statusID" list="statuses"
-									listKey="id" listValue="name" cssClass="record-value" /></td>
+									listKey="id" listValue="label" cssClass="record-value" /></td>
 						    <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="last_name"/></td>
 							<td class="td-label"><label class="record-label"><s:text

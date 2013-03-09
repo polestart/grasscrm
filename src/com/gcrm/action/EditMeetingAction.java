@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.gcrm.domain.Account;
 import com.gcrm.domain.Case;
@@ -34,10 +35,12 @@ import com.gcrm.domain.Target;
 import com.gcrm.domain.Task;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -49,8 +52,8 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<Meeting> baseService;
-    private IBaseService<MeetingStatus> meetingStatusService;
-    private IBaseService<ReminderOption> reminderOptionService;
+    private IOptionService<MeetingStatus> meetingStatusService;
+    private IOptionService<ReminderOption> reminderOptionService;
     private IBaseService<User> userService;
     private IBaseService<Account> accountService;
     private IBaseService<Case> caseService;
@@ -301,10 +304,13 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.statuses = meetingStatusService.getAllObjects(MeetingStatus.class
-                .getSimpleName());
-        this.reminderOptions = reminderOptionService
-                .getAllObjects(ReminderOption.class.getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.statuses = meetingStatusService.getOptions(
+                MeetingStatus.class.getSimpleName(), local);
+        this.reminderOptions = reminderOptionService.getOptions(
+                ReminderOption.class.getSimpleName(), local);
     }
 
     /**
@@ -320,38 +326,6 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
      */
     public void setBaseService(IBaseService<Meeting> baseService) {
         this.baseService = baseService;
-    }
-
-    /**
-     * @return the meetingStatusService
-     */
-    public IBaseService<MeetingStatus> getMeetingStatusService() {
-        return meetingStatusService;
-    }
-
-    /**
-     * @param meetingStatusService
-     *            the meetingStatusService to set
-     */
-    public void setMeetingStatusService(
-            IBaseService<MeetingStatus> meetingStatusService) {
-        this.meetingStatusService = meetingStatusService;
-    }
-
-    /**
-     * @return the reminderOptionService
-     */
-    public IBaseService<ReminderOption> getReminderOptionService() {
-        return reminderOptionService;
-    }
-
-    /**
-     * @param reminderOptionService
-     *            the reminderOptionService to set
-     */
-    public void setReminderOptionService(
-            IBaseService<ReminderOption> reminderOptionService) {
-        this.reminderOptionService = reminderOptionService;
     }
 
     /**
@@ -837,6 +811,38 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
      */
     public void setTaskService(IBaseService<Task> taskService) {
         this.taskService = taskService;
+    }
+
+    /**
+     * @return the meetingStatusService
+     */
+    public IOptionService<MeetingStatus> getMeetingStatusService() {
+        return meetingStatusService;
+    }
+
+    /**
+     * @param meetingStatusService
+     *            the meetingStatusService to set
+     */
+    public void setMeetingStatusService(
+            IOptionService<MeetingStatus> meetingStatusService) {
+        this.meetingStatusService = meetingStatusService;
+    }
+
+    /**
+     * @return the reminderOptionService
+     */
+    public IOptionService<ReminderOption> getReminderOptionService() {
+        return reminderOptionService;
+    }
+
+    /**
+     * @param reminderOptionService
+     *            the reminderOptionService to set
+     */
+    public void setReminderOptionService(
+            IOptionService<ReminderOption> reminderOptionService) {
+        this.reminderOptionService = reminderOptionService;
     }
 
 }

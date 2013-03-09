@@ -18,17 +18,19 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 <script type="text/javascript" src="../../js/datagrid-<%=(String)session.getAttribute("locale")%>.js"></script> 
 
+
 <script type="text/javascript">
 	$(function() {
+		var entityName = '<%=(String)request.getAttribute("entityName")%>';
 		$('#tt').edatagrid({
-			url : 'listCampaignStatus.action',
-			saveUrl : 'saveCampaignStatus.action',
-			updateUrl : 'saveCampaignStatus.action',
-			destroyUrl : 'deleteCampaignStatus.action'
+			url : 'list' + entityName + '.action',
+			saveUrl : 'save' + entityName + '.action',
+			updateUrl : 'save' + entityName + '.action',
+			destroyUrl : 'delete' + entityName + '.action'
 		});
 	    $("#delete").click(function() {	
-	    	many_deleterow_easyui("deleteCampaignStatus.action?seleteIDs=");
-		    });		
+	    	many_deleterow_easyui('delete' + entityName + '.action?seleteIDs=');
+		});		
 	});
 </script>
 </head>
@@ -42,7 +44,7 @@
 		<div id="feature">
 			<div id="feature-title">
 				<h2>
-					<s:text name="title.grid.campaignStatus" />
+					<s:property value="#request.title"/>
 				</h2>
 			</div>
 			<div id="feature-content">
@@ -53,24 +55,25 @@
 						</tr>	
 					</s:if>   
 				</table>
-							
-				<table id="tt" title="<s:text name='title.grid.campaignStatus'/>"
+								
+				<table id="tt" title='<s:property value="#request.title"/>'
 					style="width: 700px; height: 380px" toolbar="#toolbar"
 					pagination="true" rownumbers="true" fitColumns="true"
-					singleSelect="true">
+					singleSelect="false">
 					<thead>
 						<tr>
 						    <th data-options="field:'ck',checkbox:true"></th>
 							<th field="id" width="1" hidden="true"><s:text
 									name='entity.id.label' /></th>							
-							<th field="campaignStatus.id" width="10"><s:text
-									name='entity.id.label' /></th>
-							<th field="campaignStatus.name" width="50"
-								editor="{type:'validatebox',options:{required:true}}"><s:text
-									name='entity.name.label' /></th>
-							<th field="campaignStatus.sequence" width="50"
-								editor="{type:'numberbox',options:{precision:0}}"><s:text
-									name='entity.sequence.label' /></th>
+							<th field="entity.id" width="10" ><s:text name='entity.id.label'/></th>
+							<th field="entity.name" width="50"
+								editor="{type:'validatebox',options:{required:true}}"><s:text name='entity.name.label'/></th>
+							<th field="entity.label_en_US" width="50"
+								editor="text"><s:text name='entity.label_en_US.label'/></th>
+							<th field="entity.label_zh_CN" width="50"
+								editor="text"><s:text name='entity.label_zh_CN.label'/></th>																
+							<th field="entity.sequence" width="50"
+								editor="{type:'numberbox',options:{precision:0}}"><s:text name='entity.sequence.label'/></th>
 						</tr>
 					</thead>
 				</table>
@@ -91,9 +94,9 @@
 						plain="true" onclick="javascript:$('#tt').edatagrid('cancelRow')"><s:text name='button.cancel'/></a>
 				</div>
 			</div>
-
-			<s:include value="../footer.jsp" />
 		</div>
+		<s:include value="../footer.jsp" />
+
 	</div>
 </body>
 </html>

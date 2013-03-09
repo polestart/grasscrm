@@ -33,9 +33,11 @@ import com.gcrm.domain.User;
 import com.gcrm.domain.UserStatus;
 import com.gcrm.security.AuthenticationFilter;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -47,7 +49,7 @@ public class EditUserAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<User> baseService;
-    private IBaseService<UserStatus> userStatusService;
+    private IOptionService<UserStatus> userStatusService;
     private IBaseService<Role> roleService;
     private User user;
     private List<UserStatus> statuses;
@@ -189,8 +191,11 @@ public class EditUserAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.statuses = userStatusService.getAllObjects(UserStatus.class
-                .getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.statuses = userStatusService.getOptions(
+                UserStatus.class.getSimpleName(), local);
     }
 
     /**
@@ -206,21 +211,6 @@ public class EditUserAction extends BaseEditAction implements Preparable {
      */
     public void setBaseService(IBaseService<User> baseService) {
         this.baseService = baseService;
-    }
-
-    /**
-     * @return the userStatusService
-     */
-    public IBaseService<UserStatus> getUserStatusService() {
-        return userStatusService;
-    }
-
-    /**
-     * @param userStatusService
-     *            the userStatusService to set
-     */
-    public void setUserStatusService(IBaseService<UserStatus> userStatusService) {
-        this.userStatusService = userStatusService;
     }
 
     /**
@@ -296,6 +286,22 @@ public class EditUserAction extends BaseEditAction implements Preparable {
      */
     public void setRoleService(IBaseService<Role> roleService) {
         this.roleService = roleService;
+    }
+
+    /**
+     * @return the userStatusService
+     */
+    public IOptionService<UserStatus> getUserStatusService() {
+        return userStatusService;
+    }
+
+    /**
+     * @param userStatusService
+     *            the userStatusService to set
+     */
+    public void setUserStatusService(
+            IOptionService<UserStatus> userStatusService) {
+        this.userStatusService = userStatusService;
     }
 
 }

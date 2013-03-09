@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -33,8 +34,10 @@ import com.gcrm.domain.Contact;
 import com.gcrm.domain.Document;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -46,11 +49,11 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<Case> baseService;
-    private IBaseService<CaseStatus> caseStatusService;
-    private IBaseService<CasePriority> casePriorityService;
-    private IBaseService<CaseType> caseTypeService;
-    private IBaseService<CaseOrigin> caseOriginService;
-    private IBaseService<CaseReason> caseReasonService;
+    private IOptionService<CaseStatus> caseStatusService;
+    private IOptionService<CasePriority> casePriorityService;
+    private IOptionService<CaseType> caseTypeService;
+    private IOptionService<CaseOrigin> caseOriginService;
+    private IOptionService<CaseReason> caseReasonService;
     private IBaseService<Account> accountService;
     private IBaseService<Document> documentService;
     private IBaseService<Contact> contactService;
@@ -249,16 +252,19 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.statuses = caseStatusService.getAllObjects(CaseStatus.class
-                .getSimpleName());
-        this.casePriorities = casePriorityService
-                .getAllObjects(CasePriority.class.getSimpleName());
-        this.caseTypes = caseTypeService.getAllObjects(CaseType.class
-                .getSimpleName());
-        this.caseOrigins = caseOriginService.getAllObjects(CaseOrigin.class
-                .getSimpleName());
-        this.caseReasons = caseReasonService.getAllObjects(CaseReason.class
-                .getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.statuses = caseStatusService.getOptions(
+                CaseStatus.class.getSimpleName(), local);
+        this.casePriorities = casePriorityService.getOptions(
+                CasePriority.class.getSimpleName(), local);
+        this.caseTypes = caseTypeService.getOptions(
+                CaseType.class.getSimpleName(), local);
+        this.caseOrigins = caseOriginService.getOptions(
+                CaseOrigin.class.getSimpleName(), local);
+        this.caseReasons = caseReasonService.getOptions(
+                CaseReason.class.getSimpleName(), local);
     }
 
     /**
@@ -274,52 +280,6 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      */
     public void setBaseService(IBaseService<Case> baseService) {
         this.baseService = baseService;
-    }
-
-    /**
-     * @return the caseStatusService
-     */
-    public IBaseService<CaseStatus> getCaseStatusService() {
-        return caseStatusService;
-    }
-
-    /**
-     * @param caseStatusService
-     *            the caseStatusService to set
-     */
-    public void setCaseStatusService(IBaseService<CaseStatus> caseStatusService) {
-        this.caseStatusService = caseStatusService;
-    }
-
-    /**
-     * @return the casePriorityService
-     */
-    public IBaseService<CasePriority> getCasePriorityService() {
-        return casePriorityService;
-    }
-
-    /**
-     * @param casePriorityService
-     *            the casePriorityService to set
-     */
-    public void setCasePriorityService(
-            IBaseService<CasePriority> casePriorityService) {
-        this.casePriorityService = casePriorityService;
-    }
-
-    /**
-     * @return the caseTypeService
-     */
-    public IBaseService<CaseType> getCaseTypeService() {
-        return caseTypeService;
-    }
-
-    /**
-     * @param caseTypeService
-     *            the caseTypeService to set
-     */
-    public void setCaseTypeService(IBaseService<CaseType> caseTypeService) {
-        this.caseTypeService = caseTypeService;
     }
 
     /**
@@ -505,36 +465,6 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the caseOriginService
-     */
-    public IBaseService<CaseOrigin> getCaseOriginService() {
-        return caseOriginService;
-    }
-
-    /**
-     * @param caseOriginService
-     *            the caseOriginService to set
-     */
-    public void setCaseOriginService(IBaseService<CaseOrigin> caseOriginService) {
-        this.caseOriginService = caseOriginService;
-    }
-
-    /**
-     * @return the caseReasonService
-     */
-    public IBaseService<CaseReason> getCaseReasonService() {
-        return caseReasonService;
-    }
-
-    /**
-     * @param caseReasonService
-     *            the caseReasonService to set
-     */
-    public void setCaseReasonService(IBaseService<CaseReason> caseReasonService) {
-        this.caseReasonService = caseReasonService;
-    }
-
-    /**
      * @return the caseOrigins
      */
     public List<CaseOrigin> getCaseOrigins() {
@@ -639,6 +569,85 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     @Override
     public void setAssignedToText(String assignedToText) {
         this.assignedToText = assignedToText;
+    }
+
+    /**
+     * @return the caseStatusService
+     */
+    public IOptionService<CaseStatus> getCaseStatusService() {
+        return caseStatusService;
+    }
+
+    /**
+     * @param caseStatusService
+     *            the caseStatusService to set
+     */
+    public void setCaseStatusService(
+            IOptionService<CaseStatus> caseStatusService) {
+        this.caseStatusService = caseStatusService;
+    }
+
+    /**
+     * @return the casePriorityService
+     */
+    public IOptionService<CasePriority> getCasePriorityService() {
+        return casePriorityService;
+    }
+
+    /**
+     * @param casePriorityService
+     *            the casePriorityService to set
+     */
+    public void setCasePriorityService(
+            IOptionService<CasePriority> casePriorityService) {
+        this.casePriorityService = casePriorityService;
+    }
+
+    /**
+     * @return the caseTypeService
+     */
+    public IOptionService<CaseType> getCaseTypeService() {
+        return caseTypeService;
+    }
+
+    /**
+     * @param caseTypeService
+     *            the caseTypeService to set
+     */
+    public void setCaseTypeService(IOptionService<CaseType> caseTypeService) {
+        this.caseTypeService = caseTypeService;
+    }
+
+    /**
+     * @return the caseOriginService
+     */
+    public IOptionService<CaseOrigin> getCaseOriginService() {
+        return caseOriginService;
+    }
+
+    /**
+     * @param caseOriginService
+     *            the caseOriginService to set
+     */
+    public void setCaseOriginService(
+            IOptionService<CaseOrigin> caseOriginService) {
+        this.caseOriginService = caseOriginService;
+    }
+
+    /**
+     * @return the caseReasonService
+     */
+    public IOptionService<CaseReason> getCaseReasonService() {
+        return caseReasonService;
+    }
+
+    /**
+     * @param caseReasonService
+     *            the caseReasonService to set
+     */
+    public void setCaseReasonService(
+            IOptionService<CaseReason> caseReasonService) {
+        this.caseReasonService = caseReasonService;
     }
 
 }

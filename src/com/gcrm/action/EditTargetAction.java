@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -29,9 +30,11 @@ import com.gcrm.domain.Target;
 import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.service.ITargetService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -47,7 +50,7 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
     private IBaseService<Lead> leadService;
     private IBaseService<User> userService;
     private IBaseService<TargetList> targetListService;
-    private IBaseService<Salutation> salutationService;
+    private IOptionService<Salutation> salutationService;
     private List<Salutation> salutations;
     private Target target;
     private Lead lead;
@@ -209,8 +212,11 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.salutations = salutationService.getAllObjects(Salutation.class
-                .getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.salutations = salutationService.getOptions(
+                Salutation.class.getSimpleName(), local);
     }
 
     /**
@@ -323,21 +329,6 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the salutationService
-     */
-    public IBaseService<Salutation> getSalutationService() {
-        return salutationService;
-    }
-
-    /**
-     * @param salutationService
-     *            the salutationService to set
-     */
-    public void setSalutationService(IBaseService<Salutation> salutationService) {
-        this.salutationService = salutationService;
-    }
-
-    /**
      * @return the salutations
      */
     public List<Salutation> getSalutations() {
@@ -410,6 +401,22 @@ public class EditTargetAction extends BaseEditAction implements Preparable {
      */
     public void setLead(Lead lead) {
         this.lead = lead;
+    }
+
+    /**
+     * @return the salutationService
+     */
+    public IOptionService<Salutation> getSalutationService() {
+        return salutationService;
+    }
+
+    /**
+     * @param salutationService
+     *            the salutationService to set
+     */
+    public void setSalutationService(
+            IOptionService<Salutation> salutationService) {
+        this.salutationService = salutationService;
     }
 
 }

@@ -9,6 +9,10 @@
   </id>
   <property column="name" generated="never" insert="true" lazy="false"
    length="50" name="name" not-null="true" type="java.lang.String" update="true"/>
+  <property column="label_en_US" generated="never" insert="true" lazy="false"
+   length="50" name="label_en_US" type="java.lang.String" update="true"/>   
+  <property column="label_zh_CN" generated="never" insert="true" lazy="false"
+   length="50" name="label_zh_CN" type="java.lang.String" update="true"/>   
   <property column="sequence" generated="never" insert="true"
    lazy="false" name="sequence" type="int" update="true"/>
  </class>

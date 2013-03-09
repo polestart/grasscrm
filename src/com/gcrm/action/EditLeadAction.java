@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
@@ -36,8 +37,10 @@ import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.ILeadService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -50,9 +53,9 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
 
     private ILeadService baseService;
     private IBaseService<Account> accountService;
-    private IBaseService<LeadStatus> leadStatusService;
-    private IBaseService<LeadSource> leadSourceService;
-    private IBaseService<Salutation> salutationService;
+    private IOptionService<LeadStatus> leadStatusService;
+    private IOptionService<LeadSource> leadSourceService;
+    private IOptionService<Salutation> salutationService;
     private IBaseService<User> userService;
     private IBaseService<Campaign> campaignService;
     private IBaseService<Contact> contactService;
@@ -282,12 +285,15 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.leadStatuses = leadStatusService.getAllObjects(LeadStatus.class
-                .getSimpleName());
-        this.leadSources = leadSourceService.getAllObjects(LeadSource.class
-                .getSimpleName());
-        this.salutations = salutationService.getAllObjects(Salutation.class
-                .getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.leadStatuses = leadStatusService.getOptions(
+                LeadStatus.class.getSimpleName(), local);
+        this.leadSources = leadSourceService.getOptions(
+                LeadSource.class.getSimpleName(), local);
+        this.salutations = salutationService.getOptions(
+                Salutation.class.getSimpleName(), local);
     }
 
     /**
@@ -314,21 +320,6 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      */
     public void setAccountService(IBaseService<Account> accountService) {
         this.accountService = accountService;
-    }
-
-    /**
-     * @return the leadSourceService
-     */
-    public IBaseService<LeadSource> getLeadSourceService() {
-        return leadSourceService;
-    }
-
-    /**
-     * @param leadSourceService
-     *            the leadSourceService to set
-     */
-    public void setLeadSourceService(IBaseService<LeadSource> leadSourceService) {
-        this.leadSourceService = leadSourceService;
     }
 
     /**
@@ -481,21 +472,6 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      */
     public void setLeadStatusID(Integer leadStatusID) {
         this.leadStatusID = leadStatusID;
-    }
-
-    /**
-     * @return the leadStatusService
-     */
-    public IBaseService<LeadStatus> getLeadStatusService() {
-        return leadStatusService;
-    }
-
-    /**
-     * @param leadStatusService
-     *            the leadStatusService to set
-     */
-    public void setLeadStatusService(IBaseService<LeadStatus> leadStatusService) {
-        this.leadStatusService = leadStatusService;
     }
 
     /**
@@ -682,21 +658,6 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the salutationService
-     */
-    public IBaseService<Salutation> getSalutationService() {
-        return salutationService;
-    }
-
-    /**
-     * @param salutationService
-     *            the salutationService to set
-     */
-    public void setSalutationService(IBaseService<Salutation> salutationService) {
-        this.salutationService = salutationService;
-    }
-
-    /**
      * @return the salutations
      */
     public List<Salutation> getSalutations() {
@@ -724,6 +685,54 @@ public class EditLeadAction extends BaseEditAction implements Preparable {
      */
     public void setSalutationID(Integer salutationID) {
         this.salutationID = salutationID;
+    }
+
+    /**
+     * @return the leadStatusService
+     */
+    public IOptionService<LeadStatus> getLeadStatusService() {
+        return leadStatusService;
+    }
+
+    /**
+     * @param leadStatusService
+     *            the leadStatusService to set
+     */
+    public void setLeadStatusService(
+            IOptionService<LeadStatus> leadStatusService) {
+        this.leadStatusService = leadStatusService;
+    }
+
+    /**
+     * @return the leadSourceService
+     */
+    public IOptionService<LeadSource> getLeadSourceService() {
+        return leadSourceService;
+    }
+
+    /**
+     * @param leadSourceService
+     *            the leadSourceService to set
+     */
+    public void setLeadSourceService(
+            IOptionService<LeadSource> leadSourceService) {
+        this.leadSourceService = leadSourceService;
+    }
+
+    /**
+     * @return the salutationService
+     */
+    public IOptionService<Salutation> getSalutationService() {
+        return salutationService;
+    }
+
+    /**
+     * @param salutationService
+     *            the salutationService to set
+     */
+    public void setSalutationService(
+            IOptionService<Salutation> salutationService) {
+        this.salutationService = salutationService;
     }
 
 }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.gcrm.domain.Account;
 import com.gcrm.domain.Call;
@@ -35,10 +36,12 @@ import com.gcrm.domain.Target;
 import com.gcrm.domain.Task;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
+import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -50,9 +53,9 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<Call> baseService;
-    private IBaseService<CallStatus> callStatusService;
-    private IBaseService<CallDirection> callDirectionService;
-    private IBaseService<ReminderOption> reminderOptionService;
+    private IOptionService<CallStatus> callStatusService;
+    private IOptionService<CallDirection> callDirectionService;
+    private IOptionService<ReminderOption> reminderOptionService;
     private IBaseService<User> userService;
     private IBaseService<Account> accountService;
     private IBaseService<Case> caseService;
@@ -331,12 +334,15 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        this.statuses = callStatusService.getAllObjects(CallStatus.class
-                .getSimpleName());
-        this.directions = callDirectionService
-                .getAllObjects(CallDirection.class.getSimpleName());
-        this.reminderOptions = reminderOptionService
-                .getAllObjects(ReminderOption.class.getSimpleName());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        String local = (String) session.get("locale");
+        this.statuses = callStatusService.getOptions(
+                CallStatus.class.getSimpleName(), local);
+        this.directions = callDirectionService.getOptions(
+                CallDirection.class.getSimpleName(), local);
+        this.reminderOptions = reminderOptionService.getOptions(
+                ReminderOption.class.getSimpleName(), local);
     }
 
     public IBaseService<Call> getbaseService() {
@@ -383,37 +389,6 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      */
     public void setStartDate(String startDate) {
         this.startDate = startDate;
-    }
-
-    /**
-     * @return the callStatusService
-     */
-    public IBaseService<CallStatus> getCallStatusService() {
-        return callStatusService;
-    }
-
-    /**
-     * @param callStatusService
-     *            the callStatusService to set
-     */
-    public void setCallStatusService(IBaseService<CallStatus> callStatusService) {
-        this.callStatusService = callStatusService;
-    }
-
-    /**
-     * @return the reminderOptionService
-     */
-    public IBaseService<ReminderOption> getReminderOptionService() {
-        return reminderOptionService;
-    }
-
-    /**
-     * @param reminderOptionService
-     *            the reminderOptionService to set
-     */
-    public void setReminderOptionService(
-            IBaseService<ReminderOption> reminderOptionService) {
-        this.reminderOptionService = reminderOptionService;
     }
 
     /**
@@ -489,22 +464,6 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      */
     public void setDirections(List<CallDirection> directions) {
         this.directions = directions;
-    }
-
-    /**
-     * @return the callDirectionService
-     */
-    public IBaseService<CallDirection> getCallDirectionService() {
-        return callDirectionService;
-    }
-
-    /**
-     * @param callDirectionService
-     *            the callDirectionService to set
-     */
-    public void setCallDirectionService(
-            IBaseService<CallDirection> callDirectionService) {
-        this.callDirectionService = callDirectionService;
     }
 
     /**
@@ -817,6 +776,54 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      */
     public void setTaskService(IBaseService<Task> taskService) {
         this.taskService = taskService;
+    }
+
+    /**
+     * @return the callStatusService
+     */
+    public IOptionService<CallStatus> getCallStatusService() {
+        return callStatusService;
+    }
+
+    /**
+     * @param callStatusService
+     *            the callStatusService to set
+     */
+    public void setCallStatusService(
+            IOptionService<CallStatus> callStatusService) {
+        this.callStatusService = callStatusService;
+    }
+
+    /**
+     * @return the callDirectionService
+     */
+    public IOptionService<CallDirection> getCallDirectionService() {
+        return callDirectionService;
+    }
+
+    /**
+     * @param callDirectionService
+     *            the callDirectionService to set
+     */
+    public void setCallDirectionService(
+            IOptionService<CallDirection> callDirectionService) {
+        this.callDirectionService = callDirectionService;
+    }
+
+    /**
+     * @return the reminderOptionService
+     */
+    public IOptionService<ReminderOption> getReminderOptionService() {
+        return reminderOptionService;
+    }
+
+    /**
+     * @param reminderOptionService
+     *            the reminderOptionService to set
+     */
+    public void setReminderOptionService(
+            IOptionService<ReminderOption> reminderOptionService) {
+        this.reminderOptionService = reminderOptionService;
     }
 
 }

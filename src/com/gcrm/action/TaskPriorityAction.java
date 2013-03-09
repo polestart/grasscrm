@@ -15,110 +15,19 @@
  */
 package com.gcrm.action;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts2.ServletActionContext;
-
 import com.gcrm.domain.TaskPriority;
-import com.gcrm.service.IBaseService;
-import com.gcrm.util.security.UserUtil;
-import com.gcrm.vo.SearchCondition;
-import com.gcrm.vo.SearchResult;
 
 /**
  * Manages the Task Priority dropdown list
  * 
  */
-public class TaskPriorityAction extends BaseListAction {
+public class TaskPriorityAction extends OptionAction<TaskPriority> {
 
     private static final long serialVersionUID = -2404576552417042445L;
 
-    private IBaseService<TaskPriority> baseService;
-    private TaskPriority taskPriority;
-
-    private static final String CLAZZ = TaskPriority.class.getSimpleName();
-
-    /**
-     * Gets the list JSON data.
-     * 
-     * @return list JSON data
-     */
     @Override
-    public String list() throws Exception {
-        UserUtil.permissionCheck("view_system");
-        SearchCondition searchCondition = getSearchCondition();
-        SearchResult<TaskPriority> result = baseService.getPaginationObjects(
-                CLAZZ, searchCondition);
-        List<TaskPriority> taskPrioritys = result.getResult();
-
-        long totalRecords = result.getTotalRecords();
-
-        // Constructs the JSON data
-        String json = "{\"total\": " + totalRecords + ",\"rows\": [";
-        int size = taskPrioritys.size();
-        for (int i = 0; i < size; i++) {
-            TaskPriority instance = taskPrioritys.get(i);
-            Integer id = instance.getId();
-            String name = instance.getName();
-            int sequence = instance.getSequence();
-
-            json += "{\"id\":\"" + id + "\",\"taskPriority.id\":\"" + id
-                    + "\",\"taskPriority.name\":\"" + name
-                    + "\",\"taskPriority.sequence\":\"" + sequence + "\"}";
-            if (i < size - 1) {
-                json += ",";
-            }
-        }
-        json += "]}";
-
-        // Returns JSON data back to page
-        HttpServletResponse response = ServletActionContext.getResponse();
-        response.getWriter().write(json);
-        return null;
-    }
-
-    /**
-     * Saves the entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String save() throws Exception {
-        if (taskPriority.getId() == null) {
-            UserUtil.permissionCheck("create_system");
-        } else {
-            UserUtil.permissionCheck("update_system");
-        }
-        getbaseService().makePersistent(taskPriority);
-        return SUCCESS;
-    }
-
-    /**
-     * Deletes the selected entity.
-     * 
-     * @return the SUCCESS result
-     */
-    public String delete() throws Exception {
-        UserUtil.permissionCheck("delete_system");
-        baseService.batchDeleteEntity(TaskPriority.class, this.getSeleteIDs());
-        return SUCCESS;
-    }
-
-    public IBaseService<TaskPriority> getbaseService() {
-        return baseService;
-    }
-
-    public void setbaseService(IBaseService<TaskPriority> baseService) {
-        this.baseService = baseService;
-    }
-
-    public TaskPriority getTaskPriority() {
-        return taskPriority;
-    }
-
-    public void setTaskPriority(TaskPriority taskPriority) {
-        this.taskPriority = taskPriority;
+    protected Class<TaskPriority> getEntityClass() {
+        return TaskPriority.class;
     }
 
 }

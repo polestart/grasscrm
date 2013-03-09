@@ -187,7 +187,7 @@
 							<td class="td-label"><label class="record-label"><s:text
 										name="entity.status.label"></s:text>：</label></td>
 							<td class="td-value"><s:select name="statusID"
-									list="statuses" listKey="id" listValue="name" cssClass="record-value"/></td>
+									list="statuses" listKey="id" listValue="label" cssClass="record-value"/></td>
 						</tr>
 						<tr>
 				            <td class="td-mass-update"><input id="massUpdate"
@@ -459,13 +459,13 @@
 											name="meeting.reminder_pop" cssClass="record-value" />&nbsp;&nbsp;<label class="record-label"><s:text
 												name="entity.popup.label"></s:text></label>&nbsp;&nbsp;
 									  <s:select name="reminderOptionPopID"
-											list="reminderOptions" listKey="id" listValue="name"
+											list="reminderOptions" listKey="id" listValue="label"
 											cssClass="record-value" /><br/>
 									  <s:checkbox id="meeting.reminder_email"
 											name="meeting.reminder_email" cssClass="record-value" />&nbsp;&nbsp;<label class="record-label"><s:text
 												name="entity.email.label"></s:text></label>&nbsp;&nbsp;
 									  <s:select name="reminderOptionEmailID"
-											list="reminderOptions" listKey="id" listValue="name"
+											list="reminderOptions" listKey="id" listValue="label"
 											cssClass="record-value" />											
 									</td>
 								</tr>

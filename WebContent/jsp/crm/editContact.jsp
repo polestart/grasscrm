@@ -210,7 +210,7 @@
 							<td class="td-label"><label class="record-label"><s:text
 										name="menu.salutation.title"></s:text>：</label></td>
 							<td class="td-value"><s:select name="salutationID"
-									list="salutations" listKey="id" listValue="name"
+									list="salutations" listKey="id" listValue="label"
 									cssClass="record-value" /></td>
 						    <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="first_name"/></td>
@@ -462,7 +462,7 @@
 									<td class="td-label"><label class="record-label"><s:text
 												name="menu.leadSource.title"></s:text>：</label></td>
 									<td class="td-value"><s:select name="leadSourceID"
-											list="leadSources" listKey="id" listValue="name"
+											list="leadSources" listKey="id" listValue="label"
 											cssClass="record-value" /></td>
 								</tr>
 
