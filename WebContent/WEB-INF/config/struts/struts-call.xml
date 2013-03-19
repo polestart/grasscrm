@@ -50,6 +50,16 @@
             </result>            	  
         </action>  
 
+         <action name="exportTemplateCall" class="listCallAction">
+            <interceptor-ref name="defaultStack"/>
+            <result name="success" type="stream">
+                <param name="contentType">application/x-msdownload;charset=ISO8859-1</param>
+                <param name="inputName">templateStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">4096</param>
+            </result>            	  
+        </action>
+        
          <action name="importCall" class="listCallAction" method="importCSV">
         	<result name="input">/jsp/crm/uploadCall.jsp</result>
 			<result>/jsp/crm/upload-success.jsp</result>            	  
@@ -76,7 +86,13 @@
             <result name="input">/jsp/crm/editCall.jsp</result>          
     	  <result type="redirect">/jsp/crm/listCall.jsp</result>
         </action>
-                        
+
+        <action name="sendInvitesCall" class="editCallAction" method="sendInvites">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editCall.jsp</result>          
+    	    <result>/jsp/crm/editCall.jsp</result>
+        </action>
+                                
         <action name="deleteCall" class="listCallAction" method="delete">
             <result name="input">/jsp/crm/listCall.jsp</result> 
 			<result type="redirect">/jsp/crm/listCall.jsp</result>

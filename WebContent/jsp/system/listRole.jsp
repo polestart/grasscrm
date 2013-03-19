@@ -131,7 +131,7 @@
 		       <a href="javascript:void(0)" id="mtmt" class="easyui-menubutton" data-options="menu:'#mtm1',iconCls:'icon-more'"><s:text name='menu.toolbar.more.title'/></a>
 		       	<div id="mtm1" style="width:150px;">
 					  <s:if test="#request.user.create_system == 1 || #request.user.update_system == 1">
-						  <div data-options="iconCls:'icon-import'" onClick="openwindow('/system/uploadRole.jsp','<s:text name="title.import.role" />')">
+						  <div data-options="iconCls:'icon-import'" onClick="openwindow('/crm/upload.jsp?entityName=Role&namespace=system&title=' + '<s:text name="title.import.role" />')">
 							<s:text name='menu.item.import.title' />
 						  </div>
 					  </s:if>	  

@@ -78,21 +78,72 @@
        <property name="baseService" ref="baseService"/>
     </bean>
 
+    <!-- Schedule -->
+	<bean id="repeatTrigger"
+		class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="jobtask" />
+		<property name="startDelay" value="20000" />
+		<property name="repeatInterval" value="3600000" />
+	</bean>
+	
+	<bean id="scheduler"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="repeatTrigger" />
+			</list>
+		</property>
+	</bean>	
+
+	<bean id="jobtask"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="mailRemind" />
+		</property>
+		<property name="targetMethod">
+			<value>getRemindInstances</value>
+		</property>
+	</bean>
+	
+	<bean id="mailRemind"
+		class="com.gcrm.util.schedule.MailRemind">
+		<property name="callService" ref="callService" />
+		<property name="meetingService" ref="meetingService" />
+		<property name="mailService" ref="mailService" />
+	</bean>	
+	
 	<!-- Dao Config -->    
 	<bean id="baseDao" class="com.gcrm.dao.BaseDao">
          <property name="sessionFactory" ref="sessionFactory"></property>
     </bean>	
 
+	<bean id="callDao" class="com.gcrm.dao.CallDao">
+	     <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>	
+    
 	<bean id="documentDao" class="com.gcrm.dao.DocumentDao">
 	     <property name="sessionFactory" ref="sessionFactory"></property>
     </bean>	
 
+	<bean id="meetingDao" class="com.gcrm.dao.MeetingDao">
+	     <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>	
 	    
     <!-- Services -->
     <bean id="baseService" class="com.gcrm.service.BaseService">
     	<property name="baseDao" ref="baseDao" />
     </bean>
+
+    <bean id="callService" class="com.gcrm.service.CallService">
+    	<property name="baseDao" ref="callDao" />
+    	<property name="callDao" ref="callDao" />
+    </bean>
     
+    <bean id="documentService" class="com.gcrm.service.DocumentService">
+    	<property name="baseDao" ref="documentDao" />
+    	<property name="documentDao" ref="documentDao" />
+    </bean>
+        
     <bean id="leadService" class="com.gcrm.service.LeadService">
     	<property name="baseDao" ref="baseDao" />
     	<property name="accountService" ref="baseService" /> 
@@ -101,6 +152,11 @@
         <property name="leadStatusService" ref="baseService" />            	
     </bean>    
 
+    <bean id="meetingService" class="com.gcrm.service.MeetingService">
+    	<property name="baseDao" ref="meetingDao" />
+    	<property name="meetingDao" ref="meetingDao" />
+    </bean>
+    
     <bean id="optionService" class="com.gcrm.service.OptionService">
     	<property name="baseDao" ref="baseDao" />
     </bean> 
@@ -115,10 +171,6 @@
     	<property name="baseDao" ref="baseDao" />           	
     </bean>   
 
-    <bean id="documentService" class="com.gcrm.service.DocumentService">
-    	<property name="baseDao" ref="documentDao" />
-    	<property name="documentDao" ref="documentDao" />
-    </bean>    
         
     <!-- Actions -->
     <bean id="homeAction" class="com.gcrm.action.HomeAction" scope="prototype">   
@@ -184,6 +236,7 @@
         <property name="opportunityService" ref="baseService" />
         <property name="targetService" ref="baseService" />
         <property name="taskService" ref="baseService" />
+        <property name="mailService" ref="mailService" />
     </bean>  
 
     <bean id="listCaseAction" class="com.gcrm.action.ListCaseAction" scope="prototype">   
@@ -314,7 +367,8 @@
         <property name="leadService" ref="baseService" />
         <property name="opportunityService" ref="baseService" />
         <property name="targetService" ref="baseService" />
-        <property name="taskService" ref="baseService" />        
+        <property name="taskService" ref="baseService" /> 
+        <property name="mailService" ref="mailService" />               
     </bean>
 
     <bean id="listOpportunityAction" class="com.gcrm.action.ListOpportunityAction" scope="prototype">   

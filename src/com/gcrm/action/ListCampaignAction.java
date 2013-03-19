@@ -248,6 +248,19 @@ public class ListCampaignAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_campaign");
         String fileName = getText("entity.campaign.label") + ".csv";
         fileName = new String(fileName.getBytes(), "ISO8859-1");
@@ -280,70 +293,75 @@ public class ListCampaignAction extends BaseListAction {
                     getText("entity.assigned_to.label") + " "
                             + getText("entity.name.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                Campaign campaign = baseService.getEntityById(Campaign.class,
-                        Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], campaign.getId());
-                data1.put(header[1],
-                        CommonUtil.fromNullToEmpty(campaign.getName()));
-                CampaignStatus campaignStatus = campaign.getStatus();
-                if (campaignStatus != null) {
-                    data1.put(header[2], campaignStatus.getId());
-                } else {
-                    data1.put(header[2], "");
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    Campaign campaign = baseService.getEntityById(
+                            Campaign.class, Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], campaign.getId());
+                    data1.put(header[1],
+                            CommonUtil.fromNullToEmpty(campaign.getName()));
+                    CampaignStatus campaignStatus = campaign.getStatus();
+                    if (campaignStatus != null) {
+                        data1.put(header[2], campaignStatus.getId());
+                    } else {
+                        data1.put(header[2], "");
+                    }
+                    data1.put(header[3],
+                            CommonUtil.getOptionLabel(campaignStatus));
+                    CampaignType campaignType = campaign.getType();
+                    if (campaignType != null) {
+                        data1.put(header[4], campaignType.getId());
+                    } else {
+                        data1.put(header[4], "");
+                    }
+                    data1.put(header[5],
+                            CommonUtil.getOptionLabel(campaignType));
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(
+                            Constant.DATE_EDIT_FORMAT);
+                    Date startDate = campaign.getStart_date();
+                    if (startDate != null) {
+                        data1.put(header[6], dateFormat.format(startDate));
+                    } else {
+                        data1.put(header[6], "");
+                    }
+                    Date endDate = campaign.getEnd_date();
+                    if (endDate != null) {
+                        data1.put(header[7], dateFormat.format(endDate));
+                    } else {
+                        data1.put(header[7], "");
+                    }
+                    if (campaign.getCurrency() != null) {
+                        data1.put(header[8], campaign.getCurrency().getId());
+                        data1.put(header[9], campaign.getCurrency().getName());
+                    } else {
+                        data1.put(header[8], "");
+                        data1.put(header[9], "");
+                    }
+                    data1.put(header[10], campaign.getImpressions());
+                    data1.put(header[11], campaign.getBudget());
+                    data1.put(header[12], campaign.getExpected_cost());
+                    data1.put(header[13], campaign.getActual_cost());
+                    data1.put(header[14], campaign.getExpected_revenue());
+                    data1.put(header[15], campaign.getExpected_respone());
+                    data1.put(header[16],
+                            CommonUtil.fromNullToEmpty(campaign.getObjective()));
+                    data1.put(header[17], CommonUtil.fromNullToEmpty(campaign
+                            .getDescription()));
+                    data1.put(header[18],
+                            CommonUtil.fromNullToEmpty(campaign.getNotes()));
+                    if (campaign.getAssigned_to() != null) {
+                        data1.put(header[19], campaign.getAssigned_to().getId());
+                        data1.put(header[20], campaign.getAssigned_to()
+                                .getName());
+                    } else {
+                        data1.put(header[19], "");
+                        data1.put(header[20], "");
+                    }
+                    writer.write(data1, header);
                 }
-                data1.put(header[3], CommonUtil.getOptionLabel(campaignStatus));
-                CampaignType campaignType = campaign.getType();
-                if (campaignType != null) {
-                    data1.put(header[4], campaignType.getId());
-                } else {
-                    data1.put(header[4], "");
-                }
-                data1.put(header[5], CommonUtil.getOptionLabel(campaignType));
-                SimpleDateFormat dateFormat = new SimpleDateFormat(
-                        Constant.DATE_EDIT_FORMAT);
-                Date startDate = campaign.getStart_date();
-                if (startDate != null) {
-                    data1.put(header[6], dateFormat.format(startDate));
-                } else {
-                    data1.put(header[6], "");
-                }
-                Date endDate = campaign.getEnd_date();
-                if (endDate != null) {
-                    data1.put(header[7], dateFormat.format(endDate));
-                } else {
-                    data1.put(header[7], "");
-                }
-                if (campaign.getCurrency() != null) {
-                    data1.put(header[8], campaign.getCurrency().getId());
-                    data1.put(header[9], campaign.getCurrency().getName());
-                } else {
-                    data1.put(header[8], "");
-                    data1.put(header[9], "");
-                }
-                data1.put(header[10], campaign.getImpressions());
-                data1.put(header[11], campaign.getBudget());
-                data1.put(header[12], campaign.getExpected_cost());
-                data1.put(header[13], campaign.getActual_cost());
-                data1.put(header[14], campaign.getExpected_revenue());
-                data1.put(header[15], campaign.getExpected_respone());
-                data1.put(header[16],
-                        CommonUtil.fromNullToEmpty(campaign.getObjective()));
-                data1.put(header[17],
-                        CommonUtil.fromNullToEmpty(campaign.getDescription()));
-                data1.put(header[18],
-                        CommonUtil.fromNullToEmpty(campaign.getNotes()));
-                if (campaign.getAssigned_to() != null) {
-                    data1.put(header[19], campaign.getAssigned_to().getId());
-                    data1.put(header[20], campaign.getAssigned_to().getName());
-                } else {
-                    data1.put(header[19], "");
-                    data1.put(header[20], "");
-                }
-                writer.write(data1, header);
             }
         } catch (Exception e) {
             throw e;

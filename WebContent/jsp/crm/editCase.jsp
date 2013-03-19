@@ -367,7 +367,7 @@
 									</td>
 									<td width="80%" valign="top"><Iframe name="contentFrame"
 											id="contentFrame" scrolling="no" frameborder="0" width="100%"
-											height="360"></iframe></td>
+											height="390"></iframe></td>
 								</tr>
 							</table>
 						</div>

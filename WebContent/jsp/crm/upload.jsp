@@ -15,9 +15,21 @@
 <script type="text/javascript" src="../../js/global.js"></script>
 
 <script type="text/javascript">
-	function submit(){
+
+	$(document).ready(function(){	  
+	  $("#exportTemplate").click(function() {	
+		var entityName = '<%=(String)request.getParameter("entityName")%>';
 		var importObjectForm = document.getElementById('importObjectForm');
-		importObjectForm.action = "importLead.action";
+		var namespace = getWebPath() + '/jsp/' + '<%=(String)request.getParameter("namespace")%>' + '/';
+		importObjectForm.action = namespace + 'exportTemplate' + entityName + '.action';
+		importObjectForm.submit();
+	  });	
+	})
+	function submit(){
+		var entityName = '<%=(String)request.getAttribute("entityName")%>';
+		var importObjectForm = document.getElementById('importObjectForm');
+		var namespace = getWebPath() + '/jsp/' + '<%=(String)request.getParameter("namespace")%>' + '/';
+		importObjectForm.action = namespace + 'import' + entityName + '.action';
 		importObjectForm.submit();
 	}
 	
@@ -31,22 +43,29 @@
 	<div id="feature">
 		<div id="feature-title">
 			<h2>
-				<s:text name="title.import.lead" />
+				<s:property value="#parameters.title"/>
 			</h2>
 			<s:actionerror />
 			<s:fielderror />
 		</div>
 
 		<div id="feature-content">
-			<s:form id="importObjectForm" action="importLead" method="POST"
-				namespace="/jsp/crm" enctype="multipart/form-data">
+		    <table style="width: 100%;" border="0">
+		       <tr>
+			     <td><s:text name="info.import.title" /></td>
+			   </tr>		    
+		       <tr>
+			     <td><a id="exportTemplate" href="#"><s:text name="info.download.template" /></a></td>
+			   </tr>
+		    </table>		
+			<s:form id="importObjectForm" action="importAccount" method="POST" enctype="multipart/form-data" >
 				<table style="width: 100%;" border="0">
 					<tr>
 						<td><br></td>
-						<td />
+						<td/>
 					</tr>
 					<tr>
-						<td style="width: 35%;"></td>
+						<td style="width: 35%;text-align: right;"><s:text name="info.selectFile.label" />:</td>
 						<td style="text-align: left;"><s:file name="upload"
 								label="File" /></td>
 					</tr>

@@ -49,6 +49,18 @@ public interface IBaseDao<T extends Serializable> {
     public T findByName(String clazz, String name);
 
     /**
+     * Finds records by hql with parameters
+     * 
+     * @param hql
+     *            hql with parameters
+     * @param paramValue
+     *            parameter value
+     * @return result list
+     * @throws Exception
+     */
+    public List<T> findByParam(String hql, Object paramValue);
+
+    /**
      * Persists entity
      * 
      * @param entity
@@ -108,4 +120,6 @@ public interface IBaseDao<T extends Serializable> {
 
     public List<T> getAllSortedObjects(String clazz, String sortColumn,
             String order);
+
+    public List<T> getObjects(final String clazz, final String condition);
 }

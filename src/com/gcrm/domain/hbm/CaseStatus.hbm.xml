@@ -7,8 +7,8 @@
   <id column="id" name="id" type="java.lang.Integer">
    <generator class="native"/>
   </id>
-  <property column="name" generated="never" insert="true" lazy="false"
-   length="50" name="name" not-null="true" type="java.lang.String" update="true"/>
+  <property column="value" generated="never" insert="true" lazy="false"
+   length="50" name="value" not-null="true" type="java.lang.String" update="true"/>
   <property column="label_en_US" generated="never" insert="true" lazy="false"
    length="50" name="label_en_US" type="java.lang.String" update="true"/>   
   <property column="label_zh_CN" generated="never" insert="true" lazy="false"

@@ -139,7 +139,7 @@
 							name='menu.toolbar.more.title' /></a>
 					<div id="mtm1" style="width: 150px;">
 					  <s:if test="#request.user.create_system == 1 || #request.user.update_system == 1">
-						  <div data-options="iconCls:'icon-import'" onClick="openwindow('/system/uploadUser.jsp','<s:text name="title.import.user" />')">
+						  <div data-options="iconCls:'icon-import'" onClick="openwindow('/crm/upload.jsp?entityName=User&namespace=system&title=' + '<s:text name="title.import.user" />')">
 							<s:text name='menu.item.import.title' />
 						  </div>
 					  </s:if>	  

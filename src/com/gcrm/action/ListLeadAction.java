@@ -393,6 +393,19 @@ public class ListLeadAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_lead");
         String fileName = getText("entity.lead.label") + ".csv";
         fileName = new String(fileName.getBytes(), "ISO8859-1");
@@ -440,106 +453,109 @@ public class ListLeadAction extends BaseListAction {
                     getText("entity.assigned_to_id.label"),
                     getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                Lead lead = baseService.getEntityById(Lead.class,
-                        Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], lead.getId());
-                Salutation salutation = lead.getSalutation();
-                if (salutation != null) {
-                    data1.put(header[1], salutation.getId());
-                } else {
-                    data1.put(header[1], "");
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    Lead lead = baseService.getEntityById(Lead.class,
+                            Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], lead.getId());
+                    Salutation salutation = lead.getSalutation();
+                    if (salutation != null) {
+                        data1.put(header[1], salutation.getId());
+                    } else {
+                        data1.put(header[1], "");
+                    }
+                    data1.put(header[2], CommonUtil.getOptionLabel(salutation));
+                    data1.put(header[3],
+                            CommonUtil.fromNullToEmpty(lead.getFirst_name()));
+                    data1.put(header[4],
+                            CommonUtil.fromNullToEmpty(lead.getLast_name()));
+                    data1.put(header[5],
+                            CommonUtil.fromNullToEmpty(lead.getOffice_phone()));
+                    data1.put(header[6],
+                            CommonUtil.fromNullToEmpty(lead.getCompany()));
+                    data1.put(header[7],
+                            CommonUtil.fromNullToEmpty(lead.getTitle()));
+                    data1.put(header[8],
+                            CommonUtil.fromNullToEmpty(lead.getMobile()));
+                    data1.put(header[9],
+                            CommonUtil.fromNullToEmpty(lead.getDepartment()));
+                    data1.put(header[10],
+                            CommonUtil.fromNullToEmpty(lead.getFax()));
+                    if (lead.getAccount() != null) {
+                        data1.put(header[11], lead.getAccount().getId());
+                        data1.put(header[12], lead.getAccount().getName());
+                    } else {
+                        data1.put(header[11], "");
+                        data1.put(header[12], "");
+                    }
+                    data1.put(header[13], CommonUtil.fromNullToEmpty(lead
+                            .getPrimary_street()));
+                    data1.put(header[14],
+                            CommonUtil.fromNullToEmpty(lead.getPrimary_city()));
+                    data1.put(header[15],
+                            CommonUtil.fromNullToEmpty(lead.getPrimary_state()));
+                    data1.put(header[16], CommonUtil.fromNullToEmpty(lead
+                            .getPrimary_postal_code()));
+                    data1.put(header[17], CommonUtil.fromNullToEmpty(lead
+                            .getPrimary_country()));
+                    data1.put(header[18],
+                            CommonUtil.fromNullToEmpty(lead.getOther_street()));
+                    data1.put(header[19],
+                            CommonUtil.fromNullToEmpty(lead.getOther_city()));
+                    data1.put(header[20],
+                            CommonUtil.fromNullToEmpty(lead.getOther_state()));
+                    data1.put(header[21], CommonUtil.fromNullToEmpty(lead
+                            .getOther_postal_code()));
+                    data1.put(header[22],
+                            CommonUtil.fromNullToEmpty(lead.getOther_country()));
+                    data1.put(header[23],
+                            CommonUtil.fromNullToEmpty(lead.getEmail()));
+                    data1.put(header[24],
+                            CommonUtil.fromNullToEmpty(lead.getDescription()));
+                    data1.put(header[25],
+                            CommonUtil.fromNullToEmpty(lead.getNotes()));
+                    LeadStatus leadStatus = lead.getStatus();
+                    if (leadStatus != null) {
+                        data1.put(header[26], leadStatus.getId());
+                    } else {
+                        data1.put(header[26], "");
+                    }
+                    data1.put(header[27], CommonUtil.getOptionLabel(leadStatus));
+                    data1.put(header[28], CommonUtil.fromNullToEmpty(lead
+                            .getStatus_description()));
+                    LeadSource leadSource = lead.getLead_source();
+                    if (leadSource != null) {
+                        data1.put(header[29], leadSource.getId());
+                    } else {
+                        data1.put(header[29], "");
+                    }
+                    data1.put(header[30], CommonUtil.getOptionLabel(leadSource));
+                    data1.put(header[31], CommonUtil.fromNullToEmpty(lead
+                            .getLead_source_description()));
+                    data1.put(header[32], CommonUtil.fromNullToEmpty(lead
+                            .getOpportunity_amount()));
+                    data1.put(header[33],
+                            CommonUtil.fromNullToEmpty(lead.getReferred_by()));
+                    if (lead.getCampaign() != null) {
+                        data1.put(header[34], lead.getCampaign().getId());
+                        data1.put(header[35], lead.getCampaign().getName());
+                    } else {
+                        data1.put(header[34], "");
+                        data1.put(header[35], "");
+                    }
+                    data1.put(header[36], lead.isNot_call());
+                    if (lead.getAssigned_to() != null) {
+                        data1.put(header[37], lead.getAssigned_to().getId());
+                        data1.put(header[38], lead.getAssigned_to().getName());
+                    } else {
+                        data1.put(header[37], "");
+                        data1.put(header[38], "");
+                    }
+                    writer.write(data1, header);
                 }
-                data1.put(header[2], CommonUtil.getOptionLabel(salutation));
-                data1.put(header[3],
-                        CommonUtil.fromNullToEmpty(lead.getFirst_name()));
-                data1.put(header[4],
-                        CommonUtil.fromNullToEmpty(lead.getLast_name()));
-                data1.put(header[5],
-                        CommonUtil.fromNullToEmpty(lead.getOffice_phone()));
-                data1.put(header[6],
-                        CommonUtil.fromNullToEmpty(lead.getCompany()));
-                data1.put(header[7],
-                        CommonUtil.fromNullToEmpty(lead.getTitle()));
-                data1.put(header[8],
-                        CommonUtil.fromNullToEmpty(lead.getMobile()));
-                data1.put(header[9],
-                        CommonUtil.fromNullToEmpty(lead.getDepartment()));
-                data1.put(header[10], CommonUtil.fromNullToEmpty(lead.getFax()));
-                if (lead.getAccount() != null) {
-                    data1.put(header[11], lead.getAccount().getId());
-                    data1.put(header[12], lead.getAccount().getName());
-                } else {
-                    data1.put(header[11], "");
-                    data1.put(header[12], "");
-                }
-                data1.put(header[13],
-                        CommonUtil.fromNullToEmpty(lead.getPrimary_street()));
-                data1.put(header[14],
-                        CommonUtil.fromNullToEmpty(lead.getPrimary_city()));
-                data1.put(header[15],
-                        CommonUtil.fromNullToEmpty(lead.getPrimary_state()));
-                data1.put(header[16], CommonUtil.fromNullToEmpty(lead
-                        .getPrimary_postal_code()));
-                data1.put(header[17],
-                        CommonUtil.fromNullToEmpty(lead.getPrimary_country()));
-                data1.put(header[18],
-                        CommonUtil.fromNullToEmpty(lead.getOther_street()));
-                data1.put(header[19],
-                        CommonUtil.fromNullToEmpty(lead.getOther_city()));
-                data1.put(header[20],
-                        CommonUtil.fromNullToEmpty(lead.getOther_state()));
-                data1.put(header[21],
-                        CommonUtil.fromNullToEmpty(lead.getOther_postal_code()));
-                data1.put(header[22],
-                        CommonUtil.fromNullToEmpty(lead.getOther_country()));
-                data1.put(header[23],
-                        CommonUtil.fromNullToEmpty(lead.getEmail()));
-                data1.put(header[24],
-                        CommonUtil.fromNullToEmpty(lead.getDescription()));
-                data1.put(header[25],
-                        CommonUtil.fromNullToEmpty(lead.getNotes()));
-                LeadStatus leadStatus = lead.getStatus();
-                if (leadStatus != null) {
-                    data1.put(header[26], leadStatus.getId());
-                } else {
-                    data1.put(header[26], "");
-                }
-                data1.put(header[27], CommonUtil.getOptionLabel(leadStatus));
-                data1.put(header[28], CommonUtil.fromNullToEmpty(lead
-                        .getStatus_description()));
-                LeadSource leadSource = lead.getLead_source();
-                if (leadSource != null) {
-                    data1.put(header[29], leadSource.getId());
-                } else {
-                    data1.put(header[29], "");
-                }
-                data1.put(header[30], CommonUtil.getOptionLabel(leadSource));
-                data1.put(header[31], CommonUtil.fromNullToEmpty(lead
-                        .getLead_source_description()));
-                data1.put(header[32], CommonUtil.fromNullToEmpty(lead
-                        .getOpportunity_amount()));
-                data1.put(header[33],
-                        CommonUtil.fromNullToEmpty(lead.getReferred_by()));
-                if (lead.getCampaign() != null) {
-                    data1.put(header[34], lead.getCampaign().getId());
-                    data1.put(header[35], lead.getCampaign().getName());
-                } else {
-                    data1.put(header[34], "");
-                    data1.put(header[35], "");
-                }
-                data1.put(header[36], lead.isNot_call());
-                if (lead.getAssigned_to() != null) {
-                    data1.put(header[37], lead.getAssigned_to().getId());
-                    data1.put(header[38], lead.getAssigned_to().getName());
-                } else {
-                    data1.put(header[37], "");
-                    data1.put(header[38], "");
-                }
-                writer.write(data1, header);
             }
         } catch (Exception e) {
             throw e;

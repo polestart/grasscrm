@@ -133,6 +133,7 @@ public abstract class BaseListAction extends ActionSupport {
         return searchCondition;
     }
 
+    @SuppressWarnings("rawtypes")
     protected SearchCondition getSearchCondition(
             Map<String, String> fieldTypeMap, int scope, User loginUser)
             throws Exception {
@@ -208,6 +209,7 @@ public abstract class BaseListAction extends ActionSupport {
      * @param search
      *            condition
      */
+    @SuppressWarnings("serial")
     public void advancedSearch(StringBuilder condition) throws Exception {
         JSONObject json = JSONObject.fromObject(filters);
         String groupOp = json.getString("groupOp");

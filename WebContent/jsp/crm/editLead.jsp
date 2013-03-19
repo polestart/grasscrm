@@ -33,7 +33,7 @@
 	
 	  function convert(){
 		   var leadID = document.getElementById('id').value;
-		   openwindow2('/crm/convertLead.jsp?id=' + leadID,'Convert Lead',400,300);
+		   openwindow2('/crm/convertLead.jsp?id=' + leadID,400,300);
 	  }
 	  
 	  function copyAddress(){
@@ -607,7 +607,7 @@
 									</td>
 									<td width="80%" valign="top"><Iframe name="contentFrame"
 											id="contentFrame" scrolling="no" frameborder="0" width="100%"
-											height="360"></iframe></td>
+											height="390"></iframe></td>
 								</tr>
 							</table>
 						</div>						

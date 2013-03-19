@@ -63,13 +63,13 @@ public abstract class OptionAction<T extends OptionBase> extends BaseListAction
         for (int i = 0; i < size; i++) {
             OptionBase instance = optons.get(i);
             Integer id = instance.getId();
-            String name = instance.getName();
+            String value = instance.getValue();
             String label_en_US = instance.getLabel_en_US();
             String label_zh_CN = instance.getLabel_zh_CN();
             int sequence = instance.getSequence();
 
             json += "{\"id\":\"" + id + "\",\"entity.id\":\"" + id
-                    + "\",\"entity.name\":\"" + name
+                    + "\",\"entity.value\":\"" + value
                     + "\",\"entity.label_en_US\":\""
                     + CommonUtil.fromNullToEmpty(label_en_US)
                     + "\",\"entity.label_zh_CN\":\""
@@ -102,7 +102,7 @@ public abstract class OptionAction<T extends OptionBase> extends BaseListAction
         }
         T instance = this.getEntityClass().newInstance();
         instance.setId(optionBase.getId());
-        instance.setName(optionBase.getName());
+        instance.setValue(optionBase.getValue());
         instance.setLabel_en_US(optionBase.getLabel_en_US());
         instance.setLabel_zh_CN(optionBase.getLabel_zh_CN());
         instance.setSequence(optionBase.getSequence());

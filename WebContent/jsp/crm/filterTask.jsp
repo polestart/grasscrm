@@ -51,7 +51,6 @@
 <body topMargin=0>
   <div id="feature">
 	<div id="shortcuts" class="headerList">
-	  <b style="white-space:nowrap;color:#444;"><s:text name="title.action" />:&nbsp;&nbsp;</b>
 	  <span style="white-space:nowrap;">
 		<a href="editTask.action?<s:property value="createKey" />=<s:property value="id" />&<s:property value="moreFilterKey" />=<s:property value="moreFilterValue" />" class="easyui-linkbutton" iconCls="icon-add" plain="true" target='_blank'><s:text name="action.createTask" /></a>  
 	  </span>

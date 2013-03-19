@@ -281,6 +281,19 @@ public class ListCallAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_call");
         String fileName = getText("entity.call.label") + ".csv";
         fileName = new String(fileName.getBytes(), "ISO8859-1");
@@ -295,9 +308,6 @@ public class ListCallAction extends BaseListAction {
                     getText("entity.status_id.label"),
                     getText("entity.status_name.label"),
                     getText("entity.start_date.label"),
-                    getText("entity.reminder_pop.label"),
-                    getText("entity.reminder_option_pop_id.label"),
-                    getText("entity.reminder_option_pop_name.label"),
                     getText("entity.reminder_email.label"),
                     getText("entity.reminder_option_email_id.label"),
                     getText("entity.reminder_option_email_name.label"),
@@ -306,69 +316,62 @@ public class ListCallAction extends BaseListAction {
                     getText("entity.assigned_to_id.label"),
                     getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                Call call = baseService.getEntityById(Call.class,
-                        Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], call.getId());
-                data1.put(header[1],
-                        CommonUtil.fromNullToEmpty(call.getSubject()));
-                CallDirection callDirection = call.getDirection();
-                if (callDirection != null) {
-                    data1.put(header[2], callDirection.getId());
-                } else {
-                    data1.put(header[2], "");
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    Call call = baseService.getEntityById(Call.class,
+                            Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], call.getId());
+                    data1.put(header[1],
+                            CommonUtil.fromNullToEmpty(call.getSubject()));
+                    CallDirection callDirection = call.getDirection();
+                    if (callDirection != null) {
+                        data1.put(header[2], callDirection.getId());
+                    } else {
+                        data1.put(header[2], "");
+                    }
+                    data1.put(header[3],
+                            CommonUtil.getOptionLabel(callDirection));
+                    CallStatus callStatus = call.getStatus();
+                    if (call.getStatus() != null) {
+                        data1.put(header[4], callStatus.getId());
+                    } else {
+                        data1.put(header[4], "");
+                    }
+                    data1.put(header[5], CommonUtil.getOptionLabel(callStatus));
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(
+                            Constant.DATE_TIME_FORMAT);
+                    Date startDate = call.getStart_date();
+                    if (startDate != null) {
+                        data1.put(header[6], dateFormat.format(startDate));
+                    } else {
+                        data1.put(header[6], "");
+                    }
+                    data1.put(header[7], call.isReminder_email());
+                    ReminderOption reminderOptionEmail = call
+                            .getReminder_option_email();
+                    if (reminderOptionEmail != null) {
+                        data1.put(header[8], reminderOptionEmail.getId());
+                    } else {
+                        data1.put(header[8], "");
+                    }
+                    data1.put(header[9],
+                            CommonUtil.getOptionLabel(reminderOptionEmail));
+                    data1.put(header[10],
+                            CommonUtil.fromNullToEmpty(call.getDescription()));
+                    data1.put(header[11],
+                            CommonUtil.fromNullToEmpty(call.getNotes()));
+                    if (call.getAssigned_to() != null) {
+                        data1.put(header[12], call.getAssigned_to().getId());
+                        data1.put(header[13], call.getAssigned_to().getName());
+                    } else {
+                        data1.put(header[12], "");
+                        data1.put(header[13], "");
+                    }
+                    writer.write(data1, header);
                 }
-                data1.put(header[3], CommonUtil.getOptionLabel(callDirection));
-                CallStatus callStatus = call.getStatus();
-                if (call.getStatus() != null) {
-                    data1.put(header[4], callStatus.getId());
-                } else {
-                    data1.put(header[4], "");
-                }
-                data1.put(header[5], CommonUtil.getOptionLabel(callStatus));
-                SimpleDateFormat dateFormat = new SimpleDateFormat(
-                        Constant.DATE_TIME_FORMAT);
-                Date startDate = call.getStart_date();
-                if (startDate != null) {
-                    data1.put(header[6], dateFormat.format(startDate));
-                } else {
-                    data1.put(header[6], "");
-                }
-                data1.put(header[7], call.isReminder_pop());
-                ReminderOption reminderOptionPop = call
-                        .getReminder_option_pop();
-                if (reminderOptionPop != null) {
-                    data1.put(header[8], reminderOptionPop.getId());
-                } else {
-                    data1.put(header[8], "");
-                }
-                data1.put(header[9],
-                        CommonUtil.getOptionLabel(reminderOptionPop));
-                data1.put(header[10], call.isReminder_email());
-                ReminderOption reminderOptionEmail = call
-                        .getReminder_option_email();
-                if (reminderOptionEmail != null) {
-                    data1.put(header[11], reminderOptionEmail.getId());
-                } else {
-                    data1.put(header[11], "");
-                }
-                data1.put(header[12],
-                        CommonUtil.getOptionLabel(reminderOptionEmail));
-                data1.put(header[13],
-                        CommonUtil.fromNullToEmpty(call.getDescription()));
-                data1.put(header[14],
-                        CommonUtil.fromNullToEmpty(call.getNotes()));
-                if (call.getAssigned_to() != null) {
-                    data1.put(header[15], call.getAssigned_to().getId());
-                    data1.put(header[16], call.getAssigned_to().getName());
-                } else {
-                    data1.put(header[15], "");
-                    data1.put(header[16], "");
-                }
-                writer.write(data1, header);
             }
         } catch (Exception e) {
             throw e;
@@ -443,24 +446,6 @@ public class ListCallAction extends BaseListAction {
                         call.setStart_date(startDate);
                     } else {
                         call.setStart_date(null);
-                    }
-                    String reminderWayPop = row
-                            .get(getText("entity.reminder_pop.label"));
-                    if (CommonUtil.isNullOrEmpty(reminderWayPop)) {
-                        call.setReminder_pop(false);
-                    } else {
-                        call.setReminder_pop(Boolean
-                                .parseBoolean(reminderWayPop));
-                    }
-                    String reminderOptionPopID = row
-                            .get(getText("entity.reminder_option_pop_id.label"));
-                    if (CommonUtil.isNullOrEmpty(reminderOptionPopID)) {
-                        call.setReminder_option_pop(null);
-                    } else {
-                        ReminderOption reminderOption = reminderOptionService
-                                .getEntityById(ReminderOption.class,
-                                        Integer.parseInt(reminderOptionPopID));
-                        call.setReminder_option_pop(reminderOption);
                     }
                     String reminderWayEmail = row
                             .get(getText("entity.reminder_email.label"));

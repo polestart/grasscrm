@@ -18,9 +18,12 @@ package com.gcrm.util.mail;
 import java.util.List;
 import java.util.Properties;
 
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.gcrm.domain.EmailSetting;
 import com.gcrm.service.IBaseService;
@@ -32,15 +35,15 @@ public class MailService {
     private TaskExecutor taskExecutor;
     private IBaseService<EmailSetting> baseService;
 
-    public void asynSendMail(final SimpleMailMessage msg) {
+    public void asynSendSimpleMail(final SimpleMailMessage msg) {
         taskExecutor.execute(new Runnable() {
             public void run() {
-                sendMail(msg);
+                sendSimpleMail(msg);
             }
         });
     }
 
-    public void sendMail(SimpleMailMessage msg) {
+    public void sendSimpleMail(SimpleMailMessage msg) {
         List<EmailSetting> emailSettings = baseService
                 .getAllObjects(EmailSetting.class.getSimpleName());
         EmailSetting emailSetting = null;
@@ -49,6 +52,54 @@ public class MailService {
         } else {
             return;
         }
+        JavaMailSenderImpl sender = this.prepareSender(emailSetting);
+        if (sender != null) {
+            sender.send(msg);
+        }
+    }
+
+    public void asynSendHtmlMail(final String from, final String[] to,
+            final String subject, final String text) {
+        taskExecutor.execute(new Runnable() {
+            public void run() {
+                try {
+                    sendHtmlMail(from, to, subject, text);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+    public void sendHtmlMail(String from, String[] to, String subject,
+            String text) throws Exception {
+        List<EmailSetting> emailSettings = baseService
+                .getAllObjects(EmailSetting.class.getSimpleName());
+        EmailSetting emailSetting = null;
+        if (emailSettings != null && emailSettings.size() > 0) {
+            emailSetting = emailSettings.get(0);
+        } else {
+            return;
+        }
+        if (from == null) {
+            from = emailSetting.getFrom_address();
+        }
+        JavaMailSenderImpl sender = this.prepareSender(emailSetting);
+        if (sender != null) {
+            MimeMessage msg = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(msg, false,
+                    "utf-8");
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(text, true);
+            sender.send(msg);
+        }
+
+    }
+
+    private JavaMailSenderImpl prepareSender(EmailSetting emailSetting) {
+
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("mail.smtp.auth", "true");
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
@@ -80,7 +131,7 @@ public class MailService {
             break;
         }
         sender.setJavaMailProperties(javaMailProperties);
-        sender.send(msg);
+        return sender;
     }
 
     /**

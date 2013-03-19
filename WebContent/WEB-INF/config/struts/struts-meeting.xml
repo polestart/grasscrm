@@ -50,6 +50,16 @@
             </result>            	  
         </action>  
 
+         <action name="exportTemplateMeeting" class="listMeetingAction">
+            <interceptor-ref name="defaultStack"/>
+            <result name="success" type="stream">
+                <param name="contentType">application/x-msdownload;charset=ISO8859-1</param>
+                <param name="inputName">templateStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">4096</param>
+            </result>            	  
+        </action>
+        
          <action name="importMeeting" class="listMeetingAction" method="importCSV">
         	<result name="input">/jsp/crm/uploadMeeting.jsp</result>
 			<result>/jsp/crm/upload-success.jsp</result>            	  
@@ -76,7 +86,13 @@
             <result name="input">/jsp/crm/editMeeting.jsp</result>          
     	    <result type="redirect">/jsp/crm/listMeeting.jsp</result>
         </action>
-                        
+
+        <action name="sendInvitesMeeting" class="editMeetingAction" method="sendInvites">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/crm/editMeeting.jsp</result>          
+    	    <result>/jsp/crm/editMeeting.jsp</result>
+        </action>
+                                
         <action name="deleteMeeting" class="listMeetingAction" method="delete">
 			<result name="input">/jsp/crm/listMeeting.jsp</result>
 			<result type="redirect">/jsp/crm/listMeeting.jsp</result>

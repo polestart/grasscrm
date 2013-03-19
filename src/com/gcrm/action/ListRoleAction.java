@@ -211,6 +211,19 @@ public class ListRoleAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_system");
         ResourceBundle rb = CommonUtil.getResourceBundle();
         String fileName = rb.getString("entity.role.label") + ".csv";
@@ -225,19 +238,22 @@ public class ListRoleAction extends BaseListAction {
                     rb.getString("entity.description.label"),
                     rb.getString("entity.notes.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                Role role = baseService.getEntityById(Role.class,
-                        Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], role.getId());
-                data1.put(header[1], CommonUtil.fromNullToEmpty(role.getName()));
-                data1.put(header[2],
-                        CommonUtil.fromNullToEmpty(role.getDescription()));
-                data1.put(header[3],
-                        CommonUtil.fromNullToEmpty(role.getNotes()));
-                writer.write(data1, header);
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    Role role = baseService.getEntityById(Role.class,
+                            Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], role.getId());
+                    data1.put(header[1],
+                            CommonUtil.fromNullToEmpty(role.getName()));
+                    data1.put(header[2],
+                            CommonUtil.fromNullToEmpty(role.getDescription()));
+                    data1.put(header[3],
+                            CommonUtil.fromNullToEmpty(role.getNotes()));
+                    writer.write(data1, header);
+                }
             }
         } catch (Exception e) {
             throw e;

@@ -19,7 +19,7 @@ public class Constant {
 
     public static final String DATE_FORMAT = "MM/dd/yyyy";
     public static final String DATE_EDIT_FORMAT = "M/d/yyyy";
-    public static final String DATE_TIME_FORMAT = "M/d/yyyy hh:mm:ss";
+    public static final String DATE_TIME_FORMAT = "M/d/yyyy HH:mm:ss";
     public static final String BOOLEAN_TRUE = "true";
 
     public static final int[] PAGE_SIZE_SELECT = { 10, 20, 30, 50 };

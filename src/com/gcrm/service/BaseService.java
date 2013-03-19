@@ -97,6 +97,10 @@ public class BaseService<T extends Serializable> implements IBaseService<T> {
         return baseDao.findByName(clazz, name);
     }
 
+    public List<T> findByParam(String hql, Object paramValue) {
+        return baseDao.findByParam(hql, paramValue);
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -116,6 +120,10 @@ public class BaseService<T extends Serializable> implements IBaseService<T> {
             final SearchCondition searchCondition) {
 
         return baseDao.getPaginationObjects(clazz, searchCondition);
+    }
+
+    public List<T> getObjects(final String clazz, final String condition) {
+        return baseDao.getObjects(clazz, condition);
     }
 
     public IBaseDao<T> getBaseDao() {

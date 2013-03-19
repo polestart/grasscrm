@@ -7,7 +7,7 @@
     <field name="task.subject">
         <field-validator type="requiredstring">
             <param name="trim">true</param>
-			<message>${getText("errors.required", {getText("task.subject.label")})}</message>
+			<message>${getText("errors.required", {getText("entity.subject.label")})}</message>
         </field-validator>
     </field>
     

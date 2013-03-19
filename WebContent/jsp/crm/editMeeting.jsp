@@ -1,6 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page language="java"  import="com.gcrm.domain.EmailSetting"%>	
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -29,6 +30,13 @@
 		baseCancel("Meeting");
 	}
 
+	function sendInvites() {
+		disableBtn();
+		var addObjectForm = document.getElementById('addObjectForm');
+		addObjectForm.action = 'sendInvitesMeeting.action';
+		addObjectForm.submit();		
+	}	
+	
 	function checkRelatedObject() {
 		var relatedObject = $('#relatedObject').children('option:selected')
 				.val();
@@ -85,10 +93,12 @@
 		checkRelatedObject();	
 		if ($("#seleteIDs").val()!= ""){
 			  $("input:checkbox[name=massUpdate]").css("display",'block');
+			  $('#send_span').css("display",'none');
 			  $('#tt').tabs('close', '<s:text name='tab.invitees'/>');
 		}
 		if ($("#id").val() == ""){
 			  $('#tt').tabs('close', '<s:text name='tab.invitees'/>');
+			  $('#send_span').css("display",'none');
 			  if ($("#seleteIDs").val() == ""){
 				     $("#addObjectForm").form('validate');
 			  }			  
@@ -99,9 +109,16 @@
 	          msg:'<s:text name="message.save" />',  
 	          timeout:5000,  
 	          showType:'slide'  
-	      });  
-			$("#saveFlag").val("");
-	    }			
+	        });  
+	    } else if ($("#saveFlag").val() == "<%=EmailSetting.STATUS_SENT%>"){
+	     	 $.messager.show({  
+	             title:'<s:text name="message.title" />',  
+	             msg:'<s:text name="message.invitation.sent" />',  
+	             timeout:5000,  
+	             showType:'slide'  
+	        })
+	     };  
+	     $("#saveFlag").val("");		
 	})
 </script>
 
@@ -122,6 +139,9 @@
 				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
+				</span>	<span style="white-space: nowrap;" id="send_span"> <a id="send_btn" href="#"
+						class="easyui-linkbutton" iconCls="icon-mail" onclick="sendInvites()"
+						plain="true"><s:text name="button.sendInvites" /></a>						
 				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
@@ -451,22 +471,24 @@
 								</tr>
 								<tr>
 						            <td class="td-mass-update"><input id="massUpdate"
-										        name="massUpdate" type="checkbox" class="massUpdate" value="reminder_pop"/></td>
+										        name="massUpdate" type="checkbox" class="massUpdate" value="reminder_email"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.reminder.label"></s:text>：</label></td>
 									<td class="td-value">
-									  <s:checkbox id="meeting.reminder_pop"
-											name="meeting.reminder_pop" cssClass="record-value" />&nbsp;&nbsp;<label class="record-label"><s:text
-												name="entity.popup.label"></s:text></label>&nbsp;&nbsp;
-									  <s:select name="reminderOptionPopID"
-											list="reminderOptions" listKey="id" listValue="label"
-											cssClass="record-value" /><br/>
-									  <s:checkbox id="meeting.reminder_email"
-											name="meeting.reminder_email" cssClass="record-value" />&nbsp;&nbsp;<label class="record-label"><s:text
-												name="entity.email.label"></s:text></label>&nbsp;&nbsp;
-									  <s:select name="reminderOptionEmailID"
-											list="reminderOptions" listKey="id" listValue="label"
-											cssClass="record-value" />											
+									  <table>
+										<tr>
+										  <td style="text-align:left;width:35%;">
+										    <s:checkbox id="meeting.reminder_email"
+												name="meeting.reminder_email" cssClass="record-value" />&nbsp;&nbsp;<label class="record-label"><s:text
+													name="entity.email.label"></s:text></label>
+										  </td>	
+										  <td style="text-align:left;width:65%;">													
+										    <s:select name="reminderOptionEmailID"
+												list="reminderOptions" listKey="id" listValue="label"
+												cssClass="record-value" />
+										  </td>  
+										</tr>  
+									  </table>																						
 									</td>
 								</tr>
 								<tr>
@@ -603,7 +625,7 @@
 									</td>
 									<td width="80%" valign="top"><Iframe name="contentFrame"
 											id="contentFrame" scrolling="no" frameborder="0" width="100%"
-											height="360"></iframe></td>
+											height="390"></iframe></td>
 								</tr>
 							</table>
 						</div>

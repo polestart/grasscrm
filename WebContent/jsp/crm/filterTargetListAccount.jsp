@@ -58,7 +58,7 @@
         <a id="remove" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.removeRelation" /></a>  
       </span>
       <span style="white-space:nowrap;">
-        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow2('/crm/selectAccountPage.action?relationKey=TargetList&relationValue=<s:property value="id" />','Select Account',750,500)"><s:text name="action.select" /></a>  
+        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow2('/crm/selectAccountPage.action?relationKey=TargetList&relationValue=<s:property value="id" />',750,500)"><s:text name="action.select" /></a>  
       </span>	      		     		     
     </div> 		 
 	<s:form id="addObjectForm" namespace="/jsp/crm"

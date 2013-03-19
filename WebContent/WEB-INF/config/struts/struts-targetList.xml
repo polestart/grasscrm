@@ -61,7 +61,17 @@
                 <param name="bufferSize">4096</param>
             </result>            	  
         </action>  
-        
+
+         <action name="exportTemplateTargetList" class="listTargetListAction">
+            <interceptor-ref name="defaultStack"/>
+            <result name="success" type="stream">
+                <param name="contentType">application/x-msdownload;charset=ISO8859-1</param>
+                <param name="inputName">templateStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">4096</param>
+            </result>            	  
+        </action>
+                
          <action name="importTargetList" class="listTargetListAction" method="importCSV">
         	<result name="input">/jsp/crm/uploadTargetList.jsp</result>
 			<result>/jsp/crm/upload-success.jsp</result>            	  

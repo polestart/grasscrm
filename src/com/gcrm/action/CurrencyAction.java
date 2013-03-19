@@ -23,6 +23,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.gcrm.domain.Currency;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.CommonUtil;
 import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
@@ -61,15 +62,15 @@ public class CurrencyAction extends BaseListAction {
         for (int i = 0; i < size; i++) {
             Currency instance = currencys.get(i);
             Integer id = instance.getId();
-            String name = instance.getName();
-            String code = instance.getCode();
+            String name = CommonUtil.fromNullToEmpty(instance.getName());
+            String code = CommonUtil.fromNullToEmpty(instance.getCode());
             Double rate = instance.getRate();
             String rateS = "";
             if (rate != null) {
                 rateS = String.valueOf(rate);
             }
-            String symbol = instance.getSymbol();
-            String status = instance.getStatus();
+            String symbol = CommonUtil.fromNullToEmpty(instance.getSymbol());
+            String status = CommonUtil.fromNullToEmpty(instance.getStatus());
 
             json += "{\"id\":\"" + id + "\",\"currency.id\":\"" + id
                     + "\",\"currency.name\":\"" + name

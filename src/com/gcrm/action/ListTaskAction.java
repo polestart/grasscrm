@@ -273,6 +273,19 @@ public class ListTaskAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_task");
         String fileName = getText("entity.task.label") + ".csv";
         fileName = new String(fileName.getBytes(), "ISO8859-1");
@@ -297,69 +310,72 @@ public class ListTaskAction extends BaseListAction {
                     getText("entity.assigned_to_id.label"),
                     getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                Task task = baseService.getEntityById(Task.class,
-                        Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], task.getId());
-                data1.put(header[1],
-                        CommonUtil.fromNullToEmpty(task.getSubject()));
-                TaskStatus taskStatus = task.getStatus();
-                if (taskStatus != null) {
-                    data1.put(header[2], taskStatus.getId());
-                } else {
-                    data1.put(header[2], "");
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    Task task = baseService.getEntityById(Task.class,
+                            Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], task.getId());
+                    data1.put(header[1],
+                            CommonUtil.fromNullToEmpty(task.getSubject()));
+                    TaskStatus taskStatus = task.getStatus();
+                    if (taskStatus != null) {
+                        data1.put(header[2], taskStatus.getId());
+                    } else {
+                        data1.put(header[2], "");
+                    }
+                    data1.put(header[3], CommonUtil.getOptionLabel(taskStatus));
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(
+                            Constant.DATE_TIME_FORMAT);
+                    Date startDate = task.getStart_date();
+                    if (startDate != null) {
+                        data1.put(header[4], dateFormat.format(startDate));
+                    } else {
+                        data1.put(header[4], "");
+                    }
+                    Date due_date = task.getDue_date();
+                    if (due_date != null) {
+                        data1.put(header[5], dateFormat.format(due_date));
+                    } else {
+                        data1.put(header[5], "");
+                    }
+                    data1.put(header[6], CommonUtil.fromNullToEmpty(task
+                            .getRelated_object()));
+                    if (task.getRelated_record() != null) {
+                        data1.put(header[7], task.getRelated_record());
+                    } else {
+                        data1.put(header[7], "");
+                    }
+                    if (task.getContact() != null) {
+                        data1.put(header[8], task.getContact().getId());
+                        data1.put(header[9], task.getContact().getName());
+                    } else {
+                        data1.put(header[8], "");
+                        data1.put(header[9], "");
+                    }
+                    TaskPriority taskPriority = task.getPriority();
+                    if (taskPriority != null) {
+                        data1.put(header[10], taskPriority.getId());
+                    } else {
+                        data1.put(header[10], "");
+                    }
+                    data1.put(header[11],
+                            CommonUtil.getOptionLabel(taskPriority));
+                    data1.put(header[12],
+                            CommonUtil.fromNullToEmpty(task.getDescription()));
+                    data1.put(header[13],
+                            CommonUtil.fromNullToEmpty(task.getNotes()));
+                    if (task.getAssigned_to() != null) {
+                        data1.put(header[14], task.getAssigned_to().getId());
+                        data1.put(header[15], task.getAssigned_to().getName());
+                    } else {
+                        data1.put(header[14], "");
+                        data1.put(header[15], "");
+                    }
+                    writer.write(data1, header);
                 }
-                data1.put(header[3], CommonUtil.getOptionLabel(taskStatus));
-                SimpleDateFormat dateFormat = new SimpleDateFormat(
-                        Constant.DATE_TIME_FORMAT);
-                Date startDate = task.getStart_date();
-                if (startDate != null) {
-                    data1.put(header[4], dateFormat.format(startDate));
-                } else {
-                    data1.put(header[4], "");
-                }
-                Date due_date = task.getDue_date();
-                if (due_date != null) {
-                    data1.put(header[5], dateFormat.format(due_date));
-                } else {
-                    data1.put(header[5], "");
-                }
-                data1.put(header[6],
-                        CommonUtil.fromNullToEmpty(task.getRelated_object()));
-                if (task.getRelated_record() != null) {
-                    data1.put(header[7], task.getRelated_record());
-                } else {
-                    data1.put(header[7], "");
-                }
-                if (task.getContact() != null) {
-                    data1.put(header[8], task.getContact().getId());
-                    data1.put(header[9], task.getContact().getName());
-                } else {
-                    data1.put(header[8], "");
-                    data1.put(header[9], "");
-                }
-                TaskPriority taskPriority = task.getPriority();
-                if (taskPriority != null) {
-                    data1.put(header[10], taskPriority.getId());
-                } else {
-                    data1.put(header[10], "");
-                }
-                data1.put(header[11], CommonUtil.getOptionLabel(taskPriority));
-                data1.put(header[12],
-                        CommonUtil.fromNullToEmpty(task.getDescription()));
-                data1.put(header[13],
-                        CommonUtil.fromNullToEmpty(task.getNotes()));
-                if (task.getAssigned_to() != null) {
-                    data1.put(header[14], task.getAssigned_to().getId());
-                    data1.put(header[15], task.getAssigned_to().getName());
-                } else {
-                    data1.put(header[14], "");
-                    data1.put(header[15], "");
-                }
-                writer.write(data1, header);
             }
         } catch (Exception e) {
             throw e;

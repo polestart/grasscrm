@@ -139,7 +139,9 @@
 		       <a href="javascript:void(0)" id="mtmt" class="easyui-menubutton" data-options="menu:'#mtm1',iconCls:'icon-more'"><s:text name='menu.toolbar.more.title'/></a>
 		       	<div id="mtm1" style="width:150px;">
 				  <s:if test="#request.user.create_call == 1 || #request.user.update_call == 1">
-					<div data-options="iconCls:'icon-import'" onClick="openwindow('/crm/uploadCall.jsp','<s:text name="title.import.call" />')"><s:text name='menu.item.import.title'/></div>
+					<div data-options="iconCls:'icon-import'" onClick="openwindow('/crm/upload.jsp?entityName=Call&namespace=crm&title=' + '<s:text name="title.import.call" />')">
+					  <s:text name='menu.item.import.title'/>
+					</div>
 				  </s:if>	  
 				  <s:if test="#request.user.view_call == 1">
 					<div data-options="iconCls:'icon-export'" id="export"><s:text name='menu.item.export.title'/></div>

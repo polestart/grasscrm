@@ -85,7 +85,8 @@ $(document).ready(function(){
           msg:'<s:text name="message.save" />',  
           timeout:5000,  
           showType:'slide'  
-     })} else if ($("#saveFlag").val() == "<%=Target.STATUS_CONVERTED%>"){
+        })
+     } else if ($("#saveFlag").val() == "<%=Target.STATUS_CONVERTED%>"){
     	 $.messager.show({  
              title:'<s:text name="message.title" />',  
              msg:'<s:text name="message.convert" />',  
@@ -549,7 +550,7 @@ $(document).ready(function(){
 									</td>
 									<td width="80%" valign="top"><Iframe name="contentFrame"
 											id="contentFrame" scrolling="no" frameborder="0" width="100%"
-											height="360"></iframe></td>
+											height="390"></iframe></td>
 								</tr>
 							</table>
 						</div>

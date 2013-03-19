@@ -9,6 +9,7 @@ public class EmailSetting extends BaseEntity implements Serializable {
     public static final int PROTOCOL_NONE = 1;
     public static final int PROTOCOL_SSL = 2;
     public static final int PROTOCOL_TLS = 3;
+    public final static String STATUS_SENT = "sent";
 
     private static final long serialVersionUID = 8250950813769457555L;
 

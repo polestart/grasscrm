@@ -7,7 +7,7 @@ public class OptionBase implements Serializable {
     private static final long serialVersionUID = 8250950813769457556L;
 
     private Integer id;
-    private String name;
+    private String value;
     private String label_en_US;
     private String label_zh_CN;
     private String label;
@@ -29,18 +29,18 @@ public class OptionBase implements Serializable {
     }
 
     /**
-     * @return the name
+     * @return the value
      */
-    public String getName() {
-        return name;
+    public String getValue() {
+        return value;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param value
+     *            the value to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     /**

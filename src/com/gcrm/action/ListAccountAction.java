@@ -400,6 +400,19 @@ public class ListAccountAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_account");
 
         String fileName = getText("entity.account.label") + ".csv";
@@ -441,88 +454,92 @@ public class ListAccountAction extends BaseListAction {
                     getText("entity.assigned_to_id.label"),
                     getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                Account account = baseService.getEntityById(Account.class,
-                        Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], account.getId());
-                data1.put(header[1],
-                        CommonUtil.fromNullToEmpty(account.getName()));
-                data1.put(header[2],
-                        CommonUtil.fromNullToEmpty(account.getOffice_phone()));
-                data1.put(header[3],
-                        CommonUtil.fromNullToEmpty(account.getWebsite()));
-                data1.put(header[4],
-                        CommonUtil.fromNullToEmpty(account.getFax()));
-                data1.put(header[5],
-                        CommonUtil.fromNullToEmpty(account.getBill_street()));
-                data1.put(header[6],
-                        CommonUtil.fromNullToEmpty(account.getBill_city()));
-                data1.put(header[7],
-                        CommonUtil.fromNullToEmpty(account.getBill_state()));
-                data1.put(header[8], CommonUtil.fromNullToEmpty(account
-                        .getBill_postal_code()));
-                data1.put(header[9],
-                        CommonUtil.fromNullToEmpty(account.getBill_country()));
-                data1.put(header[10],
-                        CommonUtil.fromNullToEmpty(account.getShip_street()));
-                data1.put(header[11],
-                        CommonUtil.fromNullToEmpty(account.getShip_city()));
-                data1.put(header[12],
-                        CommonUtil.fromNullToEmpty(account.getShip_state()));
-                data1.put(header[13], CommonUtil.fromNullToEmpty(account
-                        .getShip_postal_code()));
-                data1.put(header[14],
-                        CommonUtil.fromNullToEmpty(account.getShip_country()));
-                data1.put(header[15],
-                        CommonUtil.fromNullToEmpty(account.getEmail()));
-                data1.put(header[16],
-                        CommonUtil.fromNullToEmpty(account.getDescription()));
-                AccountType accountType = account.getAccount_type();
-                if (accountType != null) {
-                    data1.put(header[17], accountType.getId());
-                } else {
-                    data1.put(header[17], "");
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    Account account = baseService.getEntityById(Account.class,
+                            Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], account.getId());
+                    data1.put(header[1],
+                            CommonUtil.fromNullToEmpty(account.getName()));
+                    data1.put(header[2], CommonUtil.fromNullToEmpty(account
+                            .getOffice_phone()));
+                    data1.put(header[3],
+                            CommonUtil.fromNullToEmpty(account.getWebsite()));
+                    data1.put(header[4],
+                            CommonUtil.fromNullToEmpty(account.getFax()));
+                    data1.put(header[5], CommonUtil.fromNullToEmpty(account
+                            .getBill_street()));
+                    data1.put(header[6],
+                            CommonUtil.fromNullToEmpty(account.getBill_city()));
+                    data1.put(header[7],
+                            CommonUtil.fromNullToEmpty(account.getBill_state()));
+                    data1.put(header[8], CommonUtil.fromNullToEmpty(account
+                            .getBill_postal_code()));
+                    data1.put(header[9], CommonUtil.fromNullToEmpty(account
+                            .getBill_country()));
+                    data1.put(header[10], CommonUtil.fromNullToEmpty(account
+                            .getShip_street()));
+                    data1.put(header[11],
+                            CommonUtil.fromNullToEmpty(account.getShip_city()));
+                    data1.put(header[12],
+                            CommonUtil.fromNullToEmpty(account.getShip_state()));
+                    data1.put(header[13], CommonUtil.fromNullToEmpty(account
+                            .getShip_postal_code()));
+                    data1.put(header[14], CommonUtil.fromNullToEmpty(account
+                            .getShip_country()));
+                    data1.put(header[15],
+                            CommonUtil.fromNullToEmpty(account.getEmail()));
+                    data1.put(header[16], CommonUtil.fromNullToEmpty(account
+                            .getDescription()));
+                    AccountType accountType = account.getAccount_type();
+                    if (accountType != null) {
+                        data1.put(header[17], accountType.getId());
+                    } else {
+                        data1.put(header[17], "");
+                    }
+                    data1.put(header[18],
+                            CommonUtil.getOptionLabel(accountType));
+                    Industry industry = account.getIndustry();
+                    if (industry != null) {
+                        data1.put(header[19], industry.getId());
+                    } else {
+                        data1.put(header[19], "");
+                    }
+                    data1.put(header[20], CommonUtil.getOptionLabel(industry));
+                    data1.put(header[21], CommonUtil.fromNullToEmpty(account
+                            .getAnnual_revenue()));
+                    data1.put(header[22], CommonUtil.fromNullToEmpty(account
+                            .getMarket_value()));
+                    data1.put(header[23],
+                            CommonUtil.fromNullToEmpty(account.getEmployees()));
+                    data1.put(header[24],
+                            CommonUtil.fromNullToEmpty(account.getSic_code()));
+                    data1.put(header[25], CommonUtil.fromNullToEmpty(account
+                            .getTicket_symbol()));
+                    if (account.getManager() != null) {
+                        data1.put(header[26], account.getManager().getId());
+                        data1.put(header[27], account.getManager().getName());
+                    } else {
+                        data1.put(header[26], "");
+                        data1.put(header[27], "");
+                    }
+                    data1.put(header[28],
+                            CommonUtil.fromNullToEmpty(account.getOwnship()));
+                    data1.put(header[29],
+                            CommonUtil.fromNullToEmpty(account.getRating()));
+                    if (account.getAssigned_to() != null) {
+                        data1.put(header[30], account.getAssigned_to().getId());
+                        data1.put(header[31], account.getAssigned_to()
+                                .getName());
+                    } else {
+                        data1.put(header[30], "");
+                        data1.put(header[31], "");
+                    }
+                    writer.write(data1, header);
                 }
-                data1.put(header[18], CommonUtil.getOptionLabel(accountType));
-                Industry industry = account.getIndustry();
-                if (industry != null) {
-                    data1.put(header[19], industry.getId());
-                } else {
-                    data1.put(header[19], "");
-                }
-                data1.put(header[20], CommonUtil.getOptionLabel(industry));
-                data1.put(header[21],
-                        CommonUtil.fromNullToEmpty(account.getAnnual_revenue()));
-                data1.put(header[22],
-                        CommonUtil.fromNullToEmpty(account.getMarket_value()));
-                data1.put(header[23],
-                        CommonUtil.fromNullToEmpty(account.getEmployees()));
-                data1.put(header[24],
-                        CommonUtil.fromNullToEmpty(account.getSic_code()));
-                data1.put(header[25],
-                        CommonUtil.fromNullToEmpty(account.getTicket_symbol()));
-                if (account.getManager() != null) {
-                    data1.put(header[26], account.getManager().getId());
-                    data1.put(header[27], account.getManager().getName());
-                } else {
-                    data1.put(header[26], "");
-                    data1.put(header[27], "");
-                }
-                data1.put(header[28],
-                        CommonUtil.fromNullToEmpty(account.getOwnship()));
-                data1.put(header[29],
-                        CommonUtil.fromNullToEmpty(account.getRating()));
-                if (account.getAssigned_to() != null) {
-                    data1.put(header[30], account.getAssigned_to().getId());
-                    data1.put(header[31], account.getAssigned_to().getName());
-                } else {
-                    data1.put(header[30], "");
-                    data1.put(header[31], "");
-                }
-                writer.write(data1, header);
             }
         } catch (Exception e) {
             throw e;

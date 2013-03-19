@@ -395,6 +395,19 @@ public class ListOpportunityAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_opportunity");
         String fileName = getText("entity.opportunity.label") + ".csv";
         fileName = new String(fileName.getBytes(), "ISO8859-1");
@@ -425,84 +438,90 @@ public class ListOpportunityAction extends BaseListAction {
                     getText("entity.assigned_to_id.label"),
                     getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                Opportunity opportunity = baseService.getEntityById(
-                        Opportunity.class, Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], opportunity.getId());
-                data1.put(header[1],
-                        CommonUtil.fromNullToEmpty(opportunity.getName()));
-                if (opportunity.getAccount() != null) {
-                    data1.put(header[2], opportunity.getAccount().getId());
-                    data1.put(header[3], opportunity.getAccount().getName());
-                } else {
-                    data1.put(header[2], "");
-                    data1.put(header[3], "");
-                }
-                if (opportunity.getCurrency() != null) {
-                    data1.put(header[4], opportunity.getCurrency().getId());
-                    data1.put(header[5], opportunity.getCurrency().getName());
-                } else {
-                    data1.put(header[4], "");
-                    data1.put(header[5], "");
-                }
-                Date expectCloseDate = opportunity.getExpect_close_date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat(
-                        Constant.DATE_EDIT_FORMAT);
-                if (expectCloseDate != null) {
-                    data1.put(header[6], dateFormat.format(expectCloseDate));
-                } else {
-                    data1.put(header[6], "");
-                }
-                data1.put(header[7], CommonUtil.fromNullToEmpty(opportunity
-                        .getOpportunity_amount()));
-                OpportunityType opportunityType = opportunity.getType();
-                if (opportunityType != null) {
-                    data1.put(header[8], opportunityType.getId());
-                } else {
-                    data1.put(header[8], "");
-                }
-                data1.put(header[9], CommonUtil.getOptionLabel(opportunityType));
-                SalesStage salesStage = opportunity.getSales_stage();
-                if (salesStage != null) {
-                    data1.put(header[10], salesStage.getId());
-                } else {
-                    data1.put(header[10], "");
-                }
-                data1.put(header[11], CommonUtil.getOptionLabel(salesStage));
-                LeadSource leadSource = opportunity.getLead_source();
-                if (leadSource != null) {
-                    data1.put(header[12], leadSource.getId());
-                } else {
-                    data1.put(header[12], "");
-                }
-                data1.put(header[13], CommonUtil.getOptionLabel(leadSource));
-                data1.put(header[14], opportunity.getProbability());
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    Opportunity opportunity = baseService.getEntityById(
+                            Opportunity.class, Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], opportunity.getId());
+                    data1.put(header[1],
+                            CommonUtil.fromNullToEmpty(opportunity.getName()));
+                    if (opportunity.getAccount() != null) {
+                        data1.put(header[2], opportunity.getAccount().getId());
+                        data1.put(header[3], opportunity.getAccount().getName());
+                    } else {
+                        data1.put(header[2], "");
+                        data1.put(header[3], "");
+                    }
+                    if (opportunity.getCurrency() != null) {
+                        data1.put(header[4], opportunity.getCurrency().getId());
+                        data1.put(header[5], opportunity.getCurrency()
+                                .getName());
+                    } else {
+                        data1.put(header[4], "");
+                        data1.put(header[5], "");
+                    }
+                    Date expectCloseDate = opportunity.getExpect_close_date();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(
+                            Constant.DATE_EDIT_FORMAT);
+                    if (expectCloseDate != null) {
+                        data1.put(header[6], dateFormat.format(expectCloseDate));
+                    } else {
+                        data1.put(header[6], "");
+                    }
+                    data1.put(header[7], CommonUtil.fromNullToEmpty(opportunity
+                            .getOpportunity_amount()));
+                    OpportunityType opportunityType = opportunity.getType();
+                    if (opportunityType != null) {
+                        data1.put(header[8], opportunityType.getId());
+                    } else {
+                        data1.put(header[8], "");
+                    }
+                    data1.put(header[9],
+                            CommonUtil.getOptionLabel(opportunityType));
+                    SalesStage salesStage = opportunity.getSales_stage();
+                    if (salesStage != null) {
+                        data1.put(header[10], salesStage.getId());
+                    } else {
+                        data1.put(header[10], "");
+                    }
+                    data1.put(header[11], CommonUtil.getOptionLabel(salesStage));
+                    LeadSource leadSource = opportunity.getLead_source();
+                    if (leadSource != null) {
+                        data1.put(header[12], leadSource.getId());
+                    } else {
+                        data1.put(header[12], "");
+                    }
+                    data1.put(header[13], CommonUtil.getOptionLabel(leadSource));
+                    data1.put(header[14], opportunity.getProbability());
 
-                if (opportunity.getCampaign() != null) {
-                    data1.put(header[15], opportunity.getCampaign().getId());
-                    data1.put(header[16], opportunity.getCampaign().getName());
-                } else {
-                    data1.put(header[15], "");
-                    data1.put(header[16], "");
+                    if (opportunity.getCampaign() != null) {
+                        data1.put(header[15], opportunity.getCampaign().getId());
+                        data1.put(header[16], opportunity.getCampaign()
+                                .getName());
+                    } else {
+                        data1.put(header[15], "");
+                        data1.put(header[16], "");
+                    }
+                    data1.put(header[17], CommonUtil
+                            .fromNullToEmpty(opportunity.getNext_step()));
+                    data1.put(header[18], CommonUtil
+                            .fromNullToEmpty(opportunity.getDescription()));
+                    data1.put(header[19],
+                            CommonUtil.fromNullToEmpty(opportunity.getNotes()));
+                    if (opportunity.getAssigned_to() != null) {
+                        data1.put(header[20], opportunity.getAssigned_to()
+                                .getId());
+                        data1.put(header[21], opportunity.getAssigned_to()
+                                .getName());
+                    } else {
+                        data1.put(header[20], "");
+                        data1.put(header[21], "");
+                    }
+                    writer.write(data1, header);
                 }
-                data1.put(header[17],
-                        CommonUtil.fromNullToEmpty(opportunity.getNext_step()));
-                data1.put(header[18], CommonUtil.fromNullToEmpty(opportunity
-                        .getDescription()));
-                data1.put(header[19],
-                        CommonUtil.fromNullToEmpty(opportunity.getNotes()));
-                if (opportunity.getAssigned_to() != null) {
-                    data1.put(header[20], opportunity.getAssigned_to().getId());
-                    data1.put(header[21], opportunity.getAssigned_to()
-                            .getName());
-                } else {
-                    data1.put(header[20], "");
-                    data1.put(header[21], "");
-                }
-                writer.write(data1, header);
             }
         } catch (Exception e) {
             throw e;

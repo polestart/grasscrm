@@ -46,7 +46,7 @@
 				 </span> 
 			   </s:if>	 
 			   <span style="white-space: nowrap;"> <a href="#"
-						class="easyui-linkbutton" iconCls="icon-mail" onclick="openwindow2('/system/sendTestMail.jsp','<s:text name="title.sendTestMail" />',450,200)"
+						class="easyui-linkbutton" iconCls="icon-mail" onclick="openwindow2('/system/sendTestMail.jsp',450,200)"
 						plain="true"><s:text name="button.sendTestMail" /></a>
 				</span>
 			  </span>

@@ -143,7 +143,7 @@
 							<td class="td-label"><label class="record-label"><s:text
 										name="entity.status.label"></s:text>：</label></td>
 							<td class="td-value"><s:select name="statusID"
-									list="statuses" listKey="id" listValue="name"
+									list="statuses" listKey="id" listValue="label"
 									cssClass="record-value" /></td>
 						</tr>
 						<tr>

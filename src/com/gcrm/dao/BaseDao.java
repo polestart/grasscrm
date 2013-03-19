@@ -65,20 +65,16 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport
         return objects;
     }
 
-    /**
-     * Finds records by hql with parameters
+    /*
+     * (non-Javadoc)
      * 
-     * @param hql
-     *            hql with parameters
-     * @param paramValue
-     *            parameter value
-     * @return result list
-     * @throws Exception
+     * @see com.gcrm.dao.IBaseDao#findByParam(java.lang.String,
+     * java.lang.Object)
      */
-    @SuppressWarnings("rawtypes")
-    private List findByParam(String hql, Object paramValue) {
+    @SuppressWarnings("unchecked")
+    public List<T> findByParam(String hql, Object paramValue) {
 
-        List objects = null;
+        List<T> objects = null;
 
         objects = getHibernateTemplate().find(hql, paramValue);
         return objects;
@@ -216,6 +212,32 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport
         SearchResult<T> result = new SearchResult<T>(count, objects);
 
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<T> getObjects(final String clazz, final String condition) {
+
+        List<T> objects = null;
+
+        objects = getHibernateTemplate().executeFind(
+                new HibernateCallback<List<T>>() {
+
+                    public List<T> doInHibernate(Session session)
+                            throws HibernateException, SQLException {
+                        String hql = INIT_HQL + clazz;
+                        if (condition != null && condition.length() > 0) {
+                            hql += " where ";
+                            hql += condition;
+                        }
+                        Query query = session.createQuery(hql);
+
+                        List<T> list = query.list();
+
+                        return list;
+                    }
+                });
+
+        return objects;
     }
 
 }

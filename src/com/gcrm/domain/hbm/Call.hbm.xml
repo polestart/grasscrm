@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
                                    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping default-lazy="true" package="com.gcrm.domain">
- <class dynamic-insert="true" dynamic-update="true"
+ <class dynamic-insert="false" dynamic-update="true"
   name="com.gcrm.domain.Call" table="call">
   <id column="id" name="id" type="java.lang.Integer">
    <generator class="native"/>
@@ -15,12 +15,9 @@
   <property name="start_date" column="start_date" type="java.util.Date" />
   <property name="related_object" column="related_object" type="string" />    
   <property name="related_record" column="related_record" type="java.lang.Integer" />  
-  <property name="reminder_pop" column="reminder_pop" type="boolean" />
   <property name="reminder_email" column="reminder_email" type="boolean" />
-  <many-to-one name="reminder_option_pop"
-			class="ReminderOption" column="reminder_option_pop" cascade="save-update"/>
   <many-to-one name="reminder_option_email"
-			class="ReminderOption" column="reminder_option_email" cascade="save-update"/>  			  
+			class="ReminderOption" column="reminder_option_email" cascade="save-update" lazy="false"/>  			  
   <property name="description" column="description" type="string" />  
   <property name="notes" column="notes" type="string" />      
   <many-to-one name="assigned_to"

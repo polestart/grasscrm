@@ -174,7 +174,7 @@
 							name='menu.toolbar.more.title' /></a>
 					<div id="mtm1" style="width: 150px;">
 					  <s:if test="#request.user.create_account == 1 || #request.user.update_account == 1">
-						  <div data-options="iconCls:'icon-import'" onClick="openwindow('/crm/uploadAccount.jsp','<s:text name="title.import.account" />')">
+						  <div data-options="iconCls:'icon-import'" onClick="openwindow('/crm/upload.jsp?entityName=Account&namespace=crm&title=' + '<s:text name="title.import.account" />')">
 							<s:text name='menu.item.import.title' />
 						  </div>
 					  </s:if>	  

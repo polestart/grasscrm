@@ -469,6 +469,19 @@ public class ListContactAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_contact");
         String fileName = getText("entity.contact.label") + ".csv";
         fileName = new String(fileName.getBytes(), "ISO8859-1");
@@ -513,101 +526,104 @@ public class ListContactAction extends BaseListAction {
                     getText("entity.assigned_to_id.label"),
                     getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                Contact contact = baseService.getEntityById(Contact.class,
-                        Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], contact.getId());
-                Salutation salutation = contact.getSalutation();
-                if (salutation != null) {
-                    data1.put(header[1], salutation.getId());
-                } else {
-                    data1.put(header[1], "");
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    Contact contact = baseService.getEntityById(Contact.class,
+                            Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], contact.getId());
+                    Salutation salutation = contact.getSalutation();
+                    if (salutation != null) {
+                        data1.put(header[1], salutation.getId());
+                    } else {
+                        data1.put(header[1], "");
+                    }
+                    data1.put(header[2], CommonUtil.getOptionLabel(salutation));
+                    data1.put(header[3],
+                            CommonUtil.fromNullToEmpty(contact.getFirst_name()));
+                    data1.put(header[4],
+                            CommonUtil.fromNullToEmpty(contact.getLast_name()));
+                    data1.put(header[5], CommonUtil.fromNullToEmpty(contact
+                            .getOffice_phone()));
+                    data1.put(header[6],
+                            CommonUtil.fromNullToEmpty(contact.getTitle()));
+                    data1.put(header[7],
+                            CommonUtil.fromNullToEmpty(contact.getMobile()));
+                    data1.put(header[8],
+                            CommonUtil.fromNullToEmpty(contact.getSkype_id()));
+                    data1.put(header[9],
+                            CommonUtil.fromNullToEmpty(contact.getDepartment()));
+                    data1.put(header[10],
+                            CommonUtil.fromNullToEmpty(contact.getFax()));
+                    if (contact.getAccount() != null) {
+                        data1.put(header[11], contact.getAccount().getId());
+                        data1.put(header[12], contact.getAccount().getName());
+                    } else {
+                        data1.put(header[11], "");
+                        data1.put(header[12], "");
+                    }
+                    data1.put(header[13],
+                            CommonUtil.fromNullToEmpty(contact.getWebsite()));
+                    data1.put(header[14], CommonUtil.fromNullToEmpty(contact
+                            .getPrimary_street()));
+                    data1.put(header[15], CommonUtil.fromNullToEmpty(contact
+                            .getPrimary_city()));
+                    data1.put(header[16], CommonUtil.fromNullToEmpty(contact
+                            .getPrimary_state()));
+                    data1.put(header[17], CommonUtil.fromNullToEmpty(contact
+                            .getPrimary_postal_code()));
+                    data1.put(header[18], CommonUtil.fromNullToEmpty(contact
+                            .getPrimary_country()));
+                    data1.put(header[19], CommonUtil.fromNullToEmpty(contact
+                            .getOther_street()));
+                    data1.put(header[20],
+                            CommonUtil.fromNullToEmpty(contact.getOther_city()));
+                    data1.put(header[21], CommonUtil.fromNullToEmpty(contact
+                            .getOther_state()));
+                    data1.put(header[22], CommonUtil.fromNullToEmpty(contact
+                            .getOther_postal_code()));
+                    data1.put(header[23], CommonUtil.fromNullToEmpty(contact
+                            .getOther_country()));
+                    data1.put(header[24],
+                            CommonUtil.fromNullToEmpty(contact.getEmail()));
+                    data1.put(header[25], CommonUtil.fromNullToEmpty(contact
+                            .getDescription()));
+                    data1.put(header[26],
+                            CommonUtil.fromNullToEmpty(contact.getNotes()));
+                    if (contact.getReport_to() != null) {
+                        data1.put(header[27], contact.getReport_to().getId());
+                        data1.put(header[28], contact.getReport_to().getName());
+                    } else {
+                        data1.put(header[27], "");
+                        data1.put(header[28], "");
+                    }
+                    data1.put(header[29], contact.isNot_call());
+                    LeadSource leadSource = contact.getLeadSource();
+                    if (leadSource != null) {
+                        data1.put(header[30], leadSource.getId());
+                    } else {
+                        data1.put(header[30], "");
+                    }
+                    data1.put(header[31], CommonUtil.getOptionLabel(leadSource));
+                    if (contact.getCampaign() != null) {
+                        data1.put(header[32], contact.getCampaign().getId());
+                        data1.put(header[33], contact.getCampaign().getName());
+                    } else {
+                        data1.put(header[32], "");
+                        data1.put(header[33], "");
+                    }
+                    if (contact.getAssigned_to() != null) {
+                        data1.put(header[34], contact.getAssigned_to().getId());
+                        data1.put(header[35], contact.getAssigned_to()
+                                .getName());
+                    } else {
+                        data1.put(header[34], "");
+                        data1.put(header[35], "");
+                    }
+                    writer.write(data1, header);
                 }
-                data1.put(header[2], CommonUtil.getOptionLabel(salutation));
-                data1.put(header[3],
-                        CommonUtil.fromNullToEmpty(contact.getFirst_name()));
-                data1.put(header[4],
-                        CommonUtil.fromNullToEmpty(contact.getLast_name()));
-                data1.put(header[5],
-                        CommonUtil.fromNullToEmpty(contact.getOffice_phone()));
-                data1.put(header[6],
-                        CommonUtil.fromNullToEmpty(contact.getTitle()));
-                data1.put(header[7],
-                        CommonUtil.fromNullToEmpty(contact.getMobile()));
-                data1.put(header[8],
-                        CommonUtil.fromNullToEmpty(contact.getSkype_id()));
-                data1.put(header[9],
-                        CommonUtil.fromNullToEmpty(contact.getDepartment()));
-                data1.put(header[10],
-                        CommonUtil.fromNullToEmpty(contact.getFax()));
-                if (contact.getAccount() != null) {
-                    data1.put(header[11], contact.getAccount().getId());
-                    data1.put(header[12], contact.getAccount().getName());
-                } else {
-                    data1.put(header[11], "");
-                    data1.put(header[12], "");
-                }
-                data1.put(header[13],
-                        CommonUtil.fromNullToEmpty(contact.getWebsite()));
-                data1.put(header[14],
-                        CommonUtil.fromNullToEmpty(contact.getPrimary_street()));
-                data1.put(header[15],
-                        CommonUtil.fromNullToEmpty(contact.getPrimary_city()));
-                data1.put(header[16],
-                        CommonUtil.fromNullToEmpty(contact.getPrimary_state()));
-                data1.put(header[17], CommonUtil.fromNullToEmpty(contact
-                        .getPrimary_postal_code()));
-                data1.put(header[18], CommonUtil.fromNullToEmpty(contact
-                        .getPrimary_country()));
-                data1.put(header[19],
-                        CommonUtil.fromNullToEmpty(contact.getOther_street()));
-                data1.put(header[20],
-                        CommonUtil.fromNullToEmpty(contact.getOther_city()));
-                data1.put(header[21],
-                        CommonUtil.fromNullToEmpty(contact.getOther_state()));
-                data1.put(header[22], CommonUtil.fromNullToEmpty(contact
-                        .getOther_postal_code()));
-                data1.put(header[23],
-                        CommonUtil.fromNullToEmpty(contact.getOther_country()));
-                data1.put(header[24],
-                        CommonUtil.fromNullToEmpty(contact.getEmail()));
-                data1.put(header[25],
-                        CommonUtil.fromNullToEmpty(contact.getDescription()));
-                data1.put(header[26],
-                        CommonUtil.fromNullToEmpty(contact.getNotes()));
-                if (contact.getReport_to() != null) {
-                    data1.put(header[27], contact.getReport_to().getId());
-                    data1.put(header[28], contact.getReport_to().getName());
-                } else {
-                    data1.put(header[27], "");
-                    data1.put(header[28], "");
-                }
-                data1.put(header[29], contact.isNot_call());
-                LeadSource leadSource = contact.getLeadSource();
-                if (leadSource != null) {
-                    data1.put(header[30], leadSource.getId());
-                } else {
-                    data1.put(header[30], "");
-                }
-                data1.put(header[31], CommonUtil.getOptionLabel(leadSource));
-                if (contact.getCampaign() != null) {
-                    data1.put(header[32], contact.getCampaign().getId());
-                    data1.put(header[33], contact.getCampaign().getName());
-                } else {
-                    data1.put(header[32], "");
-                    data1.put(header[33], "");
-                }
-                if (contact.getAssigned_to() != null) {
-                    data1.put(header[34], contact.getAssigned_to().getId());
-                    data1.put(header[35], contact.getAssigned_to().getName());
-                } else {
-                    data1.put(header[34], "");
-                    data1.put(header[35], "");
-                }
-                writer.write(data1, header);
             }
         } catch (Exception e) {
             throw e;

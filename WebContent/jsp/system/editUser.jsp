@@ -720,7 +720,7 @@
 						        <a id="remove" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.remove" /></a>  
 						      </span>
 						      <span style="white-space:nowrap;">
-						        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow2('/system/selectRolePage.action?relationKey=User&relationValue=<s:property value="user.id" />','Select Role',750,500)"><s:text name="action.select" /></a>  
+						        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow2('/system/selectRolePage.action?relationKey=User&relationValue=<s:property value="user.id" />',750,500)"><s:text name="action.select" /></a>  
 						      </span>	      		     		     
 						    </div> 		 
 							<s:form id="selectRoleForm" namespace="/jsp/system"

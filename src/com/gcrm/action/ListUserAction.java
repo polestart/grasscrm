@@ -319,6 +319,19 @@ public class ListUserAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_system");
         String fileName = getText("entity.user.label") + ".csv";
         fileName = new String(fileName.getBytes(), "ISO8859-1");
@@ -355,77 +368,81 @@ public class ListUserAction extends BaseListAction {
                     getText("entity.description.label"),
                     getText("entity.notes.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                User user = baseService.getEntityById(User.class,
-                        Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], user.getId());
-                data1.put(header[1], CommonUtil.fromNullToEmpty(user.getName()));
-                data1.put(header[2],
-                        CommonUtil.fromNullToEmpty(user.getFirst_name()));
-                data1.put(header[3],
-                        CommonUtil.fromNullToEmpty(user.getLast_name()));
-                UserStatus userStatus = user.getStatus();
-                if (userStatus != null) {
-                    data1.put(header[4], userStatus.getId());
-                } else {
-                    data1.put(header[4], "");
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    User user = baseService.getEntityById(User.class,
+                            Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], user.getId());
+                    data1.put(header[1],
+                            CommonUtil.fromNullToEmpty(user.getName()));
+                    data1.put(header[2],
+                            CommonUtil.fromNullToEmpty(user.getFirst_name()));
+                    data1.put(header[3],
+                            CommonUtil.fromNullToEmpty(user.getLast_name()));
+                    UserStatus userStatus = user.getStatus();
+                    if (userStatus != null) {
+                        data1.put(header[4], userStatus.getId());
+                    } else {
+                        data1.put(header[4], "");
+                    }
+                    data1.put(header[5], CommonUtil.getOptionLabel(userStatus));
+                    data1.put(header[6],
+                            CommonUtil.fromNullToEmpty(user.getTitle()));
+                    data1.put(header[7],
+                            CommonUtil.fromNullToEmpty(user.getEmail()));
+                    data1.put(header[8],
+                            CommonUtil.fromNullToEmpty(user.getMobile()));
+                    data1.put(header[9],
+                            CommonUtil.fromNullToEmpty(user.getPhone()));
+                    data1.put(header[10],
+                            CommonUtil.fromNullToEmpty(user.getFax()));
+                    data1.put(header[11],
+                            CommonUtil.fromNullToEmpty(user.getDepartment()));
+                    if (user.getReport_to() != null) {
+                        data1.put(header[12], user.getReport_to().getId());
+                        data1.put(header[13], user.getReport_to().getName());
+                    } else {
+                        data1.put(header[12], "");
+                        data1.put(header[13], "");
+                    }
+                    data1.put(header[14],
+                            CommonUtil.fromNullToEmpty(user.getMail_street()));
+                    data1.put(header[15],
+                            CommonUtil.fromNullToEmpty(user.getMail_city()));
+                    data1.put(header[16],
+                            CommonUtil.fromNullToEmpty(user.getMail_state()));
+                    data1.put(header[17], CommonUtil.fromNullToEmpty(user
+                            .getMail_postal_code()));
+                    data1.put(header[18],
+                            CommonUtil.fromNullToEmpty(user.getMail_country()));
+                    data1.put(header[19],
+                            CommonUtil.fromNullToEmpty(user.getOther_street()));
+                    data1.put(header[20],
+                            CommonUtil.fromNullToEmpty(user.getOther_city()));
+                    data1.put(header[21],
+                            CommonUtil.fromNullToEmpty(user.getOther_state()));
+                    data1.put(header[22], CommonUtil.fromNullToEmpty(user
+                            .getOther_postal_code()));
+                    data1.put(header[23],
+                            CommonUtil.fromNullToEmpty(user.getOther_country()));
+                    int age = 0;
+                    if (user.getAge() != null) {
+                        age = user.getAge();
+                    }
+                    data1.put(header[24], age);
+                    data1.put(header[25],
+                            CommonUtil.fromNullToEmpty(user.getSmtp_username()));
+                    data1.put(header[26],
+                            CommonUtil.fromNullToEmpty(user.getSmtp_password()));
+                    data1.put(header[27],
+                            CommonUtil.fromNullToEmpty(user.getDescription()));
+                    data1.put(header[28],
+                            CommonUtil.fromNullToEmpty(user.getNotes()));
+                    writer.write(data1, header);
                 }
-                data1.put(header[5], CommonUtil.getOptionLabel(userStatus));
-                data1.put(header[6],
-                        CommonUtil.fromNullToEmpty(user.getTitle()));
-                data1.put(header[7],
-                        CommonUtil.fromNullToEmpty(user.getEmail()));
-                data1.put(header[8],
-                        CommonUtil.fromNullToEmpty(user.getMobile()));
-                data1.put(header[9],
-                        CommonUtil.fromNullToEmpty(user.getPhone()));
-                data1.put(header[10], CommonUtil.fromNullToEmpty(user.getFax()));
-                data1.put(header[11],
-                        CommonUtil.fromNullToEmpty(user.getDepartment()));
-                if (user.getReport_to() != null) {
-                    data1.put(header[12], user.getReport_to().getId());
-                    data1.put(header[13], user.getReport_to().getName());
-                } else {
-                    data1.put(header[12], "");
-                    data1.put(header[13], "");
-                }
-                data1.put(header[14],
-                        CommonUtil.fromNullToEmpty(user.getMail_street()));
-                data1.put(header[15],
-                        CommonUtil.fromNullToEmpty(user.getMail_city()));
-                data1.put(header[16],
-                        CommonUtil.fromNullToEmpty(user.getMail_state()));
-                data1.put(header[17],
-                        CommonUtil.fromNullToEmpty(user.getMail_postal_code()));
-                data1.put(header[18],
-                        CommonUtil.fromNullToEmpty(user.getMail_country()));
-                data1.put(header[19],
-                        CommonUtil.fromNullToEmpty(user.getOther_street()));
-                data1.put(header[20],
-                        CommonUtil.fromNullToEmpty(user.getOther_city()));
-                data1.put(header[21],
-                        CommonUtil.fromNullToEmpty(user.getOther_state()));
-                data1.put(header[22],
-                        CommonUtil.fromNullToEmpty(user.getOther_postal_code()));
-                data1.put(header[23],
-                        CommonUtil.fromNullToEmpty(user.getOther_country()));
-                int age = 0;
-                if (user.getAge() != null) {
-                    age = user.getAge();
-                }
-                data1.put(header[24], age);
-                data1.put(header[25],
-                        CommonUtil.fromNullToEmpty(user.getSmtp_username()));
-                data1.put(header[26],
-                        CommonUtil.fromNullToEmpty(user.getSmtp_password()));
-                data1.put(header[27],
-                        CommonUtil.fromNullToEmpty(user.getDescription()));
-                data1.put(header[28],
-                        CommonUtil.fromNullToEmpty(user.getNotes()));
-                writer.write(data1, header);
             }
         } catch (Exception e) {
             throw e;

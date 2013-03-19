@@ -22,10 +22,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.gcrm.domain.Account;
 import com.gcrm.domain.Case;
 import com.gcrm.domain.Contact;
+import com.gcrm.domain.EmailSetting;
 import com.gcrm.domain.Lead;
 import com.gcrm.domain.Meeting;
 import com.gcrm.domain.MeetingStatus;
@@ -34,11 +36,13 @@ import com.gcrm.domain.ReminderOption;
 import com.gcrm.domain.Target;
 import com.gcrm.domain.Task;
 import com.gcrm.domain.User;
+import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.mail.MailService;
 import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -62,11 +66,11 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
     private IBaseService<Opportunity> opportunityService;
     private IBaseService<Target> targetService;
     private IBaseService<Task> taskService;
+    private MailService mailService;
     private Meeting meeting;
     private List<MeetingStatus> statuses;
     private List<ReminderOption> reminderOptions;
     private Integer statusID = null;
-    private Integer reminderOptionPopID = null;
     private Integer reminderOptionEmailID = null;
     private String startDate = null;
     private String endDate = null;
@@ -99,6 +103,102 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
     }
 
     /**
+     * Sends invitation mail to all participants.
+     * 
+     * @return the SUCCESS result
+     */
+    public String sendInvites() throws Exception {
+
+        UserUtil.permissionCheck("update_meeting");
+        meeting = baseService.getEntityById(Meeting.class, meeting.getId());
+        Date start_date = meeting.getStart_date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_TIME_FORMAT);
+        String startDateS = "";
+        if (start_date != null) {
+            startDateS = dateFormat.format(start_date);
+        }
+        Date end_date = meeting.getEnd_date();
+        String endDateS = "";
+        if (end_date != null) {
+            endDateS = dateFormat.format(end_date);
+        }
+        String subject = CommonUtil.fromNullToEmpty(meeting.getSubject());
+        String location = CommonUtil.fromNullToEmpty(meeting.getLocation());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        User loginUser = (User) session
+                .get(AuthenticationSuccessListener.LOGIN_USER);
+
+        StringBuilder targetEmails = new StringBuilder("");
+        Set<Contact> contacts = meeting.getContacts();
+        if (contacts != null) {
+            for (Contact contact : contacts) {
+                String email = contact.getEmail();
+                if (CommonUtil.isNullOrEmpty(email)) {
+                    continue;
+                }
+                if (targetEmails.length() > 0) {
+                    targetEmails.append(",");
+                }
+                targetEmails.append(email);
+            }
+        }
+        Set<Lead> leads = meeting.getLeads();
+        if (leads != null) {
+            for (Lead lead : leads) {
+                String email = lead.getEmail();
+                if (CommonUtil.isNullOrEmpty(email)) {
+                    continue;
+                }
+                if (targetEmails.length() > 0) {
+                    targetEmails.append(",");
+                }
+                targetEmails.append(email);
+            }
+        }
+        String from = loginUser.getEmail();
+        Set<User> users = meeting.getUsers();
+        if (users != null) {
+            for (User user : users) {
+                String email = user.getEmail();
+                if (CommonUtil.isNullOrEmpty(email) || email.endsWith(from)) {
+                    continue;
+                }
+                if (targetEmails.length() > 0) {
+                    targetEmails.append(",");
+                }
+                targetEmails.append(email);
+            }
+        }
+        if (targetEmails.length() > 0) {
+            String targetEmail = targetEmails.toString();
+            String[] to = targetEmail.split(",");
+            String mailSubject = getText("entity.meeting.label") + " : "
+                    + subject + " " + startDateS;
+            StringBuilder content = new StringBuilder("<html><head>");
+            content.append("<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"></head><body>");
+            content.append("<b>").append(getText("entity.subject.label"))
+                    .append("</b> : ").append(subject).append("<br>");
+            content.append("<b>").append(getText("meeting.location.label"))
+                    .append("</b> : ").append(location).append("<br>");
+            content.append("<b>").append(getText("entity.start_date.label"))
+                    .append("</b> : ").append(startDateS).append("<br>");
+            content.append("<b>").append(getText("entity.end_date.label"))
+                    .append("</b> : ").append(endDateS).append("<br>");
+            content.append("</body></html>");
+            if (CommonUtil.isNullOrEmpty(from)) {
+                from = null;
+            }
+            String text = content.toString();
+            mailService.asynSendHtmlMail(from, to, mailSubject, text);
+        }
+
+        this.setSaveFlag(EmailSetting.STATUS_SENT);
+        return SUCCESS;
+    }
+
+    /**
      * Gets the entity.
      * 
      * @return the SUCCESS result
@@ -109,10 +209,6 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
             MeetingStatus status = meeting.getStatus();
             if (status != null) {
                 statusID = status.getId();
-            }
-            ReminderOption reminderOptionPop = meeting.getReminder_option_pop();
-            if (reminderOptionPop != null) {
-                reminderOptionPopID = reminderOptionPop.getId();
             }
             ReminderOption reminderOptionEmail = meeting
                     .getReminder_option_email();
@@ -136,7 +232,9 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
             }
             String relatedObject = meeting.getRelated_object();
             Integer relatedRecord = meeting.getRelated_record();
-            setRelatedRecord(relatedObject, relatedRecord);
+            if (relatedRecord != null) {
+                setRelatedRecord(relatedObject, relatedRecord);
+            }
             this.getBaseInfo(meeting);
         } else {
             this.initBaseInfo();
@@ -243,12 +341,6 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
                     statusID);
         }
         meeting.setStatus(status);
-        ReminderOption reminderOptionPop = null;
-        if (reminderOptionPopID != null) {
-            reminderOptionPop = reminderOptionService.getEntityById(
-                    ReminderOption.class, reminderOptionPopID);
-        }
-        meeting.setReminder_option_pop(reminderOptionPop);
         ReminderOption reminderOptionEmail = null;
         if (reminderOptionEmailID != null) {
             reminderOptionEmail = reminderOptionService.getEntityById(
@@ -430,21 +522,6 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
      */
     public void setEndDate(String endDate) {
         this.endDate = endDate;
-    }
-
-    /**
-     * @return the reminderOptionPopID
-     */
-    public Integer getReminderOptionPopID() {
-        return reminderOptionPopID;
-    }
-
-    /**
-     * @param reminderOptionPopID
-     *            the reminderOptionPopID to set
-     */
-    public void setReminderOptionPopID(Integer reminderOptionPopID) {
-        this.reminderOptionPopID = reminderOptionPopID;
     }
 
     /**
@@ -808,6 +885,21 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
     public void setReminderOptionService(
             IOptionService<ReminderOption> reminderOptionService) {
         this.reminderOptionService = reminderOptionService;
+    }
+
+    /**
+     * @return the mailService
+     */
+    public MailService getMailService() {
+        return mailService;
+    }
+
+    /**
+     * @param mailService
+     *            the mailService to set
+     */
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 
 }

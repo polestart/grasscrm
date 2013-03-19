@@ -95,6 +95,8 @@ public interface IBaseService<T extends Serializable> {
      */
     public T findByName(String clazz, String name);
 
+    public List<T> findByParam(String hql, Object paramValue);
+
     /**
      * Gets object count
      * 
@@ -115,4 +117,6 @@ public interface IBaseService<T extends Serializable> {
      */
     public SearchResult<T> getPaginationObjects(final String clazz,
             final SearchCondition searchCondition);
+
+    public List<T> getObjects(final String clazz, final String condition);
 }

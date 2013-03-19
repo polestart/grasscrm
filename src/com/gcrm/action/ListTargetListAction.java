@@ -245,6 +245,19 @@ public class ListTargetListAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_targetList");
         String fileName = getText("entity.targetList.label") + ".csv";
         fileName = new String(fileName.getBytes(), "ISO8859-1");
@@ -261,34 +274,39 @@ public class ListTargetListAction extends BaseListAction {
                     getText("entity.assigned_to_id.label"),
                     getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                TargetList targetList = baseService.getEntityById(
-                        TargetList.class, Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], targetList.getId());
-                data1.put(header[1],
-                        CommonUtil.fromNullToEmpty(targetList.getName()));
-                TargetListType targetListType = targetList.getType();
-                if (targetListType != null) {
-                    data1.put(header[2], targetListType.getId());
-                } else {
-                    data1.put(header[2], "");
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    TargetList targetList = baseService.getEntityById(
+                            TargetList.class, Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], targetList.getId());
+                    data1.put(header[1],
+                            CommonUtil.fromNullToEmpty(targetList.getName()));
+                    TargetListType targetListType = targetList.getType();
+                    if (targetListType != null) {
+                        data1.put(header[2], targetListType.getId());
+                    } else {
+                        data1.put(header[2], "");
+                    }
+                    data1.put(header[3],
+                            CommonUtil.getOptionLabel(targetListType));
+                    data1.put(header[4], CommonUtil.fromNullToEmpty(targetList
+                            .getDescription()));
+                    data1.put(header[5],
+                            CommonUtil.fromNullToEmpty(targetList.getNotes()));
+                    if (targetList.getAssigned_to() != null) {
+                        data1.put(header[6], targetList.getAssigned_to()
+                                .getId());
+                        data1.put(header[7], targetList.getAssigned_to()
+                                .getName());
+                    } else {
+                        data1.put(header[6], "");
+                        data1.put(header[7], "");
+                    }
+                    writer.write(data1, header);
                 }
-                data1.put(header[3], CommonUtil.getOptionLabel(targetListType));
-                data1.put(header[4],
-                        CommonUtil.fromNullToEmpty(targetList.getDescription()));
-                data1.put(header[5],
-                        CommonUtil.fromNullToEmpty(targetList.getNotes()));
-                if (targetList.getAssigned_to() != null) {
-                    data1.put(header[6], targetList.getAssigned_to().getId());
-                    data1.put(header[7], targetList.getAssigned_to().getName());
-                } else {
-                    data1.put(header[6], "");
-                    data1.put(header[7], "");
-                }
-                writer.write(data1, header);
             }
         } catch (Exception e) {
             throw e;

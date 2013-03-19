@@ -74,10 +74,11 @@ public class EmailSettingAction extends BaseEditAction implements Preparable {
         }
         SimpleMailMessage ms = new SimpleMailMessage();
         ms.setFrom(emailSetting.getFrom_address());
+
         ms.setTo(this.getEmailAddress());
         ms.setSubject("Test Mail From " + emailSetting.getFrom_name());
         ms.setText("This is test mail from " + emailSetting.getFrom_name());
-        mailService.sendMail(ms);
+        mailService.sendSimpleMail(ms);
         return SUCCESS;
     }
 

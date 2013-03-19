@@ -66,8 +66,13 @@
 							<th field="id" width="1" hidden="true"><s:text
 									name='entity.id.label' /></th>							
 							<th field="entity.id" width="10" ><s:text name='entity.id.label'/></th>
-							<th field="entity.name" width="50"
-								editor="{type:'validatebox',options:{required:true}}"><s:text name='entity.name.label'/></th>
+							<th field="entity.value" width="50"
+								editor="{type:'validatebox',options:{required:true}}">
+								<s:text name='entity.value.label'/>
+								<s:if test="#request.entityName == 'ReminderOption'">
+								  <s:text name='entity.unit.label'/>
+								</s:if>
+							</th>
 							<th field="entity.label_en_US" width="50"
 								editor="text"><s:text name='entity.label_en_US.label'/></th>
 							<th field="entity.label_zh_CN" width="50"

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.gcrm.domain.Account;
 import com.gcrm.domain.Call;
@@ -29,17 +30,20 @@ import com.gcrm.domain.CallDirection;
 import com.gcrm.domain.CallStatus;
 import com.gcrm.domain.Case;
 import com.gcrm.domain.Contact;
+import com.gcrm.domain.EmailSetting;
 import com.gcrm.domain.Lead;
 import com.gcrm.domain.Opportunity;
 import com.gcrm.domain.ReminderOption;
 import com.gcrm.domain.Target;
 import com.gcrm.domain.Task;
 import com.gcrm.domain.User;
+import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.mail.MailService;
 import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -64,13 +68,13 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     private IBaseService<Opportunity> opportunityService;
     private IBaseService<Target> targetService;
     private IBaseService<Task> taskService;
+    private MailService mailService;
     private Call call;
     private List<CallStatus> statuses;
     private List<CallDirection> directions;
     private List<ReminderOption> reminderOptions;
     private Integer statusID = null;
     private Integer directionID = null;
-    private Integer reminderOptionPopID = null;
     private Integer reminderOptionEmailID = null;
     private Integer relatedAccountID = null;
     private String relatedAccountText = null;
@@ -102,6 +106,91 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     }
 
     /**
+     * Sends invitation mail to all participants.
+     * 
+     * @return the SUCCESS result
+     */
+    public String sendInvites() throws Exception {
+        UserUtil.permissionCheck("update_call");
+        call = baseService.getEntityById(Call.class, call.getId());
+        Date start_date = call.getStart_date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_TIME_FORMAT);
+        String startDateS = "";
+        if (start_date != null) {
+            startDateS = dateFormat.format(start_date);
+        }
+        String subject = CommonUtil.fromNullToEmpty(call.getSubject());
+
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        User loginUser = (User) session
+                .get(AuthenticationSuccessListener.LOGIN_USER);
+
+        StringBuilder targetEmails = new StringBuilder("");
+        Set<Contact> contacts = call.getContacts();
+        if (contacts != null) {
+            for (Contact contact : contacts) {
+                String email = contact.getEmail();
+                if (CommonUtil.isNullOrEmpty(email)) {
+                    continue;
+                }
+                if (targetEmails.length() > 0) {
+                    targetEmails.append(",");
+                }
+                targetEmails.append(email);
+            }
+        }
+        Set<Lead> leads = call.getLeads();
+        if (leads != null) {
+            for (Lead lead : leads) {
+                String email = lead.getEmail();
+                if (CommonUtil.isNullOrEmpty(email)) {
+                    continue;
+                }
+                if (targetEmails.length() > 0) {
+                    targetEmails.append(",");
+                }
+                targetEmails.append(email);
+            }
+        }
+        String from = loginUser.getEmail();
+        Set<User> users = call.getUsers();
+        if (users != null) {
+            for (User user : users) {
+                String email = user.getEmail();
+                if (CommonUtil.isNullOrEmpty(email) || email.endsWith(from)) {
+                    continue;
+                }
+                if (targetEmails.length() > 0) {
+                    targetEmails.append(",");
+                }
+                targetEmails.append(email);
+            }
+        }
+        if (targetEmails.length() > 0) {
+            String targetEmail = targetEmails.toString();
+            String[] to = targetEmail.split(",");
+            String mailSubject = getText("entity.call.label") + " : " + subject
+                    + " " + startDateS;
+            StringBuilder content = new StringBuilder("<html><head>");
+            content.append("<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"></head><body>");
+            content.append("<b>").append(getText("entity.subject.label"))
+                    .append("</b> : ").append(subject).append("<br>");
+            content.append("<b>").append(getText("entity.start_date.label"))
+                    .append("</b> : ").append(startDateS);
+            content.append("</body></html>");
+            if (CommonUtil.isNullOrEmpty(from)) {
+                from = null;
+            }
+            String text = content.toString();
+            mailService.asynSendHtmlMail(from, to, mailSubject, text);
+        }
+        this.setSaveFlag(EmailSetting.STATUS_SENT);
+        return SUCCESS;
+    }
+
+    /**
      * Gets the entity.
      * 
      * @return the SUCCESS result
@@ -118,10 +207,6 @@ public class EditCallAction extends BaseEditAction implements Preparable {
             CallDirection direction = call.getDirection();
             if (direction != null) {
                 directionID = direction.getId();
-            }
-            ReminderOption reminderOptionPop = call.getReminder_option_pop();
-            if (reminderOptionPop != null) {
-                reminderOptionPopID = reminderOptionPop.getId();
             }
             ReminderOption reminderOptionEmail = call
                     .getReminder_option_email();
@@ -141,7 +226,9 @@ public class EditCallAction extends BaseEditAction implements Preparable {
             }
             String relatedObject = call.getRelated_object();
             Integer relatedRecord = call.getRelated_record();
-            setRelatedRecord(relatedObject, relatedRecord);
+            if (relatedRecord != null) {
+                setRelatedRecord(relatedObject, relatedRecord);
+            }
             this.getBaseInfo(call);
         } else {
             this.initBaseInfo();
@@ -279,12 +366,6 @@ public class EditCallAction extends BaseEditAction implements Preparable {
                     .getEntityById(CallStatus.class, statusID);
         }
         call.setStatus(status);
-        ReminderOption reminderOptionPop = null;
-        if (reminderOptionPopID != null) {
-            reminderOptionPop = reminderOptionService.getEntityById(
-                    ReminderOption.class, reminderOptionPopID);
-        }
-        call.setReminder_option_pop(reminderOptionPop);
         ReminderOption reminderOptionEmail = null;
         if (reminderOptionEmailID != null) {
             reminderOptionEmail = reminderOptionService.getEntityById(
@@ -594,21 +675,6 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the reminderOptionPopID
-     */
-    public Integer getReminderOptionPopID() {
-        return reminderOptionPopID;
-    }
-
-    /**
-     * @param reminderOptionPopID
-     *            the reminderOptionPopID to set
-     */
-    public void setReminderOptionPopID(Integer reminderOptionPopID) {
-        this.reminderOptionPopID = reminderOptionPopID;
-    }
-
-    /**
      * @return the reminderOptionEmailID
      */
     public Integer getReminderOptionEmailID() {
@@ -824,6 +890,21 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     public void setReminderOptionService(
             IOptionService<ReminderOption> reminderOptionService) {
         this.reminderOptionService = reminderOptionService;
+    }
+
+    /**
+     * @return the mailService
+     */
+    public MailService getMailService() {
+        return mailService;
+    }
+
+    /**
+     * @param mailService
+     *            the mailService to set
+     */
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 
 }

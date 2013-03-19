@@ -379,6 +379,19 @@ public class ListCaseAction extends BaseListAction {
      * @return the exported entities inputStream
      */
     public InputStream getInputStream() throws Exception {
+        return getDownloadContent(false);
+    }
+
+    /**
+     * Exports the template
+     * 
+     * @return the exported template inputStream
+     */
+    public InputStream getTemplateStream() throws Exception {
+        return getDownloadContent(true);
+    }
+
+    private InputStream getDownloadContent(boolean isTemplate) throws Exception {
         UserUtil.permissionCheck("view_case");
         String fileName = getText("entity.case.label") + ".csv";
         fileName = new String(fileName.getBytes(), "ISO8859-1");
@@ -404,65 +417,69 @@ public class ListCaseAction extends BaseListAction {
                     getText("entity.assigned_to_id.label"),
                     getText("entity.assigned_to_name.label") };
             writer.writeHeader(header);
-            String[] ids = seleteIDs.split(",");
-            for (int i = 0; i < ids.length; i++) {
-                String id = ids[i];
-                Case caseInstance = baseService.getEntityById(Case.class,
-                        Integer.parseInt(id));
-                final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
-                data1.put(header[0], caseInstance.getId());
-                CasePriority casePriority = caseInstance.getPriority();
-                if (casePriority != null) {
-                    data1.put(header[1], casePriority.getId());
-                } else {
-                    data1.put(header[1], "");
+            if (!isTemplate) {
+                String[] ids = seleteIDs.split(",");
+                for (int i = 0; i < ids.length; i++) {
+                    String id = ids[i];
+                    Case caseInstance = baseService.getEntityById(Case.class,
+                            Integer.parseInt(id));
+                    final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
+                    data1.put(header[0], caseInstance.getId());
+                    CasePriority casePriority = caseInstance.getPriority();
+                    if (casePriority != null) {
+                        data1.put(header[1], casePriority.getId());
+                    } else {
+                        data1.put(header[1], "");
+                    }
+                    data1.put(header[2],
+                            CommonUtil.getOptionLabel(casePriority));
+                    CaseStatus caseStatus = caseInstance.getStatus();
+                    if (caseStatus != null) {
+                        data1.put(header[3], caseStatus.getId());
+                    } else {
+                        data1.put(header[3], "");
+                    }
+                    data1.put(header[4], CommonUtil.getOptionLabel(caseStatus));
+                    CaseType caseType = caseInstance.getType();
+                    if (caseType != null) {
+                        data1.put(header[5], caseType.getId());
+                    } else {
+                        data1.put(header[5], "");
+                    }
+                    data1.put(header[6], CommonUtil.getOptionLabel(caseType));
+                    CaseOrigin caseOrigin = caseInstance.getOrigin();
+                    if (caseOrigin != null) {
+                        data1.put(header[7], caseOrigin.getId());
+                    } else {
+                        data1.put(header[7], "");
+                    }
+                    data1.put(header[8], CommonUtil.getOptionLabel(caseOrigin));
+                    CaseReason caseReason = caseInstance.getReason();
+                    if (caseReason != null) {
+                        data1.put(header[9], caseReason.getId());
+                    } else {
+                        data1.put(header[9], "");
+                    }
+                    data1.put(header[10], CommonUtil.getOptionLabel(caseReason));
+                    data1.put(header[11], CommonUtil
+                            .fromNullToEmpty(caseInstance.getSubject()));
+                    data1.put(header[12], CommonUtil
+                            .fromNullToEmpty(caseInstance.getDescription()));
+                    data1.put(header[13],
+                            CommonUtil.fromNullToEmpty(caseInstance.getNotes()));
+                    data1.put(header[14], CommonUtil
+                            .fromNullToEmpty(caseInstance.getResolution()));
+                    if (caseInstance.getAssigned_to() != null) {
+                        data1.put(header[15], caseInstance.getAssigned_to()
+                                .getId());
+                        data1.put(header[16], caseInstance.getAssigned_to()
+                                .getName());
+                    } else {
+                        data1.put(header[15], "");
+                        data1.put(header[16], "");
+                    }
+                    writer.write(data1, header);
                 }
-                data1.put(header[2], CommonUtil.getOptionLabel(casePriority));
-                CaseStatus caseStatus = caseInstance.getStatus();
-                if (caseStatus != null) {
-                    data1.put(header[3], caseStatus.getId());
-                } else {
-                    data1.put(header[3], "");
-                }
-                data1.put(header[4], CommonUtil.getOptionLabel(caseStatus));
-                CaseType caseType = caseInstance.getType();
-                if (caseType != null) {
-                    data1.put(header[5], caseType.getId());
-                } else {
-                    data1.put(header[5], "");
-                }
-                data1.put(header[6], CommonUtil.getOptionLabel(caseType));
-                CaseOrigin caseOrigin = caseInstance.getOrigin();
-                if (caseOrigin != null) {
-                    data1.put(header[7], caseOrigin.getId());
-                } else {
-                    data1.put(header[7], "");
-                }
-                data1.put(header[8], CommonUtil.getOptionLabel(caseOrigin));
-                CaseReason caseReason = caseInstance.getReason();
-                if (caseReason != null) {
-                    data1.put(header[9], caseReason.getId());
-                } else {
-                    data1.put(header[9], "");
-                }
-                data1.put(header[10], CommonUtil.getOptionLabel(caseReason));
-                data1.put(header[11],
-                        CommonUtil.fromNullToEmpty(caseInstance.getSubject()));
-                data1.put(header[12], CommonUtil.fromNullToEmpty(caseInstance
-                        .getDescription()));
-                data1.put(header[13],
-                        CommonUtil.fromNullToEmpty(caseInstance.getNotes()));
-                data1.put(header[14], CommonUtil.fromNullToEmpty(caseInstance
-                        .getResolution()));
-                if (caseInstance.getAssigned_to() != null) {
-                    data1.put(header[15], caseInstance.getAssigned_to().getId());
-                    data1.put(header[16], caseInstance.getAssigned_to()
-                            .getName());
-                } else {
-                    data1.put(header[15], "");
-                    data1.put(header[16], "");
-                }
-                writer.write(data1, header);
             }
         } catch (Exception e) {
             throw e;

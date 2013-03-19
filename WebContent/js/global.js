@@ -19,11 +19,11 @@ function openPopupPage(href) {
 			"height=300,width=500,scrollbars=no,location=no");
 }
 
-function openwindow(url, name) {
-	openwindow2(url,name,300,200);
+function openwindow(url) {
+	openwindow2(url,500,300);
 }
 
-function openwindow2(url, name, iWidth,iHeight) {
+function openwindow2(url, iWidth,iHeight) {
 	var url;
 	var name;
 	var iTop = (window.screen.height-iHeight)/2;
@@ -32,7 +32,7 @@ function openwindow2(url, name, iWidth,iHeight) {
 	window
 			.open(
 					url,
-					name,
+					'',
 					'height='
 							+ iHeight
 							+ ',,innerHeight='

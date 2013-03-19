@@ -139,7 +139,9 @@
 		       <a href="javascript:void(0)" id="mtmt" class="easyui-menubutton" data-options="menu:'#mtm1',iconCls:'icon-more'"><s:text name='menu.toolbar.more.title'/></a>
 		       	<div id="mtm1" style="width:150px;">
 				  <s:if test="#request.user.create_case == 1 || #request.user.update_case == 1">
-					<div data-options="iconCls:'icon-import'" onClick="openwindow('/crm/uploadCase.jsp','<s:text name="title.import.case" />')"><s:text name='menu.item.import.title'/></div>
+					<div data-options="iconCls:'icon-import'" onClick="openwindow('/crm/upload.jsp?entityName=Case&namespace=crm&title=' + '<s:text name="title.import.case" />')">
+					  <s:text name='menu.item.import.title'/>
+					</div>
 				  </s:if>	  
 				  <s:if test="#request.user.view_case == 1">
 					<div data-options="iconCls:'icon-export'" id="export"><s:text name='menu.item.export.title'/></div>

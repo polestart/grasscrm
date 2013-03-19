@@ -15,9 +15,7 @@ public class Call extends BaseEntity implements Serializable {
     private Date start_date;
     private String related_object;
     private Integer related_record;
-    private boolean reminder_pop;
     private boolean reminder_email;
-    private ReminderOption reminder_option_pop;
     private ReminderOption reminder_option_email;
     private String description;
     private String notes;
@@ -165,21 +163,6 @@ public class Call extends BaseEntity implements Serializable {
     }
 
     /**
-     * @return the reminder_pop
-     */
-    public boolean isReminder_pop() {
-        return reminder_pop;
-    }
-
-    /**
-     * @param reminder_pop
-     *            the reminder_pop to set
-     */
-    public void setReminder_pop(boolean reminder_pop) {
-        this.reminder_pop = reminder_pop;
-    }
-
-    /**
      * @return the reminder_email
      */
     public boolean isReminder_email() {
@@ -192,21 +175,6 @@ public class Call extends BaseEntity implements Serializable {
      */
     public void setReminder_email(boolean reminder_email) {
         this.reminder_email = reminder_email;
-    }
-
-    /**
-     * @return the reminder_option_pop
-     */
-    public ReminderOption getReminder_option_pop() {
-        return reminder_option_pop;
-    }
-
-    /**
-     * @param reminder_option_pop
-     *            the reminder_option_pop to set
-     */
-    public void setReminder_option_pop(ReminderOption reminder_option_pop) {
-        this.reminder_option_pop = reminder_option_pop;
     }
 
     /**
