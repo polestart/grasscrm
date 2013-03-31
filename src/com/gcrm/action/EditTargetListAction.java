@@ -27,6 +27,7 @@ import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
+import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -78,7 +79,8 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
                 this.setAssignedToID(assignedTo.getId());
                 this.setAssignedToText(assignedTo.getName());
             }
-            this.getBaseInfo(targetList);
+            this.getBaseInfo(targetList, TargetList.class.getSimpleName(),
+                    Constant.CRM_NAMESPACE);
         } else {
             this.initBaseInfo();
         }

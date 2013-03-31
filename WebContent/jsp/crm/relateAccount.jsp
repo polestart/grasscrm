@@ -18,9 +18,18 @@
 
 <script type="text/javascript">	  
     $(document).ready(function(){
-  	  $("#remove").click(function() {
-   		  many_removerow('unselectAccount.action?relationKey=Document&relationValue=<s:property value="id" />&seleteIDs=');
-   	  });
+        var entityName = '<%=(String)request.getAttribute("entityName")%>';
+    	  $("#add").click(function() {
+    		  openPage('/crm/editAccount.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />');
+     	  });
+    	  
+    	  $("#remove").click(function() {
+     		  many_removerow('/crm/unselectAccount.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />&seleteIDs=');
+     	  });
+
+    	  $("#select").click(function() {
+    		  openwindow2('/crm/selectAccountPage.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />',750,500);
+     	  });
 
      $('#tt').datagrid({
 		title:"<s:text name='title.grid.accounts'/>",
@@ -28,12 +37,12 @@
 		width:700,
 		height:350,
 		idField:'id', 
-		url:'filterDocumentAccount.action?id=<s:property value="id" />',
+		url:'relate' + entityName + 'DocumentAccount.action?id=<s:property value="id" />',
 		columns:[[
 					{field:'ck',checkbox:true},
 					{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
 					{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-						   new_format_value = "<a href='editAccount.action?id=" + row.id + "' target='_blank'>" + value + "</a>";
+						   new_format_value = "<a href='editAccount.action?id=" + row.id + "' target='mainFrame'>" + value + "</a>";
 						   return new_format_value 
 		             }  
 		            },
@@ -50,13 +59,13 @@
   <div id="feature">
     <div id="shortcuts" class="headerList">
       <span style="white-space:nowrap;">
-        <a href="editAccount.action?relationKey=Document&relationValue=<s:property value="id" />" class="easyui-linkbutton" iconCls="icon-add" plain="true" target='_blank'><s:text name="action.createAccount" /></a>  
+        <a id="add" href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true"><s:text name="action.createAccount" /></a>  
       </span>
       <span style="white-space:nowrap;">
         <a id="remove" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.removeRelation" /></a>  
       </span>
       <span style="white-space:nowrap;">
-        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onClick="openwindow2('/crm/selectAccountPage.action?relationKey=Document&relationValue=<s:property value="id" />',750,500)"><s:text name="action.select" /></a>  
+        <a id="select" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true"><s:text name="action.select" /></a>  
       </span>	      		     		     
     </div> 		 
 	<s:form id="addObjectForm" namespace="/jsp/crm"

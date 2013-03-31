@@ -536,6 +536,11 @@ public class ListCampaignAction extends BaseListAction {
         return SUCCESS;
     }
 
+    @Override
+    protected String getEntityName() {
+        return Campaign.class.getSimpleName();
+    }
+
     public IBaseService<Campaign> getbaseService() {
         return baseService;
     }

@@ -593,6 +593,11 @@ public class ListUserAction extends BaseListAction {
         return SUCCESS;
     }
 
+    @Override
+    protected String getEntityName() {
+        return User.class.getSimpleName();
+    }
+
     /**
      * @return the baseService
      */

@@ -578,6 +578,11 @@ public class ListTargetAction extends BaseListAction {
         return SUCCESS;
     }
 
+    @Override
+    protected String getEntityName() {
+        return Target.class.getSimpleName();
+    }
+
     public IBaseService<Target> getbaseService() {
         return baseService;
     }

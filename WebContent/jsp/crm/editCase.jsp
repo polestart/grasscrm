@@ -62,11 +62,8 @@
 <body>
 	<div id="page-wrap">
 
-		<s:include value="../header.jsp" />
-
-		<s:include value="../menu.jsp" />
-
 		<div id="feature">
+		    <s:include value="../navigation.jsp" />
 			<div id="shortcuts" class="headerList">
 				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
@@ -349,10 +346,14 @@
 												style="overflow: auto; padding: 10px;"
 												selected="true">
 												<a
-													href="filterCaseContactPage.action?id=<s:property value="caseInstance.id" />"
+													href="relateCaseContactPage.action?id=<s:property value="caseInstance.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
-															name="menu.contacts.title" /></label></a><br />
+															name="menu.contacts.title" /></label></a><br /> <a
+													href="relateCaseDocumentPage.action?id=<s:property value="caseInstance.id" />"
+													target="contentFrame"><label
+													class="record-value menuLink"><s:text
+															name="menu.documents.title" /></label></a>
 											</div>
 											<div title="<s:text name="menu.activities.title"/>"
 												style="overflow: auto; padding: 10px;"

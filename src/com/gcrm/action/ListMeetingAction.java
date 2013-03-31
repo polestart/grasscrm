@@ -208,7 +208,7 @@ public class ListMeetingAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterMeetingLead() throws Exception {
+    public String relateMeetingLead() throws Exception {
         meeting = baseService.getEntityById(Meeting.class, id);
         Set<Lead> leads = meeting.getLeads();
         Iterator<Lead> leadIterator = leads.iterator();
@@ -222,7 +222,7 @@ public class ListMeetingAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterMeetingContact() throws Exception {
+    public String relateMeetingContact() throws Exception {
         meeting = baseService.getEntityById(Meeting.class, id);
         Set<Contact> contacts = meeting.getContacts();
         Iterator<Contact> contactIterator = contacts.iterator();
@@ -237,13 +237,18 @@ public class ListMeetingAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterMeetingUser() throws Exception {
+    public String relateMeetingUser() throws Exception {
         meeting = baseService.getEntityById(Meeting.class, id);
         Set<User> users = meeting.getUsers();
         Iterator<User> userIterator = users.iterator();
         int totalRecords = users.size();
         ListUserAction.getListJson(userIterator, totalRecords, null, false);
         return null;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return Meeting.class.getSimpleName();
     }
 
     /**

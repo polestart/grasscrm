@@ -292,7 +292,7 @@ public class ListCaseAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterCaseContact() throws Exception {
+    public String relateCaseContact() throws Exception {
         caseInstance = baseService.getEntityById(Case.class, id);
         Set<Contact> contacts = caseInstance.getContacts();
         Iterator<Contact> contactIterator = contacts.iterator();
@@ -307,7 +307,7 @@ public class ListCaseAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filteCaseDocument() throws Exception {
+    public String relateCaseDocument() throws Exception {
         caseInstance = baseService.getEntityById(Case.class, id);
         Set<Document> documents = caseInstance.getDocuments();
         Iterator<Document> documentIterator = documents.iterator();
@@ -606,6 +606,11 @@ public class ListCaseAction extends BaseListAction {
     @Override
     public String execute() throws Exception {
         return SUCCESS;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return Case.class.getSimpleName();
     }
 
     public IBaseService<Case> getbaseService() {

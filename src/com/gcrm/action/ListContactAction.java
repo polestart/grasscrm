@@ -357,7 +357,7 @@ public class ListContactAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterContactDocument() throws Exception {
+    public String relateContactDocument() throws Exception {
         contact = baseService.getEntityById(Contact.class, id);
         Set<Document> documents = contact.getDocuments();
         Iterator<Document> documentIterator = documents.iterator();
@@ -372,7 +372,7 @@ public class ListContactAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterContactCase() throws Exception {
+    public String relateContactCase() throws Exception {
         contact = baseService.getEntityById(Contact.class, id);
         Set<Case> cases = contact.getCases();
         Iterator<Case> caseIterator = cases.iterator();
@@ -386,7 +386,7 @@ public class ListContactAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterContactOpportunity() throws Exception {
+    public String relateContactOpportunity() throws Exception {
         contact = baseService.getEntityById(Contact.class, id);
         Set<Opportunity> opportunities = contact.getOpportunities();
         Iterator<Opportunity> opportunityIterator = opportunities.iterator();
@@ -401,7 +401,7 @@ public class ListContactAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterContactLead() throws Exception {
+    public String relateContactLead() throws Exception {
         contact = baseService.getEntityById(Contact.class, id);
         Set<Lead> leads = contact.getLeads();
         Iterator<Lead> leadIterator = leads.iterator();
@@ -797,6 +797,11 @@ public class ListContactAction extends BaseListAction {
             reader.close();
         }
         return SUCCESS;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return Contact.class.getSimpleName();
     }
 
     @Override

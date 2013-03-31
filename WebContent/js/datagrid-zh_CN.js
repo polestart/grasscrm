@@ -61,12 +61,13 @@
         
         
 		if (num==0){
-			$.messager.alert("警告","没有记录被选中.")
+			window.parent.window.$.messager.alert("警告","没有记录被选中.")
 		}
 		else {
-			$.messager.confirm('确认','你确认要删除?',function(r){
+			window.parent.window.$.messager.confirm('确认','你确认要删除?',function(r){
 				if (r){						
 				    url = url + rows; 
+				    url =  getWebPath() + "/jsp" + url;
 				    window.open(url,"_self");
 				}
 			});
@@ -81,10 +82,10 @@
        
        
 		if (num==0){
-			$.messager.alert("警告","没有记录被选中.")
+			window.parent.window.$.messager.alert("警告","没有记录被选中.")
 		}
 		else {
-			$.messager.confirm('确认','你确认要删除?',function(r){
+			window.parent.window.$.messager.confirm('确认','你确认要删除?',function(r){
 				if (r){
 					var ids = null ;
 					data = rows.concat(); 
@@ -164,6 +165,7 @@
 						$('#tt').datagrid('deleteRow',index);
 					}						
 				    url = url + ids; 
+				    url =  getWebPath() + "/jsp" + url;
 				    $.post( 
 				       url     
 				    ); 	

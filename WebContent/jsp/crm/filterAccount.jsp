@@ -19,7 +19,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
    	  $("#remove").click(function() {	
-   		  many_removerow('removeAccount.action?removeKey=<s:property value="removeKey" />&seleteIDs=');
+   		  many_removerow('/crm/removeAccount.action?removeKey=<s:property value="removeKey" />&seleteIDs=');
    	  });	
   	  
 	  $('#tt').datagrid({
@@ -33,7 +33,11 @@
 		columns:[[
 			{field:'ck',checkbox:true},
 			{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-			{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true'},
+			{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+				   new_format_value = "<a href='editAccount.action?id=" + row.id + "' target='mainFrame'>" + value + "</a>";
+				   return new_format_value 
+             }
+			},
 			{field:'office_phone',title:'<s:text name="entity.office_phone.label" />',width:80,align:'center',sortable:'true'},
 			{field:'email',title:'<s:text name="entity.email.label" />',width:80,align:'center',sortable:'true'},
 			{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
@@ -48,7 +52,7 @@
   <div id="feature">
 	<div id="shortcuts" class="headerList">
       <span style="white-space: nowrap;"> 
-        <a href="editAccount.action?<s:property value="createKey" />=<s:property value="id" />" class="easyui-linkbutton" iconCls="icon-add" plain="true" target='_blank'>
+        <a href="editAccount.action?<s:property value="createKey" />=<s:property value="id" />" class="easyui-linkbutton" iconCls="icon-add" plain="true" target='mainFrame'>
 		  <s:text name="action.createAccount" />
 	    </a>
 	  </span> 

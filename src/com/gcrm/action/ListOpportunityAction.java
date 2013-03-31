@@ -297,7 +297,7 @@ public class ListOpportunityAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterOpportunityContact() throws Exception {
+    public String relateOpportunityContact() throws Exception {
         opportunity = baseService.getEntityById(Opportunity.class, id);
         Set<Contact> contacts = opportunity.getContacts();
         Iterator<Contact> contactIterator = contacts.iterator();
@@ -312,7 +312,7 @@ public class ListOpportunityAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterOpportunityLead() throws Exception {
+    public String relateOpportunityLead() throws Exception {
         opportunity = baseService.getEntityById(Opportunity.class, id);
         Set<Lead> leads = opportunity.getLeads();
         Iterator<Lead> leadIterator = leads.iterator();
@@ -326,7 +326,7 @@ public class ListOpportunityAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterOpportunityDocument() throws Exception {
+    public String relateOpportunityDocument() throws Exception {
         opportunity = baseService.getEntityById(Opportunity.class, id);
         Set<Document> documents = opportunity.getDocuments();
         Iterator<Document> documentIterator = documents.iterator();
@@ -681,6 +681,11 @@ public class ListOpportunityAction extends BaseListAction {
     @Override
     public String execute() throws Exception {
         return SUCCESS;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return Opportunity.class.getSimpleName();
     }
 
     public IBaseService<Opportunity> getbaseService() {

@@ -10,7 +10,12 @@ function getWebPath(){
 
 function openPage(href) {
 	href = getWebPath() + "/jsp" + href;
-	window.open(href, "_self");
+	window.open(href, "mainFrame");
+}
+
+function openPageInNewWindow(href) {
+	href = getWebPath() + "/jsp" + href;
+	window.open(href, "_blank");
 }
 
 function openPopupPage(href) {

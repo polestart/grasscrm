@@ -32,36 +32,36 @@
     	  <result>/jsp/crm/filterContact.jsp</result>
         </action>
          
-      	<action name="filterContactOpportunity" class="listContactAction" method="filterContactOpportunity">
+      	<action name="relateContactOpportunity" class="listContactAction" method="relateContactOpportunity">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterContactOpportunityPage" class="listContactAction" method="filterPage">
-    	  <result>/jsp/crm/filterContactOpportunity.jsp</result>
+    	<action name="relateContactOpportunityPage" class="listContactAction" method="filterPage">
+    	  <result>/jsp/crm/relateOpportunity.jsp</result>
         </action>
 
-      	<action name="filterContactLead" class="listContactAction" method="filterContactLead">
+      	<action name="relateContactLead" class="listContactAction" method="relateContactLead">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterContactLeadPage" class="listContactAction" method="filterPage">
-    	  <result>/jsp/crm/filterContactLead.jsp</result>
+    	<action name="relateContactLeadPage" class="listContactAction" method="filterPage">
+    	  <result>/jsp/crm/relateLead.jsp</result>
         </action>
 
-      	<action name="filterContactDocument" class="listContactAction" method="filterContactDocument">
+      	<action name="relateContactDocument" class="listContactAction" method="relateContactDocument">
     	  <result name="success" type="json"></result>
         </action>
         
-    	<action name="filterContactDocumentPage" class="listContactAction" method="filterPage">
-    	  <result>/jsp/crm/filterContactDocument.jsp</result>
+    	<action name="relateContactDocumentPage" class="listContactAction" method="filterPage">
+    	  <result>/jsp/crm/relateDocument.jsp</result>
         </action>
         
-      	<action name="filterContactCase" class="listContactAction" method="filterContactCase">
+      	<action name="relateContactCase" class="listContactAction" method="relateContactCase">
     	  <result name="success" type="json"></result>
         </action>
         
-    	<action name="filterContactCasePage" class="listContactAction" method="filterPage">
-    	  <result>/jsp/crm/filterContactCase.jsp</result>
+    	<action name="relateContactCasePage" class="listContactAction" method="filterPage">
+    	  <result>/jsp/crm/relateCase.jsp</result>
         </action>        
                                         
     	<action name="listContactPage">

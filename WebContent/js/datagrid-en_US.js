@@ -59,14 +59,14 @@
         var num =  rows.length;
         var url = url
         
-        
 		if (num==0){
-			$.messager.alert("Warning","No record is selected.")
+			window.parent.window.$.messager.alert("Warning","No record is selected.")
 		}
 		else {
-			$.messager.confirm('Confirm','Are you sure you want to delete?',function(r){
+			window.parent.window.$.messager.confirm('Confirm','Are you sure you want to delete?',function(r){
 				if (r){						
 				    url = url + rows; 
+				    url =  getWebPath() + "/jsp" + url;
 				    window.open(url,"_self");
 				}
 			});
@@ -81,10 +81,10 @@
        
        
 		if (num==0){
-			$.messager.alert("Warning","No record is selected.")
+			window.parent.window.$.messager.alert("Warning","No record is selected.")
 		}
 		else {
-			$.messager.confirm('Confirm','Are you sure you want to delete?',function(r){
+			window.parent.window.$.messager.confirm('Confirm','Are you sure you want to delete?',function(r){
 				if (r){
 					var ids = null ;
 					data = rows.concat(); 
@@ -164,6 +164,7 @@
 						$('#tt').datagrid('deleteRow',index);
 					}						
 				    url = url + ids; 
+				    url =  getWebPath() + "/jsp" + url;
 				    $.post( 
 				       url     
 				    ); 	

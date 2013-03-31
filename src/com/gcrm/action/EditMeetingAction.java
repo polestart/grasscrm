@@ -235,7 +235,8 @@ public class EditMeetingAction extends BaseEditAction implements Preparable {
             if (relatedRecord != null) {
                 setRelatedRecord(relatedObject, relatedRecord);
             }
-            this.getBaseInfo(meeting);
+            this.getBaseInfo(meeting, Meeting.class.getSimpleName(),
+                    Constant.CRM_NAMESPACE);
         } else {
             this.initBaseInfo();
             if (!CommonUtil.isNullOrEmpty(this.getRelationKey())) {

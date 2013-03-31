@@ -33,6 +33,7 @@ import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
+import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -203,7 +204,8 @@ public class EditAccountAction extends BaseEditAction implements Preparable {
                 managerID = manager.getId();
                 managerText = manager.getName();
             }
-            this.getBaseInfo(account);
+            this.getBaseInfo(account, Account.class.getSimpleName(),
+                    Constant.CRM_NAMESPACE);
         } else {
             this.initBaseInfo();
         }

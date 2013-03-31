@@ -16,12 +16,19 @@
 package com.gcrm.action;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.struts2.ServletActionContext;
 
 import com.gcrm.domain.BaseEntity;
 import com.gcrm.domain.User;
 import com.gcrm.security.AuthenticationSuccessListener;
+import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -87,7 +94,9 @@ public class BaseEditAction extends ActionSupport {
      * @param entity
      *            instance
      */
-    protected void getBaseInfo(BaseEntity entity) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    protected void getBaseInfo(BaseEntity entity, String entityName,
+            String namespace) {
         User createdUser = entity.getCreated_by();
         if (createdUser != null) {
             this.setCreatedBy(createdUser.getName());
@@ -111,6 +120,31 @@ public class BaseEditAction extends ActionSupport {
             ownerID = owner.getId();
             ownerText = owner.getName();
         }
+
+        // Sets navigation history
+        HttpServletRequest request = ServletActionContext.getRequest();
+        HttpSession session = request.getSession();
+        ArrayList navigationList = (ArrayList) session
+                .getAttribute(Constant.NAVIGATION_HISTORY);
+        if (navigationList == null) {
+            navigationList = new ArrayList();
+        }
+        String entityLabel = getText("entity."
+                + CommonUtil.lowerCaseString(entityName) + ".label");
+        if (!CommonUtil.isNullOrEmpty(entity.getName())) {
+            entityLabel += " - " + entity.getName();
+        }
+        String navigatoin = "<a href='" + Constant.APP_PATH + namespace
+                + "edit" + entityName + "?id=" + entity.getId() + "'>"
+                + entityLabel + "</a>";
+        if (navigationList.contains(navigatoin)) {
+            navigationList.remove(navigatoin);
+        }
+        navigationList.add(navigatoin);
+        if (navigationList.size() > Constant.NAVIGATION_HISTORY_COUNT) {
+            navigationList.remove(0);
+        }
+        session.setAttribute(Constant.NAVIGATION_HISTORY, navigationList);
     }
 
     /**

@@ -23,6 +23,7 @@ import com.gcrm.domain.Role;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
+import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
 
@@ -81,7 +82,8 @@ public class EditRoleAction extends BaseEditAction implements Preparable {
     public String get() throws Exception {
         if (this.getId() != null) {
             role = baseService.getEntityById(Role.class, this.getId());
-            this.getBaseInfo(role);
+            this.getBaseInfo(role, Role.class.getSimpleName(),
+                    Constant.SYSTEM_NAMESPACE);
         } else {
             this.initBaseInfo();
         }

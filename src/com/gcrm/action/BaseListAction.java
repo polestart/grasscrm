@@ -36,6 +36,7 @@ import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
 import com.gcrm.util.DateTimeUtil;
 import com.gcrm.vo.SearchCondition;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -276,12 +277,18 @@ public abstract class BaseListAction extends ActionSupport {
      */
     public abstract String list() throws Exception;
 
+    @SuppressWarnings("unchecked")
     public String filterPage() throws Exception {
         if (id == null) {
             id = 0;
         }
+        Map request = (Map) ActionContext.getContext().get("request");
+        String entityName = this.getEntityName();
+        request.put("entityName", entityName);
         return SUCCESS;
     }
+
+    protected abstract String getEntityName();
 
     protected static String getJsonHeader(long totalRecords,
             SearchCondition searchCondition, boolean isList) {

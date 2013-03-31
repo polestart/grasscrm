@@ -3,7 +3,7 @@ package com.gcrm.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-public class BaseEntity implements Serializable, Cloneable {
+public abstract class BaseEntity implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 8250950813769457555L;
 
@@ -143,5 +143,7 @@ public class BaseEntity implements Serializable, Cloneable {
     public void setOwner(User owner) {
         this.owner = owner;
     }
+
+    public abstract String getName();
 
 }

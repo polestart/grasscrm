@@ -15,16 +15,20 @@
  */
 package com.gcrm.action;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 
 import com.gcrm.domain.OptionBase;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
+import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
@@ -122,19 +126,47 @@ public abstract class OptionAction<T extends OptionBase> extends BaseListAction
         return SUCCESS;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public String init() throws Exception {
+        // Sets navigation history
+        HttpServletRequest request = ServletActionContext.getRequest();
+        HttpSession session = request.getSession();
+        ArrayList navigationList = (ArrayList) session
+                .getAttribute(Constant.NAVIGATION_HISTORY);
+        if (navigationList == null) {
+            navigationList = new ArrayList();
+        }
+        String entityLabel = getText("menu."
+                + CommonUtil.lowerCaseString(this.getEntityName()) + ".title");
+        String navigatoin = "<a href='" + Constant.APP_PATH
+                + Constant.SYSTEM_NAMESPACE + "list" + this.getEntityName()
+                + "Page.action'>" + entityLabel + "</a>";
+        if (navigationList.contains(navigatoin)) {
+            navigationList.remove(navigatoin);
+        }
+        navigationList.add(navigatoin);
+        if (navigationList.size() > Constant.NAVIGATION_HISTORY_COUNT) {
+            navigationList.remove(0);
+        }
+        session.setAttribute(Constant.NAVIGATION_HISTORY, navigationList);
+
         return SUCCESS;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void prepare() throws Exception {
         Map request = (Map) ActionContext.getContext().get("request");
-        String entityName = getEntityClass().getSimpleName();
+        String entityName = getEntityName();
         request.put("entityName", entityName);
         String title = getText("title.grid."
                 + CommonUtil.lowerCaseString(entityName));
         request.put("title", title);
 
+    }
+
+    @Override
+    protected String getEntityName() {
+        return getEntityClass().getSimpleName();
     }
 
     protected abstract Class<T> getEntityClass();

@@ -739,6 +739,11 @@ public class ListLeadAction extends BaseListAction {
         return SUCCESS;
     }
 
+    @Override
+    protected String getEntityName() {
+        return Lead.class.getSimpleName();
+    }
+
     public IBaseService<Lead> getbaseService() {
         return baseService;
     }

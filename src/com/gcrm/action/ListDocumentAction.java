@@ -309,7 +309,7 @@ public class ListDocumentAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterDocumentAccount() throws Exception {
+    public String relateDocumentAccount() throws Exception {
         document = baseService.getEntityById(Document.class, id);
         Set<Account> accounts = document.getAccounts();
         Iterator<Account> accountIterator = accounts.iterator();
@@ -324,7 +324,7 @@ public class ListDocumentAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterDocumentContact() throws Exception {
+    public String relateDocumentContact() throws Exception {
         document = baseService.getEntityById(Document.class, id);
         Set<Contact> contacts = document.getContacts();
         Iterator<Contact> contactIterator = contacts.iterator();
@@ -339,7 +339,7 @@ public class ListDocumentAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterDocumentOpportunity() throws Exception {
+    public String relateDocumentOpportunity() throws Exception {
         document = baseService.getEntityById(Document.class, id);
         Set<Opportunity> opportunities = document.getOpportunities();
         Iterator<Opportunity> opportunityIterator = opportunities.iterator();
@@ -354,7 +354,7 @@ public class ListDocumentAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterDocumentCase() throws Exception {
+    public String relateDocumentCase() throws Exception {
         document = baseService.getEntityById(Document.class, id);
         Set<Case> cases = document.getCases();
         Iterator<Case> caseIterator = cases.iterator();
@@ -398,6 +398,11 @@ public class ListDocumentAction extends BaseListAction {
     @Override
     public String execute() throws Exception {
         return SUCCESS;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return Document.class.getSimpleName();
     }
 
     public IBaseService<Document> getbaseService() {

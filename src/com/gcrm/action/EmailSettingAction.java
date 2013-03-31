@@ -21,6 +21,7 @@ import org.springframework.mail.SimpleMailMessage;
 
 import com.gcrm.domain.EmailSetting;
 import com.gcrm.service.IBaseService;
+import com.gcrm.util.Constant;
 import com.gcrm.util.mail.MailService;
 import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.Preparable;
@@ -61,7 +62,8 @@ public class EmailSettingAction extends BaseEditAction implements Preparable {
                 .getAllObjects(EmailSetting.class.getSimpleName());
         if (emailSettings != null && emailSettings.size() > 0) {
             emailSetting = emailSettings.get(0);
-            this.getBaseInfo(emailSetting);
+            this.getBaseInfo(emailSetting, EmailSetting.class.getSimpleName(),
+                    Constant.SYSTEM_NAMESPACE);
         }
         return SUCCESS;
     }

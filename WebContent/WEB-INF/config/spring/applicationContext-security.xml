@@ -23,7 +23,7 @@
          <security:custom-filter ref="securityFilter" before="FILTER_SECURITY_INTERCEPTOR"/> 
          <security:intercept-url pattern="/jsp/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>   
        	 <security:form-login login-page="/jsp/login.jsp" authentication-failure-url="/jsp/login.jsp?login_error=1"
-       	 	default-target-url="/jsp/crm/homePage.action"/>
+       	 	default-target-url="/jsp/index.jsp"/>
        	 	<security:logout invalidate-session="true" logout-success-url="/jsp/login.jsp" logout-url="/j_spring_security_logout"/>
     </security:http>    
 
@@ -47,7 +47,7 @@
        
     <bean id="loginLogAuthenticationSuccessHandler"
         class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
-        <property name="defaultTargetUrl" value="/jsp/crm/homePage.action"></property>
+        <property name="defaultTargetUrl" value="/jsp/index.jsp"></property>
     </bean>
     <bean id="simpleUrlAuthenticationFailureHandler"
         class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">

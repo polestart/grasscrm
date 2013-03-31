@@ -136,7 +136,8 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
             if (expirationDate != null) {
                 expirationDateS = dateFormat.format(expirationDate);
             }
-            this.getBaseInfo(document);
+            this.getBaseInfo(document, Document.class.getSimpleName(),
+                    Constant.CRM_NAMESPACE);
         } else {
             this.initBaseInfo();
         }

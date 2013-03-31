@@ -205,7 +205,7 @@ public class ListCallAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterCallLead() throws Exception {
+    public String relateCallLead() throws Exception {
         call = baseService.getEntityById(Call.class, id);
         Set<Lead> leads = call.getLeads();
         Iterator<Lead> leadIterator = leads.iterator();
@@ -219,7 +219,7 @@ public class ListCallAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterCallContact() throws Exception {
+    public String relateCallContact() throws Exception {
         call = baseService.getEntityById(Call.class, id);
         Set<Contact> contacts = call.getContacts();
         Iterator<Contact> contactIterator = contacts.iterator();
@@ -234,7 +234,7 @@ public class ListCallAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterCallUser() throws Exception {
+    public String relateCallUser() throws Exception {
         call = baseService.getEntityById(Call.class, id);
         Set<User> users = call.getUsers();
         Iterator<User> userIterator = users.iterator();
@@ -500,6 +500,11 @@ public class ListCallAction extends BaseListAction {
     @Override
     public String execute() throws Exception {
         return SUCCESS;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return Call.class.getSimpleName();
     }
 
     public IBaseService<Call> getbaseService() {

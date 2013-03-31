@@ -19,7 +19,7 @@
   <script type="text/javascript">
     $(document).ready(function(){
       $("#remove").click(function() {	
-         many_removerow('removeTask.action?removeKey=<s:property value="removeKey" />&seleteIDs=');
+         many_removerow('/crm/removeTask.action?removeKey=<s:property value="removeKey" />&seleteIDs=');
       });	
 	          
 	  $('#tt').datagrid({
@@ -52,7 +52,7 @@
   <div id="feature">
 	<div id="shortcuts" class="headerList">
 	  <span style="white-space:nowrap;">
-		<a href="editTask.action?<s:property value="createKey" />=<s:property value="id" />&<s:property value="moreFilterKey" />=<s:property value="moreFilterValue" />" class="easyui-linkbutton" iconCls="icon-add" plain="true" target='_blank'><s:text name="action.createTask" /></a>  
+		<a href="editTask.action?<s:property value="createKey" />=<s:property value="id" />&<s:property value="moreFilterKey" />=<s:property value="moreFilterValue" />" class="easyui-linkbutton" iconCls="icon-add" plain="true" target='mainFrame'><s:text name="action.createTask" /></a>  
 	  </span>
 	  <span style="white-space:nowrap;">
 		<a id="remove" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.removeRelation" /></a>  

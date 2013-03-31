@@ -126,11 +126,8 @@
 <body>
 	<div id="page-wrap">
 
-		<s:include value="../header.jsp" />
-
-		<s:include value="../menu.jsp" />
-
 		<div id="feature">
+		    <s:include value="../navigation.jsp" />
 			<div id="shortcuts" class="headerList">
 				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
@@ -604,11 +601,11 @@
 												style="overflow: auto; padding: 10px;"
 												selected="true">
 												<a
-													href="filterMeetingContactPage.action?id=<s:property value="meeting.id" />"
+													href="relateMeetingContactPage.action?id=<s:property value="meeting.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.contacts.title" /></label></a><br /> <a
-													href="filterMeetingLeadPage.action?id=<s:property value="meeting.id" />"
+													href="relateMeetingLeadPage.action?id=<s:property value="meeting.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.leads.title" /></label></a>
@@ -616,7 +613,7 @@
 											<div title="<s:text name="menu.system.title"/>"
 												style="overflow: auto; padding: 10px;">
 												<a
-													href="filterMeetingUserPage.action?id=<s:property value="meeting.id" />"
+													href="relateMeetingUserPage.action?id=<s:property value="meeting.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.user.title" /></label></a>

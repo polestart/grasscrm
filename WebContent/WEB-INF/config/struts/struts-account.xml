@@ -22,6 +22,7 @@
         </action>
         
     	<action name="listAccountPage">
+    	
     	  <result type="redirect">/jsp/crm/listAccount.jsp</result>
         </action>
 
@@ -45,12 +46,12 @@
     	  <result>/jsp/crm/filterAccount.jsp</result>
         </action>
         
-      	<action name="filterAccountDocument" class="listAccountAction" method="filterAccountDocument">
+      	<action name="relateAccountDocument" class="listAccountAction" method="relateAccountDocument">
     	  <result name="success" type="json"></result>
         </action>
                 
-    	<action name="filterAccountDocumentPage" class="listAccountAction" method="filterPage">
-    	  <result>/jsp/crm/filterAccountDocument.jsp</result>
+    	<action name="relateAccountDocumentPage" class="listAccountAction" method="filterPage">
+    	  <result>/jsp/crm/relateDocument.jsp</result>
         </action>
                 
          <action name="exportAccount" class="listAccountAction">

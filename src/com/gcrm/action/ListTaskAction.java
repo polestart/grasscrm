@@ -50,7 +50,7 @@ import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
 /**
- * Lists tTask
+ * Lists Task
  * 
  */
 public class ListTaskAction extends BaseListAction {
@@ -508,6 +508,11 @@ public class ListTaskAction extends BaseListAction {
     @Override
     public String execute() throws Exception {
         return SUCCESS;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return Task.class.getSimpleName();
     }
 
     /**

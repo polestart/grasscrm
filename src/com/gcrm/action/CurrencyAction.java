@@ -117,6 +117,11 @@ public class CurrencyAction extends BaseListAction {
         return SUCCESS;
     }
 
+    @Override
+    protected String getEntityName() {
+        return Currency.class.getSimpleName();
+    }
+
     public IBaseService<Currency> getbaseService() {
         return baseService;
     }

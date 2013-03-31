@@ -37,11 +37,8 @@
 <body>
 	<div id="page-wrap">
 
-		<s:include value="../header.jsp" />
-
-		<s:include value="../menu.jsp" />
-
-		<div id="feature">
+	      <div id="feature">
+		    <s:include value="../navigation.jsp" />
 			<div id="feature-title">
 				<h2>
 					<s:property value="#request.title"/>
@@ -83,15 +80,15 @@
 					</thead>
 				</table>
 				<div id="toolbar">
-				  <s:if test="#request.user.create_system == 1">
+				  <s:if test="#session.loginUser.create_system == 1">
 					<a href="#" class="easyui-linkbutton" iconCls="icon-add"
 						plain="true" onclick="javascript:$('#tt').edatagrid('addRow')"><s:text name='button.create'/></a>
 				  </s:if>	
-				  <s:if test="#request.user.delete_system == 1">
+				  <s:if test="#session.loginUser.delete_system == 1">
 					<a id="delete" href="#" class="easyui-linkbutton"
 						iconCls="icon-remove" plain="true"><s:text name='button.delete'/></a>
 				  </s:if>
-				  <s:if test="#request.user.create_system == 1 || #request.user.update_system == 1">	
+				  <s:if test="#session.loginUser.create_system == 1 || #session.loginUser.update_system == 1">	
 					<a href="#" class="easyui-linkbutton" iconCls="icon-save"
 						plain="true" onclick="javascript:$('#tt').edatagrid('saveRow')"><s:text name='button.save'/></a>
 				  </s:if>		

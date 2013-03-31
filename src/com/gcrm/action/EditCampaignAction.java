@@ -108,7 +108,8 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
             if (end_date != null) {
                 endDate = dateFormat.format(end_date);
             }
-            this.getBaseInfo(campaign);
+            this.getBaseInfo(campaign, Campaign.class.getSimpleName(),
+                    Constant.CRM_NAMESPACE);
         } else {
             this.initBaseInfo();
         }

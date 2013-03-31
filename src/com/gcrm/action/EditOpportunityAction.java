@@ -139,7 +139,8 @@ public class EditOpportunityAction extends BaseEditAction implements Preparable 
             if (expect_close_date != null) {
                 expectCloseDate = dateFormat.format(expect_close_date);
             }
-            this.getBaseInfo(opportunity);
+            this.getBaseInfo(opportunity, Opportunity.class.getSimpleName(),
+                    Constant.CRM_NAMESPACE);
         } else {
             this.initBaseInfo();
         }

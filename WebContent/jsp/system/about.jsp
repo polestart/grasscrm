@@ -20,10 +20,6 @@
 <body>
 	<div id="page-wrap">
 
-		<s:include value="../header.jsp" />
-
-		<s:include value="../menu.jsp" />
-
 		<div id="feature">
 			<div id="feature-title">
 				<h2>

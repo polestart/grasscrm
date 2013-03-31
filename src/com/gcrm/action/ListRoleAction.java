@@ -391,6 +391,11 @@ public class ListRoleAction extends BaseListAction {
         return SUCCESS;
     }
 
+    @Override
+    protected String getEntityName() {
+        return Role.class.getSimpleName();
+    }
+
     /**
      * @return the baseService
      */

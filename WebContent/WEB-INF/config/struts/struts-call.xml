@@ -16,28 +16,28 @@
     	  <result type="redirect">/jsp/crm/listCall.jsp</result>
         </action>
 
-      	<action name="filterCallLead" class="listCallAction" method="filterCallLead">
+      	<action name="relateCallLead" class="listCallAction" method="relateCallLead">
     	  <result name="success" type="json"></result>
         </action>
         
-    	<action name="filterCallLeadPage" class="listCallAction" method="filterPage">
-    	  <result>/jsp/crm/filterCallLead.jsp</result>
+    	<action name="relateCallLeadPage" class="listCallAction" method="filterPage">
+    	  <result>/jsp/crm/relateLead.jsp</result>
         </action>
         
-      	<action name="filterCallContact" class="listCallAction" method="filterCallContact">
+      	<action name="relateCallContact" class="listCallAction" method="relateCallContact">
     	  <result name="success" type="json"></result>
         </action>
         
-    	<action name="filterCallContactPage" class="listCallAction" method="filterPage">
-    	  <result>/jsp/crm/filterCallContact.jsp</result>
+    	<action name="relateCallContactPage" class="listCallAction" method="filterPage">
+    	  <result>/jsp/crm/relateContact.jsp</result>
         </action>        
                 
-      	<action name="filterCallUser" class="listCallAction" method="filterCallUser">
+      	<action name="relateCallUser" class="listCallAction" method="relateCallUser">
     	  <result name="success" type="json"></result>
         </action>
         
-    	<action name="filterCallUserPage" class="listCallAction" method="filterPage">
-    	  <result>/jsp/crm/filterCallUser.jsp</result>
+    	<action name="relateCallUserPage" class="listCallAction" method="filterPage">
+    	  <result>/jsp/system/relateUser.jsp</result>
         </action>
                         
          <action name="exportCall" class="listCallAction">

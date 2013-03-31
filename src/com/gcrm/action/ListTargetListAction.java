@@ -155,7 +155,7 @@ public class ListTargetListAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterTargetListAccount() throws Exception {
+    public String relateTargetListAccount() throws Exception {
         targetList = baseService.getEntityById(TargetList.class, id);
         Set<Account> accounts = targetList.getAccounts();
         Iterator<Account> accountIterator = accounts.iterator();
@@ -170,7 +170,7 @@ public class ListTargetListAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterTargetListLead() throws Exception {
+    public String relateTargetListLead() throws Exception {
         targetList = baseService.getEntityById(TargetList.class, id);
         Set<Lead> leads = targetList.getLeads();
         Iterator<Lead> leadIterator = leads.iterator();
@@ -179,7 +179,7 @@ public class ListTargetListAction extends BaseListAction {
         return null;
     }
 
-    public String filterTargetListContact() throws Exception {
+    public String relateTargetListContact() throws Exception {
         targetList = baseService.getEntityById(TargetList.class, id);
         Set<Contact> contacts = targetList.getContacts();
         Iterator<Contact> contactIterator = contacts.iterator();
@@ -189,7 +189,7 @@ public class ListTargetListAction extends BaseListAction {
         return null;
     }
 
-    public String filterTargetListTarget() throws Exception {
+    public String relateTargetListTarget() throws Exception {
         targetList = baseService.getEntityById(TargetList.class, id);
         Set<Target> targets = targetList.getTargets();
         Iterator<Target> targetIterator = targets.iterator();
@@ -198,7 +198,7 @@ public class ListTargetListAction extends BaseListAction {
         return null;
     }
 
-    public String filterTargetListUser() throws Exception {
+    public String relateTargetListUser() throws Exception {
         targetList = baseService.getEntityById(TargetList.class, id);
         Set<User> users = targetList.getUsers();
         Iterator<User> userIterator = users.iterator();
@@ -396,6 +396,11 @@ public class ListTargetListAction extends BaseListAction {
     @Override
     public String execute() throws Exception {
         return SUCCESS;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return TargetList.class.getSimpleName();
     }
 
     public IBaseService<TargetList> getbaseService() {

@@ -64,11 +64,8 @@
 <body>
 	<div id="page-wrap">
 
-		<s:include value="../header.jsp" />
-
-		<s:include value="../menu.jsp" />
-
 		<div id="feature">
+		    <s:include value="../navigation.jsp" />
 			<div id="shortcuts" class="headerList">
 				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
@@ -373,15 +370,15 @@
 												style="overflow: auto; padding: 10px;"
 												selected="true">
 												<a
-													href="filterDocumentAccountPage.action?id=<s:property value="document.id" />"
+													href="relateDocumentAccountPage.action?id=<s:property value="document.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.accounts.title" /></label></a><br /> <a
-													href="filterDocumentContactPage.action?id=<s:property value="document.id" />"
+													href="relateDocumentContactPage.action?id=<s:property value="document.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.contacts.title" /></label></a><br /> <a
-													href="filterDocumentOpportunityPage.action?id=<s:property value="document.id" />"
+													href="relateDocumentOpportunityPage.action?id=<s:property value="document.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.opportunities.title" /></label></a>
@@ -389,7 +386,7 @@
 											<div title="<s:text name="menu.support.title"/>"
 												style="overflow: auto; padding: 10px;">
 												<a
-													href="filterDocumentCasePage.action?id=<s:property value="document.id" />"
+													href="relateDocumentCasePage.action?id=<s:property value="document.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.cases.title" /></label></a>

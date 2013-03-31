@@ -222,4 +222,9 @@ public class EmailSetting extends BaseEntity implements Serializable {
         this.email_provider = email_provider;
     }
 
+    @Override
+    public String getName() {
+        return "";
+    }
+
 }

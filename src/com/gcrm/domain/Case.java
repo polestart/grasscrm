@@ -235,4 +235,9 @@ public class Case extends BaseEntity implements Serializable {
         this.notes = notes;
     }
 
+    @Override
+    public String getName() {
+        return this.subject;
+    }
+
 }

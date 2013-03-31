@@ -216,44 +216,41 @@
 <body>
 	<div id="page-wrap">
 
-		<s:include value="../header.jsp" />
-
-		<s:include value="../menu.jsp" />
-
 		<div id="feature">
+		    <s:include value="../navigation.jsp" />
 			<div id="feature-content">
 			    <br></br>
 				<div region="center" border="false">
 					<div id="pp" style="position:relative">
 						<div style="width:50%;">
-						  <s:if test="#request.user.view_task == 1">
+						  <s:if test="#session.loginUser.view_task == 1">
 						    <div title="<s:text name='title.grid.myTasks'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                               <table id="myTaskGrid"></table>	
                             </div>
                           </s:if>
-						  <s:if test="#request.user.view_lead == 1">
+						  <s:if test="#session.loginUser.view_lead == 1">
 						    <div title="<s:text name='title.grid.myLeads'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                               <table id="myLeadGrid"></table>	
                             </div>  
                           </s:if> 
-						  <s:if test="#request.user.view_meeting == 1"> 
+						  <s:if test="#session.loginUser.view_meeting == 1"> 
 						    <div title="<s:text name='title.grid.myMeetings'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                                <table id="myMeetingGrid"></table>	
                             </div>
                           </s:if>                                                    
 						</div>
 						<div style="width:50%;">
-						  <s:if test="#request.user.view_account == 1">
+						  <s:if test="#session.loginUser.view_account == 1">
 						   <div title="<s:text name='title.grid.myAccounts'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                               <table id="myAccountGrid"></table>	
                            </div>
                           </s:if> 
-                          <s:if test="#request.user.view_opportunity == 1">
+                          <s:if test="#session.loginUser.view_opportunity == 1">
 						   <div title="<s:text name='title.grid.myOpportunities'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                               <table id="myOpportunityGrid"></table>	
                            </div>
                           </s:if> 
-                          <s:if test="#request.user.view_call == 1">
+                          <s:if test="#session.loginUser.view_call == 1">
 						   <div title="<s:text name='title.grid.myCalls'/>" collapsible="true" closable="true" style="height:385px;padding:5px;">
                               <table id="myCallGrid"></table>	
                            </div>                                                        

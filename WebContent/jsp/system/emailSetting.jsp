@@ -32,14 +32,11 @@
 <body>
 	<div id="page-wrap">
 
-		<s:include value="../header.jsp" />
-
-		<s:include value="../menu.jsp" />
-
-		<div id="feature">
+	    <div id="feature">
+		  <s:include value="../navigation.jsp" />
 		  <div id="shortcuts" class="headerList">
 			<span> 
-			  <s:if test="#request.user.update_system == 1">
+			  <s:if test="#session.loginUser.update_system == 1">
 				<span style="white-space: nowrap;"> <a href="#"
 						class="easyui-linkbutton" iconCls="icon-ok" onclick="add()"
 						plain="true"><s:text name="button.save" /></a>

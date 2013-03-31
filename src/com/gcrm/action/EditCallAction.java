@@ -229,7 +229,8 @@ public class EditCallAction extends BaseEditAction implements Preparable {
             if (relatedRecord != null) {
                 setRelatedRecord(relatedObject, relatedRecord);
             }
-            this.getBaseInfo(call);
+            this.getBaseInfo(call, Call.class.getSimpleName(),
+                    Constant.CRM_NAMESPACE);
         } else {
             this.initBaseInfo();
             if (!CommonUtil.isNullOrEmpty(this.getRelationKey())) {

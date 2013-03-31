@@ -28,36 +28,36 @@
     	  <result>/jsp/crm/selectDocument.jsp</result>
         </action>              
        
-      	<action name="filterDocumentAccount" class="listDocumentAction" method="filterDocumentAccount">
+      	<action name="relateDocumentAccount" class="listDocumentAction" method="relateDocumentAccount">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterDocumentAccountPage" class="listDocumentAction" method="filterPage">
-    	  <result>/jsp/crm/filterDocumentAccount.jsp</result>
+    	<action name="relateDocumentAccountPage" class="listDocumentAction" method="filterPage">
+    	  <result>/jsp/crm/relateAccount.jsp</result>
         </action>        
                 
-      	<action name="filterDocumentContact" class="listDocumentAction" method="filterDocumentContact">
+      	<action name="relateDocumentContact" class="listDocumentAction" method="relateDocumentContact">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterDocumentContactPage" class="listDocumentAction" method="filterPage">
-    	  <result>/jsp/crm/filterDocumentContact.jsp</result>
+    	<action name="relateDocumentContactPage" class="listDocumentAction" method="filterPage">
+    	  <result>/jsp/crm/relateContact.jsp</result>
         </action> 
         
-      	<action name="filterDocumentOpportunity" class="listDocumentAction" method="filterDocumentOpportunity">
+      	<action name="relateDocumentOpportunity" class="listDocumentAction" method="relateDocumentOpportunity">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterDocumentOpportunityPage" class="listDocumentAction" method="filterPage">
-    	  <result>/jsp/crm/filterDocumentOpportunity.jsp</result>
+    	<action name="relateDocumentOpportunityPage" class="listDocumentAction" method="filterPage">
+    	  <result>/jsp/crm/relateOpportunity.jsp</result>
         </action> 
         
-      	<action name="filterDocumentCase" class="listDocumentAction" method="filterDocumentCase">
+      	<action name="relateDocumentCase" class="listDocumentAction" method="relateDocumentCase">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterDocumentCasePage" class="listDocumentAction" method="filterPage">
-    	  <result>/jsp/crm/filterDocumentCase.jsp</result>
+    	<action name="relateDocumentCasePage" class="listDocumentAction" method="filterPage">
+    	  <result>/jsp/crm/relateCase.jsp</result>
         </action>                
                         
          <action name="copyDocument" class="listDocumentAction" method="copy">

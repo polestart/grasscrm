@@ -331,7 +331,7 @@ public class ListAccountAction extends BaseListAction {
      * 
      * @return null
      */
-    public String filterAccountDocument() throws Exception {
+    public String relateAccountDocument() throws Exception {
         account = baseService.getEntityById(Account.class, id);
         Set<Document> documents = account.getDocuments();
         Iterator<Document> documentIterator = documents.iterator();
@@ -688,6 +688,11 @@ public class ListAccountAction extends BaseListAction {
     @Override
     public String execute() throws Exception {
         return SUCCESS;
+    }
+
+    @Override
+    protected String getEntityName() {
+        return Account.class.getSimpleName();
     }
 
     public IBaseService<Account> getbaseService() {

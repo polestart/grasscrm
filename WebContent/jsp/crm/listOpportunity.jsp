@@ -27,7 +27,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
 	  $("#delete").click(function() {	
-		  many_deleterow("deleteOpportunity.action?seleteIDs=");
+		  many_deleterow("/crm/deleteOpportunity.action?seleteIDs=");
 	  });	
 
 	  $("#massUpdate").click(function() {	
@@ -116,20 +116,17 @@
 <body>
 	<div id="page-wrap">
 
-		<s:include value="../header.jsp" />
-
-		<s:include value="../menu.jsp" />
-
 	  <div id="feature">
+		<s:include value="../navigation.jsp" />
 		<div id="shortcuts" class="headerList">
 		  <b style="white-space:nowrap;color:#444;"><s:text name="title.action" />:&nbsp;&nbsp;</b>
 		  <span>
-			<s:if test="#request.user.create_opportunity == 1">
+			<s:if test="#session.loginUser.create_opportunity == 1">
 		      <span style="white-space:nowrap;">
 		        <a href="editOpportunity.action" class="easyui-linkbutton" iconCls="icon-add" plain="true"><s:text name="action.createOpportunity" /></a>  
 		      </span>
 			  </s:if>
-			  <s:if test="#request.user.delete_opportunity == 1">	
+			  <s:if test="#session.loginUser.delete_opportunity == 1">	
 		      <span style="white-space:nowrap;">
 		        <a id="delete" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.deleteOpportunity" /></a>  
 		      </span>
@@ -137,20 +134,20 @@
 		     <span style="white-space:nowrap;">
 		       <a href="javascript:void(0)" id="mtmt" class="easyui-menubutton" data-options="menu:'#mtm1',iconCls:'icon-more'"><s:text name='menu.toolbar.more.title'/></a>
 		       	<div id="mtm1" style="width:150px;">
-				  <s:if test="#request.user.create_opportunity == 1 || #request.user.update_opportunity == 1">
+				  <s:if test="#session.loginUser.create_opportunity == 1 || #session.loginUser.update_opportunity == 1">
 					<div data-options="iconCls:'icon-import'" onClick="openwindow('/crm/upload.jsp?entityName=Opportunity&namespace=crm&title=' + '<s:text name="title.import.opportunity" />')">
 					  <s:text name='menu.item.import.title'/>
 					</div>
 				  </s:if>	  
-				  <s:if test="#request.user.view_opportunity == 1">
+				  <s:if test="#session.loginUser.view_opportunity == 1">
 					<div data-options="iconCls:'icon-export'" id="export"><s:text name='menu.item.export.title'/></div>
 				  </s:if>	
-				  <s:if test="#request.user.update_opportunity == 1">
+				  <s:if test="#session.loginUser.update_opportunity == 1">
 					<div data-options="iconCls:'icon-update'" id="massUpdate">
 					  <s:text name='menu.item.massupdate.title' />
 					</div>
 				  </s:if>
-				  <s:if test="#request.user.create_opportunity == 1">
+				  <s:if test="#session.loginUser.create_opportunity == 1">
 					<div data-options="iconCls:'icon-copy'" id="copy"><s:text name='menu.item.copy.title'/></div>
 				  </s:if>
 				</div>

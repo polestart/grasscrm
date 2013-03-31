@@ -60,11 +60,8 @@
 <body>
 	<div id="page-wrap">
 
-		<s:include value="../header.jsp" />
-
-		<s:include value="../menu.jsp" />
-
 		<div id="feature">
+		    <s:include value="../navigation.jsp" />
 			<div id="shortcuts" class="headerList">
 				<span> <span style="white-space: nowrap;"> <a id="save_accept_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-accept" onclick="save()"
@@ -281,15 +278,15 @@
 												style="overflow: auto; padding: 10px;"
 												selected="true">
 												<a
-													href="filterTargetListAccountPage.action?id=<s:property value="targetList.id" />"
+													href="relateTargetListAccountPage.action?id=<s:property value="targetList.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.accounts.title" /></label></a><br /> <a
-													href="filterTargetListContactPage.action?id=<s:property value="targetList.id" />"
+													href="relateTargetListContactPage.action?id=<s:property value="targetList.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.contacts.title" /></label></a><br /> <a
-													href="filterTargetListLeadPage.action?id=<s:property value="targetList.id" />"
+													href="relateTargetListLeadPage.action?id=<s:property value="targetList.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.leads.title" /></label></a>
@@ -298,7 +295,7 @@
 												style="overflow: auto; padding: 10px;"
 												selected="true">
 												<a
-													href="filterTargetListTargetPage.action?id=<s:property value="targetList.id" />"
+													href="relateTargetListTargetPage.action?id=<s:property value="targetList.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.targets.title" /></label></a>
@@ -306,7 +303,7 @@
 											<div title="<s:text name="menu.system.title"/>"
 												style="overflow: auto; padding: 10px;">
 												<a
-													href="filterTargetListUserPage.action?id=<s:property value="targetList.id" />"
+													href="relateTargetListUserPage.action?id=<s:property value="targetList.id" />"
 													target="contentFrame"><label
 													class="record-value menuLink"><s:text
 															name="menu.user.title" /></label></a>

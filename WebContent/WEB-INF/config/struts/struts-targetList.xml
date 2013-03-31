@@ -12,44 +12,44 @@
     	  <result type="redirect">/jsp/crm/listTargetList.jsp</result>
         </action>
 
-      	<action name="filterTargetListAccount" class="listTargetListAction" method="filterTargetListAccount">
+      	<action name="relateTargetListAccount" class="listTargetListAction" method="relateTargetListAccount">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterTargetListAccountPage" class="listTargetListAction" method="filterPage">
-    	  <result>/jsp/crm/filterTargetListAccount.jsp</result>
+    	<action name="relateTargetListAccountPage" class="listTargetListAction" method="filterPage">
+    	  <result>/jsp/crm/relateAccount.jsp</result>
         </action>
         
-      	<action name="filterTargetListLead" class="listTargetListAction" method="filterTargetListLead">
+      	<action name="relateTargetListLead" class="listTargetListAction" method="relateTargetListLead">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterTargetListLeadPage" class="listTargetListAction" method="filterPage">
-    	  <result>/jsp/crm/filterTargetListLead.jsp</result>
+    	<action name="relateTargetListLeadPage" class="listTargetListAction" method="filterPage">
+    	  <result>/jsp/crm/relateLead.jsp</result>
         </action>
 
-      	<action name="filterTargetListContact" class="listTargetListAction" method="filterTargetListContact">
+      	<action name="relateTargetListContact" class="listTargetListAction" method="relateTargetListContact">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterTargetListContactPage" class="listTargetListAction" method="filterPage">
-    	  <result>/jsp/crm/filterTargetListContact.jsp</result>
+    	<action name="relateTargetListContactPage" class="listTargetListAction" method="filterPage">
+    	  <result>/jsp/crm/relateContact.jsp</result>
         </action>
 
-      	<action name="filterTargetListTarget" class="listTargetListAction" method="filterTargetListTarget">
+      	<action name="relateTargetListTarget" class="listTargetListAction" method="relateTargetListTarget">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterTargetListTargetPage" class="listTargetListAction" method="filterPage">
-    	  <result>/jsp/crm/filterTargetListTarget.jsp</result>
+    	<action name="relateTargetListTargetPage" class="listTargetListAction" method="filterPage">
+    	  <result>/jsp/crm/relateTarget.jsp</result>
         </action>
 
-      	<action name="filterTargetListUser" class="listTargetListAction" method="filterTargetListUser">
+      	<action name="relateTargetListUser" class="listTargetListAction" method="relateTargetListUser">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterTargetListUserPage" class="listTargetListAction" method="filterPage">
-    	  <result>/jsp/crm/filterTargetListUser.jsp</result>
+    	<action name="relateTargetListUserPage" class="listTargetListAction" method="filterPage">
+    	  <result>/jsp/system/relateUser.jsp</result>
         </action>
         
          <action name="exportTargetList" class="listTargetListAction">

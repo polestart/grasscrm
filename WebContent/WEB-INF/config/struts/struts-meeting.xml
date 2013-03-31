@@ -16,28 +16,28 @@
     	  <result type="redirect">/jsp/crm/listMeeting.jsp</result>
         </action>
 
-      	<action name="filterMeetingLead" class="listMeetingAction" method="filterMeetingLead">
+      	<action name="relateMeetingLead" class="listMeetingAction" method="relateMeetingLead">
     	  <result name="success" type="json"></result>
         </action>
         
-    	<action name="filterMeetingLeadPage" class="listMeetingAction" method="filterPage">
-    	  <result>/jsp/crm/filterMeetingLead.jsp</result>
+    	<action name="relateMeetingLeadPage" class="listMeetingAction" method="filterPage">
+    	  <result>/jsp/crm/relateLead.jsp</result>
         </action>
         
-      	<action name="filterMeetingContact" class="listMeetingAction" method="filterMeetingContact">
+      	<action name="relateMeetingContact" class="listMeetingAction" method="relateMeetingContact">
     	  <result name="success" type="json"></result>
         </action>
         
-    	<action name="filterMeetingContactPage" class="listMeetingAction" method="filterPage">
-    	  <result>/jsp/crm/filterMeetingContact.jsp</result>
+    	<action name="relateMeetingContactPage" class="listMeetingAction" method="filterPage">
+    	  <result>/jsp/crm/relateContact.jsp</result>
         </action>        
                 
-      	<action name="filterMeetingUser" class="listMeetingAction" method="filterMeetingUser">
+      	<action name="relateMeetingUser" class="listMeetingAction" method="relateMeetingUser">
     	  <result name="success" type="json"></result>
         </action>
         
-    	<action name="filterMeetingUserPage" class="listMeetingAction" method="filterPage">
-    	  <result>/jsp/crm/filterMeetingUser.jsp</result>
+    	<action name="relateMeetingUserPage" class="listMeetingAction" method="filterPage">
+    	  <result>/jsp/system/relateUser.jsp</result>
         </action>
 
          <action name="exportMeeting" class="listMeetingAction">

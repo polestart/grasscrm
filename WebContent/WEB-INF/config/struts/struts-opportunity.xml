@@ -36,28 +36,28 @@
     	  <result>/jsp/crm/filterOpportunity.jsp</result>
         </action>
         
-      	<action name="filterOpportunityContact" class="listOpportunityAction" method="filterOpportunityContact">
+      	<action name="relateOpportunityContact" class="listOpportunityAction" method="relateOpportunityContact">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterOpportunityContactPage" class="listOpportunityAction" method="filterPage">
-    	  <result>/jsp/crm/filterOpportunityContact.jsp</result>
+    	<action name="relateOpportunityContactPage" class="listOpportunityAction" method="filterPage">
+    	  <result>/jsp/crm/relateContact.jsp</result>
         </action>     
         
-      	<action name="filterOpportunityLead" class="listOpportunityAction" method="filterOpportunityLead">
+      	<action name="relateOpportunityLead" class="listOpportunityAction" method="relateOpportunityLead">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterOpportunityLeadPage" class="listOpportunityAction" method="filterPage">
-    	  <result>/jsp/crm/filterOpportunityLead.jsp</result>
+    	<action name="relateOpportunityLeadPage" class="listOpportunityAction" method="filterPage">
+    	  <result>/jsp/crm/relateLead.jsp</result>
         </action>  
         
-      	<action name="filterOpportunityDocument" class="listOpportunityAction" method="filterOpportunityDocument">
+      	<action name="relateOpportunityDocument" class="listOpportunityAction" method="relateOpportunityDocument">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterOpportunityDocumentPage" class="listOpportunityAction" method="filterPage">
-    	  <result>/jsp/crm/filterOpportunityDocument.jsp</result>
+    	<action name="relateOpportunityDocumentPage" class="listOpportunityAction" method="filterPage">
+    	  <result>/jsp/crm/relateDocument.jsp</result>
         </action>                    
                         
          <action name="exportOpportunity" class="listOpportunityAction">

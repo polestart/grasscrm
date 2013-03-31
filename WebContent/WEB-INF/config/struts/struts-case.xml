@@ -36,20 +36,20 @@
     	  <result>/jsp/crm/filterCase.jsp</result>
         </action>
               
-      	<action name="filterCaseContact" class="listCaseAction" method="filterCaseContact">
+      	<action name="relateCaseContact" class="listCaseAction" method="relateCaseContact">
     	  <result name="success" type="json"></result>
         </action>
                         
-    	<action name="filterCaseContactPage" class="listCaseAction" method="filterPage">
-    	  <result>/jsp/crm/filterCaseContact.jsp</result>
+    	<action name="relateCaseContactPage" class="listCaseAction" method="filterPage">
+    	  <result>/jsp/crm/relateContact.jsp</result>
         </action>
         
-      	<action name="filterCaseDocument" class="listCaseAction" method="filterCaseDocument">
+      	<action name="relateCaseDocument" class="listCaseAction" method="relateCaseDocument">
     	  <result name="success" type="json"></result>
         </action>
                 
-    	<action name="filterCaseDocumentPage" class="listCaseAction" method="filterPage">
-    	  <result>/jsp/crm/filterCaseDocument.jsp</result>
+    	<action name="relateCaseDocumentPage" class="listCaseAction" method="filterPage">
+    	  <result>/jsp/crm/relateDocument.jsp</result>
         </action>        
                         
          <action name="exportCase" class="listCaseAction">
