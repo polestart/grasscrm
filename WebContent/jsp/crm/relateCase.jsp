@@ -20,7 +20,7 @@
     $(document).ready(function(){
         var entityName = '<%=(String)request.getAttribute("entityName")%>';
     	  $("#add").click(function() {
-    		  openPage('/crm/editCase.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />');
+    		  openPageInNewWindow('/crm/editCase.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />');
      	  });
     	  
     	  $("#remove").click(function() {
@@ -42,7 +42,7 @@
 				{field:'ck',checkbox:true},
 				{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
 				{field:'subject',title:'<s:text name="entity.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-					   new_format_value = "<a href='editCase.action?id=" + row.id + "' target='mainFrame'>"  + value + "</a>";
+					   new_format_value = "<a href='editCase.action?id=" + row.id + "' target='_blank'>"  + value + "</a>";
 					   return new_format_value 
 	             }  
 	            },

@@ -38,10 +38,6 @@ public class UrlAccessDecisionManager implements AccessDecisionManager {
             if (securityObject instanceof FilterInvocation) {
                 FilterInvocation filter = (FilterInvocation) securityObject;
                 url = filter.getRequestUrl();
-                if (url.contains("edit")) {
-                    System.err.println("--------------url--------------");
-                    System.err.println(url);
-                }
             }
             if (authentication.getPrincipal() instanceof String
                     && "anonymousUser".equals(authentication.getPrincipal())) {

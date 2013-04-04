@@ -81,10 +81,10 @@
        
        
 		if (num==0){
-			window.parent.window.$.messager.alert("Warning","No record is selected.")
+			$.messager.alert("Warning","No record is selected.")
 		}
 		else {
-			window.parent.window.$.messager.confirm('Confirm','Are you sure you want to delete?',function(r){
+			$.messager.confirm('Confirm','Are you sure you want to delete?',function(r){
 				if (r){
 					var ids = null ;
 					data = rows.concat(); 

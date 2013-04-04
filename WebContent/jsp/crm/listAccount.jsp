@@ -142,14 +142,14 @@
 		    	jQuery("#grid").jqGrid('columnChooser');
 		    }
 		});		
-		jQuery("#grid").jqGrid('filterToolbar');
-		
+		jQuery("#grid").jqGrid('filterToolbar');		
 	});	    
   </script>
 </head>
 <body>
 	<div id="page-wrap">
-
+		<s:include value="../header.jsp" />
+		<s:include value="../menu.jsp" />
 		<div id="feature">
 		  <s:include value="../navigation.jsp" />
 		  <div id="shortcuts" class="headerList">

@@ -136,7 +136,9 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
             }
             String relatedObject = task.getRelated_object();
             Integer relatedRecord = task.getRelated_record();
-            setRelatedRecord(relatedObject, relatedRecord);
+            if (relatedRecord != null) {
+                setRelatedRecord(relatedObject, relatedRecord);
+            }
             this.getBaseInfo(task, Task.class.getSimpleName(),
                     Constant.CRM_NAMESPACE);
         } else {

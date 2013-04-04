@@ -34,7 +34,7 @@
 			{field:'ck',checkbox:true},		  		
 			{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
 			{field:'subject',title:'<s:text name="entity.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-				   new_format_value = "<a href='editTask.action?id=" + row.id + "'>" + value + "</a>";
+				   new_format_value = "<a href='editTask.action?id=" + row.id + "' target='_blank'>" + value + "</a>";
 				   return new_format_value 
              }  
             },
@@ -52,7 +52,7 @@
   <div id="feature">
 	<div id="shortcuts" class="headerList">
 	  <span style="white-space:nowrap;">
-		<a href="editTask.action?<s:property value="createKey" />=<s:property value="id" />&<s:property value="moreFilterKey" />=<s:property value="moreFilterValue" />" class="easyui-linkbutton" iconCls="icon-add" plain="true" target='mainFrame'><s:text name="action.createTask" /></a>  
+		<a href="editTask.action?<s:property value="createKey" />=<s:property value="id" />&<s:property value="moreFilterKey" />=<s:property value="moreFilterValue" />" class="easyui-linkbutton" iconCls="icon-add" plain="true" target='_blank'><s:text name="action.createTask" /></a>  
 	  </span>
 	  <span style="white-space:nowrap;">
 		<a id="remove" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.removeRelation" /></a>  

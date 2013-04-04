@@ -7,7 +7,7 @@
 <div id="top-bar">
   <div id="left-side">
     <a href="#">
-      <img src="../images/grass_logo.png" alt="Grass Logo" height="25px" width="80px"/>
+      <img src="../../images/grass_logo.png" alt="Grass Logo" height="25px" width="80px"/>
     </a>
   </div>
   <div id="right-side">

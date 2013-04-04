@@ -20,7 +20,7 @@
     $(document).ready(function(){
         var entityName = '<%=(String)request.getAttribute("entityName")%>';
     	  $("#add").click(function() {
-    		  openPage('/crm/editAccount.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />');
+    		  openPageInNewWindow('/crm/editAccount.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />');
      	  });
     	  
     	  $("#remove").click(function() {
@@ -37,12 +37,12 @@
 		width:700,
 		height:350,
 		idField:'id', 
-		url:'relate' + entityName + 'DocumentAccount.action?id=<s:property value="id" />',
+		url:'relate' + entityName + 'Account.action?id=<s:property value="id" />',
 		columns:[[
 					{field:'ck',checkbox:true},
 					{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
 					{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-						   new_format_value = "<a href='editAccount.action?id=" + row.id + "' target='mainFrame'>" + value + "</a>";
+						   new_format_value = "<a href='editAccount.action?id=" + row.id + "' target='_blank'>" + value + "</a>";
 						   return new_format_value 
 		             }  
 		            },

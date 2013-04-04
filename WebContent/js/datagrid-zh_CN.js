@@ -61,10 +61,10 @@
         
         
 		if (num==0){
-			window.parent.window.$.messager.alert("警告","没有记录被选中.")
+			$.messager.alert("警告","没有记录被选中.")
 		}
 		else {
-			window.parent.window.$.messager.confirm('确认','你确认要删除?',function(r){
+			$.messager.confirm('确认','你确认要删除?',function(r){
 				if (r){						
 				    url = url + rows; 
 				    url =  getWebPath() + "/jsp" + url;

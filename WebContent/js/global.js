@@ -10,7 +10,7 @@ function getWebPath(){
 
 function openPage(href) {
 	href = getWebPath() + "/jsp" + href;
-	window.open(href, "mainFrame");
+	window.open(href, "_self");
 }
 
 function openPageInNewWindow(href) {

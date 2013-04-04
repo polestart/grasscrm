@@ -208,14 +208,15 @@
 						{field:'start_date',title:'<s:text name="entity.start_date.label" />',width:80,align:'center',sortable:'true'}		
 					]]
 				  });				  
-			}
+			}		
 		});
 	</script>
 </head>
 
 <body>
 	<div id="page-wrap">
-
+		<s:include value="../header.jsp" />
+		<s:include value="../menu.jsp" />
 		<div id="feature">
 		    <s:include value="../navigation.jsp" />
 			<div id="feature-content">

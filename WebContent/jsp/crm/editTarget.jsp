@@ -101,8 +101,8 @@ $(document).ready(function(){
 </head>
 <body>
 	<div id="page-wrap">
-
-		<div id="feature">
+		<s:include value="../header.jsp" />
+		<s:include value="../menu.jsp" />
 		<div id="feature">
 		    <s:include value="../navigation.jsp" />
 			<div id="shortcuts" class="headerList">

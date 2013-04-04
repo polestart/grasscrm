@@ -89,7 +89,7 @@
 					{field:'ck',checkbox:true},
 					{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
 					{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-						   new_format_value = "<a href='editRole.action?id=" + row.id + "' target='mainFrame'>" + value + "</a>";
+						   new_format_value = "<a href='editRole.action?id=" + row.id + "' >" + value + "</a>";
 						   return new_format_value 
 		             }  
 		            },
@@ -103,7 +103,8 @@
 
 <body>
 	<div id="page-wrap">
-
+	    <s:include value="../header.jsp" />
+	    <s:include value="../menu.jsp" />
 	    <div id="feature">
 		    <s:include value="../navigation.jsp" />
 			<div id="shortcuts" class="headerList">
