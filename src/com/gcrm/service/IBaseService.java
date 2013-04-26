@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import com.gcrm.exception.ServiceException;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -69,8 +70,10 @@ public interface IBaseService<T extends Serializable> {
      *            entity class
      * @param seleteIDs
      *            selected entities' id
+     * @throws ServiceException
      */
-    public void batchDeleteEntity(Class<T> entityClass, String seleteIDs);
+    public void batchDeleteEntity(Class<T> entityClass, String seleteIDs)
+            throws ServiceException;
 
     /**
      * Gets entity by id

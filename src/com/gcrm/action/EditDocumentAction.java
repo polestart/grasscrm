@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
-import com.gcrm.domain.Case;
+import com.gcrm.domain.CaseInstance;
 import com.gcrm.domain.Contact;
 import com.gcrm.domain.Document;
 import com.gcrm.domain.DocumentCategory;
@@ -62,7 +62,7 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     private IBaseService<Account> accountService;
     private IBaseService<Contact> contactService;
     private IBaseService<Opportunity> opportunityService;
-    private IBaseService<Case> caseService;
+    private IBaseService<CaseInstance> caseService;
     private IBaseService<User> userService;
     private Document document;
     private List<DocumentStatus> statuses;
@@ -271,11 +271,11 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
             }
             opportunities.add(opportunity);
         } else if ("Case".equals(this.getRelationKey())) {
-            Case caseInstance = caseService.getEntityById(Case.class,
+            CaseInstance caseInstance = caseService.getEntityById(CaseInstance.class,
                     Integer.valueOf(this.getRelationValue()));
-            Set<Case> cases = document.getCases();
+            Set<CaseInstance> cases = document.getCases();
             if (cases == null) {
-                cases = new HashSet<Case>();
+                cases = new HashSet<CaseInstance>();
             }
             cases.add(caseInstance);
         }
@@ -603,7 +603,7 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
     /**
      * @return the caseService
      */
-    public IBaseService<Case> getCaseService() {
+    public IBaseService<CaseInstance> getCaseService() {
         return caseService;
     }
 
@@ -611,7 +611,7 @@ public class EditDocumentAction extends BaseEditAction implements Preparable {
      * @param caseService
      *            the caseService to set
      */
-    public void setCaseService(IBaseService<Case> caseService) {
+    public void setCaseService(IBaseService<CaseInstance> caseService) {
         this.caseService = caseService;
     }
 

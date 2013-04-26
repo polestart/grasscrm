@@ -25,7 +25,7 @@ public class Document extends BaseEntity implements Serializable {
     private Set<Account> accounts = new HashSet<Account>(0);
     private Set<Contact> contacts = new HashSet<Contact>(0);
     private Set<Opportunity> opportunities = new HashSet<Opportunity>(0);
-    private Set<Case> cases = new HashSet<Case>(0);
+    private Set<CaseInstance> cases = new HashSet<CaseInstance>(0);
 
     @Override
     public Document clone() {
@@ -273,7 +273,7 @@ public class Document extends BaseEntity implements Serializable {
     /**
      * @return the cases
      */
-    public Set<Case> getCases() {
+    public Set<CaseInstance> getCases() {
         return cases;
     }
 
@@ -281,7 +281,7 @@ public class Document extends BaseEntity implements Serializable {
      * @param cases
      *            the cases to set
      */
-    public void setCases(Set<Case> cases) {
+    public void setCases(Set<CaseInstance> cases) {
         this.cases = cases;
     }
 

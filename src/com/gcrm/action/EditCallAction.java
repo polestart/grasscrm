@@ -28,7 +28,7 @@ import com.gcrm.domain.Account;
 import com.gcrm.domain.Call;
 import com.gcrm.domain.CallDirection;
 import com.gcrm.domain.CallStatus;
-import com.gcrm.domain.Case;
+import com.gcrm.domain.CaseInstance;
 import com.gcrm.domain.Contact;
 import com.gcrm.domain.EmailSetting;
 import com.gcrm.domain.Lead;
@@ -62,7 +62,7 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     private IOptionService<ReminderOption> reminderOptionService;
     private IBaseService<User> userService;
     private IBaseService<Account> accountService;
-    private IBaseService<Case> caseService;
+    private IBaseService<CaseInstance> caseService;
     private IBaseService<Contact> contactService;
     private IBaseService<Lead> leadService;
     private IBaseService<Opportunity> opportunityService;
@@ -261,7 +261,7 @@ public class EditCallAction extends BaseEditAction implements Preparable {
             this.relatedCaseID = relatedRecord;
             if (relatedRecord != null) {
                 this.relatedCaseText = this.caseService.getEntityById(
-                        Case.class, relatedRecord).getSubject();
+                        CaseInstance.class, relatedRecord).getSubject();
             }
         } else if ("Contact".equals(relatedObject)) {
             this.relatedContactID = relatedRecord;
@@ -757,7 +757,7 @@ public class EditCallAction extends BaseEditAction implements Preparable {
     /**
      * @return the caseService
      */
-    public IBaseService<Case> getCaseService() {
+    public IBaseService<CaseInstance> getCaseService() {
         return caseService;
     }
 
@@ -765,7 +765,7 @@ public class EditCallAction extends BaseEditAction implements Preparable {
      * @param caseService
      *            the caseService to set
      */
-    public void setCaseService(IBaseService<Case> caseService) {
+    public void setCaseService(IBaseService<CaseInstance> caseService) {
         this.caseService = caseService;
     }
 

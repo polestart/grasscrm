@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.gcrm.domain.Account;
-import com.gcrm.domain.Case;
+import com.gcrm.domain.CaseInstance;
 import com.gcrm.domain.CaseOrigin;
 import com.gcrm.domain.CasePriority;
 import com.gcrm.domain.CaseReason;
@@ -49,7 +49,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
 
     private static final long serialVersionUID = -2404576552417042445L;
 
-    private IBaseService<Case> baseService;
+    private IBaseService<CaseInstance> baseService;
     private IOptionService<CaseStatus> caseStatusService;
     private IOptionService<CasePriority> casePriorityService;
     private IOptionService<CaseType> caseTypeService;
@@ -59,7 +59,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     private IBaseService<Document> documentService;
     private IBaseService<Contact> contactService;
     private IBaseService<User> userService;
-    private Case caseInstance;
+    private CaseInstance caseInstance;
     private List<CaseStatus> statuses;
     private List<CasePriority> casePriorities;
     private List<CaseType> caseTypes;
@@ -93,7 +93,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      */
     public String get() throws Exception {
         if (this.getId() != null) {
-            caseInstance = baseService.getEntityById(Case.class, this.getId());
+            caseInstance = baseService.getEntityById(CaseInstance.class, this.getId());
             CaseStatus status = caseInstance.getStatus();
             if (status != null) {
                 statusID = status.getId();
@@ -124,7 +124,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
                 this.setAssignedToID(assignedTo.getId());
                 this.setAssignedToText(assignedTo.getName());
             }
-            this.getBaseInfo(caseInstance, Case.class.getSimpleName(),
+            this.getBaseInfo(caseInstance, CaseInstance.class.getSimpleName(),
                     Constant.CRM_NAMESPACE);
         } else {
             this.initBaseInfo();
@@ -140,14 +140,14 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
         String[] fieldNames = this.massUpdate;
         if (fieldNames != null) {
             String[] selectIDArray = this.seleteIDs.split(",");
-            Collection<Case> cases = new ArrayList<Case>();
+            Collection<CaseInstance> cases = new ArrayList<CaseInstance>();
             User loginUser = this.getLoginUser();
             User user = userService
                     .getEntityById(User.class, loginUser.getId());
             for (String IDString : selectIDArray) {
                 int id = Integer.parseInt(IDString);
-                Case newCaseInstance = this.baseService.getEntityById(
-                        Case.class, id);
+                CaseInstance newCaseInstance = this.baseService.getEntityById(
+                        CaseInstance.class, id);
                 for (String fieldName : fieldNames) {
                     Object value = BeanUtil.getFieldValue(caseInstance,
                             fieldName);
@@ -174,7 +174,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
             UserUtil.permissionCheck("create_case");
         } else {
             UserUtil.permissionCheck("update_case");
-            Case originalCase = baseService.getEntityById(Case.class,
+            CaseInstance originalCase = baseService.getEntityById(CaseInstance.class,
                     caseInstance.getId());
             caseInstance.setContacts(originalCase.getContacts());
             caseInstance.setDocuments(originalCase.getDocuments());
@@ -271,7 +271,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     /**
      * @return the baseService
      */
-    public IBaseService<Case> getBaseService() {
+    public IBaseService<CaseInstance> getBaseService() {
         return baseService;
     }
 
@@ -279,7 +279,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      * @param baseService
      *            the baseService to set
      */
-    public void setBaseService(IBaseService<Case> baseService) {
+    public void setBaseService(IBaseService<CaseInstance> baseService) {
         this.baseService = baseService;
     }
 
@@ -316,7 +316,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
     /**
      * @return the caseInstance
      */
-    public Case getCaseInstance() {
+    public CaseInstance getCaseInstance() {
         return caseInstance;
     }
 
@@ -324,7 +324,7 @@ public class EditCaseAction extends BaseEditAction implements Preparable {
      * @param caseInstance
      *            the caseInstance to set
      */
-    public void setCaseInstance(Case caseInstance) {
+    public void setCaseInstance(CaseInstance caseInstance) {
         this.caseInstance = caseInstance;
     }
 

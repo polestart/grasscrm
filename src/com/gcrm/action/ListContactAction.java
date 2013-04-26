@@ -41,7 +41,7 @@ import org.supercsv.prefs.CsvPreference;
 import com.gcrm.domain.Account;
 import com.gcrm.domain.Call;
 import com.gcrm.domain.Campaign;
-import com.gcrm.domain.Case;
+import com.gcrm.domain.CaseInstance;
 import com.gcrm.domain.Contact;
 import com.gcrm.domain.Document;
 import com.gcrm.domain.Lead;
@@ -78,7 +78,7 @@ public class ListContactAction extends BaseListAction {
     private IBaseService<Call> callService;
     private IBaseService<Meeting> meetingService;
     private IBaseService<Document> documentService;
-    private IBaseService<Case> caseService;
+    private IBaseService<CaseInstance> caseService;
     private Contact contact;
 
     private static final String CLAZZ = Contact.class.getSimpleName();
@@ -229,7 +229,7 @@ public class ListContactAction extends BaseListAction {
         Call call = null;
         Meeting meeting = null;
         Document document = null;
-        Case caseInstance = null;
+        CaseInstance caseInstance = null;
         Set<Contact> contacts = null;
 
         if ("Opportunity".equals(this.getRelationKey())) {
@@ -253,7 +253,7 @@ public class ListContactAction extends BaseListAction {
                     Integer.valueOf(this.getRelationValue()));
             contacts = document.getContacts();
         } else if ("Case".equals(this.getRelationKey())) {
-            caseInstance = caseService.getEntityById(Case.class,
+            caseInstance = caseService.getEntityById(CaseInstance.class,
                     Integer.valueOf(this.getRelationValue()));
             contacts = caseInstance.getContacts();
         }
@@ -294,7 +294,7 @@ public class ListContactAction extends BaseListAction {
         Call call = null;
         Meeting meeting = null;
         Document document = null;
-        Case caseInstance = null;
+        CaseInstance caseInstance = null;
         Set<Contact> contacts = null;
         if ("Opportunity".equals(this.getRelationKey())) {
             opportunity = opportunityService.getEntityById(Opportunity.class,
@@ -317,7 +317,7 @@ public class ListContactAction extends BaseListAction {
                     Integer.valueOf(this.getRelationValue()));
             contacts = document.getContacts();
         } else if ("Case".equals(this.getRelationKey())) {
-            caseInstance = caseService.getEntityById(Case.class,
+            caseInstance = caseService.getEntityById(CaseInstance.class,
                     Integer.valueOf(this.getRelationValue()));
             contacts = caseInstance.getContacts();
         }
@@ -374,8 +374,8 @@ public class ListContactAction extends BaseListAction {
      */
     public String relateContactCase() throws Exception {
         contact = baseService.getEntityById(Contact.class, id);
-        Set<Case> cases = contact.getCases();
-        Iterator<Case> caseIterator = cases.iterator();
+        Set<CaseInstance> cases = contact.getCases();
+        Iterator<CaseInstance> caseIterator = cases.iterator();
         long totalRecords = cases.size();
         ListCaseAction.getListJson(caseIterator, totalRecords, null, false);
         return null;
@@ -981,7 +981,7 @@ public class ListContactAction extends BaseListAction {
     /**
      * @return the caseService
      */
-    public IBaseService<Case> getCaseService() {
+    public IBaseService<CaseInstance> getCaseService() {
         return caseService;
     }
 
@@ -989,7 +989,7 @@ public class ListContactAction extends BaseListAction {
      * @param caseService
      *            the caseService to set
      */
-    public void setCaseService(IBaseService<Case> caseService) {
+    public void setCaseService(IBaseService<CaseInstance> caseService) {
         this.caseService = caseService;
     }
 

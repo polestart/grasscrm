@@ -47,7 +47,7 @@
   </set>  
   <set cascade="all" name="cases" table="case_document">   
      <key column="document_id" />   
-     <many-to-many class="com.gcrm.domain.Case"  column="case_id" />
+     <many-to-many class="com.gcrm.domain.CaseInstance"  column="case_id" />
   </set>       				     			    
  </class>
 </hibernate-mapping>

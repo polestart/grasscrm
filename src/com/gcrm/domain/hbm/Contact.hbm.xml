@@ -64,7 +64,7 @@
   </set>
   <set cascade="all" name="cases" table="case_contact">   
      <key column="contact_id" />   
-     <many-to-many class="com.gcrm.domain.Case"  column="case_id" />
+     <many-to-many class="com.gcrm.domain.CaseInstance"  column="case_id" />
   </set>    
   <set cascade="all" name="calls" table="call_contact">   
      <key column="contact_id" />   

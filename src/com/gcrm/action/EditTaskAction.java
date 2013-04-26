@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.gcrm.domain.Account;
-import com.gcrm.domain.Case;
+import com.gcrm.domain.CaseInstance;
 import com.gcrm.domain.Contact;
 import com.gcrm.domain.Lead;
 import com.gcrm.domain.Opportunity;
@@ -56,7 +56,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
     private IOptionService<TaskPriority> taskPriorityService;
     private IBaseService<User> userService;
     private IBaseService<Account> accountService;
-    private IBaseService<Case> caseService;
+    private IBaseService<CaseInstance> caseService;
     private IBaseService<Lead> leadService;
     private IBaseService<Opportunity> opportunityService;
     private IBaseService<Target> targetService;
@@ -167,7 +167,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
                     Account.class, relatedRecord).getName();
         } else if ("Case".equals(relatedObject)) {
             this.relatedCaseID = relatedRecord;
-            this.relatedCaseText = this.caseService.getEntityById(Case.class,
+            this.relatedCaseText = this.caseService.getEntityById(CaseInstance.class,
                     relatedRecord).getSubject();
         } else if ("Contact".equals(relatedObject)) {
             this.relatedContactID = relatedRecord;
@@ -596,7 +596,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
     /**
      * @return the caseService
      */
-    public IBaseService<Case> getCaseService() {
+    public IBaseService<CaseInstance> getCaseService() {
         return caseService;
     }
 
@@ -604,7 +604,7 @@ public class EditTaskAction extends BaseEditAction implements Preparable {
      * @param caseService
      *            the caseService to set
      */
-    public void setCaseService(IBaseService<Case> caseService) {
+    public void setCaseService(IBaseService<CaseInstance> caseService) {
         this.caseService = caseService;
     }
 

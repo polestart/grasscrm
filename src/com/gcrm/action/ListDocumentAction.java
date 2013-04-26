@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 
 import com.gcrm.domain.Account;
-import com.gcrm.domain.Case;
+import com.gcrm.domain.CaseInstance;
 import com.gcrm.domain.Contact;
 import com.gcrm.domain.Document;
 import com.gcrm.domain.DocumentCategory;
@@ -60,7 +60,7 @@ public class ListDocumentAction extends BaseListAction {
     private IBaseService<Account> accountService;
     private IBaseService<Contact> contactService;
     private IBaseService<Opportunity> opportunityService;
-    private IBaseService<Case> caseService;
+    private IBaseService<CaseInstance> caseService;
     private IBaseService<User> userService;
     private Document document;
 
@@ -206,7 +206,7 @@ public class ListDocumentAction extends BaseListAction {
         Account account = null;
         Contact contact = null;
         Opportunity opportunity = null;
-        Case caseInstance = null;
+        CaseInstance caseInstance = null;
         Document document = null;
         Set<Document> documents = null;
         if ("Account".equals(this.getRelationKey())) {
@@ -222,7 +222,7 @@ public class ListDocumentAction extends BaseListAction {
                     Integer.valueOf(this.getRelationValue()));
             documents = opportunity.getDocuments();
         } else if ("Case".equals(this.getRelationKey())) {
-            caseInstance = caseService.getEntityById(Case.class,
+            caseInstance = caseService.getEntityById(CaseInstance.class,
                     Integer.valueOf(this.getRelationValue()));
             documents = caseInstance.getDocuments();
         }
@@ -257,7 +257,7 @@ public class ListDocumentAction extends BaseListAction {
         Account account = null;
         Contact contact = null;
         Opportunity opportunity = null;
-        Case caseInstance = null;
+        CaseInstance caseInstance = null;
         Set<Document> documents = null;
         if ("Account".equals(this.getRelationKey())) {
             account = accountService.getEntityById(Account.class,
@@ -272,7 +272,7 @@ public class ListDocumentAction extends BaseListAction {
                     Integer.valueOf(this.getRelationValue()));
             documents = opportunity.getDocuments();
         } else if ("Case".equals(this.getRelationKey())) {
-            caseInstance = caseService.getEntityById(Case.class,
+            caseInstance = caseService.getEntityById(CaseInstance.class,
                     Integer.valueOf(this.getRelationValue()));
             documents = caseInstance.getDocuments();
         }
@@ -356,8 +356,8 @@ public class ListDocumentAction extends BaseListAction {
      */
     public String relateDocumentCase() throws Exception {
         document = baseService.getEntityById(Document.class, id);
-        Set<Case> cases = document.getCases();
-        Iterator<Case> caseIterator = cases.iterator();
+        Set<CaseInstance> cases = document.getCases();
+        Iterator<CaseInstance> caseIterator = cases.iterator();
         long totalRecords = cases.size();
         ListCaseAction.getListJson(caseIterator, totalRecords, null, false);
         return null;
@@ -565,7 +565,7 @@ public class ListDocumentAction extends BaseListAction {
     /**
      * @return the caseService
      */
-    public IBaseService<Case> getCaseService() {
+    public IBaseService<CaseInstance> getCaseService() {
         return caseService;
     }
 
@@ -573,7 +573,7 @@ public class ListDocumentAction extends BaseListAction {
      * @param caseService
      *            the caseService to set
      */
-    public void setCaseService(IBaseService<Case> caseService) {
+    public void setCaseService(IBaseService<CaseInstance> caseService) {
         this.caseService = caseService;
     }
 

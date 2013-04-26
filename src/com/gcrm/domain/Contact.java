@@ -42,7 +42,7 @@ public class Contact extends BaseEntity implements Serializable {
     private Set<Opportunity> opportunities = new HashSet<Opportunity>(0);
     private Set<Lead> leads = new HashSet<Lead>(0);
     private Set<TargetList> targetLists = new HashSet<TargetList>(0);
-    private Set<Case> cases = new HashSet<Case>(0);
+    private Set<CaseInstance> cases = new HashSet<CaseInstance>(0);
     private Set<Call> calls = new HashSet<Call>(0);
     private Set<Meeting> meetings = new HashSet<Meeting>(0);
     private Set<Document> documents = new HashSet<Document>(0);
@@ -443,7 +443,7 @@ public class Contact extends BaseEntity implements Serializable {
     /**
      * @return the cases
      */
-    public Set<Case> getCases() {
+    public Set<CaseInstance> getCases() {
         return cases;
     }
 
@@ -451,7 +451,7 @@ public class Contact extends BaseEntity implements Serializable {
      * @param cases
      *            the cases to set
      */
-    public void setCases(Set<Case> cases) {
+    public void setCases(Set<CaseInstance> cases) {
         this.cases = cases;
     }
 

@@ -18,10 +18,14 @@ package com.gcrm.service;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gcrm.dao.IBaseDao;
+import com.gcrm.exception.ServiceException;
+import com.gcrm.util.CommonUtil;
 import com.gcrm.vo.SearchCondition;
 import com.gcrm.vo.SearchResult;
 
@@ -67,12 +71,22 @@ public class BaseService<T extends Serializable> implements IBaseService<T> {
      * @see com.gcrm.service.IBaseService#batchDeleteEntity(java.lang.Class,
      * java.lang.String)
      */
-    public void batchDeleteEntity(Class<T> entityClass, String seleteIDs) {
+    public void batchDeleteEntity(Class<T> entityClass, String seleteIDs)
+            throws ServiceException {
         if (seleteIDs != null) {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
                 String deleteid = ids[i];
-                baseDao.deleteEntity(entityClass, Integer.valueOf(deleteid));
+                try {
+                    baseDao.deleteEntity(entityClass, Integer.valueOf(deleteid));
+                } catch (DataIntegrityViolationException e) {
+                    ResourceBundle rb = CommonUtil.getResourceBundle();
+                    String errorMessage = rb.getString("error.message.head")
+                            + ":"
+                            + rb.getString("error.message.violationException")
+                            + rb.getString("error.record") + " ID:" + deleteid;
+                    throw new ServiceException(errorMessage, e);
+                }
             }
         }
     }

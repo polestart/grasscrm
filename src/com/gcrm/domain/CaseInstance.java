@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Case extends BaseEntity implements Serializable {
+public class CaseInstance extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 8250950813769457555L;
 
@@ -23,10 +23,10 @@ public class Case extends BaseEntity implements Serializable {
     private Set<Document> documents = new HashSet<Document>(0);
 
     @Override
-    public Case clone() {
-        Case o = null;
+    public CaseInstance clone() {
+        CaseInstance o = null;
         try {
-            o = (Case) super.clone();
+            o = (CaseInstance) super.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

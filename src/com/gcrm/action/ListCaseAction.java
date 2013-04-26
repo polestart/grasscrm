@@ -39,7 +39,7 @@ import org.supercsv.io.ICsvMapWriter;
 import org.supercsv.prefs.CsvPreference;
 
 import com.gcrm.domain.Account;
-import com.gcrm.domain.Case;
+import com.gcrm.domain.CaseInstance;
 import com.gcrm.domain.CaseOrigin;
 import com.gcrm.domain.CasePriority;
 import com.gcrm.domain.CaseReason;
@@ -64,7 +64,7 @@ public class ListCaseAction extends BaseListAction {
 
     private static final long serialVersionUID = -2404576552417042445L;
 
-    private IBaseService<Case> baseService;
+    private IBaseService<CaseInstance> baseService;
     private IBaseService<CaseStatus> caseStatusService;
     private IBaseService<CasePriority> casePriorityService;
     private IBaseService<CaseType> caseTypeService;
@@ -74,9 +74,9 @@ public class ListCaseAction extends BaseListAction {
     private IBaseService<User> userService;
     private IBaseService<Document> documentService;
     private IBaseService<Contact> contactService;
-    private Case caseInstance;
+    private CaseInstance caseInstance;
 
-    private static final String CLAZZ = Case.class.getSimpleName();
+    private static final String CLAZZ = CaseInstance.class.getSimpleName();
 
     /**
      * Gets the list data.
@@ -87,9 +87,9 @@ public class ListCaseAction extends BaseListAction {
     public String list() throws Exception {
 
         SearchCondition searchCondition = getSearchCondition();
-        SearchResult<Case> result = baseService.getPaginationObjects(CLAZZ,
+        SearchResult<CaseInstance> result = baseService.getPaginationObjects(CLAZZ,
                 searchCondition);
-        Iterator<Case> cases = result.getResult().iterator();
+        Iterator<CaseInstance> cases = result.getResult().iterator();
         long totalRecords = result.getTotalRecords();
 
         getListJson(cases, totalRecords, null, false);
@@ -110,9 +110,9 @@ public class ListCaseAction extends BaseListAction {
         User loginUser = UserUtil.getLoginUser();
         SearchCondition searchCondition = getSearchCondition(fieldTypeMap,
                 loginUser.getScope_case(), loginUser);
-        SearchResult<Case> result = baseService.getPaginationObjects(CLAZZ,
+        SearchResult<CaseInstance> result = baseService.getPaginationObjects(CLAZZ,
                 searchCondition);
-        Iterator<Case> cases = result.getResult().iterator();
+        Iterator<CaseInstance> cases = result.getResult().iterator();
         long totalRecords = result.getTotalRecords();
 
         getListJson(cases, totalRecords, searchCondition, true);
@@ -124,7 +124,7 @@ public class ListCaseAction extends BaseListAction {
      * 
      * @return list JSON data
      */
-    public static void getListJson(Iterator<Case> cases, long totalRecords,
+    public static void getListJson(Iterator<CaseInstance> cases, long totalRecords,
             SearchCondition searchCondition, boolean isList) throws Exception {
 
         StringBuilder jsonBuilder = new StringBuilder("");
@@ -136,7 +136,7 @@ public class ListCaseAction extends BaseListAction {
         String priorityName = null;
         String statusName = null;
         while (cases.hasNext()) {
-            Case instance = cases.next();
+            CaseInstance instance = cases.next();
             int id = instance.getId();
             String subject = instance.getSubject();
             Account account = instance.getAccount();
@@ -218,7 +218,7 @@ public class ListCaseAction extends BaseListAction {
     public String select() throws ServiceException {
         Document document = null;
         Contact contact = null;
-        Set<Case> cases = null;
+        Set<CaseInstance> cases = null;
         if ("Document".equals(this.getRelationKey())) {
             document = documentService.getEntityById(Document.class,
                     Integer.valueOf(this.getRelationValue()));
@@ -233,7 +233,7 @@ public class ListCaseAction extends BaseListAction {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
                 String selectId = ids[i];
-                caseInstance = baseService.getEntityById(Case.class,
+                caseInstance = baseService.getEntityById(CaseInstance.class,
                         Integer.valueOf(selectId));
                 cases.add(caseInstance);
             }
@@ -254,7 +254,7 @@ public class ListCaseAction extends BaseListAction {
     public String unselect() throws ServiceException {
         Document document = null;
         Contact contact = null;
-        Set<Case> cases = null;
+        Set<CaseInstance> cases = null;
         if ("Document".equals(this.getRelationKey())) {
             document = documentService.getEntityById(Document.class,
                     Integer.valueOf(this.getRelationValue()));
@@ -267,10 +267,10 @@ public class ListCaseAction extends BaseListAction {
 
         if (this.getSeleteIDs() != null) {
             String[] ids = seleteIDs.split(",");
-            Collection<Case> selectedCases = new ArrayList<Case>();
+            Collection<CaseInstance> selectedCases = new ArrayList<CaseInstance>();
             for (int i = 0; i < ids.length; i++) {
                 Integer removeId = Integer.valueOf(ids[i]);
-                A: for (Case caseInstance : cases) {
+                A: for (CaseInstance caseInstance : cases) {
                     if (caseInstance.getId().intValue() == removeId.intValue()) {
                         selectedCases.add(caseInstance);
                         break A;
@@ -293,7 +293,7 @@ public class ListCaseAction extends BaseListAction {
      * @return null
      */
     public String relateCaseContact() throws Exception {
-        caseInstance = baseService.getEntityById(Case.class, id);
+        caseInstance = baseService.getEntityById(CaseInstance.class, id);
         Set<Contact> contacts = caseInstance.getContacts();
         Iterator<Contact> contactIterator = contacts.iterator();
         long totalRecords = contacts.size();
@@ -308,7 +308,7 @@ public class ListCaseAction extends BaseListAction {
      * @return null
      */
     public String relateCaseDocument() throws Exception {
-        caseInstance = baseService.getEntityById(Case.class, id);
+        caseInstance = baseService.getEntityById(CaseInstance.class, id);
         Set<Document> documents = caseInstance.getDocuments();
         Iterator<Document> documentIterator = documents.iterator();
         long totalRecords = documents.size();
@@ -324,7 +324,7 @@ public class ListCaseAction extends BaseListAction {
      */
     public String delete() throws Exception {
         UserUtil.permissionCheck("delete_case");
-        baseService.batchDeleteEntity(Case.class, this.getSeleteIDs());
+        baseService.batchDeleteEntity(CaseInstance.class, this.getSeleteIDs());
         return SUCCESS;
     }
 
@@ -338,7 +338,7 @@ public class ListCaseAction extends BaseListAction {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
                 String removeId = ids[i];
-                caseInstance = baseService.getEntityById(Case.class,
+                caseInstance = baseService.getEntityById(CaseInstance.class,
                         Integer.valueOf(removeId));
                 if ("Account".equals(super.getRemoveKey())) {
                     caseInstance.setAccount(null);
@@ -363,9 +363,9 @@ public class ListCaseAction extends BaseListAction {
             String[] ids = seleteIDs.split(",");
             for (int i = 0; i < ids.length; i++) {
                 String copyid = ids[i];
-                Case oriRecord = baseService.getEntityById(Case.class,
+                CaseInstance oriRecord = baseService.getEntityById(CaseInstance.class,
                         Integer.valueOf(copyid));
-                Case targetRecord = oriRecord.clone();
+                CaseInstance targetRecord = oriRecord.clone();
                 targetRecord.setId(null);
                 this.getbaseService().makePersistent(targetRecord);
             }
@@ -421,7 +421,7 @@ public class ListCaseAction extends BaseListAction {
                 String[] ids = seleteIDs.split(",");
                 for (int i = 0; i < ids.length; i++) {
                     String id = ids[i];
-                    Case caseInstance = baseService.getEntityById(Case.class,
+                    CaseInstance caseInstance = baseService.getEntityById(CaseInstance.class,
                             Integer.parseInt(id));
                     final HashMap<String, ? super Object> data1 = new HashMap<String, Object>();
                     data1.put(header[0], caseInstance.getId());
@@ -514,7 +514,7 @@ public class ListCaseAction extends BaseListAction {
                 for (int i = 0; i < line.size(); i++) {
                     row.put(header[i], line.get(i));
                 }
-                Case caseInstance = new Case();
+                CaseInstance caseInstance = new CaseInstance();
                 try {
                     String id = row.get(getText("entity.id.label"));
                     if (!CommonUtil.isNullOrEmpty(id)) {
@@ -610,22 +610,22 @@ public class ListCaseAction extends BaseListAction {
 
     @Override
     protected String getEntityName() {
-        return Case.class.getSimpleName();
+        return CaseInstance.class.getSimpleName();
     }
 
-    public IBaseService<Case> getbaseService() {
+    public IBaseService<CaseInstance> getbaseService() {
         return baseService;
     }
 
-    public void setbaseService(IBaseService<Case> baseService) {
+    public void setbaseService(IBaseService<CaseInstance> baseService) {
         this.baseService = baseService;
     }
 
-    public Case getCase() {
+    public CaseInstance getCase() {
         return caseInstance;
     }
 
-    public void setCase(Case caseInstance) {
+    public void setCase(CaseInstance caseInstance) {
         this.caseInstance = caseInstance;
     }
 
@@ -725,7 +725,7 @@ public class ListCaseAction extends BaseListAction {
     /**
      * @return the caseInstance
      */
-    public Case getCaseInstance() {
+    public CaseInstance getCaseInstance() {
         return caseInstance;
     }
 
@@ -733,7 +733,7 @@ public class ListCaseAction extends BaseListAction {
      * @param caseInstance
      *            the caseInstance to set
      */
-    public void setCaseInstance(Case caseInstance) {
+    public void setCaseInstance(CaseInstance caseInstance) {
         this.caseInstance = caseInstance;
     }
 
