@@ -13,21 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.gcrm.action;
+package com.gcrm.dao;
 
-import com.gcrm.domain.TargetListType;
+import java.util.List;
+
+import org.hibernate.Hibernate;
+
+import com.gcrm.domain.User;
+import com.gcrm.exception.DaoException;
 
 /**
- * Manages the TargetList Type dropdown list
- * 
+ * User DAO
  */
-public class TargetListTypeAction extends OptionAction<TargetListType> {
+public class UserDao extends BaseDao<User> implements IUserDao {
 
-    private static final long serialVersionUID = -2404576552417042445L;
+    public User findByName(String userName) throws DaoException {
+        User user;
 
-    @Override
-    protected Class<TargetListType> getEntityClass() {
-        return TargetListType.class;
+        List<User> users = this.findByParam("from User where name =  ? ",
+                userName);
+
+        if (users == null) {
+            user = null;
+        } else {
+            user = users.get(0);
+            Hibernate.initialize(user.getRoles());
+        }
+        return user;
+
     }
 
 }

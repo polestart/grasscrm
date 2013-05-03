@@ -69,7 +69,7 @@
 		   <div id="tb" style="padding: 5px; height: auto">
 			 <div>
 			   <input id="filter_key" class="easyui-combobox" name="filter_key" style="width:60px;" data-options="
-				        required:true,valueField:'label',textField:'value',
+				        required:true,valueField:'value',textField:'label',
 						data: [{
 							label: '<s:text name="entity.id.label" />',
 							value: 'id',

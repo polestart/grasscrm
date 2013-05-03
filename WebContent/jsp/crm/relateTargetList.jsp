@@ -20,43 +20,38 @@
     $(document).ready(function(){
         var entityName = '<%=(String)request.getAttribute("entityName")%>';
     	  $("#add").click(function() {
-    		  openPageInNewWindow('/crm/editLead.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />');
+    		  openPageInNewWindow('/crm/editTargetList.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />');
      	  });
     	  
     	  $("#remove").click(function() {
-     		  many_removerow('/crm/unselectLead.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />&seleteIDs=');
+     		  many_removerow('/crm/unselectTargetList.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />&seleteIDs=');
      	  });
 
     	  $("#select").click(function() {
-    		  openwindow2('/crm/selectLeadPage.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />',750,500);
+    		  openwindow2('/crm/selectTargetListPage.action?relationKey=' + entityName + '&relationValue=<s:property value="id" />',750,500);
      	  });
 
      $('#tt').datagrid({
-		title:"<s:text name='title.grid.leads'/>",
+		title:"<s:text name='title.grid.targetLists'/>",
 		iconCls:'icon-save',
 		width:700,
 		height:350,
 		idField:'id', 
-		url:'relate' + entityName + 'Lead.action?id=<s:property value="id" />',
+		url:'relate' + entityName + 'TargetList.action?id=<s:property value="id" />',
 		columns:[[
-				{field:'ck',checkbox:true},
-				{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-				{field:'first_name',title:'<s:text name="entity.first_name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-					   new_format_value = "<a href='editLead.action?id=" + row.id + "' target='_blank'>" + value + "</a>";
-					   return new_format_value 
-	             }  
-	            },
-				{field:'last_name',title:'<s:text name="entity.last_name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-					   new_format_value = "<a href='editLead.action?id=" + row.id + "' target='_blank'>" + value + "</a>";
-					   return new_format_value 
-	             }  
-	            },
-	            {field:'title',title:'<s:text name="entity.title.label" />',width:80,align:'center',sortable:'true'},
-				{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
-				{field:'office_phone',title:'<s:text name="entity.office_phone.label" />',width:80,align:'center',sortable:'true'},
-				{field:'email',title:'<s:text name="entity.email.label" />',width:80,align:'center',sortable:'true'},
-				{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
-		]],
+					{field:'ck',checkbox:true},
+					{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+					{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+						   new_format_value = "<a href='editTargetList.action?id=" + row.id + "' target='_blank'>" + value + "</a>";
+						   return new_format_value 
+		             }  
+		            },
+					{field:'title',title:'<s:text name="entity.title.label" />',width:80,align:'center',sortable:'true'},
+					{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
+					{field:'office_phone',title:'<s:text name="entity.office_phone.label" />',width:80,align:'center',sortable:'true'},
+					{field:'email',title:'<s:text name="entity.email.label" />',width:80,align:'center',sortable:'true'},
+					{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
+				]],
 	  });
 		
     }); 
@@ -66,7 +61,7 @@
   <div id="feature">
     <div id="shortcuts" class="headerList">
       <span style="white-space:nowrap;">
-        <a id="add" href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true"><s:text name="action.createLead" /></a>  
+        <a id="add" href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true"><s:text name="action.createTargetList" /></a>  
       </span>
       <span style="white-space:nowrap;">
         <a id="remove" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true"><s:text name="action.removeRelation" /></a>  

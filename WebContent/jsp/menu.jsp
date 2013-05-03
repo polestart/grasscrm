@@ -74,7 +74,6 @@
 			<div onClick="openPage('/system/listSalutationPage.action')"><s:text name='menu.salutation.title'/></div>				
 			<div onClick="openPage('/system/listTaskStatusPage.action')"><s:text name='menu.taskStatus.title'/></div>	
 			<div onClick="openPage('/system/listTaskPriorityPage.action')"><s:text name='menu.taskPriority.title'/></div>
-			<div onClick="openPage('/system/listTargetListTypePage.action')"><s:text name='menu.targetListType.title'/></div>					
 		  </div>
 		</div>
 		<div class="menu-sep"></div>

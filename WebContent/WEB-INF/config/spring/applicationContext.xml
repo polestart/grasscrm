@@ -128,7 +128,11 @@
 	<bean id="meetingDao" class="com.gcrm.dao.MeetingDao">
 	     <property name="sessionFactory" ref="sessionFactory"></property>
     </bean>	
-	    
+
+	<bean id="userDao" class="com.gcrm.dao.UserDao">
+	     <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>	
+    	    
     <!-- Services -->
     <bean id="baseService" class="com.gcrm.service.BaseService">
     	<property name="baseDao" ref="baseDao" />
@@ -168,7 +172,8 @@
     </bean>  
         
     <bean id="userService" class="com.gcrm.service.UserService">
-    	<property name="baseDao" ref="baseDao" />           	
+    	<property name="baseDao" ref="baseDao" /> 
+    	<property name="userDao" ref="userDao" />          	
     </bean>   
 
         
@@ -213,6 +218,7 @@
         <property name="campaignStatusService" ref="optionService" /> 	
         <property name="currencyService" ref="baseService" /> 
         <property name="userService" ref="baseService" /> 
+        <property name="mailService" ref="mailService" />
     </bean>         
 
     <bean id="listCallAction" class="com.gcrm.action.ListCallAction" scope="prototype">   
@@ -416,14 +422,14 @@
     
     <bean id="listTargetListAction" class="com.gcrm.action.ListTargetListAction" scope="prototype">   
         <property name="baseService" ref="baseService" />
-        <property name="targetListTypeService" ref="baseService" /> 	
-        <property name="userService" ref="baseService" />         
+        <property name="userService" ref="baseService" /> 
+        <property name="campaignService" ref="baseService" />         
     </bean> 
     
     <bean id="editTargetListAction" class="com.gcrm.action.EditTargetListAction" scope="prototype">   
         <property name="baseService" ref="baseService" /> 
-        <property name="targetListTypeService" ref="optionService" /> 	
-        <property name="userService" ref="baseService" /> 	         	
+        <property name="userService" ref="baseService" />
+        <property name="campaignService" ref="baseService" /> 	
     </bean>    
 
     <bean id="listTaskAction" class="com.gcrm.action.ListTaskAction" scope="prototype">   
@@ -460,6 +466,14 @@
         <property name="baseService" ref="baseService" />
         <property name="userStatusService" ref="optionService" /> 
         <property name="roleService" ref="baseService" /> 
+    </bean>
+
+    <bean id="listEmailTemplateAction" class="com.gcrm.action.ListEmailTemplateAction" scope="prototype">
+        <property name="baseService" ref="baseService" />
+    </bean> 
+
+    <bean id="editEmailTemplateAction" class="com.gcrm.action.EditEmailTemplateAction" scope="prototype">
+        <property name="baseService" ref="baseService" />
     </bean>
 
     <bean id="listRoleAction" class="com.gcrm.action.ListRoleAction" scope="prototype">   
@@ -577,10 +591,6 @@
         <property name="baseService" ref="baseService" /> 	
     </bean>  
 
-    <bean id="targetListTypeAction" class="com.gcrm.action.TargetListTypeAction" scope="prototype">   
-        <property name="baseService" ref="baseService" /> 	
-    </bean>
-        
     <bean id="userStatusAction" class="com.gcrm.action.UserStatusAction" scope="prototype">   
         <property name="baseService" ref="baseService" /> 	
     </bean>                          

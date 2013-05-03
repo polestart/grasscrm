@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,6 +41,7 @@ import com.gcrm.domain.Campaign;
 import com.gcrm.domain.CampaignStatus;
 import com.gcrm.domain.CampaignType;
 import com.gcrm.domain.Currency;
+import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
@@ -208,6 +210,21 @@ public class ListCampaignAction extends BaseListAction {
         HttpServletResponse response = ServletActionContext.getResponse();
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
+    }
+
+    /**
+     * Gets the related accounts.
+     * 
+     * @return null
+     */
+    public String relateCampaignTargetList() throws Exception {
+        campaign = baseService.getEntityById(Campaign.class, id);
+        Set<TargetList> targetLists = campaign.getTargetLists();
+        Iterator<TargetList> targetListIterator = targetLists.iterator();
+        long totalRecords = targetLists.size();
+        ListTargetListAction.getListJson(targetListIterator, totalRecords,
+                null, false);
+        return null;
     }
 
     /**

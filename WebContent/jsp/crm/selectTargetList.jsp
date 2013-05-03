@@ -19,36 +19,27 @@
 <script type="text/javascript">
     $(document).ready(function(){	 
   	  $("#select").click(function() {	
-		  many_selectrow('selectLead.action?relationKey=<s:property value="relationKey"/>&relationValue=<s:property value="relationValue"/>&seleteIDs=');
+		  many_selectrow('selectTargetList.action?relationKey=<s:property value="relationKey"/>&relationValue=<s:property value="relationValue"/>&seleteIDs=');
 	  });	
   	  
 	  $('#tt').datagrid({
-		title:"<s:text name='title.grid.leads'/>",
+		title:"<s:text name='title.grid.targetLists'/>",
 		iconCls:'icon-save',
 		width:700,
 		height:350,
 		pagination:true,
 		idField:'id', 
-		url:'listLead.action',
+		url:'listTargetList.action',
 		columns:[[
-				{field:'ck',checkbox:true},
-				{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
-				{field:'first_name',title:'<s:text name="entity.first_name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-					   new_format_value = "<a href='editLead.action?id=" + row.id + "'>" + value + "</a>";
-					   return new_format_value 
-	             }  
-	            },
-				{field:'last_name',title:'<s:text name="entity.last_name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
-					   new_format_value = "<a href='editLead.action?id=" + row.id + "'>" + value + "</a>";
-					   return new_format_value 
-	             }  
-	            },
-	            {field:'title',title:'<s:text name="entity.title.label" />',width:80,align:'center',sortable:'true'},
-				{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
-				{field:'email',title:'<s:text name="entity.email.label" />',width:80,align:'center',sortable:'true'},
-				{field:'office_phone',title:'<s:text name="entity.office_phone.label" />',width:80,align:'center',sortable:'true'},
-				{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
-		]],
+					{field:'ck',checkbox:true},
+					{field:'id',title:'ID',width:80,align:'center',sortable:'true'},
+					{field:'name',title:'Name',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+						   new_format_value = "<a href='editTargetList.action?id=" + row.id + "'>" + value + "</a>";
+						   return new_format_value 
+		             }  
+		            },
+					{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
+				]],
 	  });
 		
     }); 
@@ -67,7 +58,7 @@
          </div> 
 		 <div id="feature-title">
 		   <h2>
-			 <s:text name="title.listLead" />
+			 <s:text name="title.listTargetList" />
 		   </h2>
 		 </div>
 		 <div id="feature-content">
@@ -79,10 +70,8 @@
 							label: '<s:text name="entity.id.label" />',
 							value: 'id',
 							selected: true 
-						},{label: '<s:text name="entity.first_name.label" />',
-							value: 'first_name'
-						},{label: '<s:text name="entity.last_name.label" />',
-							value: 'last_name'
+						},{label: '<s:text name="entity.name.label" />',
+							value: 'name'
 						}]" />
 
 					<input id="filter_op" class="easyui-combobox" name="filter_op"
@@ -104,7 +93,7 @@
 							value: '>='									
 						},{label: '<s:text name="filter.oper.like" />',
 							value: 'like'															
-						}]" />				
+						}]" />					
                     <input id="filter_value" style="line-height:20px; border:1px solid #ccc"/>                   
 			        <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="doSearch()" plain="true"><s:text name="button.search" /></a>  
 			        <a href="#" class="easyui-linkbutton" iconCls="icon-reload" onclick="reset()" plain="true"><s:text name="button.reset" /></a>  

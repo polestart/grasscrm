@@ -115,6 +115,10 @@ public class BaseService<T extends Serializable> implements IBaseService<T> {
         return baseDao.findByParam(hql, paramValue);
     }
 
+    public List<T> findByHQL(String hql) {
+        return baseDao.findByHQL(hql);
+    }
+
     /*
      * (non-Javadoc)
      * 

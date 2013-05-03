@@ -32,17 +32,16 @@
 		url:'listCase.action',
 		columns:[[
 				{field:'ck',checkbox:true},
-				{field:'id',title:'ID',width:80,align:'center',sortable:'true'},            
-				{field:'subject',title:'Subject',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+				{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},            
+				{field:'subject',title:'<s:text name="entity.subject.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 					   new_format_value = "<a href='editCase.action?id=" + row.id + "'>" + value + "</a>";
 					   return new_format_value 
 	             }  
 	            },
-				{field:'accountName',title:'Account Name',width:80,align:'center',sortable:'true'},
-				{field:'priorityName',title:'Priority Name',width:80,align:'right',sortable:'true'},
-				{field:'statusName',title:'Status Name',width:80,align:'center',sortable:'true'},
-				{field:'number',title:'Number',width:80,align:'center',sortable:'true'},
-				{field:'user_name',title:'User Name',width:80,align:'center',sortable:'true'}
+				{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'center',sortable:'true'},
+				{field:'priority.name',title:'<s:text name="entity.priority.label" />',width:80,align:'right',sortable:'true'},
+				{field:'status.name',title:'<s:text name="entity.status.label" />',width:80,align:'center',sortable:'true'},
+				{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 		]],
 	  });
 		
@@ -69,7 +68,7 @@
 		   <div id="tb" style="padding: 5px; height: auto">
 			 <div>
 			   <input id="filter_key" class="easyui-combobox" name="filter_key" style="width:60px;" data-options="
-				        required:true,valueField:'label',textField:'value',
+				        required:true,valueField:'value',textField:'label',
 						data: [{
 							label: '<s:text name="entity.id.label" />',
 							value: 'id',

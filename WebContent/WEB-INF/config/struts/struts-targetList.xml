@@ -7,9 +7,25 @@
       	<action name="listTargetList" class="listTargetListAction" method="list">
     	  <result name="success" type="json"></result>
         </action>
+        
+      	<action name="listTargetListFull" class="listTargetListAction" method="listFull">
+    	  <result name="success" type="json"></result>
+        </action>
 
     	<action name="listTargetListPage">
     	  <result type="redirect">/jsp/crm/listTargetList.jsp</result>
+        </action>
+
+    	<action name="selectTargetList" class="listTargetListAction" method="select">
+    	  <result type="redirect">/jsp/crm/listTargetList.jsp</result>
+        </action>
+        
+    	<action name="unselectTargetList" class="listTargetListAction" method="unselect">
+    	  <result type="redirect">/jsp/crm/listTargetList.jsp</result>
+        </action>
+
+    	<action name="selectTargetListPage" class="listTargetListAction" method="selectPage">
+    	  <result>/jsp/crm/selectTargetList.jsp</result>
         </action>
 
       	<action name="relateTargetListAccount" class="listTargetListAction" method="relateTargetListAccount">

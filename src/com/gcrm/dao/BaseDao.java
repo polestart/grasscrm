@@ -80,6 +80,15 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport
         return objects;
     }
 
+    @SuppressWarnings("unchecked")
+    public List<T> findByHQL(String hql) {
+
+        List<T> objects = null;
+
+        objects = getHibernateTemplate().find(hql);
+        return objects;
+    }
+
     /*
      * (non-Javadoc)
      * 

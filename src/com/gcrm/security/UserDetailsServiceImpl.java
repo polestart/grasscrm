@@ -41,7 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         User user = null;
         try {
-            user = this.userService.findByName(userName);
+            user = userService.findByName(userName);
         } catch (Exception e) {
             throw new UsernameNotFoundException("Error found in getting user。");
         }

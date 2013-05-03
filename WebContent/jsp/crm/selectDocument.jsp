@@ -32,15 +32,15 @@
 		url:'listDocument.action',
 		columns:[[
 				{field:'ck',checkbox:true},
-				{field:'id',title:'ID',width:80,align:'center',sortable:'true'},
-				{field:'name',title:'Name',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+				{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+				{field:'name',title:'<s:text name="entity.name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 					   new_format_value = "<a href='editDocument.action?id=" + row.id + "'>" + value + "</a>";
 					   return new_format_value 
 	             }  
 	            },
-				{field:'publishDateS',title:'Publish Date',width:80,align:'center',sortable:'true'},
-				{field:'categoryName',title:'Category Name',width:80,align:'right',sortable:'true'},
-				{field:'user_name',title:'User Name',width:80,align:'center',sortable:'true'}
+				{field:'publish_date',title:'<s:text name="document.publish_date.label" />',width:80,align:'center',sortable:'true'},
+				{field:'category.name',title:'<s:text name="document.category.label" />',width:80,align:'right',sortable:'true'},
+				{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 		]],
 	  });
 		
@@ -67,14 +67,14 @@
 		   <div id="tb" style="padding: 5px; height: auto">
 			 <div>
 				   <input id="filter_key" class="easyui-combobox" name="filter_key" style="width:60px;" data-options="
-					        required:true,valueField:'label',textField:'value',
+					        required:true,valueField:'value',textField:'label',
 							data: [{
-								label: 'ID',
+								label: '<s:text name="entity.id.label" />',
 								value: 'id',
 								selected: true 
-							},{label: 'Name',
+							},{label: '<s:text name="entity.name.label" />',
 								value: 'name'
-							},{label: 'Publish Date',
+							},{label: '<s:text name="document.publish_date.label" />',
 								value: 'publish_date'
 							}]" />		
 

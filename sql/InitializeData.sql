@@ -517,21 +517,6 @@ WITH (
 ALTER TABLE salesstage
   OWNER TO postgres;
 
-CREATE TABLE targetlisttype
-(
-  id integer NOT NULL,
-  value character varying(50) NOT NULL,
-  label_en_us character varying(50),
-  label_zh_cn character varying(50),
- sequence integer,
-  CONSTRAINT targetlisttype_pkey PRIMARY KEY (id )
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE targetlisttype
-  OWNER TO postgres;
-
 CREATE TABLE taskpriority
 (
   id integer NOT NULL,
@@ -792,13 +777,6 @@ INSERT INTO taskstatus(id, value, label_en_us, label_zh_cn, sequence) VALUES (ne
 INSERT INTO taskstatus(id, value, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Completed', 'Completed', '完成', 3);
 INSERT INTO taskstatus(id, value, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Pending Input', 'Pending Input', '等待输入', 4);
 INSERT INTO taskstatus(id, value, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Deferred', 'Deferred', '延期', 5);
-
-INSERT INTO targetlisttype(id, value, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Default', 'Default', '默认', 1);
-INSERT INTO targetlisttype(id, value, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Seed', 'Seed', '种子', 2);
-INSERT INTO targetlisttype(id, value, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Suppression list - By Domain', 'Suppression list - Ey Domain', '阻止列表  - 根据域', 3);
-INSERT INTO targetlisttype(id, value, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Suppression list - By Email Address', 'Suppression list  - By Email Address', '阻止列表   - 根据电子邮件', 4);
-INSERT INTO targetlisttype(id, value, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Suppression list - By ID', 'Suppression list - By ID', '阻止列表  - 根据 编号', 5);
-INSERT INTO targetlisttype(id, value, label_en_us, label_zh_cn, sequence) VALUES (nextval('hibernate_sequence'),'Test', 'Test', '测试', 6);
 
 update users set created_by=3,owner=3,created_on=now();
 update role set created_by=3,owner=3,created_on=now();

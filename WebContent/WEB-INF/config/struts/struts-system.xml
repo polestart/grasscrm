@@ -526,7 +526,41 @@
             <result name="input">/jsp/system/sendTestMail.jsp</result>          
     	  <result type="redirect">/jsp/system/sendSuccess.jsp</result>
         </action>       
-                                                                                      
+              
+      	<action name="listEmailTemplateFull" class="listEmailTemplateAction" method="listFull">
+    	  <result name="success" type="json"></result>
+        </action>
+        
+    	<action name="listEmailTemplatePage">
+    	  <result type="redirect">/jsp/system/listEmailTemplate.jsp</result>
+        </action>
+        
+         <action name="deleteEmailTemplate" class="listEmailTemplateAction" method="delete">
+        	<result name="input">/jsp/system/listEmailTemplate.jsp</result>
+			<result type="redirect">/jsp/system/listEmailTemplate.jsp</result>
+        </action>
+        
+         <action name="copyEmailTemplate" class="listEmailTemplateAction" method="copy">
+        	<result name="input">/jsp/system/listEmailTemplate.jsp</result>
+			<result>/jsp/system/listEmailTemplate.jsp</result>            	  
+        </action>
+        
+        <action name="editEmailTemplate" class="editEmailTemplateAction" method="get">
+			<interceptor-ref name="prepareInterceptor" /> 
+			<result>/jsp/system/editEmailTemplate.jsp</result>
+        </action>
+                        
+        <action name="saveEmailTemplate" class="editEmailTemplateAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/system/editEmailTemplate.jsp</result>          
+    	    <result>/jsp/system/editEmailTemplate.jsp</result>
+        </action>
+
+        <action name="saveCloseEmailTemplate" class="editEmailTemplateAction" method="save">
+			<interceptor-ref name="prepareInterceptor" /> 
+            <result name="input">/jsp/system/editEmailTemplate.jsp</result>          
+    	    <result type="redirect">/jsp/system/listEmailTemplate.jsp</result>
+        </action>        
     </package>   
     
 </struts>

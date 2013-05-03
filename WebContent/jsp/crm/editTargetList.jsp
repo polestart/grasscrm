@@ -103,6 +103,8 @@
 					method="post">
 					<s:hidden id="id" name="targetList.id" value="%{targetList.id}" />
 					<s:hidden id="saveFlag" name="saveFlag"/>
+			        <s:hidden name="relationKey" id="relationKey" value="%{relationKey}" />	
+			        <s:hidden name="relationValue" id="relationValue" value="%{relationValue}" />					
 			        <s:hidden id="seleteIDs" name="seleteIDs" value="%{seleteIDs}" />
 					
 					<table style="" cellspacing="10" cellpadding="0" width="100%">
@@ -167,13 +169,6 @@
 							<table style="" cellspacing="10" cellpadding="0" width="100%">
 								<tr>
 						            <td class="td-mass-update"><input id="massUpdate"
-										name="massUpdate" type="checkbox" class="massUpdate" value="type"/></td>
-									<td class="td-label"><label class="record-label"><s:text
-												name="entity.type.label"></s:text>：</label></td>
-									<td class="td-value"><s:select name="typeID"
-											list="targetListTypes" listKey="id" listValue="label"
-											cssClass="record-value" /></td>
-						            <td class="td-mass-update"><input id="massUpdate"
 										name="massUpdate" type="checkbox" class="massUpdate" value="assigned_to"/></td>
 									<td class="td-label"><label class="record-label"><s:text
 												name="entity.assigned_to.label"></s:text>：</label></td>
@@ -200,6 +195,9 @@
 						            ]]  
 						        ">
 									</select></td>
+						            <td class="td-mass-update"></td>
+									<td class="td-label"></td>
+									<td class="td-value"></td>
 								</tr>
 							</table>
 						</div>

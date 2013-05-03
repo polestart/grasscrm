@@ -1,6 +1,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page language="java"  import="com.gcrm.domain.EmailSetting"%>	
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -29,6 +30,13 @@
 		baseCancel("Campaign");
 	}
 
+	function sendInvites() {
+		disableBtn();
+		var addObjectForm = document.getElementById('addObjectForm');
+		addObjectForm.action = 'sendInvitesCampaign.action';
+		addObjectForm.submit();		
+	}	
+	
 	$(document).ready(function() {
 		$('#ownerID').combogrid('setValue', '<s:property value="ownerID"/>');
 		$('#ownerID').combogrid('setText', '<s:property value="ownerText"/>');	
@@ -38,9 +46,12 @@
 		$('#endDate').datebox('setValue', '<s:property value="endDate"/>');
 		if ($("#seleteIDs").val()!= ""){
 			  $("input:checkbox[name=massUpdate]").css("display",'block');
+			  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
+			  $('#tt').tabs('close', '<s:text name='tab.invitees'/>');
 		}
 		if ($("#id").val() == ""){
 			  $('#tt').tabs('close', '<s:text name='tab.relations'/>');
+			  $('#send_span').css("display",'none');
 			  if ($("#seleteIDs").val() == ""){
 				     $("#addObjectForm").form('validate');
 			  }			  
@@ -51,9 +62,16 @@
 	          msg:'<s:text name="message.save" />',  
 	          timeout:5000,  
 	          showType:'slide'  
-	      });  
-			$("#saveFlag").val("");
-	    }		
+	      });
+		} else if ($("#saveFlag").val() == "<%=EmailSetting.STATUS_SENT%>"){
+	     	 $.messager.show({  
+	             title:'<s:text name="message.title" />',  
+	             msg:'<s:text name="message.invitation.sent" />',  
+	             timeout:5000,  
+	             showType:'slide'  
+	        })
+	    };  	
+		$("#saveFlag").val("");		
 	})
 </script>
 
@@ -72,6 +90,9 @@
 				<span> <span style="white-space: nowrap;"> <a id="save_go_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-save-go" onclick="saveClose()"
 						plain="true"><s:text name="button.saveClose" /></a>
+				</span>	<span style="white-space: nowrap;" id="send_span"> <a id="send_btn" href="#"
+						class="easyui-linkbutton" iconCls="icon-mail" onclick="sendInvites()"
+						plain="true"><s:text name="button.sendInvites" /></a>							
 				</span> <span style="white-space: nowrap;"> <a id="cancel_btn" href="#"
 						class="easyui-linkbutton" iconCls="icon-cancel" onclick="cancel()"
 						plain="true"><s:text name="button.cancel" /></a>
@@ -376,6 +397,28 @@
 							</table>
 						</div>
 
+						<div title="<s:text name='tab.relations'/>" style="padding: 10px;">
+							<table style="" cellspacing="10" cellpadding="0" width="100%">
+								<tr>
+									<td width="20%" valign="top">
+										<div class="easyui-accordion" style="width: 200px;">
+											<div title="<s:text name="menu.sales.title"/>"
+												style="overflow: auto; padding: 10px;"
+												selected="true">
+												<a
+													href="relateCampaignTargetListPage.action?id=<s:property value="campaign.id" />"
+													target="contentFrame"><label
+													class="record-value menuLink"><s:text
+															name="menu.targetLists.title" /></label></a>
+											</div>
+										</div>
+									</td>
+									<td width="80%" valign="top"><Iframe name="contentFrame"
+											id="contentFrame" scrolling="no" frameborder="0" width="100%"
+											height="390"></iframe></td>
+								</tr>
+							</table>
+						</div>
 					</div>
 				</s:form>
 			</div>

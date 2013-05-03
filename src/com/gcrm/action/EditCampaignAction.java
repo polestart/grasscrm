@@ -22,17 +22,26 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.gcrm.domain.Account;
 import com.gcrm.domain.Campaign;
 import com.gcrm.domain.CampaignStatus;
 import com.gcrm.domain.CampaignType;
+import com.gcrm.domain.Contact;
 import com.gcrm.domain.Currency;
+import com.gcrm.domain.EmailSetting;
+import com.gcrm.domain.Lead;
+import com.gcrm.domain.Target;
+import com.gcrm.domain.TargetList;
 import com.gcrm.domain.User;
+import com.gcrm.security.AuthenticationSuccessListener;
 import com.gcrm.service.IBaseService;
 import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
+import com.gcrm.util.mail.MailService;
 import com.gcrm.util.security.UserUtil;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -50,6 +59,7 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
     private IOptionService<CampaignStatus> campaignStatusService;
     private IBaseService<Currency> currencyService;
     private IBaseService<User> userService;
+    private MailService mailService;
     private Campaign campaign;
     private List<CampaignType> types;
     private List<CampaignStatus> statuses;
@@ -70,6 +80,130 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
         campaign = getbaseService().makePersistent(campaign);
         this.setId(campaign.getId());
         this.setSaveFlag("true");
+        return SUCCESS;
+    }
+
+    /**
+     * Sends invitation mail to all participants.
+     * 
+     * @return the SUCCESS result
+     */
+    public String sendInvites() throws Exception {
+
+        UserUtil.permissionCheck("update_campaign");
+        campaign = baseService.getEntityById(Campaign.class, campaign.getId());
+        Date start_date = campaign.getStart_date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                Constant.DATE_TIME_FORMAT);
+        String startDateS = "";
+        if (start_date != null) {
+            startDateS = dateFormat.format(start_date);
+        }
+        Date end_date = campaign.getEnd_date();
+        String endDateS = "";
+        if (end_date != null) {
+            endDateS = dateFormat.format(end_date);
+        }
+        String name = CommonUtil.fromNullToEmpty(campaign.getName());
+        String objective = CommonUtil.fromNullToEmpty(campaign.getObjective());
+        ActionContext context = ActionContext.getContext();
+        Map<String, Object> session = context.getSession();
+        User loginUser = (User) session
+                .get(AuthenticationSuccessListener.LOGIN_USER);
+
+        StringBuilder targetEmails = new StringBuilder("");
+        Set<TargetList> targetLists = campaign.getTargetLists();
+        if (targetLists != null) {
+            for (TargetList targetList : targetLists) {
+                Set<Account> accounts = targetList.getAccounts();
+                if (accounts != null) {
+                    for (Account account : accounts) {
+                        String email = account.getEmail();
+                        if (CommonUtil.isNullOrEmpty(email)) {
+                            continue;
+                        }
+                        if (targetEmails.length() > 0) {
+                            targetEmails.append(",");
+                        }
+                        targetEmails.append(email);
+                    }
+                }
+                Set<Lead> leads = targetList.getLeads();
+                if (leads != null) {
+                    for (Lead lead : leads) {
+                        String email = lead.getEmail();
+                        if (CommonUtil.isNullOrEmpty(email)) {
+                            continue;
+                        }
+                        if (targetEmails.length() > 0) {
+                            targetEmails.append(",");
+                        }
+                        targetEmails.append(email);
+                    }
+                }
+                Set<Contact> contacts = targetList.getContacts();
+                if (contacts != null) {
+                    for (Contact contact : contacts) {
+                        String email = contact.getEmail();
+                        if (CommonUtil.isNullOrEmpty(email)) {
+                            continue;
+                        }
+                        if (targetEmails.length() > 0) {
+                            targetEmails.append(",");
+                        }
+                        targetEmails.append(email);
+                    }
+                }
+                Set<User> users = targetList.getUsers();
+                if (users != null) {
+                    for (User user : users) {
+                        String email = user.getEmail();
+                        if (CommonUtil.isNullOrEmpty(email)) {
+                            continue;
+                        }
+                        if (targetEmails.length() > 0) {
+                            targetEmails.append(",");
+                        }
+                        targetEmails.append(email);
+                    }
+                }
+                Set<Target> targets = targetList.getTargets();
+                if (targets != null) {
+                    for (Target target : targets) {
+                        String email = target.getEmail();
+                        if (CommonUtil.isNullOrEmpty(email)) {
+                            continue;
+                        }
+                        if (targetEmails.length() > 0) {
+                            targetEmails.append(",");
+                        }
+                        targetEmails.append(email);
+                    }
+                }
+            }
+        }
+        String from = loginUser.getEmail();
+        if (targetEmails.length() > 0) {
+            String targetEmail = targetEmails.toString();
+            String[] to = targetEmail.split(",");
+            String mailSubject = name + " " + startDateS;
+            StringBuilder content = new StringBuilder("<html><head>");
+            content.append("<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"></head><body>");
+            content.append("<b>").append(getText("entity.name.label"))
+                    .append("</b> : ").append(name).append("<br>");
+            content.append("<b>").append(getText("entity.start_date.label"))
+                    .append("</b> : ").append(startDateS).append("<br>");
+            content.append("<b>").append(getText("entity.end_date.label"))
+                    .append("</b> : ").append(endDateS).append("<br>");
+            content.append("</body></html>");
+            if (CommonUtil.isNullOrEmpty(from)) {
+                from = null;
+            }
+            String text = content.toString();
+            mailService.asynSendHtmlMail(from, to, mailSubject, text);
+        }
+
+        this.setSaveFlag(EmailSetting.STATUS_SENT);
         return SUCCESS;
     }
 
@@ -423,6 +557,21 @@ public class EditCampaignAction extends BaseEditAction implements Preparable {
     public void setCampaignTypeService(
             IOptionService<CampaignType> campaignTypeService) {
         this.campaignTypeService = campaignTypeService;
+    }
+
+    /**
+     * @return the mailService
+     */
+    public MailService getMailService() {
+        return mailService;
+    }
+
+    /**
+     * @param mailService
+     *            the mailService to set
+     */
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 
 }

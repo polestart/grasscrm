@@ -18,18 +18,16 @@ package com.gcrm.action;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.gcrm.domain.Campaign;
 import com.gcrm.domain.TargetList;
-import com.gcrm.domain.TargetListType;
 import com.gcrm.domain.User;
 import com.gcrm.service.IBaseService;
-import com.gcrm.service.IOptionService;
 import com.gcrm.util.BeanUtil;
 import com.gcrm.util.Constant;
 import com.gcrm.util.security.UserUtil;
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 
 /**
@@ -41,11 +39,9 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<TargetList> baseService;
-    private IOptionService<TargetListType> targetListTypeService;
     private IBaseService<User> userService;
+    private IBaseService<Campaign> campaignService;
     private TargetList targetList;
-    private List<TargetListType> targetListTypes;
-    private Integer typeID = null;
 
     /**
      * Saves the entity.
@@ -54,6 +50,15 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
      */
     public String save() throws Exception {
         saveEntity();
+        if ("Campaign".equals(this.getRelationKey())) {
+            Campaign campaign = campaignService.getEntityById(Campaign.class,
+                    Integer.valueOf(this.getRelationValue()));
+            Set<Campaign> campaigns = targetList.getCampaigns();
+            if (campaigns == null) {
+                campaigns = new HashSet<Campaign>();
+            }
+            campaigns.add(campaign);
+        }
         targetList = getBaseService().makePersistent(targetList);
         this.setId(targetList.getId());
         this.setSaveFlag("true");
@@ -69,11 +74,6 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
         if (this.getId() != null) {
             targetList = baseService.getEntityById(TargetList.class,
                     this.getId());
-            TargetListType type = targetList.getType();
-            if (type != null) {
-                typeID = type.getId();
-            }
-
             User assignedTo = targetList.getAssigned_to();
             if (assignedTo != null) {
                 this.setAssignedToID(assignedTo.getId());
@@ -138,13 +138,6 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
             targetList.setAccounts(originalTargetList.getAccounts());
         }
 
-        TargetListType type = null;
-        if (typeID != null) {
-            type = targetListTypeService.getEntityById(TargetListType.class,
-                    typeID);
-        }
-        targetList.setType(type);
-
         User assignedTo = null;
         if (this.getAssignedToID() != null) {
             assignedTo = userService.getEntityById(User.class,
@@ -166,11 +159,6 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
      * 
      */
     public void prepare() throws Exception {
-        ActionContext context = ActionContext.getContext();
-        Map<String, Object> session = context.getSession();
-        String local = (String) session.get("locale");
-        this.targetListTypes = targetListTypeService.getOptions(
-                TargetListType.class.getSimpleName(), local);
     }
 
     /**
@@ -204,36 +192,6 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the typeID
-     */
-    public Integer getTypeID() {
-        return typeID;
-    }
-
-    /**
-     * @param typeID
-     *            the typeID to set
-     */
-    public void setTypeID(Integer typeID) {
-        this.typeID = typeID;
-    }
-
-    /**
-     * @return the targetListTypes
-     */
-    public List<TargetListType> getTargetListTypes() {
-        return targetListTypes;
-    }
-
-    /**
-     * @param targetListTypes
-     *            the targetListTypes to set
-     */
-    public void setTargetListTypes(List<TargetListType> targetListTypes) {
-        this.targetListTypes = targetListTypes;
-    }
-
-    /**
      * @return the targetList
      */
     public TargetList getTargetList() {
@@ -249,19 +207,18 @@ public class EditTargetListAction extends BaseEditAction implements Preparable {
     }
 
     /**
-     * @return the targetListTypeService
+     * @return the campaignService
      */
-    public IOptionService<TargetListType> getTargetListTypeService() {
-        return targetListTypeService;
+    public IBaseService<Campaign> getCampaignService() {
+        return campaignService;
     }
 
     /**
-     * @param targetListTypeService
-     *            the targetListTypeService to set
+     * @param campaignService
+     *            the campaignService to set
      */
-    public void setTargetListTypeService(
-            IOptionService<TargetListType> targetListTypeService) {
-        this.targetListTypeService = targetListTypeService;
+    public void setCampaignService(IBaseService<Campaign> campaignService) {
+        this.campaignService = campaignService;
     }
 
 }

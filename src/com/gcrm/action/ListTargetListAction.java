@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,12 +39,13 @@ import org.supercsv.io.ICsvMapWriter;
 import org.supercsv.prefs.CsvPreference;
 
 import com.gcrm.domain.Account;
+import com.gcrm.domain.Campaign;
 import com.gcrm.domain.Contact;
 import com.gcrm.domain.Lead;
 import com.gcrm.domain.Target;
 import com.gcrm.domain.TargetList;
-import com.gcrm.domain.TargetListType;
 import com.gcrm.domain.User;
+import com.gcrm.exception.ServiceException;
 import com.gcrm.service.IBaseService;
 import com.gcrm.util.CommonUtil;
 import com.gcrm.util.Constant;
@@ -60,8 +62,8 @@ public class ListTargetListAction extends BaseListAction {
     private static final long serialVersionUID = -2404576552417042445L;
 
     private IBaseService<TargetList> baseService;
-    private IBaseService<TargetListType> targetListTypeService;
     private IBaseService<User> userService;
+    private IBaseService<Campaign> campaignService;
     private TargetList targetList;
 
     private static final String CLAZZ = TargetList.class.getSimpleName();
@@ -73,6 +75,21 @@ public class ListTargetListAction extends BaseListAction {
      */
     @Override
     public String list() throws Exception {
+        SearchCondition searchCondition = getSearchCondition();
+        SearchResult<TargetList> result = baseService.getPaginationObjects(
+                CLAZZ, searchCondition);
+        Iterator<TargetList> targetLists = result.getResult().iterator();
+        long totalRecords = result.getTotalRecords();
+        getListJson(targetLists, totalRecords, null, false);
+        return null;
+    }
+
+    /**
+     * Gets the list data.
+     * 
+     * @return null
+     */
+    public String listFull() throws Exception {
         UserUtil.permissionCheck("view_targetList");
 
         Map<String, String> fieldTypeMap = new HashMap<String, String>();
@@ -85,58 +102,77 @@ public class ListTargetListAction extends BaseListAction {
         SearchResult<TargetList> result = baseService.getPaginationObjects(
                 CLAZZ, searchCondition);
         Iterator<TargetList> targetLists = result.getResult().iterator();
-
         long totalRecords = result.getTotalRecords();
+        getListJson(targetLists, totalRecords, searchCondition, true);
+        return null;
+    }
+
+    /**
+     * Gets the list JSON data.
+     * 
+     * @return list JSON data
+     */
+    public static void getListJson(Iterator<TargetList> targetLists,
+            long totalRecords, SearchCondition searchCondition, boolean isList)
+            throws Exception {
 
         StringBuilder jsonBuilder = new StringBuilder("");
-        jsonBuilder.append(getJsonHeader(totalRecords, searchCondition, true));
+        jsonBuilder
+                .append(getJsonHeader(totalRecords, searchCondition, isList));
 
-        String userName = null;
-        String typeName = null;
+        String assignedTo = null;
         while (targetLists.hasNext()) {
             TargetList instance = targetLists.next();
             int id = instance.getId();
             String name = CommonUtil.fromNullToEmpty(instance.getName());
-            TargetListType type = instance.getType();
-            typeName = CommonUtil.getOptionLabel(type);
             String description = CommonUtil.fromNullToEmpty(instance
                     .getDescription());
             User user = instance.getAssigned_to();
             if (user != null) {
-                userName = user.getName();
+                assignedTo = user.getName();
             } else {
-                userName = "";
-            }
-            User createdBy = instance.getCreated_by();
-            String createdByName = "";
-            if (createdBy != null) {
-                createdByName = CommonUtil.fromNullToEmpty(createdBy.getName());
-            }
-            User updatedBy = instance.getUpdated_by();
-            String updatedByName = "";
-            if (updatedBy != null) {
-                updatedByName = CommonUtil.fromNullToEmpty(updatedBy.getName());
-            }
-            SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    Constant.DATE_TIME_FORMAT);
-            Date createdOn = instance.getCreated_on();
-            String createdOnName = "";
-            if (createdOn != null) {
-                createdOnName = dateFormat.format(createdOn);
-            }
-            Date updatedOn = instance.getUpdated_on();
-            String updatedOnName = "";
-            if (updatedOn != null) {
-                updatedOnName = dateFormat.format(updatedOn);
+                assignedTo = "";
             }
 
-            jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
-                    .append(name).append("\",\"").append(typeName)
-                    .append("\",\"").append(description).append("\",\"")
-                    .append(userName).append("\",\"").append(createdByName)
-                    .append("\",\"").append(updatedByName).append("\",\"")
-                    .append(createdOnName).append("\",\"")
-                    .append(updatedOnName).append("\"]}");
+            if (isList) {
+                User createdBy = instance.getCreated_by();
+                String createdByName = "";
+                if (createdBy != null) {
+                    createdByName = CommonUtil.fromNullToEmpty(createdBy
+                            .getName());
+                }
+                User updatedBy = instance.getUpdated_by();
+                String updatedByName = "";
+                if (updatedBy != null) {
+                    updatedByName = CommonUtil.fromNullToEmpty(updatedBy
+                            .getName());
+                }
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        Constant.DATE_TIME_FORMAT);
+                Date createdOn = instance.getCreated_on();
+                String createdOnName = "";
+                if (createdOn != null) {
+                    createdOnName = dateFormat.format(createdOn);
+                }
+                Date updatedOn = instance.getUpdated_on();
+                String updatedOnName = "";
+                if (updatedOn != null) {
+                    updatedOnName = dateFormat.format(updatedOn);
+                }
+
+                jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
+                        .append(name).append("\",\"").append(description)
+                        .append("\",\"").append(assignedTo).append("\",\"")
+                        .append(createdByName).append("\",\"")
+                        .append(updatedByName).append("\",\"")
+                        .append(createdOnName).append("\",\"")
+                        .append(updatedOnName).append("\"]}");
+            } else {
+                jsonBuilder.append("{\"id\":\"").append(id)
+                        .append("\",\"name\":\"").append(name)
+                        .append("\",\"assigned_to.name\":\"")
+                        .append(assignedTo).append("\"}");
+            }
             if (targetLists.hasNext()) {
                 jsonBuilder.append(",");
             }
@@ -147,7 +183,6 @@ public class ListTargetListAction extends BaseListAction {
         HttpServletResponse response = ServletActionContext.getResponse();
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(jsonBuilder.toString());
-        return null;
     }
 
     /**
@@ -205,6 +240,73 @@ public class ListTargetListAction extends BaseListAction {
         int totalRecords = users.size();
         ListUserAction.getListJson(userIterator, totalRecords, null, false);
         return null;
+    }
+
+    /**
+     * Selects the entities
+     * 
+     * @return the SUCCESS result
+     */
+    public String select() throws ServiceException {
+        Campaign campaign = null;
+        Set<TargetList> targetLists = null;
+
+        if ("Campaign".equals(this.getRelationKey())) {
+            campaign = campaignService.getEntityById(Campaign.class,
+                    Integer.valueOf(this.getRelationValue()));
+            targetLists = campaign.getTargetLists();
+        }
+
+        if (this.getSeleteIDs() != null) {
+            String[] ids = seleteIDs.split(",");
+            for (int i = 0; i < ids.length; i++) {
+                String selectId = ids[i];
+                targetList = baseService.getEntityById(TargetList.class,
+                        Integer.valueOf(selectId));
+                targetLists.add(targetList);
+            }
+        }
+
+        if ("Campaign".equals(this.getRelationKey())) {
+            campaignService.makePersistent(campaign);
+        }
+        return SUCCESS;
+    }
+
+    /**
+     * Unselects the entities
+     * 
+     * @return the SUCCESS result
+     */
+    public String unselect() throws ServiceException {
+        Campaign campaign = null;
+        Set<TargetList> targetLists = null;
+
+        if ("Campaign".equals(this.getRelationKey())) {
+            campaign = campaignService.getEntityById(Campaign.class,
+                    Integer.valueOf(this.getRelationValue()));
+            targetLists = campaign.getTargetLists();
+        }
+
+        if (this.getSeleteIDs() != null) {
+            String[] ids = seleteIDs.split(",");
+            Collection<TargetList> selectedTargetLists = new ArrayList<TargetList>();
+            for (int i = 0; i < ids.length; i++) {
+                Integer selectId = Integer.valueOf(ids[i]);
+                A: for (TargetList targetList : targetLists) {
+                    if (targetList.getId().intValue() == selectId.intValue()) {
+                        selectedTargetLists.add(targetList);
+                        break A;
+                    }
+                }
+            }
+            targetLists.removeAll(selectedTargetLists);
+        }
+
+        if ("Campaign".equals(this.getRelationKey())) {
+            campaignService.makePersistent(campaign);
+        }
+        return SUCCESS;
     }
 
     /**
@@ -267,8 +369,6 @@ public class ListTargetListAction extends BaseListAction {
         try {
             final String[] header = new String[] { getText("entity.id.label"),
                     getText("entity.name.label"),
-                    getText("entity.type_id.label"),
-                    getText("entity.type_name.label"),
                     getText("entity.description.label"),
                     getText("entity.notes.label"),
                     getText("entity.assigned_to_id.label"),
@@ -284,26 +384,18 @@ public class ListTargetListAction extends BaseListAction {
                     data1.put(header[0], targetList.getId());
                     data1.put(header[1],
                             CommonUtil.fromNullToEmpty(targetList.getName()));
-                    TargetListType targetListType = targetList.getType();
-                    if (targetListType != null) {
-                        data1.put(header[2], targetListType.getId());
-                    } else {
-                        data1.put(header[2], "");
-                    }
-                    data1.put(header[3],
-                            CommonUtil.getOptionLabel(targetListType));
-                    data1.put(header[4], CommonUtil.fromNullToEmpty(targetList
+                    data1.put(header[2], CommonUtil.fromNullToEmpty(targetList
                             .getDescription()));
-                    data1.put(header[5],
+                    data1.put(header[3],
                             CommonUtil.fromNullToEmpty(targetList.getNotes()));
                     if (targetList.getAssigned_to() != null) {
-                        data1.put(header[6], targetList.getAssigned_to()
+                        data1.put(header[4], targetList.getAssigned_to()
                                 .getId());
-                        data1.put(header[7], targetList.getAssigned_to()
+                        data1.put(header[5], targetList.getAssigned_to()
                                 .getName());
                     } else {
-                        data1.put(header[6], "");
-                        data1.put(header[7], "");
+                        data1.put(header[4], "");
+                        data1.put(header[5], "");
                     }
                     writer.write(data1, header);
                 }
@@ -350,15 +442,6 @@ public class ListTargetListAction extends BaseListAction {
                     }
                     targetList.setName(CommonUtil.fromNullToEmpty(row
                             .get(getText("entity.name.label"))));
-                    String typeID = row.get(getText("entity.type_id.label"));
-                    if (CommonUtil.isNullOrEmpty(typeID)) {
-                        targetList.setType(null);
-                    } else {
-                        TargetListType type = targetListTypeService
-                                .getEntityById(TargetListType.class,
-                                        Integer.parseInt(typeID));
-                        targetList.setType(type);
-                    }
                     targetList.setDescription(CommonUtil.fromNullToEmpty(row
                             .get(getText("entity.description.label"))));
                     targetList.setNotes(CommonUtil.fromNullToEmpty(row
@@ -452,19 +535,18 @@ public class ListTargetListAction extends BaseListAction {
     }
 
     /**
-     * @return the targetListTypeService
+     * @return the campaignService
      */
-    public IBaseService<TargetListType> getTargetListTypeService() {
-        return targetListTypeService;
+    public IBaseService<Campaign> getCampaignService() {
+        return campaignService;
     }
 
     /**
-     * @param targetListTypeService
-     *            the targetListTypeService to set
+     * @param campaignService
+     *            the campaignService to set
      */
-    public void setTargetListTypeService(
-            IBaseService<TargetListType> targetListTypeService) {
-        this.targetListTypeService = targetListTypeService;
+    public void setCampaignService(IBaseService<Campaign> campaignService) {
+        this.campaignService = campaignService;
     }
 
 }

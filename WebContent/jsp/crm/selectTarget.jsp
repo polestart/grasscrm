@@ -32,17 +32,22 @@
 		url:'listTarget.action',
 		columns:[[
 					{field:'ck',checkbox:true},
-					{field:'id',title:'ID',width:80,align:'center',sortable:'true'},
-					{field:'name',title:'Name',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+					{field:'id',title:'<s:text name="entity.id.label" />',width:80,align:'center',sortable:'true'},
+					{field:'first_name',title:'<s:text name="entity.first_name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
 						   new_format_value = "<a href='editTarget.action?id=" + row.id + "'>" + value + "</a>";
 						   return new_format_value 
 		             }  
 		            },
-					{field:'title',title:'Title',width:80,align:'center',sortable:'true'},
-					{field:'accountName',title:'Account Name',width:80,align:'right',sortable:'true'},
-					{field:'office_phone',title:'Phone',width:80,align:'center',sortable:'true'},
-					{field:'email',title:'Email',width:80,align:'center',sortable:'true'},
-					{field:'user_name',title:'User Name',width:80,align:'center',sortable:'true'}
+					{field:'last_name',title:'<s:text name="entity.last_name.label" />',width:80,align:'center',sortable:'true',formatter:function(value,row,index){  
+						   new_format_value = "<a href='editTarget.action?id=" + row.id + "'>" + value + "</a>";
+						   return new_format_value 
+		             }  
+		            },		            
+					{field:'title',title:'<s:text name="entity.title.label" />',width:80,align:'center',sortable:'true'},
+					{field:'account.name',title:'<s:text name="entity.account.label" />',width:80,align:'right',sortable:'true'},
+					{field:'email',title:'<s:text name="entity.email.label" />',width:80,align:'center',sortable:'true'},
+					{field:'office_phone',title:'<s:text name="entity.office_phone.label" />',width:80,align:'center',sortable:'true'},
+					{field:'assigned_to.name',title:'<s:text name="entity.assigned_to.label" />',width:80,align:'center',sortable:'true'}
 				]],
 	  });
 		
@@ -69,13 +74,15 @@
 		   <div id="tb" style="padding: 5px; height: auto">
 			 <div>
 			   <input id="filter_key" class="easyui-combobox" name="filter_key" style="width:60px;" data-options="
-				        required:true,valueField:'label',textField:'value',
+				        required:true,valueField:'value',textField:'label',
 						data: [{
 							label: '<s:text name="entity.id.label" />',
 							value: 'id',
 							selected: true 
-						},{label: '<s:text name="entity.name.label" />',
-							value: 'name'
+						},{label: '<s:text name="entity.first_name.label" />',
+							value: 'first_name'
+						},{label: '<s:text name="entity.last_name.label" />',
+							value: 'last_name'
 						}]" />
 
 					<input id="filter_op" class="easyui-combobox" name="filter_op"

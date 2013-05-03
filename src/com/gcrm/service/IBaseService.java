@@ -101,6 +101,16 @@ public interface IBaseService<T extends Serializable> {
     public List<T> findByParam(String hql, Object paramValue);
 
     /**
+     * Finds records by hql
+     * 
+     * @param hql
+     *            hql with parameters
+     * @return result list
+     * @throws Exception
+     */
+    public List<T> findByHQL(String hql);
+
+    /**
      * Gets object count
      * 
      * @param clazz

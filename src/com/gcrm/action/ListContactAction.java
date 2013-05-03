@@ -143,7 +143,8 @@ public class ListContactAction extends BaseListAction {
         while (contacts.hasNext()) {
             Contact instance = contacts.next();
             int id = instance.getId();
-            String name = instance.getName();
+            String firstName = instance.getFirst_name();
+            String lastName = instance.getLast_name();
             String title = CommonUtil.fromNullToEmpty(instance.getTitle());
 
             Account account = instance.getAccount();
@@ -188,17 +189,19 @@ public class ListContactAction extends BaseListAction {
                 }
 
                 jsonBuilder.append("{\"cell\":[\"").append(id).append("\",\"")
-                        .append(name).append("\",\"").append(title)
-                        .append("\",\"").append(accountName).append("\",\"")
-                        .append(email).append("\",\"").append(officePhone)
-                        .append("\",\"").append(assignedTo).append("\",\"")
+                        .append(firstName).append("\",\"").append(lastName)
+                        .append("\",\"").append(title).append("\",\"")
+                        .append(accountName).append("\",\"").append(email)
+                        .append("\",\"").append(officePhone).append("\",\"")
+                        .append(assignedTo).append("\",\"")
                         .append(createdByName).append("\",\"")
                         .append(updatedByName).append("\",\"")
                         .append(createdOnName).append("\",\"")
                         .append(updatedOnName).append("\"]}");
             } else {
                 jsonBuilder.append("{\"id\":\"").append(id)
-                        .append("\",\"name\":\"").append(name)
+                        .append("\",\"first_name\":\"").append(firstName)
+                        .append("\",\"last_name\":\"").append(lastName)
                         .append("\",\"title\":\"").append(title)
                         .append("\",\"account.name\":\"").append(accountName)
                         .append("\",\"email\":\"").append(email)
