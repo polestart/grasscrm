@@ -518,7 +518,7 @@
 			<interceptor-ref name="prepareInterceptor" /> 
 			<interceptor-ref name="prepare"/>
    			<interceptor-ref name="defaultStack"/>
-            <result name="input">/jsp/system/emailSetting.jsp.jsp</result>          
+            <result name="input">/jsp/system/emailSetting.jsp</result>          
     	  <result type="redirect">/jsp/system/editEmailSetting.action</result>
         </action>        
        
